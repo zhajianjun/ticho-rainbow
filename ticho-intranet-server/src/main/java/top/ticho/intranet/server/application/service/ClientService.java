@@ -1,0 +1,52 @@
+package top.ticho.intranet.server.application.service;
+
+import com.ticho.boot.view.core.PageResult;
+import top.ticho.intranet.server.interfaces.dto.ClientDTO;
+import top.ticho.intranet.server.interfaces.query.ClientQuery;
+
+/**
+ * 客户端信息 服务接口
+ *
+ * @author zhajianjun
+ * @date 2023-12-17 20:12
+ */
+public interface ClientService {
+    /**
+     * 保存客户端信息
+     *
+     * @param clientDTO 客户端信息DTO 对象
+     */
+    void save(ClientDTO clientDTO);
+
+    /**
+     * 删除客户端信息
+     *
+     * @param id 主键
+     */
+    void removeById(Long id);
+
+    /**
+     * 修改客户端信息
+     *
+     * @param clientDTO 客户端信息DTO 对象
+     */
+    void updateById(ClientDTO clientDTO);
+
+    /**
+     * 根据id查询客户端信息
+     *
+     * @param id 主键
+     * @return {@link ClientDTO}
+     */
+    ClientDTO getById(Long id);
+
+    /**
+     * 分页查询客户端信息列表
+     *
+     * @param query 查询
+     * @return {@link PageResult}<{@link ClientDTO}>
+     */
+    PageResult<ClientDTO> page(ClientQuery query);
+
+}
+
