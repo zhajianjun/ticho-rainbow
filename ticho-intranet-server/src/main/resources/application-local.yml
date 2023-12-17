@@ -1,0 +1,35 @@
+ticho:
+  datasource:
+    url: ${TICHO_DATASOURCE_URL:jdbc:mysql://www.ticho.top:10032/ticho_intranet?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true}
+    username: ${TICHO_DATASOURCE_USERNAME:ENC(8yUwi7gFsHhtfKcuEHa6Kg==)}
+    password: ${TICHO_DATASOURCE_PASSWORD:ENC(EMiOSD5Q5fe3ER0cP2BU70iZ5hM/OPeQ)}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    log:
+      enable: true
+      print-sql: true
+  security:
+    ant-patterns:
+      - /health
+      - /**/user/token
+      - /**/user/refreshToken
+      - /doc.html
+      - /swagger-resources/**
+      - /webjars/**
+      - /v2/api-docs
+      - /favicon.ico
+      - /index.html
+      - /css/**
+      - /static/**
+      - /
+  cors:
+    enable: true
+  swagger:
+    enable: true
+  intranet:
+    port: ${TICHO_INTRANET_SERVER_PORT:9120}
+    sslEnable: ${TICHO_INTRANET_SSLSERVER_ENABLE:false}
+    sslPort: ${TICHO_INTRANET_SSLSERVER_PORT:6443}
+    sslPath: ${TICHO_INTRANET_SSL_PATH:}
+    sslPassword:
+    maxRequests:
+    maxBindPorts:

@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: ticho-intranet
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 0
+      max-file-size: 20MB
+      max-request-size: 20MB
+server:
+  port: ${TICHO_SERVER_PORT:9121}
+
+jasypt:
+  encryptor:
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+    algorithm: PBEWithMD5AndTripleDES
