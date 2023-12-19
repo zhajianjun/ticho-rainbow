@@ -2,7 +2,7 @@ spring:
   application:
     name: ticho-intranet
   profiles:
-    active: ${PROFILES:dev}
+    active: dev
   servlet:
     multipart:
       enabled: true
@@ -10,7 +10,7 @@ spring:
       max-file-size: 20MB
       max-request-size: 20MB
 server:
-  port: ${SERVER_PORT:5122}
+  port: 5122
 
 jasypt:
   encryptor:
