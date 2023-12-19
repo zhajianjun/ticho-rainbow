@@ -2,7 +2,7 @@ spring:
   application:
     name: ticho-intranet
   profiles:
-    active: dev
+    active: ${PROFILES:dev}
   servlet:
     multipart:
       enabled: true
