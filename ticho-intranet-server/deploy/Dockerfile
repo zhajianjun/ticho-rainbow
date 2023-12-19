@@ -21,11 +21,10 @@ ENV JAVA_OPTS='-Xms256m -Xmx512m -Xmn170m'
 VOLUME /tmp
 COPY target/*.jar app.jar
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-ENTRYPOINT ["java", "-jar", "app.jar", \
+ENTRYPOINT ["java", \
 "$JAVA_OPTS", \
-"-Dspring.profiles.active=${PROFILES}", \
-"-Dfile.encoding=UTF-8", \
 "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/heapdump.hprof", \
+"-Dfile.encoding=UTF-8", \
 "-Djasypt.encryptor.password={$JASYPT_ENCRYPTOR_PASSWORD}", \
 "-Dserver.ip=${HOST}", \
 "-Dserver.port=${SERVER_PORT}", \
@@ -39,5 +38,7 @@ ENTRYPOINT ["java", "-jar", "app.jar", \
 "-Dticho.intranet.server.sslPassword=${INTRANET_SERVER_SSL_PASSWORD}", \
 "-Dticho.intranet.server.maxRequests=${INTRANET_SERVER_MAX_REQUESTS}", \
 "-Dticho.intranet.server.maxBindPorts=${INTRANET_SERVER_MAX_BIND_PORTS}", \
-"app.jar" \
+"-jar", \
+"app.jar", \
+"-Dspring.profiles.active=${PROFILES}" \
 ]
