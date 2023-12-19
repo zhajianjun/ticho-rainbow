@@ -2,6 +2,7 @@ FROM java:8u92-jre-alpine
 
 ENV PROFILES=""
 ENV SERVER_PORT=""
+ENV JASYPT_ENCRYPTOR_PASSWORD=""
 ENV DATASOURCE_URL=""
 ENV DATASOURCE_USERNAME=""
 ENV DATASOURCE_PASSWORD=""
@@ -24,6 +25,7 @@ ENTRYPOINT ["java", "-jar", "app.jar", \
 "$JAVA_OPTS", \
 "-Dfile.encoding=UTF-8", \
 "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/heapdump.hprof", \
+"-Djasypt.encryptor.password={$JASYPT_ENCRYPTOR_PASSWORD}", \
 "-Dserver.ip=${HOST}", \
 "-Dspring.profiles.active=${PROFILES}", \
 "-Dserver.port=${SERVER_PORT}", \
