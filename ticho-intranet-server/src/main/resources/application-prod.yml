@@ -1,12 +1,12 @@
 ticho:
   datasource:
+    url: ${TICHO_DATASOURCE_URL:jdbc:mysql://192.168.243.138:10032/ticho_intranet?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true}
+    username: ${TICHO_DATASOURCE_USERNAME:ENC(8yUwi7gFsHhtfKcuEHa6Kg==)}
+    password: ${TICHO_DATASOURCE_PASSWORD:ENC(EMiOSD5Q5fe3ER0cP2BU70iZ5hM/OPeQ)}
     driver-class-name: com.mysql.cj.jdbc.Driver
     log:
       enable: true
       print-sql: true
-    url: ${TICHO_DATASOURCE_URL:jdbc:mysql://127.0.0.1:3306/ticho_intranet?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true}
-    username: ${TICHO_DATASOURCE_USERNAME:root}
-    password: ${TICHO_DATASOURCE_PASSWORD:123456}
   security:
     ant-patterns:
       - /health
@@ -24,13 +24,14 @@ ticho:
   cors:
     enable: true
   intranet:
-    port: ${TICHO_INTRANET_SERVER_PORT:9120}
-    sslEnable: ${TICHO_INTRANET_SSLSERVER_ENABLE:false}
-    sslPort: ${TICHO_INTRANET_SSLSERVER_PORT:6443}
-    sslPath: ${TICHO_INTRANET_SSL_PATH:}
-    sslPassword:
-    maxRequests:
-    maxBindPorts:
+    server:
+      port: ${INTRANET_SERVER_PORT:5121}
+      sslEnable: ${INTRANET_SERVER_SSL_ENABLE:false}
+      sslPort: ${INTRANET_SERVER_SSL_PORT:6443}
+      sslPath: ${INTRANET_SERVER_SSL_PATH:}
+      sslPassword: ${INTRANET_SERVER_SSL_PASSWORD:}
+      maxRequests: ${INTRANET_SERVER_MAX_REQUESTS:}
+      maxBindPorts: ${INTRANET_SERVER_MAX_BIND_PORTS:}
   log:
     enable: true
     print: true

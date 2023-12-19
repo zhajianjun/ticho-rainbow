@@ -39,7 +39,7 @@ public class CommConst {
 
     public static final int WRITE_IDLE_TIME = 40;
 
-    public static final int SERVER_PORT_DEFAULT = 9120;
+    public static final int SERVER_PORT_DEFAULT = 5121;
 
     public static final long ONE_SECOND = 1000L;
 

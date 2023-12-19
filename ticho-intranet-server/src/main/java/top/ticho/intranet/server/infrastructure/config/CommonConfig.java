@@ -14,7 +14,7 @@ import top.ticho.intranet.core.prop.ServerProperty;
 public class CommonConfig {
 
     @Bean
-    @ConfigurationProperties(prefix = "ticho.intranet")
+    @ConfigurationProperties(prefix = "ticho.intranet.server")
     public ServerProperty serverProperty() {
         return new ServerProperty();
     }

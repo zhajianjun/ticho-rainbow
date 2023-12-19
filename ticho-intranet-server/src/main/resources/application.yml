@@ -10,7 +10,7 @@ spring:
       max-file-size: 20MB
       max-request-size: 20MB
 server:
-  port: ${TICHO_SERVER_PORT:9121}
+  port: ${SERVER_PORT:5122}
 
 jasypt:
   encryptor:
