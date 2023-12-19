@@ -60,4 +60,8 @@
 
     </dependencies>
 
+    <build>
+        <finalName>ticho-intranet-core</finalName>
+    </build>
+
 </project>
