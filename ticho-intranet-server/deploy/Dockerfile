@@ -17,17 +17,17 @@ ENV INTRANET_SERVER_MAX_BIND_PORTS="10000"
 
 ENV TZ=Asia/Shanghai
 ENV LANG C.UTF-8
-ENV JAVA_OPTS='-Xms128m -Xmx512m -Xmx512m'
+ENV JAVA_OPTS='-Xms256m -Xmx512m -Xmn170m'
 VOLUME /tmp
 COPY target/*.jar app.jar
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENTRYPOINT ["java", "-jar", "app.jar", \
 "$JAVA_OPTS", \
+"-Dspring.profiles.active=${PROFILES}", \
 "-Dfile.encoding=UTF-8", \
 "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/heapdump.hprof", \
 "-Djasypt.encryptor.password={$JASYPT_ENCRYPTOR_PASSWORD}", \
 "-Dserver.ip=${HOST}", \
-"-Dspring.profiles.active=${PROFILES}", \
 "-Dserver.port=${SERVER_PORT}", \
 "-Dticho.datasource.url=${DATASOURCE_URL}", \
 "-Dticho.datasource.username=${DATASOURCE_USERNAME}", \
@@ -38,5 +38,6 @@ ENTRYPOINT ["java", "-jar", "app.jar", \
 "-Dticho.intranet.server.sslPath=${INTRANET_SERVER_SSL_PATH}", \
 "-Dticho.intranet.server.sslPassword=${INTRANET_SERVER_SSL_PASSWORD}", \
 "-Dticho.intranet.server.maxRequests=${INTRANET_SERVER_MAX_REQUESTS}", \
-"-Dticho.intranet.server.maxBindPorts=${INTRANET_SERVER_MAX_BIND_PORTS}" \
+"-Dticho.intranet.server.maxBindPorts=${INTRANET_SERVER_MAX_BIND_PORTS}", \
+"app.jar" \
 ]
