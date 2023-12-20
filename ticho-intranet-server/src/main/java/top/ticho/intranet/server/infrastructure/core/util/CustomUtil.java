@@ -4,6 +4,7 @@ import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import com.ticho.boot.security.dto.Oauth2AccessToken;
 import io.swagger.annotations.ApiModelProperty;
+import top.ticho.intranet.server.interfaces.dto.UserDTO;
 
 import java.lang.reflect.Field;
 import java.util.StringJoiner;
@@ -17,8 +18,9 @@ import java.util.StringJoiner;
 public class CustomUtil {
 
     public static void main(String[] args) {
-        printModel(Oauth2AccessToken.class);
-        // printTableColumns(LogVO.class);
+        // printModel(UserDTO.class);
+        // printTableColumns(UserDTO.class);
+        printModalFormColumns(UserDTO.class);
     }
 
     public static void printModalFormColumns(Class<?> classz) {

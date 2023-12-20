@@ -1,4 +1,4 @@
-package top.ticho.intranet.server.infrastructure.util;
+package top.ticho.intranet.server.infrastructure.core.util;
 
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig;

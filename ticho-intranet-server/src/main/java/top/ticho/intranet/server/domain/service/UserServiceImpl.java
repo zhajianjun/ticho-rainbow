@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(UserDTO userDTO) {
         User user = UserAssembler.INSTANCE.dtoToEntity(userDTO);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         Assert.isTrue(userRepository.save(user), BizErrCode.FAIL, "保存失败");
     }
 
@@ -50,6 +51,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateById(UserDTO userDTO) {
         User user = UserAssembler.INSTANCE.dtoToEntity(userDTO);
+        userDTO.setPassword(null);
         Assert.isTrue(userRepository.updateById(user), BizErrCode.FAIL, "修改失败");
     }
 
@@ -57,15 +59,15 @@ public class UserServiceImpl implements UserService {
     public void updatePassword(UserPassworUpdDTO userPassworUpdDTO) {
         ValidUtil.valid(userPassworUpdDTO);
         String username = userPassworUpdDTO.getUsername();
-        String passwordAes = userPassworUpdDTO.getOldPassword();
+        String rawPassword = userPassworUpdDTO.getPassword();
         User user = userRepository.getByUsername(username);
         Assert.isNotNull(user, BizErrCode.FAIL, "用户不存在");
-        String credentials = user.getPassword();
-        boolean matches = passwordEncoder.matches(passwordAes, credentials);
+        String encodedPassword = user.getPassword();
+        boolean matches = passwordEncoder.matches(rawPassword, encodedPassword);
         Assert.isTrue(matches, BizErrCode.FAIL, "密码不正确");
         User upd = new User();
         upd.setId(user.getId());
-        upd.setPassword(passwordEncoder.encode(userPassworUpdDTO.getPassword()));
+        upd.setPassword(passwordEncoder.encode(userPassworUpdDTO.getNewPassword()));
         userRepository.updateById(upd);
     }
 

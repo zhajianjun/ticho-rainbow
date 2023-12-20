@@ -1,4 +1,4 @@
-package top.ticho.intranet.server.infrastructure.task;
+package top.ticho.intranet.server.domain.task;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

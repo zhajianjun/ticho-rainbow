@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -46,6 +47,7 @@ public class Client extends Model<Client> implements Serializable {
     private String remark;
 
     /** 乐观锁;控制版本更改 */
+    @Version
     private Long version;
 
     /** 创建人 */

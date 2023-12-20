@@ -9,6 +9,7 @@ ticho:
       print-sql: true
   security:
     ant-patterns:
+      - /
       - /health
       - /**/user/token
       - /**/user/refreshToken
