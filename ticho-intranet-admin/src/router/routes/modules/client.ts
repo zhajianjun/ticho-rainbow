@@ -11,7 +11,7 @@ const client: AppRouteModule = {
   meta: {
     hideChildrenInMenu: true,
     orderNo: 2000,
-    icon: 'ion:settings-outline',
+    icon: 'ant-design:account-book-outlined',
     title: t('routes.system.client.title'),
   },
   children: [

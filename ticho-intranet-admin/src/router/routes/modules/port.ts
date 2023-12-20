@@ -11,7 +11,7 @@ const port: AppRouteModule = {
   meta: {
     hideChildrenInMenu: true,
     orderNo: 3000,
-    icon: 'ion:settings-outline',
+    icon: 'ion:layers-outline',
     title: t('routes.system.port.title'),
   },
   children: [

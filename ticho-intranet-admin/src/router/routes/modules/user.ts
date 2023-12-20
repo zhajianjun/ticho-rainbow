@@ -11,7 +11,7 @@ const user: AppRouteModule = {
   meta: {
     hideChildrenInMenu: true,
     orderNo: 1000,
-    icon: 'ion:settings-outline',
+    icon: 'ant-design:user-outlined',
     title: t('routes.system.user.title'),
   },
   children: [
