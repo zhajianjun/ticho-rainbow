@@ -9,7 +9,6 @@ ${JAVA_OPTS} \
 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/heapdump.hprof \
 -Dfile.encoding=UTF-8 \
 -Djasypt.encryptor.password="${JASYPT_ENCRYPTOR_PASSWORD}" \
--Dserver.ip="${HOST}" \
 -Dserver.port="${SERVER_PORT}" \
 -Dticho.datasource.url="${DATASOURCE_URL}" \
 -Dticho.datasource.username="${DATASOURCE_USERNAME}" \
