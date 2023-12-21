@@ -1,27 +1,10 @@
-FROM openjdk:8-jre-alpine
+#!/bin/sh
 
-ENV PROFILES="prod"
-ENV SERVER_PORT="5122"
-ENV JASYPT_ENCRYPTOR_PASSWORD=""
-ENV DATASOURCE_URL=""
-ENV DATASOURCE_USERNAME=""
-ENV DATASOURCE_PASSWORD=""
-ENV INTRANET_SERVER_PORT="5120"
-ENV INTRANET_SERVER_SSL_ENABLE="false"
-ENV INTRANET_SERVER_SSL_PORT="5443"
-ENV INTRANET_SERVER_SSL_PATH=""
-ENV INTRANET_SERVER_SSL_PASSWORD=""
-ENV INTRANET_SERVER_MAX_REQUESTS="1024"
-ENV INTRANET_SERVER_MAX_BIND_PORTS="10000"
+set -eu
 
-ENV TZ=Asia/Shanghai
-ENV LANG C.UTF-8
-ENV JAVA_OPTS='-Xms256m -Xmx512m -Xmn170m'
-
-VOLUME /tmp
-COPY target/*.jar app.jar
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-ENTRYPOINT java \
+echo "web 项目开始启动"
+nohup \
+/jre/bin/java \
 ${JAVA_OPTS} \
 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/heapdump.hprof \
 -Dfile.encoding=UTF-8 \
@@ -40,4 +23,8 @@ ${JAVA_OPTS} \
 -Dticho.intranet.server.maxBindPorts="${INTRANET_SERVER_MAX_BIND_PORTS}" \
 -Dspring.profiles.active="${PROFILES}" \
 -jar \
-app.jar
+/app.jar \
+>/dev/null 2>&1 &
+echo "web 项目启动成功"
+
+exit 0

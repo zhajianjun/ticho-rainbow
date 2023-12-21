@@ -19,7 +19,7 @@ public class ClientStartTest {
         ClientProperty clientProperty = new ClientProperty();
         clientProperty.setAccessKey("68bfe8f0af124ecfa093350ab8d4b44f");
         clientProperty.setServerHost("127.0.0.1");
-        clientProperty.setServerPort(5121);
+        clientProperty.setServerPort(5120);
         clientProperty.setSslEnable(false);
         ClientHander clientHander = new ClientHander(clientProperty);
         clientHander.start();

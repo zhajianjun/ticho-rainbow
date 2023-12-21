@@ -20,7 +20,7 @@ public class ServerStartTest {
         // 测试
         System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, "conf/logback.xml");
         ServerProperty serverProperty = new ServerProperty();
-        serverProperty.setPort(5121);
+        serverProperty.setPort(5120);
         serverProperty.setSslEnable(false);
         ServerCoordinateHandler serverCoordinateHandler = new ServerCoordinateHandler(serverProperty);
         ClientInfo clientInfo = new ClientInfo();

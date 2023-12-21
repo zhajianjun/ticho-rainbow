@@ -1,0 +1,107 @@
+// 定义文本参数[BRANCH] [JASYPT_ENCRYPTOR_PASSWORD]
+def LAST_BUILD_NUMBER = env.BUILD_NUMBER.toInteger() - 1
+pipeline {
+    agent any
+  environment {
+    APP_NAME = "ticho-intranet"
+    APP_FRONT_MODULE = "ticho-intranet-admin"
+    APP_BACKEND_MODULE = "ticho-intranet-server"
+    APP_PORT = "5121"
+    APP_LOG = "/dockerData/ticho/ticho-intranet/logs"
+    DATASOURCE_URL = "jdbc:mysql://192.168.243.138:10032/ticho_intranet?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true"
+    DATASOURCE_USERNAME = "ENC(8yUwi7gFsHhtfKcuEHa6Kg==)"
+    DATASOURCE_PASSWORD = "ENC(EMiOSD5Q5fe3ER0cP2BU70iZ5hM/OPeQ)"
+    APP_VERSION = "SNAPSHOT-${BUILD_NUMBER}"
+    LAST_APP_VERSION = "SNAPSHOT-${LAST_BUILD_NUMBER}"
+    GIT_URL = "https://gitee.com/zhajianjun/ticho-intranet.git"
+    REGISTRY = "registry.cn-hangzhou.aliyuncs.com"
+    IMGAGE_NAME = "${REGISTRY}/feature/${APP_NAME}:${APP_VERSION}"
+    LAST_IMGAGE_NAME = "${REGISTRY}/feature/${APP_NAME}:${LAST_APP_VERSION}"
+    DOCKFILE = "deploy/Dockerfile"
+    JRE_PATH = "/var/jenkins_home/jdk/jdk8/jre"
+    PNPM_STORE = "/var/jenkins_home/pnpm"
+    MAVEN_HOME = '/var/jenkins_home/maven/maven3.9.6'
+    MAVEN_XML =  '/var/jenkins_home/maven/setting.xml'
+    JAVA_HOME = '/var/jenkins_home/jdk/jdk8'
+    PATH = "${env.PATH}:$JAVA_HOME/bin:$MAVEN_HOME/bin"
+  }
+  stages {
+    stage('初始化工作空间') {
+            steps {
+                script {
+                    deleteDir()
+                }
+            }
+    }
+    stage("拉取代码") {
+      steps {
+        git(credentialsId: "gitee", url: "${GIT_URL}", branch: "${BRANCH}", changelog: true, poll: false)
+      }
+    }
+
+    stage("前端应用编译") {
+      steps {
+        nodejs('node16.18.0'){
+            sh "npm install pnpm -g"
+            sh "cd ${APP_FRONT_MODULE} && pnpm config set store-dir ${PNPM_STORE} && pnpm install && pnpm build && tar -zcvf dist.tar.gz dist"
+        }
+      }
+    }
+
+    stage("后端应用编译") {
+      steps {
+        sh "mvn -U -s ${MAVEN_XML}  -Dmaven.test.skip=true clean package -P rdc"
+      }
+    }
+
+    stage("应用制品") {
+      steps {
+        archiveArtifacts "**/target/*.jar"
+        archiveArtifacts "**/dist.tar.gz"
+      }
+    }
+
+    stage("构建容器镜像") {
+      steps {
+        sh "mkdir -p ./jre && cp -r ${JRE_PATH} ./"
+        sh "docker build -f ${DOCKFILE} -t ${IMGAGE_NAME} ."
+      }
+    }
+
+    stage("推送镜像") {
+      steps {
+        withCredentials([usernamePassword(credentialsId : "aliyun-registry" ,usernameVariable : "DOCKER_USERNAME" ,passwordVariable : "DOCKER_PASSWORD" ,)]) {
+          sh "docker login registry.cn-hangzhou.aliyuncs.com -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+          sh "docker push ${IMGAGE_NAME}"
+        }
+      }
+    }
+
+    stage("应用部署") {
+      steps {
+          script {
+            def result = sh(script: "docker rm -f ${APP_NAME}", returnStatus: true)
+            if (result != 0) {
+                echo '${APP_NAME}容器不存在'
+            }
+          }
+        sh "docker run -itd \
+            --name ${APP_NAME} \
+            -e DATASOURCE_URL='${DATASOURCE_URL}' \
+            -e DATASOURCE_USERNAME='${DATASOURCE_USERNAME}' \
+            -e DATASOURCE_PASSWORD='${DATASOURCE_PASSWORD}' \
+            -e JASYPT_ENCRYPTOR_PASSWORD='${JASYPT_ENCRYPTOR_PASSWORD}' \
+            -p ${APP_PORT}:${APP_PORT} \
+            -v ${APP_LOG}:/logs \
+            --restart always \
+            ${IMGAGE_NAME}"
+        script {
+            def result = sh(script: "docker rmi -f ${LAST_IMGAGE_NAME}", returnStatus: true)
+            if (result != 0) {
+                echo '${LAST_IMGAGE_NAME}容器不存在'
+            }
+        }
+      }
+    }
+  }
+}

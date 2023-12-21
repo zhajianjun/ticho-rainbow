@@ -21,9 +21,9 @@ ticho:
     enable: true
   intranet:
     server:
-      port: 5121
+      port: 5120
       sslEnable: false
-      sslPort: 6443
+      sslPort: 5443
       sslPath:
       sslPassword:
       maxRequests:
