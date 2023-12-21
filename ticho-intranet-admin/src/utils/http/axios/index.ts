@@ -75,8 +75,10 @@ const transform: AxiosTransform = {
     let timeoutMsg = '';
     switch (code) {
       case ResultEnum.TIMEOUT:
-        timeoutMsg = t('sys.api.timeoutMessage');
+        // timeoutMsg = t('sys.api.timeoutMessage');
+        timeoutMsg = message;
         const userStore = useUserStoreWithOut();
+        userStore.setToken(undefined);
         userStore.logout(true);
         break;
       default:
