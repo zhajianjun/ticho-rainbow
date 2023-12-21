@@ -42,8 +42,10 @@ pipeline {
     stage("前端应用编译") {
       steps {
         nodejs('node16.18.0'){
+            sh "npm config set registry https://registry.npm.taobao.org"
             sh "npm install pnpm -g"
-            sh "cd ${APP_FRONT_MODULE} && pnpm config set store-dir ${PNPM_STORE} && pnpm install && pnpm build && tar -zcvf dist.tar.gz dist"
+            sh "pnpm config set store-dir ${PNPM_STORE}"
+            sh "cd ${APP_FRONT_MODULE} && pnpm install && pnpm build && tar -zcvf dist.tar.gz dist"
         }
       }
     }
