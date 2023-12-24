@@ -31,7 +31,7 @@ public class User extends Model<User> implements Serializable {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
-    /** 用户名; */
+    /** 用户名 */
     private String username;
 
     /** 密码 */

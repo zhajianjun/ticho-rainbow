@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -31,6 +33,8 @@ public class ClientDTO implements Serializable {
 
     /** 客户端名称 */
     @ApiModelProperty(value = "客户端名称", position = 30)
+    @Email(message = "客户端名称请输入邮箱格式")
+    @NotBlank(message = "客户端名称不能为空")
     private String name;
 
     /** 是否开启;1-开启,0-关闭 */

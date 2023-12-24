@@ -2,11 +2,15 @@ package top.ticho.intranet.server.interfaces.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ticho.boot.web.util.valid.ValidGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -24,15 +28,19 @@ public class UserDTO implements Serializable {
 
     /** 主键标识 */
     @ApiModelProperty(value = "主键标识", position = 10)
+    @NotNull(message = "编号不能为空", groups = ValidGroup.Upd.class)
     private Long id;
 
-    /** 用户名; */
-    @ApiModelProperty(value = "用户名;", position = 20)
+    /** 用户名 */
+    @ApiModelProperty(value = "用户名", position = 20)
+    @NotNull(message = "用户名不能为空", groups = ValidGroup.Add.class)
     private String username;
 
     /** 密码 */
     @ApiModelProperty(value = "密码", position = 30)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotBlank(message = "密码不能为空", groups = ValidGroup.Add.class)
+    @Pattern(regexp = "^(?![0-9]+$)(?![a-zA-Z]+$)(?![0-9a-zA-Z]+$)(?![0-9\\W]+$)(?![a-zA-Z\\W]+$)[0-9A-Za-z\\W]{6,18}$", message = "密码必须包含字母、数字和特殊字符，且在6~16位之间")
     private String password;
 
     /** 备注信息 */

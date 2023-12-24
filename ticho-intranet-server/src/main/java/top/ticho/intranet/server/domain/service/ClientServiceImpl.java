@@ -1,10 +1,13 @@
 package top.ticho.intranet.server.domain.service;
 
+import cn.hutool.core.util.IdUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.ticho.boot.view.core.PageResult;
 import com.ticho.boot.view.enums.BizErrCode;
 import com.ticho.boot.view.util.Assert;
+import com.ticho.boot.web.util.CloudIdUtil;
+import com.ticho.boot.web.util.valid.ValidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.ticho.intranet.server.application.service.ClientService;
@@ -31,13 +34,18 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void save(ClientDTO clientDTO) {
+        ValidUtil.valid(clientDTO);
+        clientDTO.setId(CloudIdUtil.getId());
+        clientDTO.setAccessKey(IdUtil.fastSimpleUUID());
+        ValidUtil.valid(clientDTO);
         Client client = ClientAssembler.INSTANCE.dtoToEntity(clientDTO);
+        client.setSort(1);
+        client.setEnabled(1);
         Assert.isTrue(clientRepository.save(client), BizErrCode.FAIL, "保存失败");
     }
 
     @Override
     public void removeById(Long id) {
-        Assert.isNotNull(id, "编号不能为空");
         Assert.isTrue(clientRepository.removeById(id), BizErrCode.FAIL, "删除失败");
     }
 

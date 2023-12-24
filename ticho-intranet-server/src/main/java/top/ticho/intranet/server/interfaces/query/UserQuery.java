@@ -27,8 +27,8 @@ public class UserQuery extends BasePageQuery implements Serializable {
     @ApiModelProperty(value = "主键标识", position = 10)
     private Long id;
 
-    /** 用户名; */
-    @ApiModelProperty(value = "用户名;", position = 20)
+    /** 用户名 */
+    @ApiModelProperty(value = "用户名", position = 20)
     private String username;
 
     /** 密码 */
