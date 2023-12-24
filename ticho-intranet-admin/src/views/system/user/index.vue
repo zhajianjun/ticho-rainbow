@@ -36,12 +36,12 @@
 </template>
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { useModal } from '/@/components/Modal';
+  import { BasicTable, useTable, TableAction } from '@/components/Table';
+  import { useModal } from '@/components/Modal';
   import UserModel from './UserModal.vue';
   import UserPasswordModal from './UserPasswordModal.vue';
   import { getTableColumns, getSearchColumns } from './user.data';
-  import { userPage, delUser } from '/@/api/sys/user';
+  import { userPage, delUser } from '@/api/system/user';
 
   export default defineComponent({
     name: 'UserManagement',

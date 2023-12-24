@@ -1,7 +1,7 @@
-import type { AppRouteModule } from '/@/router/types';
+import type { AppRouteModule } from '@/router/types';
 
-import { LAYOUT } from '/@/router/constant';
-import { t } from '/@/hooks/web/useI18n';
+import { LAYOUT } from '@/router/constant';
+import { t } from '@/hooks/web/useI18n';
 
 const user: AppRouteModule = {
   path: '/user',
@@ -22,7 +22,7 @@ const user: AppRouteModule = {
         title: t('routes.system.user.title'),
         ignoreKeepAlive: false,
       },
-      component: () => import('/@/views/system/user/index.vue'),
+      component: () => import('@/views/system/user/index.vue'),
     },
   ],
 };

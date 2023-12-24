@@ -1,4 +1,4 @@
-import { BasicColumn, FormSchema } from '/@/components/Table';
+import { BasicColumn, FormSchema } from '@/components/Table';
 
 export function getTableColumns(): BasicColumn[] {
   return [
@@ -6,44 +6,44 @@ export function getTableColumns(): BasicColumn[] {
       title: '主键标识',
       dataIndex: 'id',
       resizable: true,
-      width: 150,
+      width: 100,
       ifShow: false,
     },
     {
       title: '用户名',
       dataIndex: 'username',
       resizable: true,
-      width: 150,
+      width: 80,
     },
     {
       title: '备注信息',
       dataIndex: 'remark',
       resizable: true,
-      width: 150,
+      width: 120,
     },
     {
       title: '创建人',
       dataIndex: 'createBy',
       resizable: true,
-      width: 150,
+      width: 80,
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
       resizable: true,
-      width: 150,
+      width: 80,
     },
     {
       title: '更新人',
       dataIndex: 'updateBy',
       resizable: true,
-      width: 150,
+      width: 80,
     },
     {
       title: '更新时间',
       dataIndex: 'updateTime',
       resizable: true,
-      width: 150,
+      width: 80,
     },
   ];
 }

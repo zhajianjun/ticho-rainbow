@@ -11,10 +11,11 @@
 </template>
 <script lang="ts">
   import { computed, defineComponent, ref, unref } from 'vue';
-  import { BasicModal, useModalInner } from '/@/components/Modal';
-  import { BasicForm, useForm } from '/@/components/Form/index';
+  import { BasicModal, useModalInner } from '@/components/Modal';
+  import { BasicForm, useForm } from '@/components/Form/index';
   import { getModalFormColumns } from './user.data';
-  import { modifyUser, saveUser } from '/@/api/sys/user';
+  import { modifyUser, saveUser } from '@/api/system/user';
+  import { UserDTO } from "@/api/system/model/userModel";
 
   export default defineComponent({
     name: 'UserModal',
@@ -59,7 +60,7 @@
 
       async function handleSubmit() {
         try {
-          const values = await validate();
+          const values = (await validate()) as UserDTO;
           setModalProps({ confirmLoading: true });
           if (unref(isUpdate)) {
             await modifyUser(values);

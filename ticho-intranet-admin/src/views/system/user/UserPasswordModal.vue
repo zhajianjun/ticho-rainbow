@@ -11,10 +11,10 @@
 </template>
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import { BasicModal, useModalInner } from '/@/components/Modal';
-  import { BasicForm, useForm } from '/@/components/Form/index';
+  import { BasicModal, useModalInner } from '@/components/Modal';
+  import { BasicForm, useForm } from '@/components/Form/index';
   import { getPasswordModalFormColumns } from './user.data';
-  import { modifyUserPassword } from '/@/api/sys/user';
+  import { modifyUserPassword } from '@/api/system/user';
 
   export default defineComponent({
     name: 'UserPasswordModal',

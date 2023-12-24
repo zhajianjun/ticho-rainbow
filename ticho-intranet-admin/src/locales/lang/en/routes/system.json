@@ -1,0 +1,11 @@
+{
+  "user": {
+    "title": "User Management"
+  },
+  "client": {
+    "title": "Client Management"
+  },
+  "port": {
+    "title": "端口映射管理"
+  }
+}

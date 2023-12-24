@@ -1,4 +1,3 @@
-import { RoleEnum } from '/@/enums/roleEnum';
 
 export {};
 
@@ -14,13 +13,15 @@ declare module 'vue-router' {
     // Whether to ignore permissions
     ignoreAuth?: boolean;
     // role info
-    roles?: RoleEnum[];
+    roles?: String[];
     // Whether not to cache
     ignoreKeepAlive?: boolean;
     // Is it fixed on tab
     affix?: boolean;
     // icon on tab
     icon?: string;
+    // img on tab
+    img?: string;
     frameSrc?: string;
     // current page transition
     transitionName?: string;

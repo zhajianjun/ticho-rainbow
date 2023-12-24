@@ -1,7 +1,7 @@
-import type { AppRouteModule } from '/@/router/types';
+import type { AppRouteModule } from '@/router/types';
 
-import { LAYOUT } from '/@/router/constant';
-import { t } from '/@/hooks/web/useI18n';
+import { LAYOUT } from '@/router/constant';
+import { t } from '@/hooks/web/useI18n';
 
 const port: AppRouteModule = {
   path: '/port',
@@ -22,7 +22,7 @@ const port: AppRouteModule = {
         title: t('routes.system.port.title'),
         ignoreKeepAlive: false,
       },
-      component: () => import('/@/views/system/port/index.vue'),
+      component: () => import('@/views/system/port/index.vue'),
     },
   ],
 };

@@ -1,11 +1,11 @@
 // Interface data format used to return a unified format
-import { ResultEnum } from '/@/enums/httpEnum';
+import { ResultEnum } from '@/enums/httpEnum';
 
-export function resultSuccess<T = Recordable>(data: T, { msg = 'ok' } = {}) {
+export function resultSuccess<T = Recordable>(result: T, { message = 'ok' } = {}) {
   return {
     code: ResultEnum.SUCCESS,
-    data,
-    msg,
+    result,
+    message,
     type: 'success',
   };
 }
@@ -14,7 +14,7 @@ export function resultPageSuccess<T = any>(
   page: number,
   pageSize: number,
   list: T[],
-  { msg = 'ok' } = {},
+  { message = 'ok' } = {},
 ) {
   const pageData = pagination(page, pageSize, list);
 
@@ -23,15 +23,18 @@ export function resultPageSuccess<T = any>(
       items: pageData,
       total: list.length,
     }),
-    msg,
+    message,
   };
 }
 
-export function resultError(msg = 'Request failed', { code = ResultEnum.ERROR, data = null } = {}) {
+export function resultError(
+  message = 'Request failed',
+  { code = ResultEnum.ERROR, result = null } = {},
+) {
   return {
     code,
-    data,
-    msg,
+    result,
+    message,
     type: 'error',
   };
 }
