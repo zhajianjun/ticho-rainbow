@@ -15,7 +15,7 @@ export function delClient(params: string) {
 }
 
 export function modifyClient(params: ClientDTO) {
-  return defHttp.put<ClientDTO>({ url: Api.Client, params }, { errorMessageMode: 'message' });
+  return defHttp.put<any>({ url: Api.Client, params }, { errorMessageMode: 'message' });
 }
 
 export function clientPage(params?: ClientDTO) {

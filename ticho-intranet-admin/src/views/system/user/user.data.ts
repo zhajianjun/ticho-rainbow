@@ -56,7 +56,7 @@ export function getSearchColumns(): FormSchema[] {
       component: 'Input',
       colProps: {
         xl: 12,
-        xxl: 8,
+        xxl: 4,
       },
       componentProps: {
         placeholder: '请输入用户名',
@@ -68,7 +68,7 @@ export function getSearchColumns(): FormSchema[] {
       component: 'Input',
       colProps: {
         xl: 12,
-        xxl: 8,
+        xxl: 4,
       },
       componentProps: {
         placeholder: '请输入备注信息',

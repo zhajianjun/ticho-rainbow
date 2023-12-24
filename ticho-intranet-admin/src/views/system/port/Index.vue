@@ -2,7 +2,7 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 新增客户端信息 </a-button>
+        <a-button type="primary" @click="handleCreate"> 新增端口信息 </a-button>
       </template>
       <template #action="{ record }">
         <TableAction
@@ -25,25 +25,25 @@
         />
       </template>
     </BasicTable>
-    <ClientModel @register="registerModal" @success="handleSuccess" />
+    <PortModal @register="registerModal" @success="handleSuccess" />
   </div>
 </template>
 <script lang="ts">
   import { defineComponent } from 'vue';
   import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { useModal } from '@/components/Modal';
-  import ClientModel from './ClientModal.vue';
-  import { getTableColumns, getSearchColumns } from './client.data';
-  import { clientPage, delClient } from '@/api/system/client';
+  import PortModal from './PortModal.vue';
+  import { getTableColumns, getSearchColumns } from './port.data';
+  import { portPage, delPort } from '@/api/system/port';
 
   export default defineComponent({
-    name: 'ClientManagement',
-    components: { BasicTable, ClientModel, TableAction },
+    name: 'Port',
+    components: { BasicTable, PortModal, TableAction },
     setup() {
       const [registerModal, { openModal }] = useModal();
       const [registerTable, { reload }] = useTable({
-        title: '客户端信息列表',
-        api: clientPage,
+        title: '端口信息列表',
+        api: portPage,
         rowKey: 'id',
         columns: getTableColumns(),
         useSearchForm: true,
@@ -88,7 +88,7 @@
       }
 
       function handleDelete(record: Recordable) {
-        delClient(record.id).then(() => {
+        delPort(record.id).then(() => {
           reload();
         });
       }

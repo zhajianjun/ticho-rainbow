@@ -18,7 +18,7 @@
   import { ClientDTO } from '@/api/system/model/clientModel';
 
   export default defineComponent({
-    name: 'UserModal',
+    name: 'ClientModal',
     components: { BasicModal, BasicForm },
     emits: ['success', 'register'],
     setup(_, { emit }) {
