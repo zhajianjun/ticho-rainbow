@@ -1,6 +1,9 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { h } from 'vue';
-import { Tag } from 'ant-design-vue';
+import { Switch } from 'ant-design-vue';
+import { useMessage } from '@/hooks/web/useMessage';
+import { modifyClient } from '@/api/system/client';
+import { ClientDTO } from '@/api/system/model/clientModel';
 
 export function getTableColumns(): BasicColumn[] {
   return [
@@ -28,11 +31,40 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'enabled',
       resizable: true,
       width: 50,
+      // customRender: ({ record }) => {
+      //   const enabled = ~~record.enabled === 1;
+      //   const color = enabled ? '#108ee9' : '#f50';
+      //   const text = enabled ? '开启' : '关闭';
+      //   return h(Tag, { color: color }, () => text);
+      // },
       customRender: ({ record }) => {
-        const enabled = ~~record.enabled === 1;
-        const color = enabled ? '#108ee9' : '#f50';
-        const text = enabled ? '开启' : '关闭';
-        return h(Tag, { color: color }, () => text);
+        if (!Reflect.has(record, 'pendingStatus')) {
+          record.pendingStatus = false;
+        }
+        return h(Switch, {
+          checked: record.enabled === 1,
+          checkedChildren: '已开启',
+          unCheckedChildren: '已关闭',
+          loading: record.pendingStatus,
+          onChange(checked) {
+            record.pendingStatus = true;
+            const newEnabled = checked ? 1 : 0;
+            const { createMessage } = useMessage();
+            const params = { id: record.id, enabled: newEnabled } as ClientDTO;
+            const messagePrefix = checked ? '启动' : '关闭';
+            modifyClient(params)
+              .then(() => {
+                record.enabled = newEnabled;
+                createMessage.success(messagePrefix + `成功`);
+              })
+              .catch(() => {
+                createMessage.error(messagePrefix + `失败`);
+              })
+              .finally(() => {
+                record.pendingStatus = false;
+              });
+          },
+        });
       },
     },
     {
