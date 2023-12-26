@@ -1,4 +1,6 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
+import { h } from 'vue';
+import { Tag } from 'ant-design-vue';
 
 export function getTableColumns(): BasicColumn[] {
   return [
@@ -6,62 +8,44 @@ export function getTableColumns(): BasicColumn[] {
       title: '主键标识',
       dataIndex: 'id',
       resizable: true,
-      width: 150,
+      width: 100,
       ifShow: false,
     },
     {
       title: '客户端秘钥',
       dataIndex: 'accessKey',
       resizable: true,
-      width: 150,
+      width: 120,
     },
     {
       title: '客户端名称',
       dataIndex: 'name',
       resizable: true,
-      width: 150,
+      width: 80,
     },
     {
       title: '是否开启',
       dataIndex: 'enabled',
       resizable: true,
-      width: 150,
+      width: 50,
+      customRender: ({ record }) => {
+        const enabled = ~~record.enabled === 1;
+        const color = enabled ? '#108ee9' : '#f50';
+        const text = enabled ? '开启' : '关闭';
+        return h(Tag, { color: color }, () => text);
+      },
     },
     {
       title: '排序',
       dataIndex: 'sort',
       resizable: true,
-      width: 150,
+      width: 50,
     },
     {
       title: '备注信息',
       dataIndex: 'remark',
       resizable: true,
-      width: 150,
-    },
-    {
-      title: '创建人',
-      dataIndex: 'createBy',
-      resizable: true,
-      width: 150,
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      resizable: true,
-      width: 150,
-    },
-    {
-      title: '更新人',
-      dataIndex: 'updateBy',
-      resizable: true,
-      width: 150,
-    },
-    {
-      title: '更新时间',
-      dataIndex: 'updateTime',
-      resizable: true,
-      width: 150,
+      width: 200,
     },
   ];
 }
@@ -152,19 +136,23 @@ export function getModalFormColumns(): FormSchema[] {
     {
       field: `enabled`,
       label: `是否开启`,
-      component: 'Input',
+      component: 'Switch',
+      defaultValue: 0,
       componentProps: {
-        placeholder: '请输入是否开启',
-      },
-      colProps: {
-        span: 24,
+        checkedChildren: '开启',
+        unCheckedChildren: '关闭',
+        checkedValue: 1,
+        unCheckedValue: 0,
       },
     },
     {
       field: `sort`,
       label: `排序`,
-      component: 'Input',
+      component: 'InputNumber',
       componentProps: {
+        min: 0,
+        max: 10000,
+        defaultValue: 10,
         placeholder: '请输入排序',
       },
       colProps: {
@@ -174,9 +162,13 @@ export function getModalFormColumns(): FormSchema[] {
     {
       field: `remark`,
       label: `备注信息`,
-      component: 'Input',
+      component: 'InputTextArea',
       componentProps: {
+        defaultValue: '',
         placeholder: '请输入备注信息',
+        maxlength: 120,
+        showCount: true,
+        rows: 4,
       },
       colProps: {
         span: 24,

@@ -15,7 +15,7 @@
   import { BasicForm, useForm } from '@/components/Form/index';
   import { getModalFormColumns } from './user.data';
   import { modifyUser, saveUser } from '@/api/system/user';
-  import { UserDTO } from "@/api/system/model/userModel";
+  import { UserDTO } from '@/api/system/model/userModel';
 
   export default defineComponent({
     name: 'UserModal',

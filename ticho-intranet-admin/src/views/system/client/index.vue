@@ -2,7 +2,7 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 新增客户端信息 </a-button>
+        <a-button type="primary" @click="handleCreate"> 新增 </a-button>
       </template>
       <template #action="{ record }">
         <TableAction
@@ -11,6 +11,8 @@
               icon: 'clarity:note-edit-line',
               onClick: handleEdit.bind(null, record),
               tooltip: '修改',
+              label: '修改',
+              divider: true,
             },
             {
               icon: 'ant-design:delete-outlined',
@@ -20,6 +22,8 @@
                 confirm: handleDelete.bind(null, record),
               },
               tooltip: '删除',
+              label: '删除',
+              divider: true,
             },
           ]"
         />

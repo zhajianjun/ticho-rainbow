@@ -23,7 +23,7 @@
     emits: ['success', 'register'],
     setup(_, { emit }) {
       const isUpdate = ref(true);
-      const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
+      const [registerForm, { setFieldsValue, updateSchema, resetFields, validate }] = useForm({
         labelWidth: 100,
         baseColProps: { span: 24 },
         schemas: getModalFormColumns(),
@@ -42,6 +42,14 @@
             ...data.record,
           });
         }
+        await updateSchema([
+          {
+            field: 'accessKey',
+            componentProps: {
+              disabled: unref(isUpdate),
+            },
+          },
+        ]);
       });
 
       const getTitle = computed(() => (!unref(isUpdate) ? '新增客户端信息' : '编辑客户端信息'));
