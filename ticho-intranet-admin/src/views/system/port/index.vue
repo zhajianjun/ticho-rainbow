@@ -11,6 +11,7 @@
               icon: 'clarity:note-edit-line',
               onClick: handleEdit.bind(null, record),
               tooltip: '修改',
+              label: '修改',
             },
             {
               icon: 'ant-design:delete-outlined',
@@ -20,6 +21,7 @@
                 confirm: handleDelete.bind(null, record),
               },
               tooltip: '删除',
+              label: '删除',
             },
           ]"
         />

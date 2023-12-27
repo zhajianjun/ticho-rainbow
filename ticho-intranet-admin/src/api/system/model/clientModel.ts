@@ -11,7 +11,7 @@ export interface ClientDTO {
   sort: number;
   /** 备注信息 */
   remark: string;
-  /** 乐观锁;控制版本更改 */
+  /** 乐观锁 */
   version: string;
   /** 创建人 */
   createBy: string;

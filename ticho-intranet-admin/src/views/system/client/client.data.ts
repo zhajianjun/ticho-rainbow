@@ -39,13 +39,13 @@ export function getTableColumns(): BasicColumn[] {
       // },
       customRender: ({ record }) => {
         if (!Reflect.has(record, 'pendingStatus')) {
-          record.pendingStatus = false;
+          record.pendingEnabled = false;
         }
         return h(Switch, {
           checked: record.enabled === 1,
           checkedChildren: '已开启',
           unCheckedChildren: '已关闭',
-          loading: record.pendingStatus,
+          loading: record.pendingEnabled,
           onChange(checked) {
             record.pendingStatus = true;
             const newEnabled = checked ? 1 : 0;
@@ -61,7 +61,7 @@ export function getTableColumns(): BasicColumn[] {
                 createMessage.error(messagePrefix + `失败`);
               })
               .finally(() => {
-                record.pendingStatus = false;
+                record.pendingEnabled = false;
               });
           },
         });
@@ -185,6 +185,7 @@ export function getModalFormColumns(): FormSchema[] {
         min: 0,
         max: 10000,
         defaultValue: 10,
+        step: 10,
         placeholder: '请输入排序',
       },
       colProps: {

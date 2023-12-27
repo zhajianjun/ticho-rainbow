@@ -5,7 +5,7 @@ export interface UserDTO {
   username: string;
   /** 备注信息 */
   remark: string;
-  /** 乐观锁;控制版本更改 */
+  /** 乐观锁 */
   version: number;
   /** 创建人 */
   createBy: string;
