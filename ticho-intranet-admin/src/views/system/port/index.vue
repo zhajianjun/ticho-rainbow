@@ -14,6 +14,12 @@
               label: '修改',
             },
             {
+              icon: 'clarity:note-edit-line',
+              onClick: handleCopy.bind(null, record),
+              tooltip: '复制',
+              label: '复制',
+            },
+            {
               icon: 'ant-design:delete-outlined',
               color: 'error',
               popConfirm: {
@@ -78,14 +84,21 @@
 
       function handleCreate() {
         openModal(true, {
-          isUpdate: false,
+          modalType: 1,
         });
       }
 
       function handleEdit(record: Recordable) {
         openModal(true, {
           record,
-          isUpdate: true,
+          modalType: 2,
+        });
+      }
+
+      function handleCopy(record: Recordable) {
+        openModal(true, {
+          record,
+          modalType: 3,
         });
       }
 
@@ -103,6 +116,7 @@
         registerTable,
         registerModal,
         handleCreate,
+        handleCopy,
         handleEdit,
         handleDelete,
         handleSuccess,

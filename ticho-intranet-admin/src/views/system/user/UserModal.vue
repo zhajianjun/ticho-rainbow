@@ -16,6 +16,7 @@
   import { getModalFormColumns } from './user.data';
   import { modifyUser, saveUser } from '@/api/system/user';
   import { UserDTO } from '@/api/system/model/userModel';
+  import { useMessage } from "@/hooks/web/useMessage";
 
   export default defineComponent({
     name: 'UserModal',
@@ -67,6 +68,8 @@
           } else {
             await saveUser(values);
           }
+          const { createMessage } = useMessage();
+          createMessage.success('操作成功');
           closeModal();
           // 触发父组件方法
           emit('success');

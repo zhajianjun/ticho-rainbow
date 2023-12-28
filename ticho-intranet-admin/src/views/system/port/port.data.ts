@@ -1,9 +1,26 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { h } from 'vue';
-import { Switch } from 'ant-design-vue';
+import { Switch, Tag } from 'ant-design-vue';
 import { useMessage } from '@/hooks/web/useMessage';
 import { PortDTO } from '@/api/system/model/portModel';
 import { modifyPort } from '@/api/system/port';
+import { clientAll } from '@/api/system/client';
+import { isNull } from '@/utils/is';
+
+const protocolType = [
+  { code: 0, msg: 'HTTP' },
+  { code: 1, msg: 'HTTPS' },
+  { code: 2, msg: 'SSH' },
+  { code: 3, msg: 'TELNET' },
+  { code: 4, msg: 'DATABASE' },
+  { code: 5, msg: 'RDESKTOP' },
+  { code: 6, msg: 'TCP' },
+];
+
+const protocolTypeMap = protocolType.reduce((acc, { code, msg }) => {
+  acc[code] = msg.toLowerCase();
+  return acc;
+}, {});
 
 export function getTableColumns(): BasicColumn[] {
   return [
@@ -36,14 +53,15 @@ export function getTableColumns(): BasicColumn[] {
         }
         return h(Switch, {
           checked: record.forever === 1,
-          checkedChildren: '已开启',
-          unCheckedChildren: '已关闭',
+          checkedChildren: '是',
+          unCheckedChildren: '否',
           loading: record.pendingStatus,
           onChange(checked) {
             record.pendingForever = true;
             const newForever = checked ? 1 : 0;
             const { createMessage } = useMessage();
-            const params = { id: record.id, forever: newForever } as PortDTO;
+            record.forever = newForever;
+            const params: PortDTO = { ...record } as PortDTO;
             const messagePrefix = checked ? '启动' : '关闭';
             modifyPort(params)
               .then(() => {
@@ -77,6 +95,15 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'type',
       resizable: true,
       width: 100,
+      customRender: ({ record }) => {
+        if (record.type === undefined || isNull(record.type)) {
+          return '';
+        }
+        if (record.type === 1) {
+          return h(Tag, { color: 'red' }, () => protocolTypeMap[record.type]);
+        }
+        return h(Tag, { color: 'blue' }, () => protocolTypeMap[record.type]);
+      },
     },
     {
       title: '是否开启',
@@ -96,7 +123,8 @@ export function getTableColumns(): BasicColumn[] {
             record.pendingEnabled = true;
             const newEnabled = checked ? 1 : 0;
             const { createMessage } = useMessage();
-            const params = { id: record.id, enabled: newEnabled } as PortDTO;
+            record.enabled = newEnabled;
+            const params: PortDTO = { ...record } as PortDTO;
             const messagePrefix = checked ? '启动' : '关闭';
             modifyPort(params)
               .then(() => {
@@ -111,6 +139,18 @@ export function getTableColumns(): BasicColumn[] {
               });
           },
         });
+      },
+    },
+    {
+      title: '通道状态',
+      dataIndex: 'channelStatus',
+      resizable: true,
+      width: 50,
+      customRender: ({ record }) => {
+        const enabled = ~~record.channelStatus === 1;
+        const color = enabled ? '#108ee9' : '#f50';
+        const text = enabled ? '激活' : '未激活';
+        return h(Tag, { color: color }, () => text);
       },
     },
     {
@@ -132,14 +172,17 @@ export function getSearchColumns(): FormSchema[] {
   return [
     {
       field: `accessKey`,
-      label: `客户端秘钥`,
-      component: 'Input',
+      label: `客户端信息`,
+      component: 'ApiSelect',
       colProps: {
         xl: 12,
         xxl: 4,
       },
       componentProps: {
-        placeholder: '请输入客户端秘钥',
+        placeholder: '请选择客户端信息',
+        api: clientAll,
+        labelField: 'name',
+        valueField: 'accessKey',
       },
     },
     {
@@ -179,63 +222,20 @@ export function getSearchColumns(): FormSchema[] {
       },
     },
     {
-      field: `enabled`,
-      label: `是否开启`,
-      component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
-      componentProps: {
-        placeholder: '请输入是否开启',
-      },
-    },
-    {
-      field: `forever`,
-      label: `是否永久`,
-      component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
-      componentProps: {
-        placeholder: '请输入是否永久',
-      },
-    },
-    {
-      field: `expireAt`,
-      label: `过期时间`,
-      component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
-      componentProps: {
-        placeholder: '请输入过期时间',
-      },
-    },
-    {
       field: `type`,
       label: `协议类型`,
-      component: 'Input',
+      component: 'Select',
       colProps: {
         xl: 12,
         xxl: 4,
       },
       componentProps: {
         placeholder: '请输入协议类型',
-      },
-    },
-    {
-      field: `sort`,
-      label: `排序`,
-      component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
-      componentProps: {
-        placeholder: '请输入排序',
+        options: protocolType,
+        fieldNames: {
+          label: 'msg',
+          value: 'code',
+        },
       },
     },
     {
@@ -263,10 +263,14 @@ export function getModalFormColumns(): FormSchema[] {
     },
     {
       field: `accessKey`,
-      label: `客户端秘钥`,
-      component: 'Input',
+      label: `客户端信息`,
+      component: 'ApiSelect',
+      required: true,
       componentProps: {
-        placeholder: '请输入客户端秘钥',
+        placeholder: '请选择客户端信息',
+        api: clientAll,
+        labelField: 'name',
+        valueField: 'accessKey',
       },
       colProps: {
         span: 24,
@@ -275,9 +279,12 @@ export function getModalFormColumns(): FormSchema[] {
     {
       field: `port`,
       label: `主机端口`,
-      component: 'Input',
+      component: 'InputNumber',
+      required: true,
       componentProps: {
         placeholder: '请输入主机端口',
+        min: 1,
+        max: 65535,
       },
       colProps: {
         span: 24,
@@ -293,6 +300,68 @@ export function getModalFormColumns(): FormSchema[] {
       colProps: {
         span: 24,
       },
+      helpMessage: '客户端地址格式为[ip:port]，端口范围[1-65535]',
+      dynamicRules: () => {
+        return [
+          {
+            trigger: 'blur',
+            required: true,
+            validator: (_, value) => {
+              if (!value) {
+                return Promise.reject('请输入客户端地址');
+              }
+              const reg = new RegExp(
+                '\\b(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?):([1-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-5][0-5][0-3][0-5])\\b',
+              );
+              if (!value.match(reg)) {
+                return Promise.reject('客户端地址格式不正确[ip:port]');
+              }
+              return Promise.resolve();
+            },
+          },
+        ];
+      },
+    },
+    {
+      field: `type`,
+      label: `协议类型`,
+      component: 'Select',
+      componentProps: {
+        placeholder: '请选择协议类型',
+        options: protocolType,
+        fieldNames: {
+          label: 'msg',
+          value: 'code',
+        },
+      },
+      colProps: {
+        span: 24,
+      },
+      rules: [
+        {
+          trigger: 'blur',
+          required: true,
+          message: '请选择协议类型',
+        },
+      ],
+      // dynamicRules: ({ values }) => {
+      //   return [
+      //     {
+      //       trigger: 'blur',
+      //       required: true,
+      //       validator: (_, value) => {
+      //         if (!value) {
+      //           return Promise.reject('协议类型不能为空');
+      //         }
+      //         const reg = new RegExp('^([a-z0-9-]+\\.)+[a-z]{2,}(/\\S*)?$');
+      //         if (!value.match(reg)) {
+      //           return Promise.reject('域名格式不正确');
+      //         }
+      //         return Promise.resolve();
+      //       },
+      //     },
+      //   ];
+      // },
     },
     {
       field: `domain`,
@@ -303,6 +372,28 @@ export function getModalFormColumns(): FormSchema[] {
       },
       colProps: {
         span: 24,
+      },
+      dynamicRules: ({ values }) => {
+        return [
+          {
+            trigger: 'blur',
+            required: values.type === 1,
+            validator: (_, value) => {
+              const isNullFlag = isNull(value);
+              if (!isNull(values.type) && values.type !== 1 && isNullFlag) {
+                return Promise.resolve();
+              }
+              if (isNullFlag) {
+                return Promise.reject('请输入域名');
+              }
+              const reg = new RegExp('^([a-z0-9-]+\\.)+[a-z]{2,}(/\\S*)?$');
+              if (!value.match(reg)) {
+                return Promise.reject('域名格式不正确');
+              }
+              return Promise.resolve();
+            },
+          },
+        ];
       },
     },
     {
@@ -336,17 +427,6 @@ export function getModalFormColumns(): FormSchema[] {
       componentProps: {
         placeholder: '请输入过期时间',
         showTime: true,
-      },
-      colProps: {
-        span: 24,
-      },
-    },
-    {
-      field: `type`,
-      label: `协议类型`,
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入协议类型',
       },
       colProps: {
         span: 24,

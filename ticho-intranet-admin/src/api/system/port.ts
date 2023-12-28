@@ -1,5 +1,5 @@
 import { defHttp } from '@/utils/http/axios';
-import { PortDTO } from './model/portModel';
+import { PortDTO, PortQuery } from './model/portModel';
 
 enum Api {
   Port = '/port',
@@ -18,6 +18,6 @@ export function modifyPort(params: PortDTO) {
   return defHttp.put<any>({ url: Api.Port, params }, { errorMessageMode: 'message' });
 }
 
-export function portPage(params?: PortDTO) {
-  return defHttp.get<any>({ url: Api.PortPage, params }, { errorMessageMode: 'none' });
+export function portPage(params?: PortQuery) {
+  return defHttp.get<any>({ url: Api.PortPage, params }, { errorMessageMode: 'message' });
 }

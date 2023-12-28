@@ -25,3 +25,10 @@ export interface UserPassworUpdDTO {
   /** 新密码 */
   newPassword: number;
 }
+
+export interface UserQuery {
+  /** 用户名 */
+  username: string;
+  /** 备注信息 */
+  remark: string;
+}

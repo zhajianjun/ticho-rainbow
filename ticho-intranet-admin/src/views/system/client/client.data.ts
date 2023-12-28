@@ -1,8 +1,8 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { h } from 'vue';
-import { Switch } from 'ant-design-vue';
+import { Switch, Tag } from 'ant-design-vue';
 import { useMessage } from '@/hooks/web/useMessage';
-import { modifyClient } from '@/api/system/client';
+import { modifyClientEnabled } from '@/api/system/client';
 import { ClientDTO } from '@/api/system/model/clientModel';
 
 export function getTableColumns(): BasicColumn[] {
@@ -31,12 +31,6 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'enabled',
       resizable: true,
       width: 50,
-      // customRender: ({ record }) => {
-      //   const enabled = ~~record.enabled === 1;
-      //   const color = enabled ? '#108ee9' : '#f50';
-      //   const text = enabled ? '开启' : '关闭';
-      //   return h(Tag, { color: color }, () => text);
-      // },
       customRender: ({ record }) => {
         if (!Reflect.has(record, 'pendingStatus')) {
           record.pendingEnabled = false;
@@ -52,7 +46,7 @@ export function getTableColumns(): BasicColumn[] {
             const { createMessage } = useMessage();
             const params = { id: record.id, enabled: newEnabled } as ClientDTO;
             const messagePrefix = checked ? '启动' : '关闭';
-            modifyClient(params)
+            modifyClientEnabled(params)
               .then(() => {
                 record.enabled = newEnabled;
                 createMessage.success(messagePrefix + `成功`);
@@ -65,6 +59,18 @@ export function getTableColumns(): BasicColumn[] {
               });
           },
         });
+      },
+    },
+    {
+      title: '通道状态',
+      dataIndex: 'channelStatus',
+      resizable: true,
+      width: 50,
+      customRender: ({ record }) => {
+        const enabled = ~~record.channelStatus === 1;
+        const color = enabled ? '#108ee9' : '#f50';
+        const text = enabled ? '激活' : '未激活';
+        return h(Tag, { color: color }, () => text);
       },
     },
     {

@@ -16,15 +16,16 @@
   import { getModalFormColumns } from './port.data';
   import { modifyPort, savePort } from '@/api/system/port';
   import { PortDTO } from '@/api/system/model/portModel';
+  import { useMessage } from '@/hooks/web/useMessage';
 
   export default defineComponent({
     name: 'PortModal',
     components: { BasicModal, BasicForm },
     emits: ['success', 'register'],
     setup(_, { emit }) {
-      const isUpdate = ref(true);
+      const modalType = ref(1);
       const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
-        labelWidth: 100,
+        labelWidth: 120,
         baseColProps: { span: 24 },
         schemas: getModalFormColumns(),
         showActionButtonGroup: false,
@@ -36,25 +37,28 @@
       const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
         await resetFields();
         setModalProps({ confirmLoading: false });
-        isUpdate.value = !!data?.isUpdate;
-        if (unref(isUpdate)) {
+        modalType.value = data?.modalType;
+        if (unref(modalType) !== 1) {
           await setFieldsValue({
             ...data.record,
           });
         }
       });
 
-      const getTitle = computed(() => (!unref(isUpdate) ? '新增端口信息' : '编辑端口信息'));
+      const getTitle = computed(() => (unref(modalType) !== 2 ? '新增端口信息' : '编辑端口信息'));
 
       async function handleSubmit() {
         try {
           const values = (await validate()) as PortDTO;
           setModalProps({ confirmLoading: true });
-          if (unref(isUpdate)) {
+          if (unref(modalType) === 2) {
             await modifyPort(values);
           } else {
+            values.id = null;
             await savePort(values);
           }
+          const { createMessage } = useMessage();
+          createMessage.success('操作成功');
           closeModal();
           // 触发父组件方法
           emit('success');

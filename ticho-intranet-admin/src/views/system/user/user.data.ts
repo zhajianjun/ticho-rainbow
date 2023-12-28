@@ -102,9 +102,32 @@ export function getModalFormColumns(): FormSchema[] {
     {
       field: 'password',
       label: '密码',
-      component: 'InputPassword',
+      component: 'StrengthMeter',
       required: true,
       ifShow: ({ values }) => !values.id,
+      componentProps: {
+        placeholder: '请输入密码',
+      },
+      dynamicRules: () => {
+        return [
+          {
+            trigger: 'blur',
+            required: true,
+            validator: (_, value) => {
+              if (!value) {
+                return Promise.reject('密码不能为空');
+              }
+              const reg = new RegExp(
+                '^(?![0-9]+$)(?![a-zA-Z]+$)(?![0-9a-zA-Z]+$)(?![0-9\\W]+$)(?![a-zA-Z\\W]+$)[0-9A-Za-z\\W]{6,18}$',
+              );
+              if (!value.match(reg)) {
+                return Promise.reject('新密码必须包含字母、数字和特殊字符，且在6~16位之间');
+              }
+              return Promise.resolve();
+            },
+          },
+        ];
+      },
     },
     {
       field: `remark`,

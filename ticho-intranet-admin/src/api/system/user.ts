@@ -1,5 +1,5 @@
 import { defHttp } from '@/utils/http/axios';
-import { UserDTO, UserPassworUpdDTO } from './model/userModel';
+import { UserDTO, UserPassworUpdDTO, UserQuery } from './model/userModel';
 
 enum Api {
   User = '/user',
@@ -7,8 +7,8 @@ enum Api {
   UpdatePassword = '/user/updatePassword',
 }
 
-export function userPage(params?: UserDTO) {
-  return defHttp.get<any>({ url: Api.UserPage, params }, { errorMessageMode: 'none' });
+export function userPage(params?: UserQuery) {
+  return defHttp.get<any>({ url: Api.UserPage, params }, { errorMessageMode: 'message' });
 }
 
 export function saveUser(params: UserDTO) {
