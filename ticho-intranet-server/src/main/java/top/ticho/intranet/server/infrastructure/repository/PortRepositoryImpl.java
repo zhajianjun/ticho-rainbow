@@ -28,25 +28,38 @@ public class PortRepositoryImpl extends RootServiceImpl<PortMapper, Port> implem
     public List<Port> list(PortQuery query) {
         // @formatter:off
         LambdaQueryWrapper<Port> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(Objects.nonNull(query.getId()), Port::getId, query.getId());
-        wrapper.eq(StrUtil.isNotBlank(query.getAccessKey()), Port::getAccessKey, query.getAccessKey());
+        wrapper.like(StrUtil.isNotBlank(query.getAccessKey()), Port::getAccessKey, query.getAccessKey());
         wrapper.eq(Objects.nonNull(query.getPort()), Port::getPort, query.getPort());
-        wrapper.eq(StrUtil.isNotBlank(query.getEndpoint()), Port::getEndpoint, query.getEndpoint());
-        wrapper.eq(StrUtil.isNotBlank(query.getDomain()), Port::getDomain, query.getDomain());
-        wrapper.eq(Objects.nonNull(query.getEnabled()), Port::getEnabled, query.getEnabled());
-        wrapper.eq(Objects.nonNull(query.getForever()), Port::getForever, query.getForever());
-        wrapper.eq(Objects.nonNull(query.getExpireAt()), Port::getExpireAt, query.getExpireAt());
+        wrapper.like(StrUtil.isNotBlank(query.getEndpoint()), Port::getEndpoint, query.getEndpoint());
+        wrapper.like(StrUtil.isNotBlank(query.getDomain()), Port::getDomain, query.getDomain());
         wrapper.eq(Objects.nonNull(query.getType()), Port::getType, query.getType());
-        wrapper.eq(Objects.nonNull(query.getSort()), Port::getSort, query.getSort());
-        wrapper.eq(StrUtil.isNotBlank(query.getRemark()), Port::getRemark, query.getRemark());
-        wrapper.eq(Objects.nonNull(query.getVersion()), Port::getVersion, query.getVersion());
-        wrapper.eq(StrUtil.isNotBlank(query.getCreateBy()), Port::getCreateBy, query.getCreateBy());
-        wrapper.eq(Objects.nonNull(query.getCreateTime()), Port::getCreateTime, query.getCreateTime());
-        wrapper.eq(StrUtil.isNotBlank(query.getUpdateBy()), Port::getUpdateBy, query.getUpdateBy());
-        wrapper.eq(Objects.nonNull(query.getUpdateTime()), Port::getUpdateTime, query.getUpdateTime());
-        wrapper.eq(Objects.nonNull(query.getIsDelete()), Port::getIsDelete, query.getIsDelete());
+        wrapper.like(StrUtil.isNotBlank(query.getRemark()), Port::getRemark, query.getRemark());
         return list(wrapper);
         // @formatter:on
+    }
+
+    @Override
+    public Port getByPortExcludeId(Long excludeId, Integer port) {
+        if (Objects.isNull(port)) {
+            return null;
+        }
+        LambdaQueryWrapper<Port> wrapper = Wrappers.lambdaQuery();
+        wrapper.ne(Objects.nonNull(excludeId), Port::getId, excludeId);
+        wrapper.eq(Port::getPort, port);
+        wrapper.last("limit 1");
+        return getOne(wrapper);
+    }
+
+    @Override
+    public Port getByDomainExcludeId(Long excludeId, String domain) {
+        if (StrUtil.isBlank(domain)) {
+            return null;
+        }
+        LambdaQueryWrapper<Port> wrapper = Wrappers.lambdaQuery();
+        wrapper.ne(Objects.nonNull(excludeId), Port::getId, excludeId);
+        wrapper.eq(Port::getDomain, domain);
+        wrapper.last("limit 1");
+        return getOne(wrapper);
     }
 
 }

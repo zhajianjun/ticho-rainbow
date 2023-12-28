@@ -18,6 +18,8 @@ import top.ticho.intranet.server.application.service.ClientService;
 import top.ticho.intranet.server.interfaces.dto.ClientDTO;
 import top.ticho.intranet.server.interfaces.query.ClientQuery;
 
+import java.util.List;
+
 /**
  * 客户端信息
  *
@@ -61,7 +63,7 @@ public class ClientController {
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
-    public Result<ClientDTO> get(Long id) {
+    public Result<ClientDTO> getById(Long id) {
         return Result.ok(clientService.getById(id));
     }
 
@@ -70,6 +72,13 @@ public class ClientController {
     @GetMapping("page")
     public Result<PageResult<ClientDTO>> page(ClientQuery query) {
         return Result.ok(clientService.page(query));
+    }
+
+    @ApiOperation(value = "查询客户端信息")
+    @ApiOperationSupport(order = 60)
+    @GetMapping("list")
+    public Result<List<ClientDTO>> list(ClientQuery query) {
+        return Result.ok(clientService.list(query));
     }
 
 }

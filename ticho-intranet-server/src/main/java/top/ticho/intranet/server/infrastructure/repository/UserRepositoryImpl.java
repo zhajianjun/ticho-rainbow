@@ -28,16 +28,8 @@ public class UserRepositoryImpl extends RootServiceImpl<UserMapper, User> implem
     public List<User> list(UserQuery query) {
         // @formatter:off
         LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(Objects.nonNull(query.getId()), User::getId, query.getId());
-        wrapper.eq(StrUtil.isNotBlank(query.getUsername()), User::getUsername, query.getUsername());
-        wrapper.eq(StrUtil.isNotBlank(query.getPassword()), User::getPassword, query.getPassword());
-        wrapper.eq(StrUtil.isNotBlank(query.getRemark()), User::getRemark, query.getRemark());
-        wrapper.eq(Objects.nonNull(query.getVersion()), User::getVersion, query.getVersion());
-        wrapper.eq(StrUtil.isNotBlank(query.getCreateBy()), User::getCreateBy, query.getCreateBy());
-        wrapper.eq(Objects.nonNull(query.getCreateTime()), User::getCreateTime, query.getCreateTime());
-        wrapper.eq(StrUtil.isNotBlank(query.getUpdateBy()), User::getUpdateBy, query.getUpdateBy());
-        wrapper.eq(Objects.nonNull(query.getUpdateTime()), User::getUpdateTime, query.getUpdateTime());
-        wrapper.eq(Objects.nonNull(query.getIsDelete()), User::getIsDelete, query.getIsDelete());
+        wrapper.like(StrUtil.isNotBlank(query.getUsername()), User::getUsername, query.getUsername());
+        wrapper.like(StrUtil.isNotBlank(query.getRemark()), User::getRemark, query.getRemark());
         return list(wrapper);
         // @formatter:on
     }

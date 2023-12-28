@@ -47,10 +47,6 @@ public class UserDTO implements Serializable {
     @ApiModelProperty(value = "备注信息", position = 40)
     private String remark;
 
-    /** 乐观锁;控制版本更改 */
-    @ApiModelProperty(value = "乐观锁;控制版本更改", position = 50)
-    private Long version;
-
     /** 创建人 */
     @ApiModelProperty(value = "创建人", position = 60)
     private String createBy;
@@ -68,9 +64,5 @@ public class UserDTO implements Serializable {
     @ApiModelProperty(value = "更新时间", position = 90)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
-
-    /** 删除标识;0-未删除,1-已删除 */
-    @ApiModelProperty(value = "删除标识;0-未删除,1-已删除", position = 100)
-    private Integer isDelete;
 
 }

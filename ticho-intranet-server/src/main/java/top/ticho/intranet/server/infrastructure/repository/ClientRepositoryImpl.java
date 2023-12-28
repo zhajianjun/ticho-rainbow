@@ -12,7 +12,6 @@ import top.ticho.intranet.server.infrastructure.mapper.ClientMapper;
 import top.ticho.intranet.server.interfaces.query.ClientQuery;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 客户端信息 repository实现
@@ -28,20 +27,22 @@ public class ClientRepositoryImpl extends RootServiceImpl<ClientMapper, Client> 
     public List<Client> list(ClientQuery query) {
         // @formatter:off
         LambdaQueryWrapper<Client> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(Objects.nonNull(query.getId()), Client::getId, query.getId());
-        wrapper.eq(StrUtil.isNotBlank(query.getAccessKey()), Client::getAccessKey, query.getAccessKey());
-        wrapper.eq(StrUtil.isNotBlank(query.getName()), Client::getName, query.getName());
-        wrapper.eq(Objects.nonNull(query.getEnabled()), Client::getEnabled, query.getEnabled());
-        wrapper.eq(Objects.nonNull(query.getSort()), Client::getSort, query.getSort());
-        wrapper.eq(StrUtil.isNotBlank(query.getRemark()), Client::getRemark, query.getRemark());
-        wrapper.eq(Objects.nonNull(query.getVersion()), Client::getVersion, query.getVersion());
-        wrapper.eq(StrUtil.isNotBlank(query.getCreateBy()), Client::getCreateBy, query.getCreateBy());
-        wrapper.eq(Objects.nonNull(query.getCreateTime()), Client::getCreateTime, query.getCreateTime());
-        wrapper.eq(StrUtil.isNotBlank(query.getUpdateBy()), Client::getUpdateBy, query.getUpdateBy());
-        wrapper.eq(Objects.nonNull(query.getUpdateTime()), Client::getUpdateTime, query.getUpdateTime());
-        wrapper.eq(Objects.nonNull(query.getIsDelete()), Client::getIsDelete, query.getIsDelete());
+        wrapper.like(StrUtil.isNotBlank(query.getAccessKey()), Client::getAccessKey, query.getAccessKey());
+        wrapper.like(StrUtil.isNotBlank(query.getName()), Client::getName, query.getName());
+        wrapper.like(StrUtil.isNotBlank(query.getRemark()), Client::getRemark, query.getRemark());
         return list(wrapper);
         // @formatter:on
+    }
+
+    @Override
+    public Client getByAccessKey(String accessKey) {
+        if (StrUtil.isBlank(accessKey)) {
+            return null;
+        }
+        LambdaQueryWrapper<Client> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(Client::getAccessKey, accessKey);
+        wrapper.last("limit 1");
+        return getOne(wrapper);
     }
 
 }

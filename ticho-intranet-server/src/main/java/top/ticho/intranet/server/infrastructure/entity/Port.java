@@ -1,6 +1,7 @@
 package top.ticho.intranet.server.infrastructure.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -41,6 +42,7 @@ public class Port extends Model<Port> implements Serializable {
     private String endpoint;
 
     /** 域名 */
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String domain;
 
     /** 是否开启;1-开启,0-关闭 */
@@ -60,6 +62,7 @@ public class Port extends Model<Port> implements Serializable {
     private Integer sort;
 
     /** 备注信息 */
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String remark;
 
     /** 乐观锁;控制版本更改 */

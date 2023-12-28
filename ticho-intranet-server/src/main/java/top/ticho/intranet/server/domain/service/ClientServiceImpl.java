@@ -35,24 +35,23 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void save(ClientDTO clientDTO) {
         ValidUtil.valid(clientDTO);
+        Client client = ClientAssembler.INSTANCE.dtoToEntity(clientDTO);
         clientDTO.setId(CloudIdUtil.getId());
         clientDTO.setAccessKey(IdUtil.fastSimpleUUID());
-        ValidUtil.valid(clientDTO);
-        Client client = ClientAssembler.INSTANCE.dtoToEntity(clientDTO);
         client.setSort(1);
         client.setEnabled(1);
-        Assert.isTrue(clientRepository.save(client), BizErrCode.FAIL, "保存失败");
+        Assert.isTrue(clientRepository.save(client), "保存失败");
     }
 
     @Override
     public void removeById(Long id) {
-        Assert.isTrue(clientRepository.removeById(id), BizErrCode.FAIL, "删除失败");
+        Assert.isTrue(clientRepository.removeById(id), "删除失败");
     }
 
     @Override
     public void updateById(ClientDTO clientDTO) {
         Client client = ClientAssembler.INSTANCE.dtoToEntity(clientDTO);
-        Assert.isTrue(clientRepository.updateById(client), BizErrCode.FAIL, "修改失败");
+        Assert.isTrue(clientRepository.updateById(client), "修改失败");
     }
 
     @Override
@@ -73,6 +72,16 @@ public class ClientServiceImpl implements ClientService {
             .map(ClientAssembler.INSTANCE::entityToDto)
             .collect(Collectors.toList());
         return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), clientDTOs);
+        // @formatter:on
+    }
+
+    @Override
+    public List<ClientDTO> list(ClientQuery query) {
+        // @formatter:off
+        return clientRepository.list(query)
+            .stream()
+            .map(ClientAssembler.INSTANCE::entityToDto)
+            .collect(Collectors.toList());
         // @formatter:on
     }
 }

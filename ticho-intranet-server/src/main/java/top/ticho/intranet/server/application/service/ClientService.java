@@ -4,6 +4,8 @@ import com.ticho.boot.view.core.PageResult;
 import top.ticho.intranet.server.interfaces.dto.ClientDTO;
 import top.ticho.intranet.server.interfaces.query.ClientQuery;
 
+import java.util.List;
+
 /**
  * 客户端信息 服务接口
  *
@@ -47,6 +49,14 @@ public interface ClientService {
      * @return {@link PageResult}<{@link ClientDTO}>
      */
     PageResult<ClientDTO> page(ClientQuery query);
+
+    /**
+     * 查询客户端信息列表
+     *
+     * @param query 查询条件
+     * @return {@link List}<{@link ClientDTO}>
+     */
+    List<ClientDTO> list(ClientQuery query);
 
 }
 

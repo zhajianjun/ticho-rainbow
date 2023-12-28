@@ -22,5 +22,23 @@ public interface PortRepository extends RootService<Port> {
      */
     List<Port> list(PortQuery query);
 
+    /**
+     * 根据端口号查询，排除id
+     *
+     * @param excludeId 排除的id
+     * @param port      端口号
+     * @return {@link Port}
+     */
+    Port getByPortExcludeId(Long excludeId, Integer port);
+
+    /**
+     * 根据域名查询，排除id
+     *
+     * @param excludeId 排除的id
+     * @param domain    域名
+     * @return {@link Port}
+     */
+    Port getByDomainExcludeId(Long excludeId, String domain);
+
 }
 

@@ -61,7 +61,7 @@ public class PortController {
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
-    public Result<PortDTO> get(Long id) {
+    public Result<PortDTO> getById(Long id) {
         return Result.ok(portService.getById(id));
     }
 

@@ -42,22 +42,22 @@ public class UserServiceImpl implements UserService {
     public void save(UserDTO userDTO) {
         ValidUtil.valid(userDTO, ValidGroup.Add.class);
         User select = userRepository.getByUsername(userDTO.getUsername());
-        Assert.isNull(select, BizErrCode.FAIL, "该用户已存在");
+        Assert.isNull(select, "该用户已存在");
         User user = UserAssembler.INSTANCE.dtoToEntity(userDTO);
         String encode = passwordEncoder.encode(user.getPassword());
         user.setPassword(encode);
         user.setId(CloudIdUtil.getId());
-        Assert.isTrue(userRepository.save(user), BizErrCode.FAIL, "保存失败");
+        Assert.isTrue(userRepository.save(user), "保存失败");
     }
 
     @Override
     public void removeById(Long id) {
         Assert.isNotNull(id, "编号不能为空");
         User select = userRepository.getById(id);
-        Assert.isNotNull(select, BizErrCode.FAIL, "用户不存在");
+        Assert.isNotNull(select, "用户不存在");
         String username = select.getUsername();
-        Assert.isTrue(!Objects.equals("admin", username), BizErrCode.FAIL, "管理员账户不可删除");
-        Assert.isTrue(userRepository.removeById(id), BizErrCode.FAIL, "删除失败");
+        Assert.isTrue(!Objects.equals("admin", username), "管理员账户不可删除");
+        Assert.isTrue(userRepository.removeById(id), "删除失败");
     }
 
     @Override
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
         // 用户名称不可修改
         userDTO.setUsername(null);
         userDTO.setPassword(null);
-        Assert.isTrue(userRepository.updateById(user), BizErrCode.FAIL, "修改失败");
+        Assert.isTrue(userRepository.updateById(user), "修改失败");
     }
 
     @Override
@@ -76,10 +76,10 @@ public class UserServiceImpl implements UserService {
         String username = userPassworUpdDTO.getUsername();
         String rawPassword = userPassworUpdDTO.getPassword();
         User user = userRepository.getByUsername(username);
-        Assert.isNotNull(user, BizErrCode.FAIL, "用户不存在");
+        Assert.isNotNull(user, "用户不存在");
         String encodedPassword = user.getPassword();
         boolean matches = passwordEncoder.matches(rawPassword, encodedPassword);
-        Assert.isTrue(matches, BizErrCode.FAIL, "密码不正确");
+        Assert.isTrue(matches, "密码不正确");
         User upd = new User();
         upd.setId(user.getId());
         upd.setPassword(passwordEncoder.encode(userPassworUpdDTO.getNewPassword()));

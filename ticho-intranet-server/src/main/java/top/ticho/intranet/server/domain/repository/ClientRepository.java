@@ -22,5 +22,14 @@ public interface ClientRepository extends RootService<Client> {
      */
     List<Client> list(ClientQuery query);
 
+    /**
+     * 根据客户端秘钥查询客户端信息列表
+     *
+     * @param accessKey 客户端秘钥
+     * @return {@link Client}
+     */
+    Client getByAccessKey(String accessKey);
+
+
 }
 
