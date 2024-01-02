@@ -4,6 +4,7 @@ import ch.qos.logback.classic.util.ContextInitializer;
 import top.ticho.intranet.core.prop.ServerProperty;
 import top.ticho.intranet.core.server.entity.ClientInfo;
 import top.ticho.intranet.core.server.entity.PortInfo;
+import top.ticho.intranet.core.server.handler.ServerHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class ServerStartTest {
         ServerProperty serverProperty = new ServerProperty();
         serverProperty.setPort(5120);
         serverProperty.setSslEnable(false);
-        ServerCoordinateHandler serverCoordinateHandler = new ServerCoordinateHandler(serverProperty);
+        ServerHandler serverHandler = new ServerHandler(serverProperty);
         ClientInfo clientInfo = new ClientInfo();
         PortInfo portInfo = new PortInfo();
         Map<Integer, PortInfo> portMap = new HashMap<>();
@@ -32,9 +33,9 @@ public class ServerStartTest {
         clientInfo.setEnabled(1);
         portInfo.setAccessKey("68bfe8f0af124ecfa093350ab8d4b44f");
         portInfo.setPort(80);
-        portInfo.setEndpoint("192.168.243.138:80");
-        serverCoordinateHandler.saveClient(clientInfo);
-        serverCoordinateHandler.initAllApp();
+        portInfo.setEndpoint("192.168.243.138:84");
+        serverHandler.saveClient(clientInfo);
+        serverHandler.initAllApp();
     }
 
 }

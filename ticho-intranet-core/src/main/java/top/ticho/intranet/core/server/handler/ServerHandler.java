@@ -1,5 +1,6 @@
 package top.ticho.intranet.core.server.handler;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import io.netty.bootstrap.ServerBootstrap;
@@ -18,15 +19,20 @@ import top.ticho.intranet.core.common.SslHandler;
 import top.ticho.intranet.core.constant.CommConst;
 import top.ticho.intranet.core.prop.ServerProperty;
 import top.ticho.intranet.core.server.entity.ClientInfo;
+import top.ticho.intranet.core.server.entity.PortInfo;
 import top.ticho.intranet.core.util.TichoUtil;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 服务处理
@@ -41,8 +47,20 @@ public class ServerHandler {
     /** 客户端与服务端的通道 */
     private final Map<String, ClientInfo> clientMap = new ConcurrentHashMap<>();
 
-    public ServerHandler(ServerProperty serverProperty, NioEventLoopGroup serverBoss, NioEventLoopGroup serverWorker) {
+    private AppHandler appHandler;
+
+    private ServerProperty serverProperty;
+
+    private NioEventLoopGroup serverBoss;
+
+    private NioEventLoopGroup serverWorker;
+
+    public ServerHandler(ServerProperty serverProperty) {
         try {
+            this.serverBoss = new NioEventLoopGroup();
+            this.serverWorker = new NioEventLoopGroup();
+            this.serverProperty = serverProperty;
+            this.appHandler = new AppHandler(serverProperty, this, serverBoss, serverWorker);
             int servPort = serverProperty.getPort();
             String host = CommConst.LOCALHOST;
             // 创建netty服务端
@@ -61,22 +79,113 @@ public class ServerHandler {
             log.error("intranet服务启动异常，{}", e.getMessage(), e);
             Thread.currentThread().interrupt();
         }
-
     }
 
-    public void addClient(String accessKey, ClientInfo clientInfo) {
-        if (StrUtil.isBlank(accessKey) || Objects.isNull(clientInfo)) {
+    public void saveClient(ClientInfo clientInfo) {
+        String accessKey;
+        if (null == clientInfo || StrUtil.isBlank((accessKey = clientInfo.getAccessKey()))) {
             return;
         }
-        clientMap.put(accessKey, clientInfo);
+        ClientInfo clientInfoGet = clientMap.get(accessKey);
+        if (null == clientInfoGet) {
+            clientMap.put(accessKey, clientInfo);
+            return;
+        }
+        clientInfo.setChannel(clientInfoGet.getChannel());
     }
 
-    public void deleteClient(String accessKey) {
-        if (StrUtil.isBlank(accessKey)) {
+    public void saveClientBatch(List<ClientInfo> clientInfos) {
+        if (CollUtil.isEmpty(clientInfos)) {
             return;
         }
+        clientInfos.forEach(this::saveClient);
+    }
+
+    public void deleteClient(ClientInfo clientInfo) {
+        if (null == clientInfo) {
+            return;
+        }
+        String accessKey = clientInfo.getAccessKey();
+        ClientInfo clientInfoGet = clientMap.get(accessKey);
+        if (Objects.isNull(clientInfoGet)) {
+            return;
+        }
+        Map<Integer, PortInfo> portMap = clientInfoGet.getPortMap();
+        if (MapUtil.isNotEmpty(portMap)) {
+            for (PortInfo port : portMap.values()) {
+                appHandler.deleteApp(port.getPort());
+            }
+            portMap.clear();
+        }
+        closeClentAndRequestChannel(clientInfoGet);
+        TichoUtil.close(clientInfoGet.getChannel());
         clientMap.remove(accessKey);
     }
+
+    public void savePort(PortInfo portInfo) {
+        if (null == portInfo) {
+            return;
+        }
+        ClientInfo clientInfo = clientMap.get(portInfo.getAccessKey());
+        if (null == clientInfo) {
+            return;
+        }
+        Map<Integer, PortInfo> portMap = clientInfo.getPortMap();
+        if (null == portMap) {
+            portMap = new HashMap<>();
+            clientInfo.setPortMap(portMap);
+        }
+        portMap.put(portInfo.getPort(), portInfo);
+        appHandler.createApp(portInfo.getPort());
+    }
+
+    public void deletePort(PortInfo portInfo) {
+        if (null == portInfo) {
+            return;
+        }
+        ClientInfo clientInfo = clientMap.get(portInfo.getAccessKey());
+        if (null == clientInfo || MapUtil.isEmpty(clientInfo.getPortMap())) {
+            return;
+        }
+        Integer portNum = portInfo.getPort();
+        if (clientInfo.getPortMap().containsKey(portNum)) {
+            portInfo = clientInfo.getPortMap().get(portNum);
+            clientInfo.getPortMap().remove(portNum);
+            appHandler.deleteApp(portInfo.getPort());
+        }
+    }
+
+    public void initAllApp() {
+        // @formatter:off
+        Collection<ClientInfo> clientInfos = clientMap.values();
+        if (CollUtil.isEmpty(clientInfos)) {
+            return;
+        }
+        Long maxBindPorts = serverProperty.getMaxBindPorts();
+        AtomicLong finalTotal = new AtomicLong(maxBindPorts);
+        clientInfos
+            .stream()
+            .map(ClientInfo::getPortMap)
+            .map(Map::values)
+            .flatMap(Collection::stream)
+            .map(PortInfo::getPort)
+            .sorted()
+            .forEach(port-> {
+                if (finalTotal.get() <= 0L) {
+                    return;
+                }
+                finalTotal.decrementAndGet();
+                appHandler.createApp(port);
+                log.info("主机端口:{}绑定成功", port);
+            });
+        // @formatter:on
+    }
+
+    public void stop() {
+        this.serverBoss.shutdownGracefully();
+        this.serverWorker.shutdownGracefully();
+    }
+
 
     public ClientInfo getClientByAccessKey(String accessKey) {
         if (StrUtil.isBlank(accessKey)) {
