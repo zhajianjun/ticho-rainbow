@@ -1,6 +1,6 @@
 package top.ticho.intranet.server;
 
-import com.ticho.boot.security.annotation.EnableOauth2AuthServer;
+import top.ticho.boot.security.annotation.EnableOauth2AuthServer;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;

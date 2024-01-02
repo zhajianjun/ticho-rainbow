@@ -2,7 +2,6 @@ package top.ticho.intranet.server.infrastructure.core.util;
 
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
-import com.ticho.boot.security.dto.Oauth2AccessToken;
 import io.swagger.annotations.ApiModelProperty;
 import top.ticho.intranet.server.interfaces.dto.UserDTO;
 

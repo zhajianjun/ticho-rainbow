@@ -1,6 +1,6 @@
 package top.ticho.intranet.server.application.service;
 
-import com.ticho.boot.view.core.PageResult;
+import top.ticho.boot.view.core.PageResult;
 import top.ticho.intranet.server.interfaces.dto.ClientDTO;
 import top.ticho.intranet.server.interfaces.query.ClientQuery;
 

@@ -3,7 +3,7 @@ package top.ticho.intranet.server.infrastructure.repository;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.ticho.boot.datasource.service.impl.RootServiceImpl;
+import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import top.ticho.intranet.server.domain.repository.ClientRepository;

@@ -2,12 +2,12 @@ package top.ticho.intranet.server.interfaces.facade;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
-import com.ticho.boot.security.constant.BaseOAuth2Const;
-import com.ticho.boot.security.dto.BaseLoginRequest;
-import com.ticho.boot.security.dto.Oauth2AccessToken;
-import com.ticho.boot.security.handle.LoginUserHandle;
-import com.ticho.boot.view.core.PageResult;
-import com.ticho.boot.view.core.Result;
+import top.ticho.boot.security.constant.BaseOAuth2Const;
+import top.ticho.boot.security.dto.BaseLoginRequest;
+import top.ticho.boot.security.dto.Oauth2AccessToken;
+import top.ticho.boot.security.handle.LoginUserHandle;
+import top.ticho.boot.view.core.PageResult;
+import top.ticho.boot.view.core.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;

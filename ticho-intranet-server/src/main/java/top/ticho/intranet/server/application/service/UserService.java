@@ -1,6 +1,6 @@
 package top.ticho.intranet.server.application.service;
 
-import com.ticho.boot.view.core.PageResult;
+import top.ticho.boot.view.core.PageResult;
 import top.ticho.intranet.server.interfaces.dto.UserDTO;
 import top.ticho.intranet.server.interfaces.dto.UserPassworUpdDTO;
 import top.ticho.intranet.server.interfaces.query.UserQuery;

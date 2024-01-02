@@ -2,12 +2,11 @@ package top.ticho.intranet.server.domain.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.ticho.boot.view.core.PageResult;
-import com.ticho.boot.view.enums.BizErrCode;
-import com.ticho.boot.view.util.Assert;
-import com.ticho.boot.web.util.CloudIdUtil;
-import com.ticho.boot.web.util.valid.ValidGroup;
-import com.ticho.boot.web.util.valid.ValidUtil;
+import top.ticho.boot.view.core.PageResult;
+import top.ticho.boot.view.util.Assert;
+import top.ticho.boot.web.util.CloudIdUtil;
+import top.ticho.boot.web.util.valid.ValidGroup;
+import top.ticho.boot.web.util.valid.ValidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package top.ticho.intranet.server.interfaces.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ticho.boot.web.util.valid.ValidGroup;
+import top.ticho.boot.web.util.valid.ValidGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package top.ticho.intranet.server.domain.repository;
 
-import com.ticho.boot.datasource.service.RootService;
+import top.ticho.boot.datasource.service.RootService;
 import top.ticho.intranet.server.infrastructure.entity.Client;
 import top.ticho.intranet.server.interfaces.query.ClientQuery;
 

@@ -1,7 +1,7 @@
 package top.ticho.intranet.server.infrastructure.core.component;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.ticho.boot.security.util.BaseUserUtil;
+import top.ticho.boot.security.util.BaseUserUtil;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 

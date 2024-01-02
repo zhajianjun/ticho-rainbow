@@ -1,8 +1,8 @@
 package top.ticho.intranet.server.interfaces.facade;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import com.ticho.boot.view.core.PageResult;
-import com.ticho.boot.view.core.Result;
+import top.ticho.boot.view.core.PageResult;
+import top.ticho.boot.view.core.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;

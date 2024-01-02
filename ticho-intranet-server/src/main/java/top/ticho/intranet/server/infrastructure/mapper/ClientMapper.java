@@ -1,6 +1,6 @@
 package top.ticho.intranet.server.infrastructure.mapper;
 
-import com.ticho.boot.datasource.mapper.RootMapper;
+import top.ticho.boot.datasource.mapper.RootMapper;
 import org.springframework.stereotype.Repository;
 import top.ticho.intranet.server.infrastructure.entity.Client;
 

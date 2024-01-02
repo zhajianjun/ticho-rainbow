@@ -1,6 +1,6 @@
 package top.ticho.intranet.server.interfaces.query;
 
-import com.ticho.boot.view.core.BasePageQuery;
+import top.ticho.boot.view.core.BasePageQuery;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

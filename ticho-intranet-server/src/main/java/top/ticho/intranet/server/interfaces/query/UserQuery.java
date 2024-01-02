@@ -1,15 +1,12 @@
 package top.ticho.intranet.server.interfaces.query;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ticho.boot.view.core.BasePageQuery;
+import top.ticho.boot.view.core.BasePageQuery;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 用户信息查询条件

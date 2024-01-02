@@ -1,10 +1,10 @@
 package top.ticho.intranet.server.infrastructure.core.component;
 
-import com.ticho.boot.security.constant.BaseSecurityConst;
-import com.ticho.boot.security.handle.load.LoadUserService;
-import com.ticho.boot.view.core.BaseSecurityUser;
-import com.ticho.boot.view.enums.HttpErrCode;
-import com.ticho.boot.view.util.Assert;
+import top.ticho.boot.security.constant.BaseSecurityConst;
+import top.ticho.boot.security.handle.load.LoadUserService;
+import top.ticho.boot.view.core.BaseSecurityUser;
+import top.ticho.boot.view.enums.HttpErrCode;
+import top.ticho.boot.view.util.Assert;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
