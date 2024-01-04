@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import top.ticho.intranet.core.prop.ServerProperty;
+import top.ticho.intranet.core.server.handler.ServerHandler;
 
 /**
  * 通用配置
@@ -24,18 +25,23 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "ticho.intranet.server")
-    public ServerProperty serverProperty() {
-        return new ServerProperty();
-    }
-
-    @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         // 1.创建MybatisPlusInterceptor拦截器对象
         MybatisPlusInterceptor mpInterceptor = new MybatisPlusInterceptor();
         // 2.添加乐观锁拦截器
         mpInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
         return mpInterceptor;
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "ticho.intranet.server")
+    public ServerProperty serverProperty() {
+        return new ServerProperty();
+    }
+
+    @Bean
+    public ServerHandler serverHandler(ServerProperty serverProperty) {
+        return new ServerHandler(serverProperty);
     }
 
 }

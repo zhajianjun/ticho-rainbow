@@ -25,7 +25,7 @@ import top.ticho.intranet.core.util.TichoUtil;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,7 +35,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * 服务处理
+ * 内网映射服务端处理器
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30
@@ -47,16 +47,17 @@ public class ServerHandler {
     /** 客户端与服务端的通道 */
     private final Map<String, ClientInfo> clientMap = new ConcurrentHashMap<>();
 
-    private AppHandler appHandler;
+    private final AppHandler appHandler;
 
-    private ServerProperty serverProperty;
+    private final ServerProperty serverProperty;
 
-    private NioEventLoopGroup serverBoss;
+    private final NioEventLoopGroup serverBoss;
 
-    private NioEventLoopGroup serverWorker;
+    private final NioEventLoopGroup serverWorker;
 
     public ServerHandler(ServerProperty serverProperty) {
         try {
+            log.info("内网映射服务启动中，端口：{}，是否开启ssl：{}, ssl端口：{}", serverProperty.getPort(), serverProperty.getSslEnable(), serverProperty.getSslPort());
             this.serverBoss = new NioEventLoopGroup();
             this.serverWorker = new NioEventLoopGroup();
             this.serverProperty = serverProperty;
@@ -66,19 +67,18 @@ public class ServerHandler {
             // 创建netty服务端
             ServerBootstrap server = this.newServer(false, serverProperty, serverWorker, serverBoss);
             server.bind(host, servPort).get();
-            log.info("netty服务端启动，地址：[{}:{}]", host, servPort);
             if (Boolean.TRUE.equals(serverProperty.getSslEnable())) {
                 // 创建ssl服务端
                 ServerBootstrap sslServer = this.newServer(true, serverProperty, serverWorker, serverBoss);
                 Integer sslServerPort = serverProperty.getSslPort();
                 ChannelFuture cf = sslServer.bind(host, sslServerPort);
                 cf.sync();
-                log.info("netty ssl服务端启动，地址：[{}:{}]", host, sslServerPort);
             }
         } catch (InterruptedException | ExecutionException e) {
-            log.error("intranet服务启动异常，{}", e.getMessage(), e);
-            Thread.currentThread().interrupt();
+            log.error("内网映射服务启动失败");
+            throw new RuntimeException(e);
         }
+        log.info("内网映射服务启动成功");
     }
 
     public void saveClient(ClientInfo clientInfo) {
@@ -132,11 +132,11 @@ public class ServerHandler {
         }
         Map<Integer, PortInfo> portMap = clientInfo.getPortMap();
         if (null == portMap) {
-            portMap = new HashMap<>();
+            portMap = new LinkedHashMap<>();
             clientInfo.setPortMap(portMap);
         }
         portMap.put(portInfo.getPort(), portInfo);
-        appHandler.createApp(portInfo.getPort());
+        appHandler.createApp(portInfo);
     }
 
     public void deletePort(PortInfo portInfo) {
@@ -168,24 +168,16 @@ public class ServerHandler {
             .map(ClientInfo::getPortMap)
             .map(Map::values)
             .flatMap(Collection::stream)
-            .map(PortInfo::getPort)
-            .sorted()
-            .forEach(port-> {
+            .forEach(portInfo-> {
                 if (finalTotal.get() <= 0L) {
+                    portInfo.setStatusMessage(StrUtil.format("创建失败，超出最大绑定端口数{}", maxBindPorts));
                     return;
                 }
                 finalTotal.decrementAndGet();
-                appHandler.createApp(port);
-                log.info("主机端口:{}绑定成功", port);
+                appHandler.createApp(portInfo);
             });
         // @formatter:on
     }
-
-    public void stop() {
-        this.serverBoss.shutdownGracefully();
-        this.serverWorker.shutdownGracefully();
-    }
-
 
     public ClientInfo getClientByAccessKey(String accessKey) {
         if (StrUtil.isBlank(accessKey)) {

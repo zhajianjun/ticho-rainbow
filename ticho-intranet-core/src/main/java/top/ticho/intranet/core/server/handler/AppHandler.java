@@ -1,5 +1,6 @@
 package top.ticho.intranet.core.server.handler;
 
+import cn.hutool.core.util.StrUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -12,9 +13,10 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import top.ticho.intranet.core.prop.ServerProperty;
 import top.ticho.intranet.core.server.collect.DataCollectHandler;
-import top.ticho.intranet.core.util.TichoUtil;
+import top.ticho.intranet.core.server.entity.PortInfo;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -44,8 +46,9 @@ public class AppHandler {
         this.serverBootstrap = serverBootstrap;
     }
 
-    public void createApp(Integer port) {
-        if (null == port) {
+    public void createApp(PortInfo portInfo) {
+        Integer port;
+        if (Objects.isNull(portInfo) || Objects.isNull(port = portInfo.getPort())) {
             return;
         }
         try {
@@ -53,8 +56,12 @@ public class AppHandler {
             channelFuture.get();
             bindPortChannelMap.put(port, channelFuture.channel());
         } catch (InterruptedException | ExecutionException e) {
-            log.warn("Interrupted!{}", e.getMessage(), e);
+            portInfo.setStatus(0);
+            portInfo.setStatusMessage(StrUtil.format("创建失败，{}", e.getMessage()));
+            log.warn("创建应用失败，端口：{}，错误信息：{}", port, e.getMessage(), e);
         }
+        portInfo.setStatus(1);
+        portInfo.setStatusMessage("创建成功");
     }
 
     public void deleteApp(Integer port) {
@@ -65,7 +72,7 @@ public class AppHandler {
         if (channel == null) {
             return;
         }
-        TichoUtil.close(channel);
+        channel.close();
         bindPortChannelMap.remove(port);
     }
 

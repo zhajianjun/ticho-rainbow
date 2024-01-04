@@ -33,4 +33,10 @@ public class PortInfo implements Serializable {
     /** 协议类型名称 */
     private ProtocolType typeName;
 
+    /** 状态;0-未激活,1-激活 */
+    private Integer status = 0;
+
+    /** 错误信息 */
+    private String statusMessage = "未创建";
+
 }

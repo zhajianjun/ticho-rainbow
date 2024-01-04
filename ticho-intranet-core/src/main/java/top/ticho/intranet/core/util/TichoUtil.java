@@ -29,8 +29,8 @@ public class TichoUtil {
         }
         try {
             channel.close();
-        } catch (Exception ignore) {
-            // ignore
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -48,16 +48,16 @@ public class TichoUtil {
         try {
             close(ctx.channel());
             ctx.close();
-        } catch (Exception ignore) {
-            // ignore
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
     }
 
     public static void sleep(long millis) {
         try {
             Thread.sleep(millis);
-        } catch (InterruptedException ignore) {
-            // ignore
+        } catch (InterruptedException e) {
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -65,7 +65,7 @@ public class TichoUtil {
         try {
             Runtime.getRuntime().exec(cmd);
         } catch (Exception e) {
-            log.error("执行命令失败:{}", cmd, e);
+             log.error("执行命令失败：{}, 错误信息：｛｝", cmd, e.getMessage(), e);
         }
     }
 

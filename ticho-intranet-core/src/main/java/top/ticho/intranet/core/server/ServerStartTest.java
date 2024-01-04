@@ -21,7 +21,7 @@ public class ServerStartTest {
         // 测试
         System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, "conf/logback.xml");
         ServerProperty serverProperty = new ServerProperty();
-        serverProperty.setPort(5120);
+        serverProperty.setPort(5121);
         serverProperty.setSslEnable(false);
         ServerHandler serverHandler = new ServerHandler(serverProperty);
         ClientInfo clientInfo = new ClientInfo();

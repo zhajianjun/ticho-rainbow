@@ -12,6 +12,7 @@ import top.ticho.intranet.server.infrastructure.mapper.ClientMapper;
 import top.ticho.intranet.server.interfaces.query.ClientQuery;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 客户端信息 repository实现
@@ -29,6 +30,7 @@ public class ClientRepositoryImpl extends RootServiceImpl<ClientMapper, Client> 
         LambdaQueryWrapper<Client> wrapper = Wrappers.lambdaQuery();
         wrapper.like(StrUtil.isNotBlank(query.getAccessKey()), Client::getAccessKey, query.getAccessKey());
         wrapper.like(StrUtil.isNotBlank(query.getName()), Client::getName, query.getName());
+        wrapper.like(Objects.nonNull(query.getEnabled()), Client::getEnabled, query.getEnabled());
         wrapper.like(StrUtil.isNotBlank(query.getRemark()), Client::getRemark, query.getRemark());
         return list(wrapper);
         // @formatter:on

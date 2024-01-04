@@ -1,10 +1,10 @@
 package top.ticho.intranet.server.interfaces.query;
 
-import top.ticho.boot.view.core.BasePageQuery;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import top.ticho.boot.view.core.BasePageQuery;
 
 import java.io.Serializable;
 
@@ -27,6 +27,10 @@ public class ClientQuery extends BasePageQuery implements Serializable {
     /** 客户端名称 */
     @ApiModelProperty(value = "客户端名称", position = 30)
     private String name;
+
+    /** 是否开启;1-开启,0-关闭 */
+    @ApiModelProperty(value = "是否开启;1-开启,0-关闭", position = 40)
+    private Integer enabled;
 
     /** 备注信息 */
     @ApiModelProperty(value = "备注信息", position = 60)

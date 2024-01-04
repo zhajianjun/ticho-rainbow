@@ -23,7 +23,7 @@ public class ServerProperty {
     private String sslPassword;
     /** 最大请求数 */
     private Long maxRequests = 1024L;
-    /** 最多绑定端口数 */
+    /** 最大绑定端口数 */
     private Long maxBindPorts = 10000L;
 
 }
