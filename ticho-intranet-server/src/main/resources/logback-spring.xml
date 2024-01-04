@@ -5,6 +5,7 @@
 
     <springProfile name="local,dev,test,st">
         <logger name="com.alibaba.nacos.client" level="ERROR"/>
+        <logger name="com.ulisesbocchio.jasyptspringboot" level="ERROR"/>
         <logger name="com.alibaba.cloud.nacos" level="INFO"/>
         <logger name="io.undertow" level="ERROR"/>
         <logger name="org.springframework" level="ERROR"/>
@@ -14,6 +15,7 @@
 
     <springProfile name="uat,prod">
         <logger name="com.alibaba.nacos.client" level="ERROR"/>
+        <logger name="com.ulisesbocchio.jasyptspringboot" level="ERROR"/>
         <logger name="com.alibaba.cloud.nacos" level="ERROR"/>
         <logger name="io.undertow" level="ERROR"/>
         <logger name="org.springframework" level="ERROR"/>
