@@ -30,18 +30,18 @@ public abstract class AbstractClientMessageHandler {
     /**
      * 通知
      *
-     * @param channel   通道
-     * @param msgType   msg类型
-     * @param serialNum 序列号
-     * @param data      传输数据
+     * @param channel 通道
+     * @param msgType msg类型
+     * @param serial  序列号
+     * @param data    传输数据
      */
-    protected void notify(Channel channel, byte msgType, Long serialNum, byte[] data) {
+    protected void notify(Channel channel, byte msgType, Long serial, byte[] data) {
         if (!TichoUtil.isActive(channel)) {
             return;
         }
         Message msg = new Message();
-        if (null != serialNum) {
-            msg.setSerial(serialNum);
+        if (null != serial) {
+            msg.setSerial(serial);
         }
         msg.setType(msgType);
         msg.setData(data);

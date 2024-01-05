@@ -1,9 +1,9 @@
 package top.ticho.intranet.core.entity;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import lombok.Data;
 import top.ticho.intranet.core.enums.MsgType;
-
-import java.nio.charset.StandardCharsets;
 
 
 /**
@@ -42,10 +42,6 @@ public class Message {
 
     @Override
     public String toString() {
-        String dataStr = "";
-        if (this.data != null) {
-            dataStr = new String(this.data, StandardCharsets.UTF_8);
-        }
         return "{" + "type=" + type + ", serial=" + serial + ", uri=" + uri + "}";
     }
 

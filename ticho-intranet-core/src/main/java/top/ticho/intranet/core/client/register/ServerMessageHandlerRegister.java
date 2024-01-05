@@ -28,12 +28,12 @@ public class ServerMessageHandlerRegister {
         ServerMessageDisconnectHandler clientDisconnectHandle = new ServerMessageDisconnectHandler();
         ServerMessageTransferHandler clientTransferHandle = new ServerMessageTransferHandler();
         ServerMessageCloseHandler clientCloseHandle = new ServerMessageCloseHandler();
-        // MAP.put(TichoMsg.AUTH, null);
+        // MAP.put(Message.AUTH, null);
         MAP.put(Message.DISABLED_ACCESS_KEY, clientCloseHandle);
         MAP.put(Message.CONNECT, clientConnectHandle);
         MAP.put(Message.DISCONNECT, clientDisconnectHandle);
         MAP.put(Message.TRANSFER, clientTransferHandle);
-        // MAP.put(TichoMsg.HEARTBEAT, null);
+        // MAP.put(Message.HEARTBEAT, null);
 
     }
 

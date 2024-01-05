@@ -26,7 +26,7 @@ public enum MsgType {
     /** 数据传输 */
     TRANSFER((byte) 5, "数据传输"),
     /** 客户端心跳 */
-    HEARTBEAT((byte) 6, "客户端心跳"),
+    HEARTBEAT((byte) 6, "心跳检测"),
     ;
 
     private final byte code;

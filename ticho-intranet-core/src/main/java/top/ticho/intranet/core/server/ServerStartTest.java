@@ -32,7 +32,7 @@ public class ServerStartTest {
         clientInfo.setAccessKey("68bfe8f0af124ecfa093350ab8d4b44f");
         portInfo.setAccessKey("68bfe8f0af124ecfa093350ab8d4b44f");
         portInfo.setPort(80);
-        portInfo.setEndpoint("10.100.51.38:18080");
+        portInfo.setEndpoint("127.0.0.1:5122");
         serverHandler.saveClient(clientInfo);
         serverHandler.initAllApp();
     }

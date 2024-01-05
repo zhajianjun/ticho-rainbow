@@ -13,8 +13,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import top.ticho.intranet.core.common.IdleChecker;
-import top.ticho.intranet.core.common.MsgDecoder;
-import top.ticho.intranet.core.common.MsgEncoder;
+import top.ticho.intranet.core.common.MessageDecoder;
+import top.ticho.intranet.core.common.MessageEncoder;
 import top.ticho.intranet.core.common.SslHandler;
 import top.ticho.intranet.core.constant.CommConst;
 import top.ticho.intranet.core.prop.ServerProperty;
@@ -289,8 +289,8 @@ public class ServerHandler {
                 engine.setNeedClientAuth(true);
                 sc.pipeline().addLast(CommConst.SSL, new io.netty.handler.ssl.SslHandler(engine));
             }
-            sc.pipeline().addLast(new MsgDecoder(CommConst.MAX_FRAME_LEN, CommConst.FIELD_OFFSET, CommConst.FIELD_LEN, CommConst.ADJUSTMENT, CommConst.INIT_BYTES_TO_STRIP));
-            sc.pipeline().addLast(new MsgEncoder());
+            sc.pipeline().addLast(new MessageDecoder(CommConst.MAX_FRAME_LEN, CommConst.FIELD_OFFSET, CommConst.FIELD_LEN, CommConst.ADJUSTMENT, CommConst.INIT_BYTES_TO_STRIP));
+            sc.pipeline().addLast(new MessageEncoder());
             sc.pipeline().addLast(new IdleChecker(CommConst.READ_IDLE_TIME, CommConst.WRITE_IDLE_TIME, 0));
             sc.pipeline().addLast(new ClientListenHandler(serverHandler));
         }

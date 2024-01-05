@@ -24,14 +24,13 @@ public class IdleChecker extends IdleStateHandler {
     protected void channelIdle(ChannelHandlerContext ctx, IdleStateEvent evt) throws Exception {
         // 检测到通道空闲事件时执行以下代码
         if (IdleStateEvent.FIRST_WRITER_IDLE_STATE_EVENT == evt) {
-            // log.debug("通道写超时:{}.", ctx.channel());
             // 创建一个心跳消息对象
             Message msg = new Message();
             msg.setType(Message.HEARTBEAT);
+            msg.setData("心跳检测".getBytes());
             // 向通道写入心跳消息并刷新
             ctx.channel().writeAndFlush(msg);
         } else if (IdleStateEvent.FIRST_READER_IDLE_STATE_EVENT == evt) {
-            // log.warn("通道读超时:{}.", ctx.channel());
             // 如果是读取超时，则关闭通道
             ctx.channel().close();
         }
