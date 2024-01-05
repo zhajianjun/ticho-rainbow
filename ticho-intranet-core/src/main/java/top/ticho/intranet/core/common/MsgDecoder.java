@@ -47,30 +47,30 @@ public class MsgDecoder extends LengthFieldBasedFrameDecoder {
         if (in.readableBytes() < frameLen) {
             return null;
         }
-        // 创建TichoMsg对象
-        Message msg = new Message();
+        // 创建Message对象
+        Message message = new Message();
         // 读取消息类型
-        msg.setType(in.readByte());
+        message.setType(in.readByte());
         // 读取消息序列号
-        msg.setSerial(in.readLong());
+        message.setSerial(in.readLong());
         // 读取URI长度
         byte uriLen = in.readByte();
         // 读取URI字节数组
         byte[] uriBytes = new byte[uriLen];
         in.readBytes(uriBytes);
         // 将URI字节数组转换为字符串
-        msg.setUri(new String(uriBytes));
+        message.setUri(new String(uriBytes));
         // 计算数据部分的长度
         int dataLen = frameLen - CommConst.TYPE_SIZE - CommConst.SERIAL_NUM_SIZE - CommConst.URI_LEN_SIZE - uriLen;
         // 读取数据部分字节数组
         byte[] data = new byte[dataLen];
         in.readBytes(data);
         // 设置数据部分
-        msg.setData(data);
+        message.setData(data);
         // 释放ByteBuf对象
         in.release();
         // 返回解码后的TichoMsg对象
-        return msg;
+        return message;
     }
 
 }

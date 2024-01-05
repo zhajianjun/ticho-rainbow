@@ -27,41 +27,42 @@ public class MsgEncoder extends MessageToByteEncoder<Message> {
      * 如果URI字段为null，则写入0x00表示URI长度为0。
      * 最后，如果数据字段不为null，则写入数据。
      *
-     * @param ctx ctx
-     * @param msg 味精
-     * @param out 出
+     * @param ctx     ctx
+     * @param message 消息
+     * @param byteBuf byteBuf
      */
     @Override
-    protected void encode(ChannelHandlerContext ctx, Message msg, ByteBuf out) {
+    protected void encode(ChannelHandlerContext ctx, Message message, ByteBuf byteBuf) {
         // 计算消息体的长度
-        int bodyLen = CommConst.TYPE_SIZE + CommConst.SERIAL_NUM_SIZE + CommConst.URI_LEN_SIZE;
+        int bodyLength = CommConst.TYPE_SIZE + CommConst.SERIAL_NUM_SIZE + CommConst.URI_LEN_SIZE;
         byte[] uriBytes = null;
-        if (null != msg.getUri()) {
+        if (null != message.getUri()) {
             // 如果URI不为null，则将URI转换为字节数组，并计算URI的长度
-            uriBytes = msg.getUri().getBytes();
-            bodyLen += uriBytes.length;
+            uriBytes = message.getUri().getBytes();
+            bodyLength += uriBytes.length;
         }
-        if (null != msg.getData()) {
+        if (null != message.getData()) {
             // 如果数据不为null，则计算数据的长度
-            bodyLen += msg.getData().length;
+            bodyLength += message.getData().length;
         }
         // 写入消息体的总长度（不包含长度字段的长度）
-        out.writeInt(bodyLen);
+        byteBuf.writeInt(bodyLength);
         // 写入消息类型
-        out.writeByte(msg.getType());
+        byteBuf.writeByte(message.getType());
         // 写入消息序列号
-        out.writeLong(msg.getSerial());
+        byteBuf.writeLong(message.getSerial());
         if (null != uriBytes) {
             // 如果URI不为null，则写入URI的长度和字节数组
-            out.writeByte((byte) uriBytes.length);
-            out.writeBytes(uriBytes);
+            byteBuf.writeByte((byte) uriBytes.length);
+            byteBuf.writeBytes(uriBytes);
         } else {
             // 如果URI为null，则写入0x00表示长度为0
-            out.writeByte((byte) 0x00);
+            byteBuf.writeByte((byte) 0x00);
         }
-        if (null != msg.getData()) {
+        if (null != message.getData()) {
             // 如果数据不为null，则写入数据
-            out.writeBytes(msg.getData());
+            byteBuf.writeBytes(message.getData());
         }
     }
+
 }

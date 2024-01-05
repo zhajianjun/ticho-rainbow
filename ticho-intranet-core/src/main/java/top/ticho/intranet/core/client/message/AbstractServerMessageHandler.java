@@ -14,15 +14,13 @@ import top.ticho.intranet.core.prop.ClientProperty;
  * @author zhajianjun
  * @date 2023-12-17 08:30
  */
+@Setter
 public abstract class AbstractServerMessageHandler {
 
-    @Setter
     protected ClientHander clientHander;
 
-    @Setter
     protected AppHandler appHandler;
 
-    @Setter
     protected ClientProperty clientProperty;
 
     /**

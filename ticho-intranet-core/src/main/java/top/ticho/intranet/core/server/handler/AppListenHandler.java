@@ -69,7 +69,6 @@ public class AppListenHandler extends SimpleChannelInboundHandler<ByteBuf> {
         Message msg = new Message();
         msg.setType(Message.CONNECT);
         msg.setUri(requestId);
-        msg.setUri(requestId);
         msg.setData(port.getEndpoint().getBytes());
         clientChannel.writeAndFlush(msg);
         super.channelActive(ctx);
