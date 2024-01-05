@@ -1,6 +1,6 @@
 package top.ticho.intranet.core.server.register;
 
-import top.ticho.intranet.core.enums.MsgType;
+import top.ticho.intranet.core.entity.Message;
 import top.ticho.intranet.core.server.message.AbstractClientMessageHandler;
 import top.ticho.intranet.core.server.message.ClientAuthMessageHandler;
 import top.ticho.intranet.core.server.message.ClientConnectMessageHandler;
@@ -27,12 +27,12 @@ public class ClientMessageHandlerRegister {
         ClientDisconnectMessageHandler serverDisconnectHandle = new ClientDisconnectMessageHandler();
         ClientHeartbeatMessageHandler serverHeartbeatHandle = new ClientHeartbeatMessageHandler();
         ClientTransferMessageHandler serverTransferHandle = new ClientTransferMessageHandler();
-        // MAP.put(MsgType.AUTH, clientConnect);
-        MAP.put(MsgType.AUTH.code(), serverAuthHandle);
-        MAP.put(MsgType.CONNECT.code(), serverConnectHandle);
-        MAP.put(MsgType.DISCONNECT.code(), serverDisconnectHandle);
-        MAP.put(MsgType.TRANSFER.code(), serverTransferHandle);
-        MAP.put(MsgType.HEARTBEAT.code(), serverHeartbeatHandle);
+        // MAP.put(MsgType.AUTH, null);
+        MAP.put(Message.AUTH, serverAuthHandle);
+        MAP.put(Message.CONNECT, serverConnectHandle);
+        MAP.put(Message.DISCONNECT, serverDisconnectHandle);
+        MAP.put(Message.TRANSFER, serverTransferHandle);
+        MAP.put(Message.HEARTBEAT, serverHeartbeatHandle);
     }
 
     public static AbstractClientMessageHandler getMessageHandler(byte msgType) {

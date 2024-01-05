@@ -3,8 +3,9 @@ package top.ticho.intranet.core.server.message;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
-import top.ticho.intranet.core.entity.TichoMsg;
-import top.ticho.intranet.core.util.TichoUtil;
+import top.ticho.intranet.core.entity.Message;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * 服务端心跳处理器
@@ -16,10 +17,9 @@ import top.ticho.intranet.core.util.TichoUtil;
 public class ClientHeartbeatMessageHandler extends AbstractClientMessageHandler {
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, TichoMsg msg) {
+    public void channelRead0(ChannelHandlerContext ctx, Message msg) {
         Channel channel = ctx.channel();
-        TichoUtil.notify(channel, TichoMsg.HEARTBEAT, msg.getSerial());
-        // log.debug("心跳响应，响应信息{}", channel);
+        notify(channel, Message.HEARTBEAT, msg.getSerial(), "心跳检测".getBytes(StandardCharsets.UTF_8));
     }
 
 }

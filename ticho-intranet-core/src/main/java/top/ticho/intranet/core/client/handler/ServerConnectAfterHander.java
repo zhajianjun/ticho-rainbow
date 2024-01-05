@@ -7,7 +7,7 @@ import io.netty.channel.ChannelOption;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import top.ticho.intranet.core.constant.CommConst;
-import top.ticho.intranet.core.entity.TichoMsg;
+import top.ticho.intranet.core.entity.Message;
 import top.ticho.intranet.core.prop.ClientProperty;
 
 /**
@@ -33,8 +33,8 @@ public class ServerConnectAfterHander implements ChannelFutureListener {
     @Override
     public void operationComplete(ChannelFuture future) {
         if (!future.isSuccess()) {
-            TichoMsg msg = new TichoMsg();
-            msg.setType(TichoMsg.DISCONNECT);
+            Message msg = new Message();
+            msg.setType(Message.DISCONNECT);
             msg.setUri(requestId);
             this.serverChannel.writeAndFlush(msg);
             log.error("连接服务端失败:{}", future.cause().getMessage());
@@ -46,8 +46,8 @@ public class ServerConnectAfterHander implements ChannelFutureListener {
         clientChannel.attr(CommConst.CHANNEL).set(this.requestChannel);
         this.requestChannel.attr(CommConst.CHANNEL).set(clientChannel);
 
-        TichoMsg msg = new TichoMsg();
-        msg.setType(TichoMsg.CONNECT);
+        Message msg = new Message();
+        msg.setType(Message.CONNECT);
         msg.setUri(requestId + "@" + clientProperty.getAccessKey());
         clientChannel.writeAndFlush(msg);
 

@@ -4,7 +4,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
-import top.ticho.intranet.core.entity.TichoMsg;
+import top.ticho.intranet.core.entity.Message;
 
 
 /**
@@ -26,8 +26,8 @@ public class IdleChecker extends IdleStateHandler {
         if (IdleStateEvent.FIRST_WRITER_IDLE_STATE_EVENT == evt) {
             // log.debug("通道写超时:{}.", ctx.channel());
             // 创建一个心跳消息对象
-            TichoMsg msg = new TichoMsg();
-            msg.setType(TichoMsg.HEARTBEAT);
+            Message msg = new Message();
+            msg.setType(Message.HEARTBEAT);
             // 向通道写入心跳消息并刷新
             ctx.channel().writeAndFlush(msg);
         } else if (IdleStateEvent.FIRST_READER_IDLE_STATE_EVENT == evt) {

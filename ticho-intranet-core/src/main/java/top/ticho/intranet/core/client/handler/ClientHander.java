@@ -88,10 +88,13 @@ public class ClientHander {
     }
 
     public void waitMoment() {
+        // 超过一分钟则重置为一秒
         if (this.sleepTime > CommConst.ONE_MINUTE) {
             this.sleepTime = CommConst.ONE_SECOND;
         }
+        // 时间翻倍
         this.sleepTime = this.sleepTime * 2;
+        // 线程睡眠
         TichoUtil.sleep(this.sleepTime);
     }
 

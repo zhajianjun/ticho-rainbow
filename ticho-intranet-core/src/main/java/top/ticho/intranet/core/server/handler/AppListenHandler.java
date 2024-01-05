@@ -9,7 +9,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import top.ticho.intranet.core.constant.CommConst;
-import top.ticho.intranet.core.entity.TichoMsg;
+import top.ticho.intranet.core.entity.Message;
 import top.ticho.intranet.core.prop.ServerProperty;
 import top.ticho.intranet.core.server.entity.ClientInfo;
 import top.ticho.intranet.core.server.entity.PortInfo;
@@ -66,8 +66,9 @@ public class AppListenHandler extends SimpleChannelInboundHandler<ByteBuf> {
         requestChannels.put(requestId, requestChannel);
         // 获取端口信息
         PortInfo port = clientInfo.getPortMap().get(portNum);
-        TichoMsg msg = new TichoMsg();
-        msg.setType(TichoMsg.CONNECT);
+        Message msg = new Message();
+        msg.setType(Message.CONNECT);
+        msg.setUri(requestId);
         msg.setUri(requestId);
         msg.setData(port.getEndpoint().getBytes());
         clientChannel.writeAndFlush(msg);
@@ -86,8 +87,8 @@ public class AppListenHandler extends SimpleChannelInboundHandler<ByteBuf> {
         }
         byte[] data = new byte[buf.readableBytes()];
         buf.readBytes(data);
-        TichoMsg msg = new TichoMsg();
-        msg.setType(TichoMsg.TRANSFER);
+        Message msg = new Message();
+        msg.setType(Message.TRANSFER);
         msg.setUri(requestChannel.attr(CommConst.URI).get());
         msg.setData(data);
         log.warn("[7][服务端]请求传输到客户端，请求通道{}；客户端通道{}, 消息{}", requestChannel, clientChannel, msg);
@@ -118,8 +119,8 @@ public class AppListenHandler extends SimpleChannelInboundHandler<ByteBuf> {
         clientChannel.attr(CommConst.KEY).set(null);
         clientChannel.attr(CommConst.CHANNEL).set(null);
         clientChannel.config().setOption(ChannelOption.AUTO_READ, true);
-        TichoMsg msg = new TichoMsg();
-        msg.setType(TichoMsg.DISCONNECT);
+        Message msg = new Message();
+        msg.setType(Message.DISCONNECT);
         msg.setUri(requestId);
         clientChannel.writeAndFlush(msg);
         super.channelInactive(ctx);

@@ -23,12 +23,6 @@ public class ClientInfo implements Serializable {
     /** 客户端名称 */
     private String name;
 
-    /** 是否开启;1-开启,0-关闭 */
-    private Integer enabled;
-
-    /** 状态 */
-    private Integer status;
-
     /** 连接时间 */
     private LocalDateTime connectTime;
 

@@ -8,7 +8,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 import top.ticho.intranet.core.constant.CommConst;
-import top.ticho.intranet.core.entity.TichoMsg;
+import top.ticho.intranet.core.entity.Message;
 import top.ticho.intranet.core.server.entity.ClientInfo;
 import top.ticho.intranet.core.server.message.AbstractClientMessageHandler;
 import top.ticho.intranet.core.server.register.ClientMessageHandlerRegister;
@@ -23,7 +23,7 @@ import java.util.Objects;
  * @date 2023-12-17 08:30
  */
 @Slf4j
-public class ClientListenHandler extends SimpleChannelInboundHandler<TichoMsg> {
+public class ClientListenHandler extends SimpleChannelInboundHandler<Message> {
 
     private final ServerHandler serverHandler;
 
@@ -38,7 +38,7 @@ public class ClientListenHandler extends SimpleChannelInboundHandler<TichoMsg> {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, TichoMsg msg) {
+    protected void channelRead0(ChannelHandlerContext ctx, Message msg) {
         AbstractClientMessageHandler serverHandle = ClientMessageHandlerRegister.getMessageHandler(msg.getType());
         if (Objects.isNull(serverHandle)) {
             return;

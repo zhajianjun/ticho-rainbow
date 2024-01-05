@@ -170,11 +170,15 @@ public class ServerHandler {
             .flatMap(Collection::stream)
             .forEach(portInfo-> {
                 if (finalTotal.get() <= 0L) {
-                    portInfo.setStatusMessage(StrUtil.format("创建失败，超出最大绑定端口数{}", maxBindPorts));
+                    log.info("创建失败，超出最大绑定端口数{}", maxBindPorts);
                     return;
                 }
                 finalTotal.decrementAndGet();
-                appHandler.createApp(portInfo);
+                try {
+                    appHandler.createApp(portInfo);
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                }
             });
         // @formatter:on
     }

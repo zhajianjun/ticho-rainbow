@@ -8,7 +8,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import top.ticho.intranet.core.constant.CommConst;
-import top.ticho.intranet.core.entity.TichoMsg;
+import top.ticho.intranet.core.entity.Message;
 
 @Slf4j
 @AllArgsConstructor
@@ -27,8 +27,8 @@ public class AppListenHandler extends SimpleChannelInboundHandler<ByteBuf> {
         }
         byte[] data = new byte[byteBuf.readableBytes()];
         byteBuf.readBytes(data);
-        TichoMsg msg = new TichoMsg();
-        msg.setType(TichoMsg.TRANSFER);
+        Message msg = new Message();
+        msg.setType(Message.TRANSFER);
         msg.setUri(uri);
         msg.setData(data);
         serverChannel.writeAndFlush(msg);
@@ -42,8 +42,8 @@ public class AppListenHandler extends SimpleChannelInboundHandler<ByteBuf> {
         appHandler.removeRequestChannel(uri);
         Channel clientChannel = requestCHannel.attr(CommConst.CHANNEL).get();
         if (null != clientChannel) {
-            TichoMsg msg = new TichoMsg();
-            msg.setType(TichoMsg.DISCONNECT);
+            Message msg = new Message();
+            msg.setType(Message.DISCONNECT);
             msg.setUri(uri);
             clientChannel.writeAndFlush(msg);
         }

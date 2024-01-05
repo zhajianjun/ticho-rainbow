@@ -5,7 +5,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import top.ticho.intranet.core.constant.CommConst;
-import top.ticho.intranet.core.entity.TichoMsg;
+import top.ticho.intranet.core.entity.Message;
 
 /**
  * 客户端断开通道连接处理器
@@ -16,7 +16,7 @@ import top.ticho.intranet.core.entity.TichoMsg;
 public class ServerMessageDisconnectHandler extends AbstractServerMessageHandler {
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, TichoMsg msg) {
+    public void channelRead0(ChannelHandlerContext ctx, Message msg) {
         Channel clientChannel = ctx.channel();
         Channel requestCHannel = clientChannel.attr(CommConst.CHANNEL).get();
         if (null == requestCHannel) {

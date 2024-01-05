@@ -1,9 +1,11 @@
 package top.ticho.intranet.core.server.message;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Setter;
-import top.ticho.intranet.core.entity.TichoMsg;
+import top.ticho.intranet.core.entity.Message;
 import top.ticho.intranet.core.server.handler.ServerHandler;
+import top.ticho.intranet.core.util.TichoUtil;
 
 
 /**
@@ -23,6 +25,27 @@ public abstract class AbstractClientMessageHandler {
      * @param ctx 通道处理上线文
      * @param msg 服务端传输的信息
      */
-    public abstract void channelRead0(ChannelHandlerContext ctx, TichoMsg msg);
+    public abstract void channelRead0(ChannelHandlerContext ctx, Message msg);
+
+    /**
+     * 通知
+     *
+     * @param channel   通道
+     * @param msgType   msg类型
+     * @param serialNum 序列号
+     * @param data      传输数据
+     */
+    protected void notify(Channel channel, byte msgType, Long serialNum, byte[] data) {
+        if (!TichoUtil.isActive(channel)) {
+            return;
+        }
+        Message msg = new Message();
+        if (null != serialNum) {
+            msg.setSerial(serialNum);
+        }
+        msg.setType(msgType);
+        msg.setData(data);
+        channel.writeAndFlush(msg);
+    }
 
 }

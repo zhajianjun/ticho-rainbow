@@ -4,7 +4,7 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.Setter;
 import top.ticho.intranet.core.client.handler.AppHandler;
 import top.ticho.intranet.core.client.handler.ClientHander;
-import top.ticho.intranet.core.entity.TichoMsg;
+import top.ticho.intranet.core.entity.Message;
 import top.ticho.intranet.core.prop.ClientProperty;
 
 
@@ -31,6 +31,6 @@ public abstract class AbstractServerMessageHandler {
      * @param ctx 通道处理上线文
      * @param msg 服务端传输的信息
      */
-    public abstract void channelRead0(ChannelHandlerContext ctx, TichoMsg msg);
+    public abstract void channelRead0(ChannelHandlerContext ctx, Message msg);
 
 }

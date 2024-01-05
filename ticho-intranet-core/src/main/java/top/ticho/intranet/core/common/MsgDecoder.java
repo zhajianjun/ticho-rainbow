@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import top.ticho.intranet.core.constant.CommConst;
-import top.ticho.intranet.core.entity.TichoMsg;
+import top.ticho.intranet.core.entity.Message;
 
 
 /**
@@ -31,7 +31,7 @@ public class MsgDecoder extends LengthFieldBasedFrameDecoder {
      * @throws Exception 解码过程中可能抛出的异常
      */
     @Override
-    protected TichoMsg decode(ChannelHandlerContext ctx, ByteBuf bin) throws Exception {
+    protected Message decode(ChannelHandlerContext ctx, ByteBuf bin) throws Exception {
         // 调用父类的解码方法，获取解码后的ByteBuf对象
         ByteBuf in = (ByteBuf) super.decode(ctx, bin);
         if (null == in) {
@@ -48,7 +48,7 @@ public class MsgDecoder extends LengthFieldBasedFrameDecoder {
             return null;
         }
         // 创建TichoMsg对象
-        TichoMsg msg = new TichoMsg();
+        Message msg = new Message();
         // 读取消息类型
         msg.setType(in.readByte());
         // 读取消息序列号

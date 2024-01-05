@@ -7,7 +7,7 @@ import io.netty.channel.ChannelOption;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import top.ticho.intranet.core.constant.CommConst;
-import top.ticho.intranet.core.entity.TichoMsg;
+import top.ticho.intranet.core.entity.Message;
 import top.ticho.intranet.core.prop.ClientProperty;
 
 import java.util.Optional;
@@ -37,8 +37,8 @@ public class AppConnectAfterHander implements ChannelFutureListener {
     @Override
     public void operationComplete(ChannelFuture channelFuture) {
         if (!channelFuture.isSuccess()) {
-            TichoMsg msg = new TichoMsg();
-            msg.setType(TichoMsg.DISCONNECT);
+            Message msg = new Message();
+            msg.setType(Message.DISCONNECT);
             msg.setUri(requestId);
             this.serverChannel.writeAndFlush(msg);
             return;
@@ -57,8 +57,8 @@ public class AppConnectAfterHander implements ChannelFutureListener {
 
         readyServerChannel.attr(CommConst.CHANNEL).set(requestChannel);
         requestChannel.attr(CommConst.CHANNEL).set(readyServerChannel);
-        TichoMsg msg = new TichoMsg();
-        msg.setType(TichoMsg.CONNECT);
+        Message msg = new Message();
+        msg.setType(Message.CONNECT);
         // requestId @ accessKey
         msg.setUri(requestId + "@" + clientProperty.getAccessKey());
         readyServerChannel.writeAndFlush(msg);

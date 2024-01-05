@@ -21,7 +21,7 @@ public class ServerStartTest {
         // 测试
         System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, "conf/logback.xml");
         ServerProperty serverProperty = new ServerProperty();
-        serverProperty.setPort(5121);
+        serverProperty.setPort(5120);
         serverProperty.setSslEnable(false);
         ServerHandler serverHandler = new ServerHandler(serverProperty);
         ClientInfo clientInfo = new ClientInfo();
@@ -30,10 +30,9 @@ public class ServerStartTest {
         portMap.put(80, portInfo);
         clientInfo.setPortMap(portMap);
         clientInfo.setAccessKey("68bfe8f0af124ecfa093350ab8d4b44f");
-        clientInfo.setEnabled(1);
         portInfo.setAccessKey("68bfe8f0af124ecfa093350ab8d4b44f");
         portInfo.setPort(80);
-        portInfo.setEndpoint("192.168.243.138:84");
+        portInfo.setEndpoint("10.100.51.38:18080");
         serverHandler.saveClient(clientInfo);
         serverHandler.initAllApp();
     }

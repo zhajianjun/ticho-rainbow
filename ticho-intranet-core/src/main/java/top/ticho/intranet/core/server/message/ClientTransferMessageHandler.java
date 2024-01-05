@@ -5,7 +5,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import top.ticho.intranet.core.constant.CommConst;
-import top.ticho.intranet.core.entity.TichoMsg;
+import top.ticho.intranet.core.entity.Message;
 import top.ticho.intranet.core.util.TichoUtil;
 
 /**
@@ -18,7 +18,7 @@ import top.ticho.intranet.core.util.TichoUtil;
 public class ClientTransferMessageHandler extends AbstractClientMessageHandler {
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, TichoMsg msg) {
+    public void channelRead0(ChannelHandlerContext ctx, Message msg) {
         Channel channel = ctx.channel();
         Channel requestChannel = channel.attr(CommConst.CHANNEL).get();
         if (!TichoUtil.isActive(requestChannel)) {

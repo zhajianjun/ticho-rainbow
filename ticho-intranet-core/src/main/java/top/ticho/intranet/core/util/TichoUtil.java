@@ -4,7 +4,6 @@ package top.ticho.intranet.core.util;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
-import top.ticho.intranet.core.entity.TichoMsg;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -65,28 +64,8 @@ public class TichoUtil {
         try {
             Runtime.getRuntime().exec(cmd);
         } catch (Exception e) {
-             log.error("执行命令失败：{}, 错误信息：｛｝", cmd, e.getMessage(), e);
+            log.error("执行命令失败：{}, 错误信息：｛｝", cmd, e.getMessage(), e);
         }
-    }
-
-
-    /**
-     * 通知
-     *
-     * @param channel   通道
-     * @param msgType   msg类型
-     * @param serialNum 串行num
-     */
-    public static void notify(Channel channel, byte msgType, Long serialNum) {
-        if (!isActive(channel)) {
-            return;
-        }
-        TichoMsg msg = new TichoMsg();
-        if (null != serialNum) {
-            msg.setSerial(serialNum);
-        }
-        msg.setType(msgType);
-        channel.writeAndFlush(msg);
     }
 
     public static Integer getPortByChannel(Channel channel) {

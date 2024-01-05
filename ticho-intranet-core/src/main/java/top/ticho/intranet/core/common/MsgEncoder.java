@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import top.ticho.intranet.core.constant.CommConst;
-import top.ticho.intranet.core.entity.TichoMsg;
+import top.ticho.intranet.core.entity.Message;
 
 
 /**
@@ -15,7 +15,7 @@ import top.ticho.intranet.core.entity.TichoMsg;
  * @author zhajianjun
  * @date 2023-12-17 08:30
  */
-public class MsgEncoder extends MessageToByteEncoder<TichoMsg> {
+public class MsgEncoder extends MessageToByteEncoder<Message> {
 
     /**
      * 首先计算消息体的长度，包括消息类型、序列号和URI的长度。
@@ -32,7 +32,7 @@ public class MsgEncoder extends MessageToByteEncoder<TichoMsg> {
      * @param out 出
      */
     @Override
-    protected void encode(ChannelHandlerContext ctx, TichoMsg msg, ByteBuf out) {
+    protected void encode(ChannelHandlerContext ctx, Message msg, ByteBuf out) {
         // 计算消息体的长度
         int bodyLen = CommConst.TYPE_SIZE + CommConst.SERIAL_NUM_SIZE + CommConst.URI_LEN_SIZE;
         byte[] uriBytes = null;

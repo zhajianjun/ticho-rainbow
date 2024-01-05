@@ -6,7 +6,7 @@ import top.ticho.intranet.core.client.message.ServerMessageConnectHandler;
 import top.ticho.intranet.core.client.message.ServerMessageDisconnectHandler;
 import top.ticho.intranet.core.client.message.ServerMessageTransferHandler;
 import top.ticho.intranet.core.client.message.ServerMessageUnknownHandler;
-import top.ticho.intranet.core.enums.MsgType;
+import top.ticho.intranet.core.entity.Message;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,16 +28,13 @@ public class ServerMessageHandlerRegister {
         ServerMessageDisconnectHandler clientDisconnectHandle = new ServerMessageDisconnectHandler();
         ServerMessageTransferHandler clientTransferHandle = new ServerMessageTransferHandler();
         ServerMessageCloseHandler clientCloseHandle = new ServerMessageCloseHandler();
-        // MAP.put(MsgType.AUTH, clientConnect);
-        MAP.put(MsgType.NO_AVAILABLE_PORT.code(), clientCloseHandle);
-        MAP.put(MsgType.CONNECT.code(), clientConnectHandle);
-        MAP.put(MsgType.DISCONNECT.code(), clientDisconnectHandle);
-        MAP.put(MsgType.TRANSFER.code(), clientTransferHandle);
-        MAP.put(MsgType.IS_INUSE_KEY.code(), clientCloseHandle);
-        // MAP.put(MsgType.HEARTBEAT.getCode(), clientConnect);
-        MAP.put(MsgType.DISABLED_ACCESS_KEY.code(), clientCloseHandle);
-        MAP.put(MsgType.DISABLED_TRIAL_CLIENT.code(), clientCloseHandle);
-        MAP.put(MsgType.INVALID_KEY.code(), clientCloseHandle);
+        // MAP.put(TichoMsg.AUTH, null);
+        MAP.put(Message.DISABLED_ACCESS_KEY, clientCloseHandle);
+        MAP.put(Message.CONNECT, clientConnectHandle);
+        MAP.put(Message.DISCONNECT, clientDisconnectHandle);
+        MAP.put(Message.TRANSFER, clientTransferHandle);
+        // MAP.put(TichoMsg.HEARTBEAT, null);
+
     }
 
     public static AbstractServerMessageHandler getClientHandle(byte msgType) {

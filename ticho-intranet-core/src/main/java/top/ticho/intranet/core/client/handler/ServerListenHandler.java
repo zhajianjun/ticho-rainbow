@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.ticho.intranet.core.client.message.AbstractServerMessageHandler;
 import top.ticho.intranet.core.client.register.ServerMessageHandlerRegister;
 import top.ticho.intranet.core.constant.CommConst;
-import top.ticho.intranet.core.entity.TichoMsg;
+import top.ticho.intranet.core.entity.Message;
 import top.ticho.intranet.core.prop.ClientProperty;
 import top.ticho.intranet.core.util.TichoUtil;
 
@@ -22,7 +22,7 @@ import top.ticho.intranet.core.util.TichoUtil;
  */
 @Slf4j
 @AllArgsConstructor
-public class ServerListenHandler extends SimpleChannelInboundHandler<TichoMsg> {
+public class ServerListenHandler extends SimpleChannelInboundHandler<Message> {
 
     private final ClientHander clientHander;
 
@@ -31,7 +31,7 @@ public class ServerListenHandler extends SimpleChannelInboundHandler<TichoMsg> {
     private final ClientProperty clientProperty;
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, TichoMsg msg) {
+    protected void channelRead0(ChannelHandlerContext ctx, Message msg) {
         byte type = msg.getType();
         AbstractServerMessageHandler clientHandle = ServerMessageHandlerRegister.getClientHandle(type);
         clientHandle.setClientHander(clientHander);

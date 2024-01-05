@@ -6,7 +6,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import top.ticho.intranet.core.constant.CommConst;
-import top.ticho.intranet.core.entity.TichoMsg;
+import top.ticho.intranet.core.entity.Message;
 import top.ticho.intranet.core.util.TichoUtil;
 
 /**
@@ -18,7 +18,7 @@ import top.ticho.intranet.core.util.TichoUtil;
 public class ClientDisconnectMessageHandler extends AbstractClientMessageHandler {
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, TichoMsg msg) {
+    public void channelRead0(ChannelHandlerContext ctx, Message msg) {
         Channel channel = ctx.channel();
         String requestId = msg.getUri();
         String accessKey = channel.attr(CommConst.KEY).get();

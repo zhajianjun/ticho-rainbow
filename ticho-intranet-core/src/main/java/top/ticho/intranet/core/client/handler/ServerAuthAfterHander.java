@@ -5,7 +5,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import lombok.extern.slf4j.Slf4j;
 import top.ticho.intranet.core.constant.CommConst;
-import top.ticho.intranet.core.entity.TichoMsg;
+import top.ticho.intranet.core.entity.Message;
 import top.ticho.intranet.core.prop.ClientProperty;
 
 import java.util.Optional;
@@ -33,7 +33,7 @@ public class ServerAuthAfterHander implements ChannelFutureListener {
         int port = Optional.ofNullable(clientProperty.getServerPort()).orElse(CommConst.SERVER_PORT_DEFAULT);
         // future.isSuccess() = false则表示连接服务端失败，尝试重连
         if (!future.isSuccess()) {
-            log.warn("连接服务端<{}:{}>失败, error：{}", host, port, future.cause().getMessage());
+            log.warn("连接服务端[{}:{}]失败, error：{}", host, port, future.cause().getMessage());
             // 尝试重连
             clientHander.restart();
             return;
@@ -43,13 +43,13 @@ public class ServerAuthAfterHander implements ChannelFutureListener {
         // 连接服务端的通道添加到 通道工厂中
         clientHander.setAuthServerChannel(channel);
         // 通道传输权限信息给服务端进行校验，由服务端校验是否关闭还是正常连接
-        TichoMsg msg = new TichoMsg();
-        msg.setType(TichoMsg.AUTH);
+        Message msg = new Message();
+        msg.setType(Message.AUTH);
         msg.setUri(clientProperty.getAccessKey());
         channel.writeAndFlush(msg);
         // 重连后初始化sleepTime
         clientHander.setSleepTime(CommConst.ONE_SECOND);
-        log.info("[1]连接服务端成功：{}", channel);
+        log.warn("[1]连接服务端成功：{}", channel);
     }
 
 }

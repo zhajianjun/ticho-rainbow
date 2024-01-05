@@ -51,17 +51,19 @@ public class AppHandler {
         if (Objects.isNull(portInfo) || Objects.isNull(port = portInfo.getPort())) {
             return;
         }
+        if (bindPortChannelMap.containsKey(port)) {
+            log.warn("创建应用失败，端口：{}已被创建", port);
+            return;
+        }
         try {
             ChannelFuture channelFuture = serverBootstrap.bind(port);
             channelFuture.get();
             bindPortChannelMap.put(port, channelFuture.channel());
         } catch (InterruptedException | ExecutionException e) {
-            portInfo.setStatus(0);
-            portInfo.setStatusMessage(StrUtil.format("创建失败，{}", e.getMessage()));
-            log.warn("创建应用失败，端口：{}，错误信息：{}", port, e.getMessage(), e);
+            log.error("创建应用失败，端口：{}，错误信息：{}", port, e.getMessage(), e);
+            throw new RuntimeException(e.getMessage());
         }
-        portInfo.setStatus(1);
-        portInfo.setStatusMessage("创建成功");
+        log.info("创建应用成功，端口：{}", port);
     }
 
     public void deleteApp(Integer port) {
@@ -78,6 +80,13 @@ public class AppHandler {
 
     public String getRequestId() {
         return String.valueOf(requestId.incrementAndGet());
+    }
+
+    /**
+     * 应用总数
+     */
+    public int size(){
+        return bindPortChannelMap.size();
     }
 
     @AllArgsConstructor
