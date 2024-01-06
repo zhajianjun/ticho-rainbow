@@ -9,7 +9,7 @@ import top.ticho.intranet.core.entity.Message;
 import top.ticho.intranet.core.util.TichoUtil;
 
 /**
- * 服务端信息传输处理器
+ * 客户端信息传输消息处理器
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30

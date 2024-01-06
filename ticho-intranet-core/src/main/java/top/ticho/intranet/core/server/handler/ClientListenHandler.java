@@ -11,13 +11,19 @@ import top.ticho.intranet.core.constant.CommConst;
 import top.ticho.intranet.core.entity.Message;
 import top.ticho.intranet.core.server.entity.ClientInfo;
 import top.ticho.intranet.core.server.message.AbstractClientMessageHandler;
-import top.ticho.intranet.core.server.register.ClientMessageHandlerRegister;
+import top.ticho.intranet.core.server.message.ClientAuthMessageHandler;
+import top.ticho.intranet.core.server.message.ClientConnectMessageHandler;
+import top.ticho.intranet.core.server.message.ClientDisconnectMessageHandler;
+import top.ticho.intranet.core.server.message.ClientHeartbeatMessageHandler;
+import top.ticho.intranet.core.server.message.ClientMessageUnknownHandler;
+import top.ticho.intranet.core.server.message.ClientTransferMessageHandler;
 import top.ticho.intranet.core.util.TichoUtil;
 
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * 服务端处理器
+ * 客户端监听处理器
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30
@@ -27,8 +33,24 @@ public class ClientListenHandler extends SimpleChannelInboundHandler<Message> {
 
     private final ServerHandler serverHandler;
 
+    public final Map<Byte, AbstractClientMessageHandler> MAP = new HashMap<>();
+
+    public final AbstractClientMessageHandler UNKNOWN = new ClientMessageUnknownHandler();
+
     public ClientListenHandler(ServerHandler serverHandler) {
         this.serverHandler = serverHandler;
+        ClientAuthMessageHandler serverAuthHandle = new ClientAuthMessageHandler();
+        ClientConnectMessageHandler serverConnectHandle = new ClientConnectMessageHandler();
+        ClientDisconnectMessageHandler serverDisconnectHandle = new ClientDisconnectMessageHandler();
+        ClientHeartbeatMessageHandler serverHeartbeatHandle = new ClientHeartbeatMessageHandler();
+        ClientTransferMessageHandler serverTransferHandle = new ClientTransferMessageHandler();
+        // MAP.put(MsgType.AUTH, null);
+        MAP.put(Message.AUTH, serverAuthHandle);
+        MAP.put(Message.CONNECT, serverConnectHandle);
+        MAP.put(Message.DISCONNECT, serverDisconnectHandle);
+        MAP.put(Message.TRANSFER, serverTransferHandle);
+        MAP.put(Message.HEARTBEAT, serverHeartbeatHandle);
+        MAP.values().forEach(item -> item.setServerHandler(serverHandler));
     }
 
     @Override
@@ -39,11 +61,7 @@ public class ClientListenHandler extends SimpleChannelInboundHandler<Message> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Message msg) {
-        AbstractClientMessageHandler serverHandle = ClientMessageHandlerRegister.getMessageHandler(msg.getType());
-        if (Objects.isNull(serverHandle)) {
-            return;
-        }
-        serverHandle.setServerHandler(serverHandler);
+        AbstractClientMessageHandler serverHandle = MAP.getOrDefault(msg.getType(), UNKNOWN);
         serverHandle.channelRead0(ctx, msg);
     }
 

@@ -9,14 +9,14 @@ import top.ticho.intranet.core.util.TichoUtil;
 
 
 /**
- * 服务端处理器 公共方法
+ * 客户端消息处理器抽象类
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30
  */
+@Setter
 public abstract class AbstractClientMessageHandler {
 
-    @Setter
     protected ServerHandler serverHandler;
 
     /**

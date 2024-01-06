@@ -4,39 +4,62 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.SimpleChannelInboundHandler;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import top.ticho.intranet.core.client.message.AbstractServerMessageHandler;
-import top.ticho.intranet.core.client.register.ServerMessageHandlerRegister;
+import top.ticho.intranet.core.client.message.ServerMessageCloseHandler;
+import top.ticho.intranet.core.client.message.ServerMessageConnectHandler;
+import top.ticho.intranet.core.client.message.ServerMessageDisconnectHandler;
+import top.ticho.intranet.core.client.message.ServerMessageTransferHandler;
+import top.ticho.intranet.core.client.message.ServerMessageUnknownHandler;
 import top.ticho.intranet.core.constant.CommConst;
 import top.ticho.intranet.core.entity.Message;
 import top.ticho.intranet.core.prop.ClientProperty;
 import top.ticho.intranet.core.util.TichoUtil;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
- * 客户端处理器
+ * 服务端监听处理器
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30
  */
 @Slf4j
-@AllArgsConstructor
 public class ServerListenHandler extends SimpleChannelInboundHandler<Message> {
 
     private final ClientHander clientHander;
 
     private final AppHandler appHandler;
 
-    private final ClientProperty clientProperty;
+    public final Map<Byte, AbstractServerMessageHandler> MAP = new HashMap<>();
+
+    public final AbstractServerMessageHandler UNKNOWN = new ServerMessageUnknownHandler();
+
+    public ServerListenHandler(ClientHander clientHander, AppHandler appHandler, ClientProperty clientProperty) {
+        this.clientHander = clientHander;
+        this.appHandler = appHandler;
+        ServerMessageConnectHandler clientConnectHandle = new ServerMessageConnectHandler();
+        ServerMessageDisconnectHandler clientDisconnectHandle = new ServerMessageDisconnectHandler();
+        ServerMessageTransferHandler clientTransferHandle = new ServerMessageTransferHandler();
+        ServerMessageCloseHandler clientCloseHandle = new ServerMessageCloseHandler();
+        // MAP.put(Message.AUTH, null);
+        MAP.put(Message.DISABLED_ACCESS_KEY, clientCloseHandle);
+        MAP.put(Message.CONNECT, clientConnectHandle);
+        MAP.put(Message.DISCONNECT, clientDisconnectHandle);
+        MAP.put(Message.TRANSFER, clientTransferHandle);
+        MAP.values().forEach(item -> {
+            item.setClientHander(clientHander);
+            item.setAppHandler(appHandler);
+            item.setClientProperty(clientProperty);
+        });
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Message msg) {
         byte type = msg.getType();
-        AbstractServerMessageHandler clientHandle = ServerMessageHandlerRegister.getClientHandle(type);
-        clientHandle.setClientHander(clientHander);
-        clientHandle.setAppHandler(appHandler);
-        clientHandle.setClientProperty(clientProperty);
+        AbstractServerMessageHandler clientHandle = MAP.getOrDefault(type, UNKNOWN);
         clientHandle.channelRead0(ctx, msg);
     }
 

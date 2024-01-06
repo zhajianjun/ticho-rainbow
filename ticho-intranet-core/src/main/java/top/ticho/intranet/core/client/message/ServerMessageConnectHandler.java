@@ -10,7 +10,7 @@ import top.ticho.intranet.core.entity.Message;
 import java.nio.charset.StandardCharsets;
 
 /**
- * 客户端通道连接处理器
+ * 服务端通道连接消息处理器
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30

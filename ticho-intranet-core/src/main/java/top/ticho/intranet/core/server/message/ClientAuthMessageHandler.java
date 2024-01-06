@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * 服务端验证客户端权限 处理器
+ * 客户端权限消息处理器
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30

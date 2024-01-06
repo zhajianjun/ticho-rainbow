@@ -9,7 +9,7 @@ import top.ticho.intranet.core.constant.CommConst;
 import top.ticho.intranet.core.entity.Message;
 
 /**
- * 客户端数据传输处理器
+ * 服务端数据传输消息处理器
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30
