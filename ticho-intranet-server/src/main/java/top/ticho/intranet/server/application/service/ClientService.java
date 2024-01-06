@@ -1,6 +1,7 @@
 package top.ticho.intranet.server.application.service;
 
 import top.ticho.boot.view.core.PageResult;
+import top.ticho.intranet.core.server.entity.ClientInfo;
 import top.ticho.intranet.server.interfaces.dto.ClientDTO;
 import top.ticho.intranet.server.interfaces.query.ClientQuery;
 
@@ -57,6 +58,13 @@ public interface ClientService {
      * @return {@link List}<{@link ClientDTO}>
      */
     List<ClientDTO> list(ClientQuery query);
+
+    /**
+     * 查询所有有效客户端通道信息
+     *
+     * @return {@link List}<{@link ClientInfo}>
+     */
+    List<ClientInfo> listClientInfo();
 
 }
 

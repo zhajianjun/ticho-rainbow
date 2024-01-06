@@ -2,6 +2,7 @@ package top.ticho.intranet.server.interfaces.assembler;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import top.ticho.intranet.core.server.entity.ClientInfo;
 import top.ticho.intranet.server.infrastructure.entity.Client;
 import top.ticho.intranet.server.interfaces.dto.ClientDTO;
 
@@ -30,5 +31,14 @@ public interface ClientAssembler {
      * @return {@link ClientDTO}
      */
     ClientDTO entityToDto(Client entity);
+
+
+    /**
+     * 客户端信息Info
+     *
+     * @param entity 客户端信息
+     * @return {@link ClientInfo}
+     */
+    ClientInfo entityToInfo(Client entity);
 
 }

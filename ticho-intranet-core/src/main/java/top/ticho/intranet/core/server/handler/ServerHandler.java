@@ -86,12 +86,7 @@ public class ServerHandler {
         if (null == clientInfo || StrUtil.isBlank((accessKey = clientInfo.getAccessKey()))) {
             return;
         }
-        ClientInfo clientInfoGet = clientMap.get(accessKey);
-        if (null == clientInfoGet) {
-            clientMap.put(accessKey, clientInfo);
-            return;
-        }
-        clientInfo.setChannel(clientInfoGet.getChannel());
+        clientMap.putIfAbsent(accessKey, clientInfo);
     }
 
     public void saveClientBatch(List<ClientInfo> clientInfos) {
@@ -101,11 +96,10 @@ public class ServerHandler {
         clientInfos.forEach(this::saveClient);
     }
 
-    public void deleteClient(ClientInfo clientInfo) {
-        if (null == clientInfo) {
+    public void deleteClient(String accessKey) {
+        if (StrUtil.isBlank(accessKey)) {
             return;
         }
-        String accessKey = clientInfo.getAccessKey();
         ClientInfo clientInfoGet = clientMap.get(accessKey);
         if (Objects.isNull(clientInfoGet)) {
             return;
@@ -122,7 +116,7 @@ public class ServerHandler {
         clientMap.remove(accessKey);
     }
 
-    public void savePort(PortInfo portInfo) {
+    public void createApp(PortInfo portInfo) {
         if (null == portInfo) {
             return;
         }
@@ -139,17 +133,16 @@ public class ServerHandler {
         appHandler.createApp(portInfo);
     }
 
-    public void deletePort(PortInfo portInfo) {
-        if (null == portInfo) {
+    public void deleteApp(String accessKey, Integer portNum) {
+        if (StrUtil.isBlank(accessKey) || Objects.isNull(portNum)) {
             return;
         }
-        ClientInfo clientInfo = clientMap.get(portInfo.getAccessKey());
+        ClientInfo clientInfo = clientMap.get(accessKey);
         if (null == clientInfo || MapUtil.isEmpty(clientInfo.getPortMap())) {
             return;
         }
-        Integer portNum = portInfo.getPort();
         if (clientInfo.getPortMap().containsKey(portNum)) {
-            portInfo = clientInfo.getPortMap().get(portNum);
+            PortInfo portInfo = clientInfo.getPortMap().get(portNum);
             clientInfo.getPortMap().remove(portNum);
             appHandler.deleteApp(portInfo.getPort());
         }

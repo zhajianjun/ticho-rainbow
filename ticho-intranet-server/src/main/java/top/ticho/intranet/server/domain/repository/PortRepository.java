@@ -4,7 +4,11 @@ import top.ticho.boot.datasource.service.RootService;
 import top.ticho.intranet.server.infrastructure.entity.Port;
 import top.ticho.intranet.server.interfaces.query.PortQuery;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * 端口信息 repository接口
@@ -39,6 +43,22 @@ public interface PortRepository extends RootService<Port> {
      * @return {@link Port}
      */
     Port getByDomainExcludeId(Long excludeId, String domain);
+
+    /**
+     * 根据客户端秘钥列表查询
+     *
+     * @param accessKeys 客户端秘钥列表
+     * @return {@link List}<{@link Port}>
+     */
+    List<Port> listByAccessKeys(Collection<String> accessKeys);
+
+    /**
+     * 根据客户端秘钥列表查询
+     *
+     * @param accessKeys 客户端秘钥列表
+     * @return {@link List}<{@link Port}>
+     */
+    <T> Map<String, List<T>> listAndGroupByAccessKey(Collection<String> accessKeys, Function<Port, T> function, Predicate<Port> filter);
 
 }
 

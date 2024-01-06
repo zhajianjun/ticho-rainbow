@@ -59,8 +59,8 @@ public class PortDTO implements Serializable {
     @ApiModelProperty(value = "是否开启;1-开启,0-关闭", position = 60)
     private Integer enabled;
 
-    /** 是否永久 */
-    @ApiModelProperty(value = "是否永久", position = 70)
+    /** 是否永久;1-是,0-否 */
+    @ApiModelProperty(value = "是否永久;1-是,0-否", position = 70)
     private Integer forever;
 
     /** 过期时间 */
