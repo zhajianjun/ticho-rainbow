@@ -1,9 +1,6 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { h } from 'vue';
-import { Switch, Tag } from 'ant-design-vue';
-import { useMessage } from '@/hooks/web/useMessage';
-import { modifyClientEnabled } from '@/api/system/client';
-import { ClientDTO } from '@/api/system/model/clientModel';
+import { Tag } from 'ant-design-vue';
 
 export function getTableColumns(): BasicColumn[] {
   return [
@@ -31,35 +28,6 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'enabled',
       resizable: true,
       width: 50,
-      customRender: ({ record }) => {
-        if (!Reflect.has(record, 'pendingStatus')) {
-          record.pendingEnabled = false;
-        }
-        return h(Switch, {
-          checked: record.enabled === 1,
-          checkedChildren: '已开启',
-          unCheckedChildren: '已关闭',
-          loading: record.pendingEnabled,
-          onChange(checked) {
-            record.pendingStatus = true;
-            const newEnabled = checked ? 1 : 0;
-            const { createMessage } = useMessage();
-            const params = { id: record.id, enabled: newEnabled } as ClientDTO;
-            const messagePrefix = checked ? '启动' : '关闭';
-            modifyClientEnabled(params)
-              .then(() => {
-                record.enabled = newEnabled;
-                createMessage.success(messagePrefix + `成功`);
-              })
-              .catch(() => {
-                createMessage.error(messagePrefix + `失败`);
-              })
-              .finally(() => {
-                record.pendingEnabled = false;
-              });
-          },
-        });
-      },
     },
     {
       title: '通道状态',
