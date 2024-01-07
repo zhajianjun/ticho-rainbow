@@ -1,11 +1,11 @@
 package top.ticho.intranet.server.interfaces.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import top.ticho.boot.web.util.valid.ValidGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import top.ticho.boot.web.util.valid.ValidGroup;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -57,10 +57,12 @@ public class PortDTO implements Serializable {
 
     /** 是否开启;1-开启,0-关闭 */
     @ApiModelProperty(value = "是否开启;1-开启,0-关闭", position = 60)
+    @NotNull(message = "是否开启不能为空")
     private Integer enabled;
 
     /** 是否永久;1-是,0-否 */
     @ApiModelProperty(value = "是否永久;1-是,0-否", position = 70)
+    @NotNull(message = "是否永久不能为空")
     private Integer forever;
 
     /** 过期时间 */

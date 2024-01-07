@@ -53,6 +53,7 @@ public class Port extends Model<Port> implements Serializable {
 
     /** 过期时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private LocalDateTime expireAt;
 
     /** 协议类型 */

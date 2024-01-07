@@ -55,6 +55,7 @@ public class ClientListenHandler extends SimpleChannelInboundHandler<Message> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        // 这里可以关闭通道
         log.error("客户端异常 {} {}", ctx.channel(), cause.getMessage());
         super.exceptionCaught(ctx, cause);
     }

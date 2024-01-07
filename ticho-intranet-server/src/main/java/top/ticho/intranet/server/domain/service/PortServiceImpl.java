@@ -124,6 +124,12 @@ public class PortServiceImpl implements PortService {
             Port dbPortByDomain = portRepository.getByDomainExcludeId(portDTO.getId(), domain);
             Assert.isNull(dbPortByDomain, "域名已存在");
         }
+        if (Objects.equals(portDTO.getForever(), 1)) {
+            portDTO.setExpireAt(null);
+        } else {
+            LocalDateTime expireAt = Optional.ofNullable(portDTO.getExpireAt()).orElseGet(() -> LocalDateTime.now().plusDays(7));
+            portDTO.setExpireAt(expireAt);
+        }
     }
 
     public void savePortInfo(Integer portNum) {
@@ -140,15 +146,18 @@ public class PortServiceImpl implements PortService {
 
     public void updatePortInfo(Port oldPort) {
         Port port = portRepository.getById(oldPort.getId());
-        // 端口号不一致时，删除旧的app
-        if (!Objects.equals(oldPort.getPort(), port.getPort())) {
+        // 端口号不一致时，删除旧的app，再创建新的app
+        if (!Objects.equals(oldPort.getPort(), port.getPort()) && isEnabled(oldPort)) {
             serverHandler.deleteApp(oldPort.getAccessKey(), oldPort.getPort());
         }
         AppHandler appHandler = serverHandler.getAppHandler();
         // 端口信息有效时才重新创建
-        if (isEnabled(port) || !appHandler.exists(port.getPort())) {
+        if (isEnabled(port) && !appHandler.exists(port.getPort())) {
             PortInfo portInfo = PortAssembler.INSTANCE.entityToInfo(port);
             serverHandler.createApp(portInfo);
+        }
+        if (!isEnabled(port) && appHandler.exists(port.getPort())) {
+            serverHandler.deleteApp(port.getAccessKey(), port.getPort());
         }
 
     }
