@@ -101,8 +101,9 @@
           fixed: undefined,
         },
         pagination: {
-          pageSizeOptions: ['10', '20', '50', '100'],
-          defaultPageSize: 20,
+          pageSizeOptions: ['10', '15', '20', '50', '100'],
+          pageSize: 15,
+          defaultPageSize: 15,
           position: ['bottomLeft'],
         },
       });
