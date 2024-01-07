@@ -54,7 +54,7 @@ public class ServerConnectAfterHander implements ChannelFutureListener {
         this.requestChannel.config().setOption(ChannelOption.AUTO_READ, true);
         appHandler.saveRequestChannel(requestId, this.requestChannel);
         this.requestChannel.attr(CommConst.URI).set(requestId);
-        log.warn("[5][客户端]连接信息回传服务端，回传通道{}，携带通道{}，消息{}", clientChannel, requestChannel, msg);
+        // log.warn("[5][客户端]连接信息回传服务端，回传通道{}，携带通道{}，消息{}", clientChannel, requestChannel, msg);
     }
 
 }

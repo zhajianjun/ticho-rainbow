@@ -28,7 +28,7 @@ public class ServerMessageTransferHandler extends AbstractServerMessageHandler {
         ByteBuf buf = alloc.buffer(msg.getData().length);
         buf.writeBytes(msg.getData());
         requestChannel.writeAndFlush(buf);
-        log.warn("[8][客户端]接收到到客户端请求信息，接收通道{}，写入通道{}，消息{}", clientChannel, requestChannel, msg);
+        // log.warn("[8][客户端]接收到到客户端请求信息，接收通道{}，写入通道{}，消息{}", clientChannel, requestChannel, msg);
     }
 
 }

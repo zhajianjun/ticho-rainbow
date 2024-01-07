@@ -54,7 +54,8 @@ public class ClientAuthMessageHandler extends AbstractClientMessageHandler {
             .stream()
             .map(Objects::toString)
             .collect(Collectors.joining(","));
-        log.warn("[2]秘钥={}客户端成功连接，绑定端口{},客户端通道{}", accessKey, portStrs, clientChannel);
+        // log.warn("[2]秘钥={}客户端成功连接，绑定端口{},客户端通道{}", accessKey, portStrs, clientChannel);
+        log.warn("秘钥={}客户端成功连接，绑定端口{},客户端通道{}", accessKey, portStrs, clientChannel);
         clientChannel.attr(CommConst.REQUEST_ID_ATTR_MAP).set(new LinkedHashMap<>());
         clientInfo.setConnectTime(LocalDateTime.now());
         clientInfo.setChannel(clientChannel);

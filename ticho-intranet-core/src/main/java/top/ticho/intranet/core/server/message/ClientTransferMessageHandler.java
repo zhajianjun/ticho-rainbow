@@ -27,7 +27,7 @@ public class ClientTransferMessageHandler extends AbstractClientMessageHandler {
         ByteBuf data = ctx.alloc().buffer(msg.getData().length);
         data.writeBytes(msg.getData());
         requestChannel.writeAndFlush(data);
-        log.warn("[10][服务端]响应信息接收，接收通道：{}；写入通道：{}, 消息{}", channel, requestChannel, msg);
+        // log.warn("[10][服务端]响应信息接收，接收通道：{}；写入通道：{}, 消息{}", channel, requestChannel, msg);
     }
 
 }
