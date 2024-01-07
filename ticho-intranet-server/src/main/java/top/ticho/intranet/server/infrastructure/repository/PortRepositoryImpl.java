@@ -41,6 +41,8 @@ public class PortRepositoryImpl extends RootServiceImpl<PortMapper, Port> implem
         wrapper.like(StrUtil.isNotBlank(query.getDomain()), Port::getDomain, query.getDomain());
         wrapper.eq(Objects.nonNull(query.getType()), Port::getType, query.getType());
         wrapper.like(StrUtil.isNotBlank(query.getRemark()), Port::getRemark, query.getRemark());
+        wrapper.orderByAsc(Port::getSort);
+        wrapper.orderByAsc(Port::getPort);
         return list(wrapper);
         // @formatter:on
     }
