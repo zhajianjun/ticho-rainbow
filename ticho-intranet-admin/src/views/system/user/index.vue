@@ -81,7 +81,7 @@
           pageSizeOptions: ['10', '15', '20', '50', '100'],
           pageSize: 15,
           defaultPageSize: 15,
-          position: ['bottomLeft'],ve
+          position: ['bottomLeft'],
         },
       });
 
