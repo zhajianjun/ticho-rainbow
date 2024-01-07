@@ -88,6 +88,8 @@
           fixed: undefined,
         },
         pagination: {
+          pageSizeOptions: ['10', '20', '50', '100'],
+          defaultPageSize: 20,
           position: ['bottomLeft'],
         },
       });
