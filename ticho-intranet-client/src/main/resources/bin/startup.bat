@@ -51,42 +51,42 @@ if exist "!APP_CONF!" (
 )
 
 @REM 获取ACCESS_KEY
-if "!ACCESS_KEY!" equ "" (
+if "!accessKey!" equ "" (
     @echo !APP_LINE!
-    set /p ACCESS_KEY="请输入访问密钥："
-    if "!ACCESS_KEY!" == "" (
+    set /p accessKey="请输入访问密钥："
+    if "!accessKey!" == "" (
         @echo 请输入访问密钥
         @echo !APP_LINE!
         pause
         exit /b !APP_ERR!
     )
-    @echo ACCESS_KEY=!ACCESS_KEY!> "!APP_CONF!"
+    @echo accessKey=!accessKey!> "!APP_CONF!"
 )
 
 @REM 获取SERVER_HOST
-if "!SERVER_HOST!" equ "" (
+if "!serverHost!" equ "" (
     @echo !APP_LINE!
-    set /p SERVER_HOST="请输入服务器主机地址："
-    if "!SERVER_HOST!" == "" (
+    set /p serverHost="请输入服务器主机地址："
+    if "!serverHost!" == "" (
         @echo 请输入服务器地址
         @echo !APP_LINE!
         pause
         exit /b !APP_ERR!
     )
-    @echo SERVER_HOST=!SERVER_HOST!>> "!APP_CONF!"
+    @echo serverHost=!serverHost!>> "!APP_CONF!"
 )
 
 @REM 获取SERVER_PORT
-if "!SERVER_PORT!" equ "" (
+if "!serverPort!" equ "" (
     @echo !APP_LINE!
-    set /p SERVER_PORT="请输入服务器主机端口："
-    if "!SERVER_PORT!" == "" (
+    set /p serverPort="请输入服务器主机端口："
+    if "!serverPort!" == "" (
         @echo 请输入服务器主端口
         @echo !APP_LINE!
         pause
         exit /b !APP_ERR!
     )
-    @echo SERVER_PORT=!SERVER_PORT!>> "!APP_CONF!"
+    @echo serverPort=!serverPort!>> "!APP_CONF!"
 )
 
 @REM 启动客户端应用程序

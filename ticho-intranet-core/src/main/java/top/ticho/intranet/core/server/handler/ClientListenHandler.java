@@ -21,6 +21,7 @@ import top.ticho.intranet.core.util.TichoUtil;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 客户端监听处理器
@@ -55,7 +56,13 @@ public class ClientListenHandler extends SimpleChannelInboundHandler<Message> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        // 这里可以关闭通道
+        // 客户端异常时，把通道置为空
+        serverHandler.getClientMap()
+            .values()
+            .stream()
+            .filter(x-> Objects.equals(ctx.channel(), x.getChannel()))
+            .findFirst()
+            .ifPresent(serverHandler::closeClenitAndRequestChannel);
         log.error("客户端异常 {} {}", ctx.channel(), cause.getMessage());
         super.exceptionCaught(ctx, cause);
     }
@@ -90,7 +97,7 @@ public class ClientListenHandler extends SimpleChannelInboundHandler<Message> {
         } else {
             // 关闭客户端通道、请求通道
             ClientInfo clientInfo = serverHandler.getClientByAccessKey(accessKey);
-            serverHandler.closeClentAndRequestChannel(clientInfo);
+            serverHandler.closeClenitAndRequestChannel(clientInfo);
             TichoUtil.close(channel);
         }
         super.channelInactive(ctx);

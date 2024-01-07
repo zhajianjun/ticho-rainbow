@@ -9,6 +9,7 @@ import top.ticho.intranet.core.constant.CommConst;
 import top.ticho.intranet.core.entity.Message;
 import top.ticho.intranet.core.server.entity.ClientInfo;
 import top.ticho.intranet.core.server.entity.PortInfo;
+import top.ticho.intranet.core.util.TichoUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -43,12 +44,11 @@ public class ClientAuthMessageHandler extends AbstractClientMessageHandler {
             notifyError(clientChannel, errorMsg, message.getSerial());
             return;
         }
-        // 旧的客户端被新的替换掉
-        Channel channel = clientInfo.getChannel();
-        if (null != channel) {
-            String errorMsg = StrUtil.format("秘钥={}的客户端已经被其他客户端{}使用", accessKey, channel);
+        Channel clientChannelGet = clientInfo.getChannel();
+        if (TichoUtil.isActive(clientChannelGet)) {
+            String errorMsg = StrUtil.format("秘钥={}的客户端已经被其他客户端{}使用", accessKey, clientChannelGet);
             notifyError(clientChannel, errorMsg, message.getSerial());
-            serverHandler.closeClentAndRequestChannel(clientInfo);
+            return;
         }
         String portStrs = portMap.keySet()
             .stream()

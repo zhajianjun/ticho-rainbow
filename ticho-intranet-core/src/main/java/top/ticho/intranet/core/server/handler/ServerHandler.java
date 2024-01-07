@@ -111,7 +111,7 @@ public class ServerHandler {
             }
             portMap.clear();
         }
-        closeClentAndRequestChannel(clientInfoGet);
+        closeClenitAndRequestChannel(clientInfoGet);
         TichoUtil.close(clientInfoGet.getChannel());
         clientMap.remove(accessKey);
     }
@@ -233,7 +233,7 @@ public class ServerHandler {
         return null;
     }
 
-    public void closeClentAndRequestChannel(ClientInfo clientInfo) {
+    public void closeClenitAndRequestChannel(ClientInfo clientInfo) {
         if (Objects.isNull(clientInfo)) {
             return;
         }
