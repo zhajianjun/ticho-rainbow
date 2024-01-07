@@ -4,6 +4,17 @@
       <template #toolbar>
         <a-button type="primary" @click="handleCreate"> 新增 </a-button>
       </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'enabled'">
+          <Switch
+            checked-children="开启"
+            un-checked-children="关闭"
+            :checked="record.enabled === 1"
+            :loading="record.pendingEnabled"
+            @change="handleSwitchChange(record)"
+          />
+        </template>
+      </template>
       <template #action="{ record }">
         <TableAction
           :actions="[
@@ -34,15 +45,18 @@
 </template>
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import { BasicTable, useTable, TableAction } from '@/components/Table';
+  import { Switch } from 'ant-design-vue';
+  import { BasicTable, TableAction, useTable } from '@/components/Table';
   import { useModal } from '@/components/Modal';
   import ClientModel from './ClientModal.vue';
-  import { getTableColumns, getSearchColumns } from './client.data';
-  import { clientPage, delClient } from '@/api/system/client';
+  import { getSearchColumns, getTableColumns } from './client.data';
+  import { clientPage, delClient, modifyClientEnabled } from '@/api/system/client';
+  import { useMessage } from '@/hooks/web/useMessage';
+  import { ClientDTO } from '@/api/system/model/clientModel';
 
   export default defineComponent({
     name: 'ClientManagement',
-    components: { BasicTable, ClientModel, TableAction },
+    components: { BasicTable, ClientModel, TableAction, Switch },
     setup() {
       const [registerModal, { openModal }] = useModal();
       const [registerTable, { reload }] = useTable({
@@ -101,6 +115,30 @@
         reload();
       }
 
+      function handleSwitchChange(record: Recordable) {
+        record.pendingEnabled = true;
+        const { createMessage } = useMessage();
+        let checked = record.enabled === 1;
+        if (checked) {
+          record.enabled = 0;
+        } else {
+          record.enabled = 1;
+        }
+        const params = { id: record.id, enabled: record.enabled } as ClientDTO;
+        const messagePrefix = !checked ? '启动' : '关闭';
+        modifyClientEnabled(params)
+          .then(() => {
+            createMessage.success(messagePrefix + `成功`);
+          })
+          .catch(() => {
+            createMessage.error(messagePrefix + `失败`);
+          })
+          .finally(() => {
+            record.pendingEnabled = false;
+            reload();
+          });
+      }
+
       return {
         registerTable,
         registerModal,
@@ -108,6 +146,7 @@
         handleEdit,
         handleDelete,
         handleSuccess,
+        handleSwitchChange,
       };
     },
   });

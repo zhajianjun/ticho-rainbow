@@ -9,14 +9,14 @@ import top.ticho.intranet.core.util.TichoUtil;
 
 
 /**
- * 服务端处理器 公共方法
+ * 客户端消息处理器抽象类
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30
  */
+@Setter
 public abstract class AbstractClientMessageHandler {
 
-    @Setter
     protected ServerHandler serverHandler;
 
     /**
@@ -30,18 +30,18 @@ public abstract class AbstractClientMessageHandler {
     /**
      * 通知
      *
-     * @param channel   通道
-     * @param msgType   msg类型
-     * @param serialNum 序列号
-     * @param data      传输数据
+     * @param channel 通道
+     * @param msgType msg类型
+     * @param serial  序列号
+     * @param data    传输数据
      */
-    protected void notify(Channel channel, byte msgType, Long serialNum, byte[] data) {
+    protected void notify(Channel channel, byte msgType, Long serial, byte[] data) {
         if (!TichoUtil.isActive(channel)) {
             return;
         }
         Message msg = new Message();
-        if (null != serialNum) {
-            msg.setSerial(serialNum);
+        if (null != serial) {
+            msg.setSerial(serial);
         }
         msg.setType(msgType);
         msg.setData(data);

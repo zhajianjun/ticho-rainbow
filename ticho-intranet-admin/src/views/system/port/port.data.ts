@@ -1,9 +1,6 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { h } from 'vue';
-import { Switch, Tag } from 'ant-design-vue';
-import { useMessage } from '@/hooks/web/useMessage';
-import { PortDTO } from '@/api/system/model/portModel';
-import { modifyPort } from '@/api/system/port';
+import { Tag } from 'ant-design-vue';
 import { clientAll } from '@/api/system/client';
 import { isNull } from '@/utils/is';
 
@@ -47,36 +44,6 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'forever',
       resizable: true,
       width: 100,
-      customRender: ({ record }) => {
-        if (!Reflect.has(record, 'pendingStatus')) {
-          record.pendingForever = false;
-        }
-        return h(Switch, {
-          checked: record.forever === 1,
-          checkedChildren: '是',
-          unCheckedChildren: '否',
-          loading: record.pendingStatus,
-          onChange(checked) {
-            record.pendingForever = true;
-            const newForever = checked ? 1 : 0;
-            const { createMessage } = useMessage();
-            record.forever = newForever;
-            const params: PortDTO = { ...record } as PortDTO;
-            const messagePrefix = checked ? '启动' : '关闭';
-            modifyPort(params)
-              .then(() => {
-                record.forever = newForever;
-                createMessage.success(messagePrefix + `成功`);
-              })
-              .catch(() => {
-                createMessage.error(messagePrefix + `失败`);
-              })
-              .finally(() => {
-                record.pendingForever = false;
-              });
-          },
-        });
-      },
     },
     {
       title: '过期时间',
@@ -110,36 +77,6 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'enabled',
       resizable: true,
       width: 100,
-      customRender: ({ record }) => {
-        if (!Reflect.has(record, 'pendingStatus')) {
-          record.pendingEnabled = false;
-        }
-        return h(Switch, {
-          checked: record.enabled === 1,
-          checkedChildren: '已开启',
-          unCheckedChildren: '已关闭',
-          loading: record.pendingStatus,
-          onChange(checked) {
-            record.pendingEnabled = true;
-            const newEnabled = checked ? 1 : 0;
-            const { createMessage } = useMessage();
-            record.enabled = newEnabled;
-            const params: PortDTO = { ...record } as PortDTO;
-            const messagePrefix = checked ? '启动' : '关闭';
-            modifyPort(params)
-              .then(() => {
-                record.enabled = newEnabled;
-                createMessage.success(messagePrefix + `成功`);
-              })
-              .catch(() => {
-                createMessage.error(messagePrefix + `失败`);
-              })
-              .finally(() => {
-                record.pendingEnabled = false;
-              });
-          },
-        });
-      },
     },
     {
       title: '通道状态',
@@ -427,6 +364,9 @@ export function getModalFormColumns(): FormSchema[] {
       componentProps: {
         placeholder: '请输入过期时间',
         showTime: true,
+      },
+      ifShow: ({ values }) => {
+        return values.forever !== 1;
       },
       colProps: {
         span: 24,

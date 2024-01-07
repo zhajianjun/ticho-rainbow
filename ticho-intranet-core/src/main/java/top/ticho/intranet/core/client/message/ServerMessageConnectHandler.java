@@ -10,7 +10,7 @@ import top.ticho.intranet.core.entity.Message;
 import java.nio.charset.StandardCharsets;
 
 /**
- * 客户端通道连接处理器
+ * 服务端通道连接消息处理器
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30
@@ -35,8 +35,8 @@ public class ServerMessageConnectHandler extends AbstractServerMessageHandler {
         }
         int port = Integer.parseInt(portStr);
         AppConnectAfterHander listener = new AppConnectAfterHander(clientHander, appHandler, clientProperty, serverChannel, requestId);
-        log.debug("[客户端]连接{}:{}", host, port);
-        log.warn("[4][客户端]接收连接信息, 连接通道{}, 消息{}", serverChannel, message);
+        // log.debug("[客户端]连接{}:{}", host, port);
+        // log.warn("[4][客户端]接收连接信息, 连接通道{}, 消息{}", serverChannel, message);
         appHandler.connect(host, port, listener);
     }
 

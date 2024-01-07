@@ -8,7 +8,7 @@ import top.ticho.intranet.core.entity.Message;
 import java.nio.charset.StandardCharsets;
 
 /**
- * 未知信息处理器
+ * 服务端未知信息消息处理器
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30

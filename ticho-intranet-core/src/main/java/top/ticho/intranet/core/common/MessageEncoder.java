@@ -10,12 +10,12 @@ import top.ticho.intranet.core.entity.Message;
 /**
  * 消息编码器
  * <p>
- * 将TichoMsg对象转换为符合特定协议的字节流，方便在网络中传输和解码。
+ * 将Message对象转换为符合特定协议的字节流，方便在网络中传输和解码。
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30
  */
-public class MsgEncoder extends MessageToByteEncoder<Message> {
+public class MessageEncoder extends MessageToByteEncoder<Message> {
 
     /**
      * 首先计算消息体的长度，包括消息类型、序列号和URI的长度。
@@ -29,39 +29,41 @@ public class MsgEncoder extends MessageToByteEncoder<Message> {
      *
      * @param ctx     ctx
      * @param message 消息
-     * @param byteBuf byteBuf
+     * @param bufOut  bufOut
      */
     @Override
-    protected void encode(ChannelHandlerContext ctx, Message message, ByteBuf byteBuf) {
+    protected void encode(ChannelHandlerContext ctx, Message message, ByteBuf bufOut) {
         // 计算消息体的长度
-        int bodyLength = CommConst.TYPE_SIZE + CommConst.SERIAL_NUM_SIZE + CommConst.URI_LEN_SIZE;
+        int messageLength = CommConst.TYPE_SIZE + CommConst.SERIAL_SIZE + CommConst.URI_LEN_SIZE;
         byte[] uriBytes = null;
-        if (null != message.getUri()) {
+        if (message.getUri() != null) {
             // 如果URI不为null，则将URI转换为字节数组，并计算URI的长度
             uriBytes = message.getUri().getBytes();
-            bodyLength += uriBytes.length;
+            messageLength += uriBytes.length;
         }
-        if (null != message.getData()) {
+        if (message.getData() != null) {
             // 如果数据不为null，则计算数据的长度
-            bodyLength += message.getData().length;
+            messageLength += message.getData().length;
         }
-        // 写入消息体的总长度（不包含长度字段的长度）
-        byteBuf.writeInt(bodyLength);
-        // 写入消息类型
-        byteBuf.writeByte(message.getType());
-        // 写入消息序列号
-        byteBuf.writeLong(message.getSerial());
-        if (null != uriBytes) {
-            // 如果URI不为null，则写入URI的长度和字节数组
-            byteBuf.writeByte((byte) uriBytes.length);
-            byteBuf.writeBytes(uriBytes);
+        // 1-写入消息体的总长度（不包含长度字段的长度） [int字节数为4] 4
+        bufOut.writeInt(messageLength);
+        // 2-写入消息类型 [byte字节数为1] 5
+        bufOut.writeByte(message.getType());
+        // 3-写入消息序列号 [long字节数为8] 13
+        bufOut.writeLong(message.getSerial());
+        // 4-写入URL长度 和 数据
+        if (uriBytes != null) {
+            // 4.1 写入URL长度 [byte字节数为1]
+            bufOut.writeByte((byte) uriBytes.length);
+            // 4.1 写入URL数据 uriBytes.length
+            bufOut.writeBytes(uriBytes);
         } else {
-            // 如果URI为null，则写入0x00表示长度为0
-            byteBuf.writeByte((byte) 0x00);
+            // 如果URI为null，则写入0x00表示长度为0 [byte字节数为1]
+            bufOut.writeByte((byte) 0x00);
         }
-        if (null != message.getData()) {
+        if (message.getData() != null) {
             // 如果数据不为null，则写入数据
-            byteBuf.writeBytes(message.getData());
+            bufOut.writeBytes(message.getData());
         }
     }
 

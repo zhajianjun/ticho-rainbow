@@ -13,7 +13,7 @@ import top.ticho.intranet.core.util.TichoUtil;
 import java.util.Objects;
 
 /**
- * 服务端连接处理器
+ * 客户端连接消息处理器
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30
@@ -24,7 +24,7 @@ public class ClientConnectMessageHandler extends AbstractClientMessageHandler {
     @Override
     public void channelRead0(ChannelHandlerContext ctx, Message msg) {
         Channel channel = ctx.channel();
-        log.warn("[6][服务端]接收客户端连接信息{}, 消息{}", channel, msg);
+        // log.warn("[6][服务端]接收客户端连接信息{}, 消息{}", channel, msg);
         String uri = msg.getUri();
         if (StrUtil.isBlank(uri)) {
             log.warn("链接地址为空");

@@ -49,7 +49,8 @@ public class ServerAuthAfterHander implements ChannelFutureListener {
         channel.writeAndFlush(msg);
         // 重连后初始化sleepTime
         clientHander.setSleepTime(CommConst.ONE_SECOND);
-        log.warn("[1]连接服务端成功：{}", channel);
+        // log.warn("[1]连接服务端成功：{}", channel);
+        log.info("连接服务端[{}:{}]成功", host, port);
     }
 
 }

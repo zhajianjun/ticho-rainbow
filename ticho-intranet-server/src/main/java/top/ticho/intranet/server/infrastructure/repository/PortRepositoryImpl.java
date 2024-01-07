@@ -1,18 +1,25 @@
 package top.ticho.intranet.server.infrastructure.repository;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import top.ticho.intranet.server.domain.repository.PortRepository;
 import top.ticho.intranet.server.infrastructure.entity.Port;
 import top.ticho.intranet.server.infrastructure.mapper.PortMapper;
 import top.ticho.intranet.server.interfaces.query.PortQuery;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * 端口信息 repository实现
@@ -61,5 +68,31 @@ public class PortRepositoryImpl extends RootServiceImpl<PortMapper, Port> implem
         wrapper.last("limit 1");
         return getOne(wrapper);
     }
+
+    @Override
+    public List<Port> listByAccessKeys(Collection<String> accessKeys) {
+        if (CollUtil.isEmpty(accessKeys)) {
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<Port> wrapper = Wrappers.lambdaQuery();
+        wrapper.in(Port::getAccessKey, accessKeys);
+        wrapper.orderByAsc(Port::getSort);
+        wrapper.orderByAsc(Port::getPort);
+        return list(wrapper);
+    }
+
+    @Override
+    public <T> Map<String, List<T>> listAndGroupByAccessKey(Collection<String> accessKeys, Function<Port, T> function, Predicate<Port> filter) {
+        // @formatter:off
+        if (Objects.isNull(function) || Objects.isNull(filter)) {
+            return Collections.emptyMap();
+        }
+        return listByAccessKeys(accessKeys)
+            .stream()
+            .filter(filter)
+            .collect(Collectors.groupingBy(Port::getAccessKey, Collectors.mapping(function, Collectors.toList())));
+        // @formatter:on
+    }
+
 
 }

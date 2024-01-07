@@ -1,6 +1,6 @@
 package top.ticho.intranet.core.server.message;
 
-import io.netty.channel.Channel;
+import cn.hutool.core.util.StrUtil;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import top.ticho.intranet.core.entity.Message;
@@ -8,18 +8,17 @@ import top.ticho.intranet.core.entity.Message;
 import java.nio.charset.StandardCharsets;
 
 /**
- * 客户端心跳消息处理器
+ * 客户端未知消息处理器
  *
  * @author zhajianjun
- * @date 2023-12-17 08:30
+ * @date 2024-01-06 14:56
  */
 @Slf4j
-public class ClientHeartbeatMessageHandler extends AbstractClientMessageHandler {
+public class ClientMessageUnknownHandler extends AbstractClientMessageHandler {
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, Message msg) {
-        Channel channel = ctx.channel();
-        notify(channel, Message.HEARTBEAT, msg.getSerial(), "心跳检测".getBytes(StandardCharsets.UTF_8));
+        log.debug("接收到未知类型{}的消息,{}", msg.getType(), StrUtil.str(msg.getData(), StandardCharsets.UTF_8));
     }
 
 }

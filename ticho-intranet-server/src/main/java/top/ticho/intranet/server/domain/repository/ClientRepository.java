@@ -31,5 +31,11 @@ public interface ClientRepository extends RootService<Client> {
     Client getByAccessKey(String accessKey);
 
 
+    /**
+     * 根据客户端秘钥删除
+     *
+     * @param accessKey 客户端秘钥
+     */
+    void removeByAccessKey(String accessKey);
 }
 

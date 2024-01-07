@@ -37,7 +37,7 @@ public class AppListenHandler extends SimpleChannelInboundHandler<ByteBuf> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel requestChannel = ctx.channel();
-        log.debug("[服务端]请求通道激活, {}", requestChannel);
+        // log.debug("[服务端]请求通道激活, {}", requestChannel);
         // 查询请求通道的端口号
         Integer portNum = TichoUtil.getPortByChannel(requestChannel);
         // 查询客户端信息
@@ -72,7 +72,7 @@ public class AppListenHandler extends SimpleChannelInboundHandler<ByteBuf> {
         msg.setData(port.getEndpoint().getBytes());
         clientChannel.writeAndFlush(msg);
         super.channelActive(ctx);
-        log.warn("[3][服务端]通道激活, 连接客户端{}, 消息{}", clientChannel, msg);
+        // log.warn("[3][服务端]通道激活, 连接客户端{}, 消息{}", clientChannel, msg);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class AppListenHandler extends SimpleChannelInboundHandler<ByteBuf> {
         msg.setType(Message.TRANSFER);
         msg.setUri(requestChannel.attr(CommConst.URI).get());
         msg.setData(data);
-        log.warn("[7][服务端]请求传输到客户端，请求通道{}；客户端通道{}, 消息{}", requestChannel, clientChannel, msg);
+        // log.warn("[7][服务端]请求传输到客户端，请求通道{}；客户端通道{}, 消息{}", requestChannel, clientChannel, msg);
         clientChannel.writeAndFlush(msg);
     }
 

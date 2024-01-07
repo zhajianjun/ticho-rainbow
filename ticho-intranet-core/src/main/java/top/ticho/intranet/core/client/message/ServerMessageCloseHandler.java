@@ -11,7 +11,7 @@ import top.ticho.intranet.core.util.TichoUtil;
 import java.nio.charset.StandardCharsets;
 
 /**
- * 客户端关闭处理器
+ * 服务端关闭消息处理器
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30

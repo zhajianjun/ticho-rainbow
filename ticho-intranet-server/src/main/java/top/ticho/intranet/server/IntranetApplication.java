@@ -1,5 +1,6 @@
 package top.ticho.intranet.server;
 
+import org.springframework.scheduling.annotation.EnableAsync;
 import top.ticho.boot.security.annotation.EnableOauth2AuthServer;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
@@ -18,6 +19,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @MapperScan("top.ticho.intranet.server.infrastructure.mapper")
 @EnableScheduling
 @Slf4j
+@EnableAsync
 public class IntranetApplication {
 
     public static void main(String[] args) {

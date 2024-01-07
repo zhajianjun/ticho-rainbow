@@ -10,7 +10,7 @@ import top.ticho.intranet.core.entity.Message;
 import top.ticho.intranet.core.util.TichoUtil;
 
 /**
- * 服务端断开连接处理器
+ * 客户端断开连接消息处理器
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30

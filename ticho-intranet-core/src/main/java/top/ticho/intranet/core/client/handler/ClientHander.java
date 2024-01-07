@@ -13,8 +13,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import top.ticho.intranet.core.common.IdleChecker;
-import top.ticho.intranet.core.common.MsgDecoder;
-import top.ticho.intranet.core.common.MsgEncoder;
+import top.ticho.intranet.core.common.MessageDecoder;
+import top.ticho.intranet.core.common.MessageEncoder;
 import top.ticho.intranet.core.common.SslHandler;
 import top.ticho.intranet.core.constant.CommConst;
 import top.ticho.intranet.core.prop.ClientProperty;
@@ -143,8 +143,8 @@ public class ClientHander {
             engine.setUseClientMode(true);
             socketChannel.pipeline().addLast(new io.netty.handler.ssl.SslHandler(engine));
         }
-        socketChannel.pipeline().addLast(new MsgDecoder(CommConst.MAX_FRAME_LEN, CommConst.FIELD_OFFSET, CommConst.FIELD_LEN, CommConst.ADJUSTMENT, CommConst.INIT_BYTES_TO_STRIP));
-        socketChannel.pipeline().addLast(new MsgEncoder());
+        socketChannel.pipeline().addLast(new MessageDecoder(CommConst.MAX_FRAME_LEN, CommConst.FIELD_OFFSET, CommConst.FIELD_LEN, CommConst.ADJUSTMENT, CommConst.INIT_BYTES_TO_STRIP));
+        socketChannel.pipeline().addLast(new MessageEncoder());
         socketChannel.pipeline().addLast(new IdleChecker(CommConst.READ_IDLE_TIME, CommConst.WRITE_IDLE_TIME - 10, 0));
         socketChannel.pipeline().addLast(new ServerListenHandler(clientHander, appHandler, clientProperty));
         // @formatter:on

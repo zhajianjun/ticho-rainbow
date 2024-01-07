@@ -49,6 +49,11 @@ public class ClientDTO implements Serializable {
     @ApiModelProperty(value = "备注信息", position = 60)
     private String remark;
 
+    /** 连接时间 */
+    @ApiModelProperty(value = "连接时间", position = 64)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime connectTime;
+
     /** 通道状态;1-激活,0-未激活 */
     @ApiModelProperty(value = "通道状态;1-激活,0-未激活", position = 65)
     private Integer channelStatus = 0;

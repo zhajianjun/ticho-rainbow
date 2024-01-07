@@ -9,7 +9,7 @@ import top.ticho.intranet.core.constant.CommConst;
 import top.ticho.intranet.core.entity.Message;
 
 /**
- * 客户端数据传输处理器
+ * 服务端数据传输消息处理器
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30
@@ -28,7 +28,7 @@ public class ServerMessageTransferHandler extends AbstractServerMessageHandler {
         ByteBuf buf = alloc.buffer(msg.getData().length);
         buf.writeBytes(msg.getData());
         requestChannel.writeAndFlush(buf);
-        log.warn("[8][客户端]接收到到客户端请求信息，接收通道{}，写入通道{}，消息{}", clientChannel, requestChannel, msg);
+        // log.warn("[8][客户端]接收到到客户端请求信息，接收通道{}，写入通道{}，消息{}", clientChannel, requestChannel, msg);
     }
 
 }

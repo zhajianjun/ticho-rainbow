@@ -9,7 +9,7 @@ import top.ticho.intranet.core.prop.ClientProperty;
 
 
 /**
- * 客户端处理器 公共方法
+ * 服务端消息处理器抽象类
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30

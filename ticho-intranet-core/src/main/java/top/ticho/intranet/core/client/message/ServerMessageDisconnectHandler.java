@@ -8,7 +8,7 @@ import top.ticho.intranet.core.constant.CommConst;
 import top.ticho.intranet.core.entity.Message;
 
 /**
- * 客户端断开通道连接处理器
+ * 服务端断开通道连接消息处理器
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30

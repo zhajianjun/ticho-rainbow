@@ -32,7 +32,7 @@ public class AppListenHandler extends SimpleChannelInboundHandler<ByteBuf> {
         msg.setUri(uri);
         msg.setData(data);
         serverChannel.writeAndFlush(msg);
-        log.warn("[9][客户端]响应信息回传，响应通道{}，回传通道{}，消息{}", responseChannel, serverChannel, msg);
+        // log.warn("[9][客户端]响应信息回传，响应通道{}，回传通道{}，消息{}", responseChannel, serverChannel, msg);
     }
 
     @Override

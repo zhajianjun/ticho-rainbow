@@ -1,6 +1,5 @@
 package top.ticho.intranet.core.server.handler;
 
-import cn.hutool.core.util.StrUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -46,6 +45,13 @@ public class AppHandler {
         this.serverBootstrap = serverBootstrap;
     }
 
+    public boolean exists(Integer portNum) {
+        if (Objects.isNull(portNum)) {
+            return false;
+        }
+        return bindPortChannelMap.containsKey(portNum);
+    }
+
     public void createApp(PortInfo portInfo) {
         Integer port;
         if (Objects.isNull(portInfo) || Objects.isNull(port = portInfo.getPort())) {
@@ -85,7 +91,7 @@ public class AppHandler {
     /**
      * 应用总数
      */
-    public int size(){
+    public int size() {
         return bindPortChannelMap.size();
     }
 

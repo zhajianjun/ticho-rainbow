@@ -4,6 +4,26 @@
       <template #toolbar>
         <a-button type="primary" @click="handleCreate"> 新增 </a-button>
       </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'enabled'">
+          <Switch
+            checked-children="开启"
+            un-checked-children="关闭"
+            :checked="record.enabled === 1"
+            :loading="record.pendingEnabled"
+            @change="handleEnabledSwitchChange(record)"
+          />
+        </template>
+        <template v-if="column.key === 'forever'">
+          <Switch
+            checked-children="是"
+            un-checked-children="否"
+            :checked="record.forever === 1"
+            :loading="record.pendingForever"
+            @change="handleForeverSwitchChange(record)"
+          />
+        </template>
+      </template>
       <template #action="{ record }">
         <TableAction
           :actions="[
@@ -42,11 +62,14 @@
   import { useModal } from '@/components/Modal';
   import PortModal from './PortModal.vue';
   import { getTableColumns, getSearchColumns } from './port.data';
-  import { portPage, delPort } from '@/api/system/port';
+  import { portPage, delPort, modifyPort } from '@/api/system/port';
+  import { Switch } from 'ant-design-vue';
+  import { useMessage } from '@/hooks/web/useMessage';
+  import { PortDTO } from '@/api/system/model/portModel';
 
   export default defineComponent({
     name: 'Port',
-    components: { BasicTable, PortModal, TableAction },
+    components: { Switch, BasicTable, PortModal, TableAction },
     setup() {
       const [registerModal, { openModal }] = useModal();
       const [registerTable, { reload }] = useTable({
@@ -112,6 +135,54 @@
         reload();
       }
 
+      function handleEnabledSwitchChange(record: Recordable) {
+        record.pendingEnabled = true;
+        const { createMessage } = useMessage();
+        let checked = record.enabled === 1;
+        if (checked) {
+          record.enabled = 0;
+        } else {
+          record.enabled = 1;
+        }
+        const params: PortDTO = { ...record } as PortDTO;
+        const messagePrefix = !checked ? '启动' : '关闭';
+        modifyPort(params)
+          .then(() => {
+            createMessage.success(messagePrefix + `成功`);
+          })
+          .catch(() => {
+            createMessage.error(messagePrefix + `失败`);
+          })
+          .finally(() => {
+            record.pendingEnabled = false;
+            reload();
+          });
+      }
+
+      function handleForeverSwitchChange(record: Recordable) {
+        record.pendingForever = true;
+        const { createMessage } = useMessage();
+        let checked = record.forever === 1;
+        if (checked) {
+          record.forever = 0;
+        } else {
+          record.forever = 1;
+        }
+        const params: PortDTO = { ...record } as PortDTO;
+        const messagePrefix = !checked ? '启动' : '关闭';
+        modifyPort(params)
+          .then(() => {
+            createMessage.success(messagePrefix + `成功`);
+          })
+          .catch(() => {
+            createMessage.error(messagePrefix + `失败`);
+          })
+          .finally(() => {
+            record.pendingForever = false;
+            reload();
+          });
+      }
+
       return {
         registerTable,
         registerModal,
@@ -120,6 +191,8 @@
         handleEdit,
         handleDelete,
         handleSuccess,
+        handleEnabledSwitchChange,
+        handleForeverSwitchChange,
       };
     },
   });

@@ -9,7 +9,7 @@ import top.ticho.intranet.core.entity.Message;
 import top.ticho.intranet.core.util.TichoUtil;
 
 /**
- * 服务端信息传输处理器
+ * 客户端信息传输消息处理器
  *
  * @author zhajianjun
  * @date 2023-12-17 08:30
@@ -27,7 +27,7 @@ public class ClientTransferMessageHandler extends AbstractClientMessageHandler {
         ByteBuf data = ctx.alloc().buffer(msg.getData().length);
         data.writeBytes(msg.getData());
         requestChannel.writeAndFlush(data);
-        log.warn("[10][服务端]响应信息接收，接收通道：{}；写入通道：{}, 消息{}", channel, requestChannel, msg);
+        // log.warn("[10][服务端]响应信息接收，接收通道：{}；写入通道：{}, 消息{}", channel, requestChannel, msg);
     }
 
 }
