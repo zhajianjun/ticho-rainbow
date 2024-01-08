@@ -2,6 +2,7 @@ package top.ticho.intranet.server.domain.repository;
 
 import top.ticho.boot.datasource.service.RootService;
 import top.ticho.intranet.server.infrastructure.entity.User;
+import top.ticho.intranet.server.interfaces.query.UserAccountQuery;
 import top.ticho.intranet.server.interfaces.query.UserQuery;
 
 import java.util.List;
@@ -29,5 +30,14 @@ public interface UserRepository extends RootService<User> {
      * @return {@link User}
      */
     User getByUsername(String username);
+
+    /**
+     * 根据用户登录账号信息查询
+     *
+     * @param userAccountQuery 用户登录账号信息
+     * @return 用户信息
+     */
+    List<User> getByAccount(UserAccountQuery userAccountQuery);
+
 }
 

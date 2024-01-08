@@ -19,7 +19,7 @@ import top.ticho.intranet.server.domain.repository.ClientRepository;
 import top.ticho.intranet.server.domain.repository.PortRepository;
 import top.ticho.intranet.server.infrastructure.entity.Client;
 import top.ticho.intranet.server.infrastructure.entity.Port;
-import top.ticho.intranet.server.infrastructure.enums.ProtocolType;
+import top.ticho.intranet.server.infrastructure.core.enums.ProtocolType;
 import top.ticho.intranet.server.interfaces.assembler.PortAssembler;
 import top.ticho.intranet.server.interfaces.dto.PortDTO;
 import top.ticho.intranet.server.interfaces.query.PortQuery;

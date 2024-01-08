@@ -1,4 +1,4 @@
-package top.ticho.intranet.server.infrastructure.enums;
+package top.ticho.intranet.server.infrastructure.core.enums;
 
 import java.util.Arrays;
 import java.util.Optional;

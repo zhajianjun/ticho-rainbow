@@ -16,7 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @EnableOauth2AuthServer
 @SpringBootApplication
-@MapperScan("top.ticho.intranet.server.infrastructure.mapper")
+@MapperScan("top.ticho.intranet.server.**.mapper")
 @EnableScheduling
 @Slf4j
 @EnableAsync
