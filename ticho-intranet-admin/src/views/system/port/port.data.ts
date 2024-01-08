@@ -25,25 +25,25 @@ export function getTableColumns(): BasicColumn[] {
       title: '主机端口',
       dataIndex: 'port',
       resizable: true,
-      width: 100,
+      width: 50,
     },
     {
       title: '客户端地址',
       dataIndex: 'endpoint',
       resizable: true,
-      width: 100,
+      width: 120,
     },
     {
       title: '域名',
       dataIndex: 'domain',
       resizable: true,
-      width: 100,
+      width: 80,
     },
     {
       title: '是否永久',
       dataIndex: 'forever',
       resizable: true,
-      width: 100,
+      width: 50,
     },
     {
       title: '过期时间',
@@ -61,7 +61,7 @@ export function getTableColumns(): BasicColumn[] {
       title: '协议类型',
       dataIndex: 'type',
       resizable: true,
-      width: 100,
+      width: 50,
       customRender: ({ record }) => {
         if (record.type === undefined || isNull(record.type)) {
           return '';
@@ -76,7 +76,7 @@ export function getTableColumns(): BasicColumn[] {
       title: '是否开启',
       dataIndex: 'enabled',
       resizable: true,
-      width: 100,
+      width: 50,
     },
     {
       title: '通道状态',
@@ -94,7 +94,7 @@ export function getTableColumns(): BasicColumn[] {
       title: '排序',
       dataIndex: 'sort',
       resizable: true,
-      width: 100,
+      width: 50,
     },
     {
       title: '备注信息',
@@ -281,24 +281,6 @@ export function getModalFormColumns(): FormSchema[] {
           message: '请选择协议类型',
         },
       ],
-      // dynamicRules: ({ values }) => {
-      //   return [
-      //     {
-      //       trigger: 'blur',
-      //       required: true,
-      //       validator: (_, value) => {
-      //         if (!value) {
-      //           return Promise.reject('协议类型不能为空');
-      //         }
-      //         const reg = new RegExp('^([a-z0-9-]+\\.)+[a-z]{2,}(/\\S*)?$');
-      //         if (!value.match(reg)) {
-      //           return Promise.reject('域名格式不正确');
-      //         }
-      //         return Promise.resolve();
-      //       },
-      //     },
-      //   ];
-      // },
     },
     {
       field: `domain`,
@@ -390,9 +372,13 @@ export function getModalFormColumns(): FormSchema[] {
     {
       field: `remark`,
       label: `备注信息`,
-      component: 'Input',
+      component: 'InputTextArea',
       componentProps: {
+        defaultValue: '',
         placeholder: '请输入备注信息',
+        maxlength: 120,
+        showCount: true,
+        rows: 4,
       },
       colProps: {
         span: 24,

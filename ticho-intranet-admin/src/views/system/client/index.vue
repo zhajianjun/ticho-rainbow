@@ -22,7 +22,6 @@
               icon: 'clarity:note-edit-line',
               onClick: handleEdit.bind(null, record),
               tooltip: '修改',
-              label: '修改',
               divider: true,
             },
             {
@@ -33,7 +32,6 @@
                 confirm: handleDelete.bind(null, record),
               },
               tooltip: '删除',
-              label: '删除',
               divider: true,
             },
           ]"
@@ -81,7 +79,7 @@
         bordered: true,
         showIndexColumn: false,
         actionColumn: {
-          width: 100,
+          width: 60,
           title: '操作',
           dataIndex: 'action',
           slots: { customRender: 'action' },

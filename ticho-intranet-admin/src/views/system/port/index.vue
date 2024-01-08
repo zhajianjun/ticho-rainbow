@@ -31,13 +31,11 @@
               icon: 'clarity:note-edit-line',
               onClick: handleEdit.bind(null, record),
               tooltip: '修改',
-              label: '修改',
             },
             {
-              icon: 'clarity:note-edit-line',
+              icon: 'ant-design:copy-outlined',
               onClick: handleCopy.bind(null, record),
               tooltip: '复制',
-              label: '复制',
             },
             {
               icon: 'ant-design:delete-outlined',
@@ -47,7 +45,6 @@
                 confirm: handleDelete.bind(null, record),
               },
               tooltip: '删除',
-              label: '删除',
             },
           ]"
         />
@@ -94,7 +91,7 @@
         bordered: true,
         showIndexColumn: false,
         actionColumn: {
-          width: 100,
+          width: 80,
           title: '操作',
           dataIndex: 'action',
           slots: { customRender: 'action' },
