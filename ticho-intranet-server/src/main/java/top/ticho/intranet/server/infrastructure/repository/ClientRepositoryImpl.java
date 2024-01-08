@@ -3,14 +3,12 @@ package top.ticho.intranet.server.infrastructure.repository;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import org.springframework.beans.factory.annotation.Autowired;
-import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import top.ticho.intranet.server.domain.repository.ClientRepository;
 import top.ticho.intranet.server.infrastructure.entity.Client;
 import top.ticho.intranet.server.infrastructure.mapper.ClientMapper;
-import top.ticho.intranet.server.infrastructure.mapper.PortMapper;
 import top.ticho.intranet.server.interfaces.query.ClientQuery;
 
 import java.util.List;
@@ -25,9 +23,6 @@ import java.util.Objects;
 @Slf4j
 @Service
 public class ClientRepositoryImpl extends RootServiceImpl<ClientMapper, Client> implements ClientRepository {
-
-    @Autowired
-    private PortMapper portMapper;
 
     @Override
     public List<Client> list(ClientQuery query) {
