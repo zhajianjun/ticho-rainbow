@@ -1,6 +1,7 @@
 package top.ticho.intranet.server.interfaces.facade;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +29,7 @@ import top.ticho.intranet.server.interfaces.query.DictQuery;
 @RestController
 @RequestMapping("dict")
 @Api(tags = "数据字典")
+@ApiSort(80)
 public class DictController {
 
     @Autowired

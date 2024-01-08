@@ -1,6 +1,7 @@
 package top.ticho.intranet.server.interfaces.facade;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.core.Result;
 import io.swagger.annotations.Api;
@@ -29,6 +30,7 @@ import java.util.List;
 @RestController
 @RequestMapping("client")
 @Api(tags = "客户端信息")
+@ApiSort(90)
 public class ClientController {
 
     @Autowired

@@ -1,6 +1,7 @@
 package top.ticho.intranet.server.interfaces.facade;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.core.Result;
 import io.swagger.annotations.Api;
@@ -27,6 +28,7 @@ import top.ticho.intranet.server.interfaces.query.PortQuery;
 @RestController
 @RequestMapping("port")
 @Api(tags = "端口信息")
+@ApiSort(100)
 public class PortController {
 
     @Autowired
