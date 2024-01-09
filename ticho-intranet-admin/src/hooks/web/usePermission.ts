@@ -11,11 +11,11 @@ import { router, resetRouter } from '@/router';
 
 import projectSetting from '@/settings/projectSetting';
 import { PermissionModeEnum } from '@/enums/appEnum';
-import { RoleEnum } from '@/enums/roleEnum';
 
 import { intersection } from 'lodash-es';
 import { isArray } from '@/utils/is';
 import { useMultipleTabStore } from '@/store/modules/multipleTab';
+import { RoleDTO } from '@/api/system/model/roleModel';
 
 // User permissions related operations
 export function usePermission() {
@@ -57,44 +57,28 @@ export function usePermission() {
   /**
    * Determine whether there is permission
    */
-  function hasPermission(value?: RoleEnum | RoleEnum[] | string | string[], def = true): boolean {
+  function hasPermission(value?: string | string[], def = true): boolean {
     // Visible by default
     if (!value) {
       return def;
     }
-
-    const permMode = appStore.getProjectConfig.permissionMode;
-
-    if ([PermissionModeEnum.ROUTE_MAPPING, PermissionModeEnum.ROLE].includes(permMode)) {
-      if (!isArray(value)) {
-        return userStore.getRoleList?.includes(value as RoleEnum);
-      }
-      return (intersection(value, userStore.getRoleList) as RoleEnum[]).length > 0;
+    const userInfo = userStore.getUserInfo;
+    // 超級管理员角色，什么都有
+    if (!!userInfo.roleCodes && userInfo.roleCodes.includes('admin')) {
+      return true;
     }
-
-    if (PermissionModeEnum.BACK === permMode) {
-      const allCodeList = permissionStore.getPermCodeList as string[];
-      if (!isArray(value)) {
-        const splits = ['||', '&&'];
-        const splitName = splits.find((item) => value.includes(item));
-        if (splitName) {
-          const splitCodes = value.split(splitName);
-          return splitName === splits[0]
-            ? intersection(splitCodes, allCodeList).length > 0
-            : intersection(splitCodes, allCodeList).length === splitCodes.length;
-        }
-        return allCodeList.includes(value);
-      }
-      return (intersection(value, allCodeList) as string[]).length > 0;
+    const allCodeList = permissionStore.getButtons as string[];
+    if (!isArray(value)) {
+      return allCodeList.includes(value);
     }
-    return true;
+    return (intersection(value, allCodeList) as unknown as string[]).length > 0;
   }
 
   /**
    * Change roles
    * @param roles
    */
-  async function changeRole(roles: RoleEnum | RoleEnum[]): Promise<void> {
+  async function changeRole(roles: RoleDTO | RoleDTO[]): Promise<void> {
     if (projectSetting.permissionMode !== PermissionModeEnum.ROUTE_MAPPING) {
       throw new Error(
         'Please switch PermissionModeEnum to ROUTE_MAPPING mode in the configuration to operate!',

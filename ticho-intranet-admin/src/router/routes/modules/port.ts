@@ -12,17 +12,17 @@ const port: AppRouteModule = {
     hideChildrenInMenu: true,
     orderNo: 3000,
     icon: 'ion:layers-outline',
-    title: t('routes.system.port.title'),
+    title: t('routes.intranet.port.title'),
   },
   children: [
     {
       path: 'index',
       name: 'PortPage',
       meta: {
-        title: t('routes.system.port.title'),
+        title: t('routes.intranet.port.title'),
         ignoreKeepAlive: false,
       },
-      component: () => import('@/views/system/port/index.vue'),
+      component: () => import('@/views/intranet/port/index.vue'),
     },
   ],
 };

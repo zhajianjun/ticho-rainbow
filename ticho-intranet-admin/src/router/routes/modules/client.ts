@@ -12,17 +12,17 @@ const client: AppRouteModule = {
     hideChildrenInMenu: true,
     orderNo: 2000,
     icon: 'ant-design:account-book-outlined',
-    title: t('routes.system.client.title'),
+    title: t('routes.intranet.client.title'),
   },
   children: [
     {
       path: 'index',
       name: 'ClientPage',
       meta: {
-        title: t('routes.system.client.title'),
+        title: t('routes.intranet.client.title'),
         ignoreKeepAlive: false,
       },
-      component: () => import('@/views/system/client/index.vue'),
+      component: () => import('@/views/intranet/client/index.vue'),
     },
   ],
 };

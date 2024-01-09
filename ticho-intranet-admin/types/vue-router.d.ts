@@ -1,3 +1,4 @@
+import { RoleDTO } from '@/api/system/model/roleModel';
 
 export {};
 
@@ -13,7 +14,7 @@ declare module 'vue-router' {
     // Whether to ignore permissions
     ignoreAuth?: boolean;
     // role info
-    roles?: String[];
+    roles?: RoleDTO[];
     // Whether not to cache
     ignoreKeepAlive?: boolean;
     // Is it fixed on tab
