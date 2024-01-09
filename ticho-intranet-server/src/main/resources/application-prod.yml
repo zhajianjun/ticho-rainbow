@@ -7,7 +7,7 @@ ticho:
     log:
       enable: true
       print-sql: true
-      print-simple: false
+      print-simple: true
   security:
     ant-patterns:
       - /
