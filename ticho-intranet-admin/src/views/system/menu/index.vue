@@ -6,6 +6,15 @@
         <a-button type="primary" v-if="showSelect" @click="expandAll">展开</a-button>
         <a-button type="primary" v-if="showSelect" @click="collapseAll">收缩</a-button>
       </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'perms'">
+          <Space>
+            <Tag color="success" v-for="item in record.perms" :key="item">
+              {{ item }}
+            </Tag>
+          </Space>
+        </template>
+      </template>
       <template #action="{ record }">
         <TableAction
           :actions="[
@@ -49,10 +58,11 @@
   import { columns } from './menu.data';
   import { cloneDeep } from 'lodash-es';
   import { usePermission } from '@/hooks/web/usePermission';
+  import { Space, Tag } from 'ant-design-vue';
 
   export default defineComponent({
     name: 'MenuManagement',
-    components: { BasicTable, MenuDrawer, TableAction },
+    components: { Tag, Space, BasicTable, MenuDrawer, TableAction },
     setup() {
       const { hasPermission } = usePermission();
       const treeData = ref([]);

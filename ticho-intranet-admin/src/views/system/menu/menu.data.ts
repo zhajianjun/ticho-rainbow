@@ -2,9 +2,6 @@ import { BasicColumn, FormSchema } from '@/components/Table';
 import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
 import Icon from '@/components/Icon/Icon.vue';
-import { SHOW_CHILD } from 'ant-design-vue/es/vc-cascader';
-import { getPermList } from '@/api/system/perm';
-// import { PermDTO } from '@/api/system/model/permModel';
 
 export const columns: BasicColumn[] = [
   {
@@ -48,12 +45,6 @@ export const columns: BasicColumn[] = [
     title: '权限标识',
     dataIndex: 'perms',
     width: 250,
-    customRender: ({ record }) => {
-      if (!record.perms) {
-        return null;
-      }
-      return record.perms.map((item) => h(Tag, { color: 'success' }, () => item));
-    },
   },
   {
     title: '排序',
@@ -79,19 +70,9 @@ export const columns: BasicColumn[] = [
   },
 ];
 
-const isDir = (type: number) => type === 1;
+// const isDir = (type: number) => type === 1;
 const isMenu = (type: number) => type === 2;
 const isButton = (type: number) => type === 3;
-
-// function getPermListProxy() {
-//   const permList = ref<PermDTO[]>([]);
-//   getPermList().then((res) => {
-//     if (res !== undefined) {
-//       permList.value = res;
-//     }
-//   });
-//   return permList.value;
-// }
 
 export const formSchema: FormSchema[] = [
   {
@@ -172,7 +153,7 @@ export const formSchema: FormSchema[] = [
     label: '组件名称',
     component: 'Input',
     required: true,
-    ifShow: ({ values }) => !isDir(values.type) && values.extFlag !== 1,
+    ifShow: ({ values }) => values.extFlag !== 1,
   },
   {
     field: 'redirect',
@@ -183,18 +164,8 @@ export const formSchema: FormSchema[] = [
   {
     field: 'perms',
     label: '权限标识',
-    component: 'ApiCascader',
     ifShow: ({ values }) => isButton(values.type),
-    componentProps: {
-      multiple: true,
-      showCheckedStrategy: SHOW_CHILD,
-      api: getPermList,
-      displayRender: ({ labels }) => labels?.join(':'),
-      fieldNames: {
-        label: 'name',
-        value: 'code',
-      },
-    },
+    slot: 'permsSlot',
   },
   {
     field: 'status',

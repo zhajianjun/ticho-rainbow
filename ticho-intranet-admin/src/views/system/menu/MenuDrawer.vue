@@ -7,7 +7,18 @@
     width="50%"
     @ok="handleSubmit"
   >
-    <BasicForm @register="registerForm" />
+    <BasicForm @register="registerForm">
+      <template #permsSlot="{ model, field }">
+        <Cascader
+          v-model:value="model[field]"
+          :options="permList"
+          :multiple="true"
+          :showCheckedStrategy="SHOW_CHILD()"
+          :fieldNames="{ label: 'name', value: 'code' }"
+          :displayRender="({ labels }) => labels?.join(':')"
+        />
+      </template>
+    </BasicForm>
   </BasicDrawer>
 </template>
 <script lang="ts">
@@ -15,18 +26,22 @@
   import { BasicForm, useForm } from '@/components/Form/index';
   import { formSchema } from './menu.data';
   import { BasicDrawer, useDrawerInner } from '@/components/Drawer';
+  import { Cascader } from 'ant-design-vue';
+  import { SHOW_CHILD } from 'ant-design-vue/es/vc-cascader';
 
   import { saveMenu, modifyMenu } from '@/api/system/menu';
+  import { getPerms } from '@/api/system/perm';
 
   export default defineComponent({
     name: 'MenuDrawer',
-    components: { BasicDrawer, BasicForm },
+    components: { BasicDrawer, BasicForm, Cascader },
     props: {
       treeData: Array,
     },
     emits: ['success', 'register'],
     setup(props, { emit }) {
       const isUpdate = ref(true);
+      const permList = ref<Array<any>>([]);
 
       const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
         labelWidth: 100,
@@ -78,6 +93,10 @@
         });
       });
 
+      getPerms().then((res) => {
+        permList.value = res as unknown as Array<any>;
+      });
+
       /**
        * 过滤按钮type=3的数据
        */
@@ -123,7 +142,13 @@
             setDrawerProps({ confirmLoading: false });
           });
       }
-      return { registerDrawer, registerForm, getTitle, handleSubmit };
+
+      return { registerDrawer, registerForm, getTitle, handleSubmit, permList };
+    },
+    methods: {
+      SHOW_CHILD() {
+        return SHOW_CHILD;
+      },
     },
   });
 </script>

@@ -5,4 +5,4 @@ enum Api {
   PermList = '/perm/list',
 }
 
-export const getPermList = () => defHttp.get<PermDTO[]>({ url: Api.PermList });
+export const getPerms = () => defHttp.get<PermDTO>({ url: Api.PermList });
