@@ -12,20 +12,20 @@
 <script lang="ts">
   import { computed, defineComponent, ref, unref } from 'vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
-  import { BasicForm, useForm } from '@/components/Form/index';
-  import { getModalFormColumns } from './port.data';
-  import { modifyPort, savePort } from '@/api/system/port';
-  import { PortDTO } from '@/api/system/model/portModel';
+  import { BasicForm, useForm } from '@/components/Form';
+  import { getModalFormColumns } from './client.data';
+  import { modifyClient, saveClient } from '@/api/intranet/client';
+  import { ClientDTO } from '@/api/intranet/model/clientModel';
   import { useMessage } from '@/hooks/web/useMessage';
 
   export default defineComponent({
-    name: 'PortModal',
+    name: 'ClientModal',
     components: { BasicModal, BasicForm },
     emits: ['success', 'register'],
     setup(_, { emit }) {
-      const modalType = ref(1);
-      const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
-        labelWidth: 120,
+      const isUpdate = ref(true);
+      const [registerForm, { setFieldsValue, updateSchema, resetFields, validate }] = useForm({
+        labelWidth: 100,
         baseColProps: { span: 24 },
         schemas: getModalFormColumns(),
         showActionButtonGroup: false,
@@ -37,25 +37,32 @@
       const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
         await resetFields();
         setModalProps({ confirmLoading: false });
-        modalType.value = data?.modalType;
-        if (unref(modalType) !== 1) {
+        isUpdate.value = !!data?.isUpdate;
+        if (unref(isUpdate)) {
           await setFieldsValue({
             ...data.record,
           });
         }
+        await updateSchema([
+          {
+            field: 'accessKey',
+            componentProps: {
+              disabled: unref(isUpdate),
+            },
+          },
+        ]);
       });
 
-      const getTitle = computed(() => (unref(modalType) !== 2 ? '新增端口信息' : '编辑端口信息'));
+      const getTitle = computed(() => (!unref(isUpdate) ? '新增客户端信息' : '编辑客户端信息'));
 
       async function handleSubmit() {
         try {
-          const values = (await validate()) as PortDTO;
+          const values = (await validate()) as ClientDTO;
           setModalProps({ confirmLoading: true });
-          if (unref(modalType) === 2) {
-            await modifyPort(values);
+          if (unref(isUpdate)) {
+            await modifyClient(values);
           } else {
-            values.id = null;
-            await savePort(values);
+            await saveClient(values);
           }
           const { createMessage } = useMessage();
           createMessage.success('操作成功');

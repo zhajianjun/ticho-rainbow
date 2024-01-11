@@ -1,7 +1,7 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
-import { clientAll } from '@/api/system/client';
+import { clientAll } from '@/api/intranet/client';
 import { isNull } from '@/utils/is';
 
 const protocolType = [

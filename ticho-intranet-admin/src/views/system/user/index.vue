@@ -1,12 +1,26 @@
 <template>
-  <div>
-    <BasicTable @register="registerTable">
+  <PageWrapper dense contentFullHeight fixedHeight contentClass="flex">
+    <BasicTable @register="registerTable" :searchInfo="searchInfo">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 新增 </a-button>
+        <a-button type="primary" v-auth="'UserAdd'" @click="handleCreate">新增账号</a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'roles'">
+          <Space>
+            <Tag color="success" v-for="item in record.roles" :key="item.code">
+              {{ item.name }}
+            </Tag>
+          </Space>
+        </template>
       </template>
       <template #action="{ record }">
         <TableAction
           :actions="[
+            {
+              icon: 'clarity:info-standard-line',
+              onClick: handleView.bind(null, record),
+              tooltip: '查看',
+            },
             {
               icon: 'clarity:note-edit-line',
               onClick: handleEdit.bind(null, record),
@@ -31,47 +45,54 @@
       </template>
     </BasicTable>
     <UserModel @register="registerModal" @success="handleSuccess" />
-    <UserPasswordModal @register="registerPasswordModal" @success="handleSuccess" />
-  </div>
+  </PageWrapper>
 </template>
 <script lang="ts">
-  import { defineComponent } from 'vue';
+  import { defineComponent, reactive } from 'vue';
   import { BasicTable, useTable, TableAction } from '@/components/Table';
+  import { userPage, delUser } from '@/api/system/user';
+  import { PageWrapper } from '@/components/Page';
   import { useModal } from '@/components/Modal';
   import UserModel from './UserModal.vue';
-  import UserPasswordModal from './UserPasswordModal.vue';
-  import { getTableColumns, getSearchColumns } from './user.data';
-  import { userPage, delUser } from '@/api/system/user';
+  import { columns, searchFormSchema } from './user.data';
+  import { useGo } from '@/hooks/web/usePage';
+  import { usePermission } from '@/hooks/web/usePermission';
+  import { Tag, Space } from 'ant-design-vue';
 
   export default defineComponent({
-    name: 'UserManagement',
-    components: { BasicTable, UserModel, UserPasswordModal, TableAction },
+    name: 'AccountManagement',
+    components: { BasicTable, PageWrapper, UserModel, TableAction, Tag, Space },
     setup() {
+      const { hasPermission } = usePermission();
+      let showSelect = hasPermission('UserSelect');
+      const go = useGo();
       const [registerModal, { openModal }] = useModal();
       const [registerPasswordModal, { openModal: openPassModal }] = useModal();
+      const searchInfo = reactive<Recordable>({});
       const [registerTable, { reload }] = useTable({
         title: '用户列表',
         api: userPage,
         rowKey: 'id',
-        columns: getTableColumns(),
-        useSearchForm: true,
+        columns,
+        useSearchForm: showSelect,
         formConfig: {
           labelWidth: 120,
-          schemas: getSearchColumns(),
-          showActionButtonGroup: true,
-          showSubmitButton: true,
-          showResetButton: true,
+          schemas: searchFormSchema,
           autoSubmitOnEnter: true,
+          showActionButtonGroup: showSelect,
+          showSubmitButton: showSelect,
+          showResetButton: showSelect,
         },
         tableSetting: {
-          redo: true,
+          redo: showSelect,
         },
-        immediate: true,
+        immediate: showSelect,
         showTableSetting: true,
-        bordered: true,
+        canResize: true,
         showIndexColumn: false,
+        bordered: true,
         actionColumn: {
-          width: 80,
+          width: 120,
           title: '操作',
           dataIndex: 'action',
           slots: { customRender: 'action' },
@@ -92,6 +113,7 @@
       }
 
       function handleEdit(record: Recordable) {
+        console.log(record);
         openModal(true, {
           record,
           isUpdate: true,
@@ -105,13 +127,23 @@
       }
 
       function handleDelete(record: Recordable) {
-        delUser(record.id).then(() => {
+        delUser(record.id).catch(() => {
           reload();
         });
       }
 
-      function handleSuccess() {
+      function handleSuccess({ isUpdate, values }) {
+        console.table(isUpdate, values);
         reload();
+      }
+
+      function handleSelect(deptId = '') {
+        searchInfo.deptId = deptId;
+        reload();
+      }
+
+      function handleView(record: Recordable) {
+        go('/system/user/userDetail/' + record.username);
       }
 
       return {
@@ -123,6 +155,10 @@
         handleEditPassword,
         handleDelete,
         handleSuccess,
+        handleSelect,
+        handleView,
+        searchInfo,
+        hasPermission,
       };
     },
   });

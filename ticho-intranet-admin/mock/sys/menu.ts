@@ -137,72 +137,72 @@ const levelRoute = {
 };
 
 const sysRoute = {
-  path: '/system',
+  path: '/intranet',
   name: 'System',
   component: 'LAYOUT',
-  redirect: '/system/account',
+  redirect: '/intranet/account',
   meta: {
     icon: 'ion:settings-outline',
-    title: 'routes.demo.system.moduleName',
+    title: 'routes.demo.intranet.moduleName',
   },
   children: [
     {
       path: 'account',
       name: 'AccountManagement',
       meta: {
-        title: 'routes.demo.system.account',
+        title: 'routes.demo.intranet.account',
         ignoreKeepAlive: true,
       },
-      component: '/demo/system/account/index',
+      component: '/demo/intranet/account/index',
     },
     {
       path: 'account_detail/:id',
       name: 'AccountDetail',
       meta: {
         hideMenu: true,
-        title: 'routes.demo.system.account_detail',
+        title: 'routes.demo.intranet.account_detail',
         ignoreKeepAlive: true,
         showMenu: false,
-        currentActiveMenu: '/system/account',
+        currentActiveMenu: '/intranet/account',
       },
-      component: '/demo/system/account/AccountDetail',
+      component: '/demo/intranet/account/AccountDetail',
     },
     {
       path: 'role',
       name: 'RoleManagement',
       meta: {
-        title: 'routes.demo.system.role',
+        title: 'routes.demo.intranet.role',
         ignoreKeepAlive: true,
       },
-      component: '/demo/system/role/index',
+      component: '/demo/intranet/role/index',
     },
 
     {
       path: 'menu',
       name: 'MenuManagement',
       meta: {
-        title: 'routes.demo.system.menu',
+        title: 'routes.demo.intranet.menu',
         ignoreKeepAlive: true,
       },
-      component: '/demo/system/menu/index',
+      component: '/demo/intranet/menu/index',
     },
     {
       path: 'dept',
       name: 'DeptManagement',
       meta: {
-        title: 'routes.demo.system.dept',
+        title: 'routes.demo.intranet.dept',
         ignoreKeepAlive: true,
       },
-      component: '/demo/system/dept/index',
+      component: '/demo/intranet/dept/index',
     },
     {
       path: 'changePassword',
       name: 'ChangePassword',
       meta: {
-        title: 'routes.demo.system.password',
+        title: 'routes.demo.intranet.password',
         ignoreKeepAlive: true,
       },
-      component: '/demo/system/password/index',
+      component: '/demo/intranet/password/index',
     },
   ],
 };

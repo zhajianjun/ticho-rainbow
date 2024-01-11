@@ -59,10 +59,10 @@
   import { useModal } from '@/components/Modal';
   import PortModal from './PortModal.vue';
   import { getTableColumns, getSearchColumns } from './port.data';
-  import { portPage, delPort, modifyPort } from '@/api/system/port';
+  import { portPage, delPort, modifyPort } from '@/api/intranet/port';
   import { Switch } from 'ant-design-vue';
   import { useMessage } from '@/hooks/web/useMessage';
-  import { PortDTO } from '@/api/system/model/portModel';
+  import { PortDTO } from '@/api/intranet/model/portModel';
 
   export default defineComponent({
     name: 'Port',

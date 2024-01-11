@@ -48,9 +48,9 @@
   import { useModal } from '@/components/Modal';
   import ClientModel from './ClientModal.vue';
   import { getSearchColumns, getTableColumns } from './client.data';
-  import { clientPage, delClient, modifyClientEnabled } from '@/api/system/client';
+  import { clientPage, delClient, modifyClientEnabled } from '@/api/intranet/client';
   import { useMessage } from '@/hooks/web/useMessage';
-  import { ClientDTO } from '@/api/system/model/clientModel';
+  import { ClientDTO } from '@/api/intranet/model/clientModel';
 
   export default defineComponent({
     name: 'ClientManagement',

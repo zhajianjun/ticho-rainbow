@@ -12,14 +12,14 @@ const user: AppRouteModule = {
     hideChildrenInMenu: true,
     orderNo: 1000,
     icon: 'ant-design:user-outlined',
-    title: t('routes.system.user.title'),
+    title: t('routes.intranet.user.title'),
   },
   children: [
     {
       path: 'index',
       name: 'UserPage',
       meta: {
-        title: t('routes.system.user.title'),
+        title: t('routes.intranet.user.title'),
         ignoreKeepAlive: false,
       },
       component: () => import('@/views/system/user/index.vue'),
