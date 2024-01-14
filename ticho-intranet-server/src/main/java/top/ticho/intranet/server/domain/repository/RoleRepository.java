@@ -33,7 +33,7 @@ public interface RoleRepository extends RootService<Role> {
 
 
     /**
-     * 根据字典类型编码排除主键编号查询
+     * 根据字典编码排除主键编号查询
      *
      * @param code      角色编码
      * @param excludeId 排除的主键编号

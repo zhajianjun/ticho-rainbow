@@ -44,6 +44,7 @@ public class DictTypeServiceImpl implements DictTypeService {
         DictType dbDictType = dictTypeRepository.getByCodeExcludeId(dictType.getCode(), null);
         Assert.isNull(dbDictType, BizErrCode.FAIL, "保存失败，字典已存在");
         dictType.setId(CloudIdUtil.getId());
+        dictType.setStatus(1);
         Integer isSys = Optional.ofNullable(dictType.getIsSys()).orElse(0);
         dictType.setIsSys(isSys);
         Assert.isTrue(dictTypeRepository.save(dictType), BizErrCode.FAIL, "保存失败");

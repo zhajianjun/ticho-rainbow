@@ -1,8 +1,8 @@
 package top.ticho.intranet.server.application.service;
 
-import top.ticho.boot.view.core.PageResult;
 import top.ticho.intranet.server.interfaces.dto.DictDTO;
-import top.ticho.intranet.server.interfaces.query.DictQuery;
+
+import java.util.List;
 
 /**
  * 数据字典 服务接口
@@ -34,20 +34,12 @@ public interface DictService {
     void updateById(DictDTO dictDTO);
 
     /**
-     * 根据id查询数据字典
+     * 根据字典编码查询数据字典
      *
-     * @param id 主键
+     * @param code 字典编码
      * @return {@link DictDTO}
      */
-    DictDTO getById(Long id);
-
-    /**
-     * 分页查询数据字典列表
-     *
-     * @param query 查询
-     * @return {@link PageResult}<{@link DictDTO}>
-     */
-    PageResult<DictDTO> page(DictQuery query);
+    List<DictDTO> getByCode(String code);
 
 }
 

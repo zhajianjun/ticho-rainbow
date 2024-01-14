@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.core.Result;
 import top.ticho.intranet.server.application.service.DictService;
 import top.ticho.intranet.server.interfaces.dto.DictDTO;
-import top.ticho.intranet.server.interfaces.query.DictQuery;
+
+import java.util.List;
 
 /**
  * 数据字典 控制器
@@ -63,21 +63,13 @@ public class DictController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('system:dict:get')")
-    @ApiOperation(value = "主键查询数据字典")
+    @PreAuthorize("@perm.hasPerms('system:dict:getByCode')")
+    @ApiOperation(value = "根据字典编码查询数据字典")
     @ApiOperationSupport(order = 40)
-    @ApiImplicitParam(value = "编号", name = "id", required = true)
+    @ApiImplicitParam(value = "字典编码", name = "code", required = true)
     @GetMapping
-    public Result<DictDTO> get(Long id) {
-        return Result.ok(dictService.getById(id));
-    }
-
-    @PreAuthorize("@perm.hasPerms('system:dict:page')")
-    @ApiOperation(value = "分页查询数据字典")
-    @ApiOperationSupport(order = 50)
-    @GetMapping("page")
-    public Result<PageResult<DictDTO>> page(DictQuery query) {
-        return Result.ok(dictService.page(query));
+    public Result<List<DictDTO>> getByCode(String code) {
+        return Result.ok(dictService.getByCode(code));
     }
 
 }

@@ -1,10 +1,7 @@
 package top.ticho.intranet.server.domain.service;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.enums.BizErrCode;
 import top.ticho.boot.view.util.Assert;
 import top.ticho.boot.web.util.CloudIdUtil;
@@ -15,7 +12,6 @@ import top.ticho.intranet.server.domain.repository.DictRepository;
 import top.ticho.intranet.server.infrastructure.entity.Dict;
 import top.ticho.intranet.server.interfaces.assembler.DictAssembler;
 import top.ticho.intranet.server.interfaces.dto.DictDTO;
-import top.ticho.intranet.server.interfaces.query.DictQuery;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,24 +58,14 @@ public class DictServiceImpl implements DictService {
     }
 
     @Override
-    public DictDTO getById(Long id) {
-        Dict dict = dictRepository.getById(id);
-        return DictAssembler.INSTANCE.entityToDto(dict);
-    }
-
-    @Override
-    public PageResult<DictDTO> page(DictQuery query) {
+    public List<DictDTO> getByCode(String code) {
         // @formatter:off
-        query.checkPage();
-        Page<Dict> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
-        dictRepository.list(query);
-        List<DictDTO> dictDTOs = page.getResult()
+        List<Dict> dicts = dictRepository.getByCode(code);
+        return dicts
             .stream()
             .map(DictAssembler.INSTANCE::entityToDto)
             .collect(Collectors.toList());
-        return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), dictDTOs);
         // @formatter:on
     }
-
 
 }

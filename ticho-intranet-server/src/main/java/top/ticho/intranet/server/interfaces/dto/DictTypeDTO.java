@@ -26,13 +26,13 @@ public class DictTypeDTO implements Serializable {
     @NotNull(message = "编号不能为空", groups = {ValidGroup.Upd.class})
     private Long id;
 
-    /** 字典类型编码 */
-    @ApiModelProperty(value = "字典类型编码", position = 20)
+    /** 字典编码 */
+    @ApiModelProperty(value = "字典编码", position = 20)
     @NotNull(message = "编码不能为空")
     private String code;
 
-    /** 字典类型名称 */
-    @ApiModelProperty(value = "字典类型名称", position = 30)
+    /** 字典名称 */
+    @ApiModelProperty(value = "字典名称", position = 30)
     @NotNull(message = "名称不能为空")
     private String name;
 

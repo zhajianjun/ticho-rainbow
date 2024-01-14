@@ -30,8 +30,8 @@ public class DictDTO implements Serializable {
     private Long id;
 
     /** 字典类型id */
-    @ApiModelProperty(value = "字典类型编码", position = 30)
-    @NotNull(message = "字典类型编码不能为空", groups = {ValidGroup.Add.class})
+    @ApiModelProperty(value = "字典编码", position = 30)
+    @NotNull(message = "字典编码不能为空", groups = {ValidGroup.Add.class})
     private String code;
 
     /** 字典名称 */

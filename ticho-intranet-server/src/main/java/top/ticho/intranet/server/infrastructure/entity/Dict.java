@@ -30,7 +30,7 @@ public class Dict extends Model<Dict> implements Serializable {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
-    /** 字典类型编码 */
+    /** 字典编码 */
     private String code;
 
     /** 字典标签 */

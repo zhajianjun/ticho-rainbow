@@ -30,10 +30,10 @@ public class DictType extends Model<DictType> implements Serializable {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
-    /** 字典类型编码 */
+    /** 字典编码 */
     private String code;
 
-    /** 字典类型名称 */
+    /** 字典名称 */
     private String name;
 
     /** 是否系统字典;1-是,0-否 */

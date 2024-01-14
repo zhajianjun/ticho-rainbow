@@ -23,7 +23,7 @@ INSERT INTO `sys_client` VALUES (1686382520213438464,'68bfe8f0af124ecfa093350ab8
 DROP TABLE IF EXISTS `sys_dict`;
 CREATE TABLE `sys_dict` (
   `id` bigint NOT NULL COMMENT '主键编号',
-  `code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '字典类型编码',
+  `code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '字典编码',
   `label` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '字典标签',
   `value` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '字典值',
   `sort` smallint DEFAULT NULL COMMENT '排序',
@@ -41,8 +41,8 @@ CREATE TABLE `sys_dict` (
 DROP TABLE IF EXISTS `sys_dict_type`;
 CREATE TABLE `sys_dict_type` (
   `id` bigint NOT NULL COMMENT '主键编号',
-  `code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '字典类型编码',
-  `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '字典类型名称',
+  `code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '字典编码',
+  `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '字典名称',
   `is_sys` tinyint DEFAULT NULL COMMENT '是否系统字典;1-是,0-否',
   `status` tinyint DEFAULT NULL COMMENT '状态;1-正常,0-停用',
   `remark` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注信息',

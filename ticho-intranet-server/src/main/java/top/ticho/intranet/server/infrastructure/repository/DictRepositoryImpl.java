@@ -11,6 +11,7 @@ import top.ticho.intranet.server.infrastructure.entity.Dict;
 import top.ticho.intranet.server.infrastructure.mapper.DictMapper;
 import top.ticho.intranet.server.interfaces.query.DictQuery;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,6 +35,18 @@ public class DictRepositoryImpl extends RootServiceImpl<DictMapper, Dict> implem
         wrapper.eq(Objects.nonNull(query.getSort()), Dict::getSort, query.getSort());
         wrapper.eq(Objects.nonNull(query.getStatus()), Dict::getStatus, query.getStatus());
         wrapper.eq(StrUtil.isNotBlank(query.getRemark()), Dict::getRemark, query.getRemark());
+        wrapper.orderByAsc(Dict::getSort);
+        wrapper.orderByDesc(Dict::getId);
+        return list(wrapper);
+    }
+
+    @Override
+    public List<Dict> getByCode(String code) {
+        if (StrUtil.isBlank(code)) {
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<Dict> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(Dict::getCode, code);
         wrapper.orderByAsc(Dict::getSort);
         wrapper.orderByDesc(Dict::getId);
         return list(wrapper);

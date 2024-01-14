@@ -23,17 +23,25 @@ public interface DictRepository extends RootService<Dict> {
     List<Dict> list(DictQuery query);
 
     /**
-     * 根据字典类型编码查询是否存在
+     * 根据字典编码查询
      *
-     * @param code 字典类型编码
+     * @param code 字典编码
+     * @return boolean
+     */
+    List<Dict> getByCode(String code);
+
+    /**
+     * 根据字典编码查询是否存在
+     *
+     * @param code 字典编码
      * @return boolean
      */
     boolean existsByCode(String code);
 
     /**
-     * 根据字典类型编码排除主键编号查询
+     * 根据字典编码排除主键编号查询
      *
-     * @param code      字典类型编码
+     * @param code      字典编码
      * @param value     字典值
      * @param excludeId 排除的主键编号
      * @return {@link Dict}

@@ -24,9 +24,9 @@ public interface DictTypeRepository extends RootService<DictType> {
     List<DictType> list(DictTypeQuery query);
 
     /**
-     * 根据字典类型编码排除主键编号查询
+     * 根据字典编码排除主键编号查询
      *
-     * @param code      字典类型编码
+     * @param code      字典编码
      * @param excludeId 排除的主键编号
      * @return {@link Dict}
      */
