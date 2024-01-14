@@ -73,8 +73,8 @@ public class MenuServiceImpl extends UpmsHandle implements MenuService {
     public void updateById(MenuDTO menuDTO) {
         ValidUtil.valid(menuDTO, ValidGroup.Upd.class);
         Menu dbMenu = menuRepository.getById(menuDTO.getId());
-        Assert.isTrue(Objects.equals(dbMenu.getParentId(), menuDTO.getParentId()), BizErrCode.FAIL, "父节点必须保持一致" );
-        Assert.isTrue(Objects.equals(dbMenu.getType(), menuDTO.getType()), BizErrCode.FAIL, "菜单类型不可更改" );
+        Assert.isTrue(Objects.equals(dbMenu.getParentId(), menuDTO.getParentId()), BizErrCode.FAIL, "父节点必须保持一致");
+        Assert.isTrue(Objects.equals(dbMenu.getType(), menuDTO.getType()), BizErrCode.FAIL, "菜单类型不可更改");
         Assert.isNotNull(dbMenu, BizErrCode.FAIL, "菜单不存在");
         Menu menu = checkAndGetMenu(menuDTO);
         Assert.isTrue(menuRepository.updateById(menu), BizErrCode.FAIL, "修改失败");
@@ -97,9 +97,15 @@ public class MenuServiceImpl extends UpmsHandle implements MenuService {
         if (Objects.equals(MenuType.DIR.code(), type)) {
             ValidUtil.valid(menuDTO, MenuDTO.Dir.class);
             Assert.isTrue(Objects.equals(parentType, MenuType.DIR.code()), BizErrCode.FAIL, StrUtil.format("{}下不能新建目录", parentTypeName));
-            long countChildPath = menuRepository.countByTypesAndPath(MenuType.dirOrMenus(), menuDTO.getPath(), menuDTO.getId());
+            Menu getByTypesAndPath = menuRepository.getByTypesAndPath(MenuType.dirOrMenus(), menuDTO.getPath(), menuDTO.getId());
             // 菜单或路由path不能重复
-            Assert.isTrue(countChildPath == 0, BizErrCode.FAIL, "目录路由重复");
+            Assert.isNull(getByTypesAndPath, BizErrCode.FAIL, "目录路由重复");
+            if (!Objects.equals(menuDTO.getExtFlag(), 1)) {
+                Assert.isNotBlank(menuDTO.getComponentName(), BizErrCode.FAIL, "组件名称不能为空");
+                Menu repeatCompMenu = menuRepository.getByTypesAndComNameExcludeId(MenuType.dirOrMenus(), menuDTO.getComponentName(), menuDTO.getId());
+                // 按钮名称不能重复
+                Assert.isNull(repeatCompMenu, BizErrCode.FAIL, "组件名称重复");
+            }
         }
         // 2-菜单，父亲一定是目录，目录和路由的路由地址不能重复
         else if (Objects.equals(MenuType.MENU.code(), type)) {
@@ -109,17 +115,20 @@ public class MenuServiceImpl extends UpmsHandle implements MenuService {
                 ValidUtil.valid(menuDTO, MenuDTO.Ext.class);
             }
             Assert.isTrue(Objects.equals(parentType, MenuType.DIR.code()), BizErrCode.FAIL, StrUtil.format("{}下不能新建菜单", parentTypeName));
-            long countChildPath = menuRepository.countByTypesAndPath(MenuType.dirOrMenus(), menuDTO.getPath(), menuDTO.getId());
+            Menu getByTypesAndPath = menuRepository.getByTypesAndPath(MenuType.dirOrMenus(), menuDTO.getPath(), menuDTO.getId());
             // 菜单或路由path不能重复
-            Assert.isTrue(countChildPath == 0, BizErrCode.FAIL, "菜单路由重复");
+            Assert.isNull(getByTypesAndPath, BizErrCode.FAIL, "菜单路由重复");
+            Menu repeatCompMenu = menuRepository.getByTypesAndComNameExcludeId(MenuType.dirOrMenus(), menuDTO.getComponentName(), menuDTO.getId());
+            // 按钮名称不能重复
+            Assert.isNull(repeatCompMenu, BizErrCode.FAIL, "组件名称重复");
         }
         // 3-按钮，父亲一定是菜单, 组件名称不能重复
         else if (Objects.equals(MenuType.BUTTON.code(), type)) {
             ValidUtil.valid(menuDTO, MenuDTO.Button.class);
             Assert.isTrue(Objects.equals(parentType, MenuType.MENU.code()), BizErrCode.FAIL, StrUtil.format("{}下不能新建按钮", parentTypeName));
-            long countChildPath = menuRepository.countByTypeAndComName(MenuType.BUTTON.code(), menuDTO.getComponentName(), menuDTO.getId());
-            // 兄弟按钮组件名称不能重复
-            Assert.isTrue(countChildPath == 0, BizErrCode.FAIL, "按钮重复");
+            Menu repeatCompMenu = menuRepository.getByTypesAndComNameExcludeId(Collections.singletonList(MenuType.BUTTON.code()), menuDTO.getComponentName(), menuDTO.getId());
+            // 按钮名称不能重复
+            Assert.isNull(repeatCompMenu, BizErrCode.FAIL, "按钮名称重复");
         } else {
             Assert.cast(BizErrCode.PARAM_ERROR, "未知菜单类型");
         }
@@ -151,7 +160,7 @@ public class MenuServiceImpl extends UpmsHandle implements MenuService {
 
     @Override
     public List<RouteDTO> route() {
-        // @formatter:
+        // @formatter:off
         SecurityUser currentUser = UserUtil.getCurrentUser();
         if (Objects.isNull(currentUser)) {
             return Collections.emptyList();
@@ -198,6 +207,7 @@ public class MenuServiceImpl extends UpmsHandle implements MenuService {
         routeMetaDTO.setHideMenu(hideMenu);
         if (extFlag) {
             routeMetaDTO.setFrameSrc(menu.getRedirect());
+            routeDTO.setRedirect(null);
         }
         routeDTO.setMeta(routeMetaDTO);
         return routeDTO;

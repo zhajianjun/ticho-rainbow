@@ -163,7 +163,7 @@ public class PortServiceImpl implements PortService {
     }
 
     private boolean isEnabled(Port port) {
-        boolean enabled = Objects.equals(port.getEnabled(), 1);
+        boolean enabled = Objects.equals(port.getStatus(), 1);
         boolean isForeaver = Objects.equals(port.getForever(), 1);
         boolean isNotExpire = Objects.nonNull(port.getExpireAt()) && LocalDateTime.now().isBefore(port.getExpireAt());
         return enabled && (isForeaver || isNotExpire);

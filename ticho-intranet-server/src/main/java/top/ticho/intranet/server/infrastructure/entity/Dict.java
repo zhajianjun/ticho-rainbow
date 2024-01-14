@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
  * 数据字典
  *
  * @author zhajianjun
- * @date 2024-01-08 20:30
+ * @date 2024-01-14 13:43
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -26,32 +26,23 @@ import java.time.LocalDateTime;
 public class Dict extends Model<Dict> implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** 主键编号; */
+    /** 主键编号 */
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
-    /** 父id */
-    private Long pid;
-
-    /** 字典类型id */
-    private Long typeId;
-
-    /** 字典编码 */
+    /** 字典类型编码 */
     private String code;
 
-    /** 字典名称 */
-    private String name;
+    /** 字典标签 */
+    private String label;
+
+    /** 字典值 */
+    private String value;
 
     /** 排序 */
     private Integer sort;
 
-    /** 层级 */
-    private Integer level;
-
-    /** 结构 */
-    private String structure;
-
-    /** 状态;0-禁用,1-正常 */
+    /** 状态;1-正常,0-停用 */
     private Integer status;
 
     /** 备注信息 */

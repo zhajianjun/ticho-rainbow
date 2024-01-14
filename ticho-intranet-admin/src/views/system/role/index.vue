@@ -47,6 +47,7 @@
       const [registerTable, { reload }] = useTable({
         title: '角色列表',
         api: rolePage,
+        rowKey: 'id',
         columns,
         useSearchForm: showSelect,
         formConfig: {
@@ -69,6 +70,9 @@
           dataIndex: 'action',
           slots: { customRender: 'action' },
           fixed: undefined,
+        },
+        pagination: {
+          position: ['bottomLeft'],
         },
       });
 

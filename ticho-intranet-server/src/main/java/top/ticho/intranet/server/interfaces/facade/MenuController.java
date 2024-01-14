@@ -38,7 +38,7 @@ public class MenuController {
     @Autowired
     private MenuService menuService;
 
-    @PreAuthorize("@perm.hasPerms('upms:menu:save')")
+    @PreAuthorize("@perm.hasPerms('system:menu:save')")
     @ApiOperation(value = "保存菜单信息")
     @ApiOperationSupport(order = 10)
     @PostMapping
@@ -47,7 +47,7 @@ public class MenuController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:menu:remove')")
+    @PreAuthorize("@perm.hasPerms('system:menu:remove')")
     @ApiOperation(value = "删除菜单信息")
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
@@ -57,7 +57,7 @@ public class MenuController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:menu:update')")
+    @PreAuthorize("@perm.hasPerms('system:menu:update')")
     @ApiOperation(value = "修改菜单信息")
     @ApiOperationSupport(order = 30)
     @PutMapping
@@ -66,7 +66,7 @@ public class MenuController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:menu:get')")
+    @PreAuthorize("@perm.hasPerms('system:menu:get')")
     @ApiOperation(value = "主键查询菜单信息")
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
@@ -75,7 +75,7 @@ public class MenuController {
         return Result.ok(menuService.getById(id));
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:menu:list')")
+    @PreAuthorize("@perm.hasPerms('system:menu:list')")
     @ApiOperation(value = "查询所有菜单信息")
     @ApiOperationSupport(order = 80)
     @GetMapping("list")
@@ -83,7 +83,7 @@ public class MenuController {
         return Result.ok(menuService.list());
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:menu:route')")
+    @PreAuthorize("@perm.hasPerms('system:menu:route')")
     @ApiOperation(value = "查询登录用户菜单路由信息")
     @ApiOperationSupport(order = 80)
     @GetMapping("route")
@@ -91,7 +91,7 @@ public class MenuController {
         return Result.ok(menuService.route());
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:menu:getPerms')")
+    @PreAuthorize("@perm.hasPerms('system:menu:getPerms')")
     @ApiOperation(value = "根据角色编码查询权限编码")
     @ApiOperationSupport(order = 90)
     @GetMapping("getPerms")

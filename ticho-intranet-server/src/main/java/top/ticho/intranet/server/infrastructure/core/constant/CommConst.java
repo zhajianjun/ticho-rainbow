@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class CommConst {
 
     public static final long PARENT_ID = 0;
-    public static final Integer DICT_LEVEL_INIT_ID = 1;
     public static final String PERM_KEY = "perm";
+
 }

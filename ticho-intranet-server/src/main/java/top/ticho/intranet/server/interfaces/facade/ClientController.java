@@ -2,6 +2,7 @@ package top.ticho.intranet.server.interfaces.facade;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.core.Result;
 import io.swagger.annotations.Api;
@@ -36,6 +37,7 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
 
+    @PreAuthorize("@perm.hasPerms('intranet:client:save')")
     @ApiOperation(value = "保存客户端信息")
     @ApiOperationSupport(order = 10)
     @PostMapping
@@ -44,6 +46,7 @@ public class ClientController {
         return Result.ok();
     }
 
+    @PreAuthorize("@perm.hasPerms('intranet:client:remove')")
     @ApiOperation(value = "删除客户端信息")
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
@@ -53,6 +56,7 @@ public class ClientController {
         return Result.ok();
     }
 
+    @PreAuthorize("@perm.hasPerms('intranet:client:update')")
     @ApiOperation(value = "修改客户端信息")
     @ApiOperationSupport(order = 30)
     @PutMapping
@@ -61,6 +65,7 @@ public class ClientController {
         return Result.ok();
     }
 
+    @PreAuthorize("@perm.hasPerms('intranet:client:getById')")
     @ApiOperation(value = "主键查询客户端信息")
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
@@ -69,6 +74,7 @@ public class ClientController {
         return Result.ok(clientService.getById(id));
     }
 
+    @PreAuthorize("@perm.hasPerms('intranet:client:page')")
     @ApiOperation(value = "分页查询客户端信息")
     @ApiOperationSupport(order = 50)
     @GetMapping("page")
@@ -76,6 +82,7 @@ public class ClientController {
         return Result.ok(clientService.page(query));
     }
 
+    @PreAuthorize("@perm.hasPerms('intranet:client:list')")
     @ApiOperation(value = "查询客户端信息")
     @ApiOperationSupport(order = 60)
     @GetMapping("list")

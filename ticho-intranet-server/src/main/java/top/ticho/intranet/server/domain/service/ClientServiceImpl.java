@@ -119,10 +119,10 @@ public class ClientServiceImpl implements ClientService {
     public List<ClientInfo> listClientInfo() {
         // @formatter:off
         ClientQuery clientQuery = new ClientQuery();
-        clientQuery.setEnabled(1);
+        clientQuery.setStatus(1);
         List<Client> clients = clientRepository.list(clientQuery);
         List<String> accessKeys = clients.stream().map(Client::getAccessKey).collect(Collectors.toList());
-        Map<String, List<PortInfo>> protMap = portRepository.listAndGroupByAccessKey(accessKeys, PortAssembler.INSTANCE::entityToInfo, x -> Objects.equals(x.getEnabled(), 1));
+        Map<String, List<PortInfo>> protMap = portRepository.listAndGroupByAccessKey(accessKeys, PortAssembler.INSTANCE::entityToInfo, x -> Objects.equals(x.getStatus(), 1));
         return clients
                 .stream()
                 .map(ClientAssembler.INSTANCE::entityToInfo)
@@ -145,23 +145,23 @@ public class ClientServiceImpl implements ClientService {
         if (Objects.isNull(client)) {
             return;
         }
-        if (Objects.isNull(client.getEnabled())) {
+        if (Objects.isNull(client.getStatus())) {
             return;
         }
-        boolean enabled = Objects.equals(client.getEnabled(), 1);
+        boolean enabled = Objects.equals(client.getStatus(), 1);
         ClientInfo clientInfo = ClientAssembler.INSTANCE.entityToInfo(client);
         // 数据库不存在，且新增的是开启状态，则加入服务端
         if (Objects.isNull(dbClient) && enabled) {
             serverHandler.saveClient(clientInfo);
         }
         // 数据库存在时,如果启用状态一致时则不处理
-        if (Objects.equals(client.getEnabled(), dbClient.getEnabled())) {
+        if (Objects.equals(client.getStatus(), dbClient.getStatus())) {
             return;
         }
         String accessKey = client.getAccessKey();
         if (enabled) {
             serverHandler.saveClient(clientInfo);
-            Map<String, List<PortInfo>> protMap = portRepository.listAndGroupByAccessKey(Collections.singletonList(accessKey), PortAssembler.INSTANCE::entityToInfo, x -> Objects.equals(x.getEnabled(), 1));
+            Map<String, List<PortInfo>> protMap = portRepository.listAndGroupByAccessKey(Collections.singletonList(accessKey), PortAssembler.INSTANCE::entityToInfo, x -> Objects.equals(x.getStatus(), 1));
             List<PortInfo> portInfos = protMap.get(accessKey);
             if (CollUtil.isNotEmpty(portInfos)) {
                 portInfos.forEach(serverHandler::createApp);

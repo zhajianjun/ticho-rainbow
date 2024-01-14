@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import top.ticho.intranet.server.domain.repository.RoleRepository;
-import top.ticho.intranet.server.infrastructure.core.constant.RedisConst;
 import top.ticho.intranet.server.infrastructure.core.prop.CacheProperty;
 import top.ticho.intranet.server.infrastructure.entity.Role;
 import top.ticho.intranet.server.infrastructure.mapper.RoleMapper;
@@ -72,16 +71,11 @@ public class RoleRepositoryImpl extends RootServiceImpl<RoleMapper, Role> implem
     public List<Role> list(RoleQuery query) {
         LambdaQueryWrapper<Role> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(Objects.nonNull(query.getId()), Role::getId, query.getId());
-        wrapper.eq(StrUtil.isNotBlank(query.getCode()), Role::getCode, query.getCode());
-        wrapper.eq(StrUtil.isNotBlank(query.getName()), Role::getName, query.getName());
+        wrapper.like(StrUtil.isNotBlank(query.getCode()), Role::getCode, query.getCode());
+        wrapper.like(StrUtil.isNotBlank(query.getName()), Role::getName, query.getName());
         wrapper.eq(Objects.nonNull(query.getStatus()), Role::getStatus, query.getStatus());
-        wrapper.eq(StrUtil.isNotBlank(query.getRemark()), Role::getRemark, query.getRemark());
-        wrapper.eq(Objects.nonNull(query.getVersion()), Role::getVersion, query.getVersion());
-        wrapper.eq(StrUtil.isNotBlank(query.getCreateBy()), Role::getCreateBy, query.getCreateBy());
-        wrapper.eq(Objects.nonNull(query.getCreateTime()), Role::getCreateTime, query.getCreateTime());
-        wrapper.eq(StrUtil.isNotBlank(query.getUpdateBy()), Role::getUpdateBy, query.getUpdateBy());
-        wrapper.eq(Objects.nonNull(query.getUpdateTime()), Role::getUpdateTime, query.getUpdateTime());
-        wrapper.eq(Objects.nonNull(query.getIsDelete()), Role::getIsDelete, query.getIsDelete());
+        wrapper.like(StrUtil.isNotBlank(query.getRemark()), Role::getRemark, query.getRemark());
+        wrapper.orderByDesc(Role::getId);
         return list(wrapper);
     }
 
@@ -96,6 +90,15 @@ public class RoleRepositoryImpl extends RootServiceImpl<RoleMapper, Role> implem
             return !contains;
         });
         return list;
+    }
+
+    @Override
+    public Role getByCodeExcludeId(String code, Long excludeId) {
+        LambdaQueryWrapper<Role> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(Role::getCode, code);
+        wrapper.ne(Objects.nonNull(excludeId), Role::getId, excludeId);
+        wrapper.last("limit 1");
+        return getOne(wrapper);
     }
 
     @Override

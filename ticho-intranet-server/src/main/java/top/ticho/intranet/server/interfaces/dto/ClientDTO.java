@@ -37,9 +37,9 @@ public class ClientDTO implements Serializable {
     @NotBlank(message = "客户端名称不能为空")
     private String name;
 
-    /** 是否开启;1-开启,0-关闭 */
-    @ApiModelProperty(value = "是否开启;1-开启,0-关闭", position = 40)
-    private Integer enabled;
+    /** 状态;1-正常,0-停用 */
+    @ApiModelProperty(value = "状态;1-正常,0-停用", position = 40)
+    private Integer status;
 
     /** 排序 */
     @ApiModelProperty(value = "排序", position = 50)

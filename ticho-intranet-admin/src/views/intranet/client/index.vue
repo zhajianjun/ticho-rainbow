@@ -5,12 +5,12 @@
         <a-button type="primary" @click="handleCreate"> 新增 </a-button>
       </template>
       <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'enabled'">
+        <template v-if="column.key === 'status'">
           <Switch
             checked-children="开启"
-            un-checked-children="关闭"
-            :checked="record.enabled === 1"
-            :loading="record.pendingEnabled"
+            un-checked-children="禁用"
+            :checked="record.status === 1"
+            :loading="record.pendingStatus"
             @change="handleSwitchChange(record)"
           />
         </template>
@@ -22,11 +22,13 @@
               icon: 'clarity:note-edit-line',
               onClick: handleEdit.bind(null, record),
               tooltip: '修改',
+              ifShow: hasPermission('ClientEdit'),
               divider: true,
             },
             {
               icon: 'ant-design:delete-outlined',
               color: 'error',
+              ifShow: hasPermission('ClientDel'),
               popConfirm: {
                 title: '是否确认删除',
                 confirm: handleDelete.bind(null, record),
@@ -48,14 +50,17 @@
   import { useModal } from '@/components/Modal';
   import ClientModel from './ClientModal.vue';
   import { getSearchColumns, getTableColumns } from './client.data';
-  import { clientPage, delClient, modifyClientEnabled } from '@/api/intranet/client';
+  import { clientPage, delClient, modifyClientStatus } from '@/api/intranet/client';
   import { useMessage } from '@/hooks/web/useMessage';
   import { ClientDTO } from '@/api/intranet/model/clientModel';
+  import { usePermission } from '@/hooks/web/usePermission';
 
   export default defineComponent({
     name: 'ClientManagement',
     components: { BasicTable, ClientModel, TableAction, Switch },
     setup() {
+      const { hasPermission } = usePermission();
+      let showSelect = hasPermission('ClientSelect');
       const [registerModal, { openModal }] = useModal();
       const [registerTable, { reload }] = useTable({
         title: '客户端信息列表',
@@ -66,15 +71,15 @@
         formConfig: {
           labelWidth: 120,
           schemas: getSearchColumns(),
-          showActionButtonGroup: true,
-          showSubmitButton: true,
-          showResetButton: true,
-          autoSubmitOnEnter: true,
+          showActionButtonGroup: showSelect,
+          showSubmitButton: showSelect,
+          showResetButton: showSelect,
+          autoSubmitOnEnter: showSelect,
         },
         tableSetting: {
-          redo: true,
+          redo: showSelect,
         },
-        immediate: true,
+        immediate: showSelect,
         showTableSetting: true,
         bordered: true,
         showIndexColumn: false,
@@ -86,9 +91,6 @@
           fixed: undefined,
         },
         pagination: {
-          pageSizeOptions: ['10', '15', '20', '50', '100'],
-          pageSize: 15,
-          defaultPageSize: 15,
           position: ['bottomLeft'],
         },
       });
@@ -117,17 +119,17 @@
       }
 
       function handleSwitchChange(record: Recordable) {
-        record.pendingEnabled = true;
+        record.pendingStatus = true;
         const { createMessage } = useMessage();
-        let checked = record.enabled === 1;
+        let checked = record.status === 1;
         if (checked) {
-          record.enabled = 0;
+          record.status = 0;
         } else {
-          record.enabled = 1;
+          record.status = 1;
         }
-        const params = { id: record.id, enabled: record.enabled } as ClientDTO;
+        const params = { id: record.id, status: record.status } as ClientDTO;
         const messagePrefix = !checked ? '启动' : '关闭';
-        modifyClientEnabled(params)
+        modifyClientStatus(params)
           .then(() => {
             createMessage.success(messagePrefix + `成功`);
           })
@@ -135,7 +137,7 @@
             createMessage.error(messagePrefix + `失败`);
           })
           .finally(() => {
-            record.pendingEnabled = false;
+            record.pendingStatus = false;
             reload();
           });
       }
@@ -148,6 +150,7 @@
         handleDelete,
         handleSuccess,
         handleSwitchChange,
+        hasPermission,
       };
     },
   });

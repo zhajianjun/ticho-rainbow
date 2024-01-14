@@ -23,29 +23,22 @@ public interface DictRepository extends RootService<Dict> {
     List<Dict> list(DictQuery query);
 
     /**
-     * 根据类型id查询是否存在
+     * 根据字典类型编码查询是否存在
      *
-     * @param typeId id类型
+     * @param code 字典类型编码
      * @return boolean
      */
-    boolean existsByTypeId(Long typeId);
+    boolean existsByCode(String code);
 
     /**
-     * 根据编号查询所有子孙节点的id
+     * 根据字典类型编码排除主键编号查询
      *
-     * @param id 主键id
-     *
-     * @return {@link List}<{@link Integer}>
+     * @param code      字典类型编码
+     * @param value     字典值
+     * @param excludeId 排除的主键编号
+     * @return {@link Dict}
      */
-    List<Long> getDescendantIds(Long id);
+    Dict getByCodeAndValueExcludeId(String code, String value, Long excludeId);
 
-
-    /**
-     * 根据id查询兄弟节点，包括自己
-     *
-     * @param id  主键id
-     * @return {@link List}<{@link Dict}>
-     */
-    List<Dict> getBrothers(Long id);
 }
 

@@ -37,8 +37,8 @@ public class Client extends Model<Client> implements Serializable {
     /** 客户端名称 */
     private String name;
 
-    /** 是否开启;1-开启,0-关闭 */
-    private Integer enabled;
+    /** 状态;1-正常,0-停用 */
+    private Integer status;
 
     /** 排序 */
     private Integer sort;

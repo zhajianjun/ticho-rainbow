@@ -7,9 +7,9 @@ enum Api {
   Routes = '/menu/route',
 }
 
-export const getMenuList = () => defHttp.get<MenuDtlModule>({ url: Api.MenuList });
+export const getMenuList = () => defHttp.get<MenuDtlModule[]>({ url: Api.MenuList });
 
-export const getRoutes = () => defHttp.get<MenuDtlModule>({ url: Api.Routes });
+export const getRoutes = () => defHttp.get<MenuDtlModule[]>({ url: Api.Routes });
 
 export function saveMenu(params: any) {
   return defHttp.post<any>({ url: Api.Menu, params }, { errorMessageMode: 'message' });

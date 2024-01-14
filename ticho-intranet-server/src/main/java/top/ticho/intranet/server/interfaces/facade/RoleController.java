@@ -44,7 +44,7 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
-    @PreAuthorize("@perm.hasPerms('upms:role:save')")
+    @PreAuthorize("@perm.hasPerms('system:role:save')")
     @ApiOperation(value = "保存角色信息")
     @ApiOperationSupport(order = 10)
     @PostMapping
@@ -53,7 +53,7 @@ public class RoleController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:role:remove')")
+    @PreAuthorize("@perm.hasPerms('system:role:remove')")
     @ApiOperation(value = "删除角色信息")
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
@@ -63,7 +63,7 @@ public class RoleController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:role:update')")
+    @PreAuthorize("@perm.hasPerms('system:role:update')")
     @ApiOperation(value = "修改角色信息")
     @ApiOperationSupport(order = 30)
     @PutMapping
@@ -72,7 +72,7 @@ public class RoleController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:role:updateStatus')")
+    @PreAuthorize("@perm.hasPerms('system:role:updateStatus')")
     @ApiOperation(value = "修改角色状态")
     @ApiOperationSupport(order = 30)
     @PutMapping("updateStatus")
@@ -81,7 +81,7 @@ public class RoleController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:role:get')")
+    @PreAuthorize("@perm.hasPerms('system:role:get')")
     @ApiOperation(value = "主键查询角色信息")
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
@@ -90,7 +90,7 @@ public class RoleController {
         return Result.ok(roleService.getById(id));
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:role:page')")
+    @PreAuthorize("@perm.hasPerms('system:role:page')")
     @ApiOperation(value = "分页查询角色信息")
     @ApiOperationSupport(order = 50)
     @GetMapping("page")
@@ -98,7 +98,7 @@ public class RoleController {
         return Result.ok(roleService.page(query));
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:role:list')")
+    @PreAuthorize("@perm.hasPerms('system:role:list')")
     @ApiOperation(value = "查询角色信息")
     @ApiOperationSupport(order = 52)
     @GetMapping("list")
@@ -106,7 +106,7 @@ public class RoleController {
         return Result.ok(roleService.list(query));
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:role:bindMenu')")
+    @PreAuthorize("@perm.hasPerms('system:role:bindMenu')")
     @ApiOperation(value = "角色绑定菜单信息")
     @ApiOperationSupport(order = 60)
     @PostMapping("bindMenu")

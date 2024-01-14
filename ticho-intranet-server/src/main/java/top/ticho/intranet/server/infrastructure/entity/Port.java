@@ -45,8 +45,8 @@ public class Port extends Model<Port> implements Serializable {
     @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String domain;
 
-    /** 是否开启;1-开启,0-关闭 */
-    private Integer enabled;
+    /** 状态;1-正常,0-停用 */
+    private Integer status;
 
     /** 是否永久;1-是,0-否 */
     private Integer forever;

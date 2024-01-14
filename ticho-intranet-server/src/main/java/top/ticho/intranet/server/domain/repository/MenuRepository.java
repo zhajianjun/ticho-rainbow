@@ -23,24 +23,24 @@ public interface MenuRepository extends RootService<Menu> {
     List<Menu> list(MenuQuery query);
 
     /**
-     * 统计子节点某些类型和路由地址的刷领
+     * 统计子节点某些类型和路由地址的数量
      *
      * @param types     类型
      * @param path      路由地址
      * @param excludeId 排除的编号
      * @return long
      */
-    long countByTypesAndPath(List<Integer> types, String path, Long excludeId);
+    Menu getByTypesAndPath(List<Integer> types, String path, Long excludeId);
 
     /**
-     * 统计子节点组件名称的数量
+     * 获取组件名称的数量
      *
-     * @param type          菜单类型
+     * @param types         类型
      * @param componentName 组件名称
      * @param excludeId     排除的编号
      * @return long
      */
-    long countByTypeAndComName(Integer type, String componentName, Long excludeId);
+    Menu getByTypesAndComNameExcludeId(List<Integer> types, String componentName, Long excludeId);
 
 }
 

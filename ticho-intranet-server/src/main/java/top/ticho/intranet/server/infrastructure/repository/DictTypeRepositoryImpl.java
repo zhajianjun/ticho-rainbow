@@ -26,19 +26,26 @@ public class DictTypeRepositoryImpl extends RootServiceImpl<DictTypeMapper, Dict
 
     @Override
     public List<DictType> list(DictTypeQuery query) {
+        // @formatter:off
         LambdaQueryWrapper<DictType> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(Objects.nonNull(query.getId()), DictType::getId, query.getId());
-        wrapper.eq(StrUtil.isNotBlank(query.getCode()), DictType::getCode, query.getCode());
-        wrapper.eq(StrUtil.isNotBlank(query.getName()), DictType::getName, query.getName());
+        wrapper.like(StrUtil.isNotBlank(query.getCode()), DictType::getCode, query.getCode());
+        wrapper.like(StrUtil.isNotBlank(query.getName()), DictType::getName, query.getName());
         wrapper.eq(Objects.nonNull(query.getIsSys()), DictType::getIsSys, query.getIsSys());
-        wrapper.eq(StrUtil.isNotBlank(query.getRemark()), DictType::getRemark, query.getRemark());
-        wrapper.eq(Objects.nonNull(query.getVersion()), DictType::getVersion, query.getVersion());
-        wrapper.eq(StrUtil.isNotBlank(query.getCreateBy()), DictType::getCreateBy, query.getCreateBy());
-        wrapper.eq(Objects.nonNull(query.getCreateTime()), DictType::getCreateTime, query.getCreateTime());
-        wrapper.eq(StrUtil.isNotBlank(query.getUpdateBy()), DictType::getUpdateBy, query.getUpdateBy());
-        wrapper.eq(Objects.nonNull(query.getUpdateTime()), DictType::getUpdateTime, query.getUpdateTime());
-        wrapper.eq(Objects.nonNull(query.getIsDelete()), DictType::getIsDelete, query.getIsDelete());
+        wrapper.eq(Objects.nonNull(query.getStatus()), DictType::getStatus, query.getStatus());
+        wrapper.like(StrUtil.isNotBlank(query.getRemark()), DictType::getRemark, query.getRemark());
+        wrapper.orderByDesc(DictType::getId);
         return list(wrapper);
+        // @formatter:on
+    }
+
+    @Override
+    public DictType getByCodeExcludeId(String code, Long excludeId) {
+        LambdaQueryWrapper<DictType> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(DictType::getCode, code);
+        wrapper.ne(Objects.nonNull(excludeId), DictType::getId, excludeId);
+        wrapper.last("limit 1");
+        return getOne(wrapper);
     }
 
 }

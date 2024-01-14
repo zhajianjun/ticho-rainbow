@@ -39,7 +39,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PreAuthorize("@perm.hasPerms('upms:user:save')")
+    @PreAuthorize("@perm.hasPerms('system:user:save')")
     @ApiOperation(value = "保存用户信息")
     @ApiOperationSupport(order = 10)
     @PostMapping
@@ -48,7 +48,7 @@ public class UserController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:user:remove')")
+    @PreAuthorize("@perm.hasPerms('system:user:remove')")
     @ApiOperation(value = "删除用户信息")
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
@@ -58,7 +58,7 @@ public class UserController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:user:update')")
+    @PreAuthorize("@perm.hasPerms('system:user:update')")
     @ApiOperation(value = "修改用户信息", notes = "无法修改密码")
     @ApiOperationSupport(order = 30)
     @PutMapping
@@ -67,7 +67,7 @@ public class UserController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:user:updatePassword')")
+    @PreAuthorize("@perm.hasPerms('system:user:updatePassword')")
     @ApiOperation(value = "修改用户密码", notes = "修改用户密码")
     @ApiOperationSupport(order = 50)
     @PutMapping("updatePassword")
@@ -76,7 +76,7 @@ public class UserController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:user:getById')")
+    @PreAuthorize("@perm.hasPerms('system:user:getById')")
     @ApiOperation(value = "主键查询用户信息")
     @ApiOperationSupport(order = 50)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
@@ -85,7 +85,7 @@ public class UserController {
         return Result.ok(userService.getById(id));
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:user:page')")
+    @PreAuthorize("@perm.hasPerms('system:user:page')")
     @ApiOperation(value = "分页查询用户信息")
     @ApiOperationSupport(order = 60)
     @GetMapping("page")
@@ -93,7 +93,7 @@ public class UserController {
         return Result.ok(userService.page(query));
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:user:getUserDtl')")
+    @PreAuthorize("@perm.hasPerms('system:user:getUserDtl')")
     @ApiOperation(value = "查询用户角色菜单权限标识信息")
     @ApiOperationSupport(order = 70)
     @GetMapping("getUserDtl")
@@ -101,7 +101,7 @@ public class UserController {
         return Result.ok(userService.getUserDtl(username));
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:user:bindRole')")
+    @PreAuthorize("@perm.hasPerms('system:user:bindRole')")
     @ApiOperation(value = "用户绑定角色信息")
     @ApiOperationSupport(order = 80)
     @PostMapping("bindRole")

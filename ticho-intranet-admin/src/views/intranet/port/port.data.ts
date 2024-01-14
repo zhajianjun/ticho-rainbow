@@ -73,8 +73,8 @@ export function getTableColumns(): BasicColumn[] {
       },
     },
     {
-      title: '是否开启',
-      dataIndex: 'enabled',
+      title: '状态',
+      dataIndex: 'status',
       resizable: true,
       width: 50,
     },
@@ -84,9 +84,9 @@ export function getTableColumns(): BasicColumn[] {
       resizable: true,
       width: 50,
       customRender: ({ record }) => {
-        const enabled = ~~record.channelStatus === 1;
-        const color = enabled ? '#108ee9' : '#f50';
-        const text = enabled ? '激活' : '未激活';
+        const isActive = ~~record.channelStatus === 1;
+        const color = isActive ? '#108ee9' : '#f50';
+        const text = isActive ? '已激活' : '未激活';
         return h(Tag, { color: color }, () => text);
       },
     },
@@ -316,13 +316,13 @@ export function getModalFormColumns(): FormSchema[] {
       },
     },
     {
-      field: `enabled`,
-      label: `是否开启`,
+      field: `status`,
+      label: `状态`,
       component: 'Switch',
       defaultValue: 0,
       componentProps: {
         checkedChildren: '开启',
-        unCheckedChildren: '关闭',
+        unCheckedChildren: '禁用',
         checkedValue: 1,
         unCheckedValue: 0,
       },

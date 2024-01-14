@@ -5,7 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import top.ticho.boot.web.util.valid.ValidGroup;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,14 +26,17 @@ public class RoleDTO implements Serializable {
 
     /** 主键编号; */
     @ApiModelProperty(value = "主键编号", position = 10)
+    @NotBlank(message = "角色编号不能为空", groups = {ValidGroup.Upd.class})
     private Long id;
 
     /** 角色编码 */
     @ApiModelProperty(value = "角色编码", position = 20)
+    @NotBlank(message = "角色编码不能为空")
     private String code;
 
     /** 角色名称 */
     @ApiModelProperty(value = "角色名称", position = 30)
+    @NotBlank(message = "角色名称不能为空")
     private String name;
 
     /** 状态;1-正常,0-禁用 */

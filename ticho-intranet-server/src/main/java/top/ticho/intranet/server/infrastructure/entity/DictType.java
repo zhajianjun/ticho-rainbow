@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
  * 数据字典类型
  *
  * @author zhajianjun
- * @date 2024-01-08 20:30
+ * @date 2024-01-14 13:43
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -30,14 +30,17 @@ public class DictType extends Model<DictType> implements Serializable {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
-    /** 类型编码 */
+    /** 字典类型编码 */
     private String code;
 
-    /** 类型名称 */
+    /** 字典类型名称 */
     private String name;
 
     /** 是否系统字典;1-是,0-否 */
     private Integer isSys;
+
+    /** 状态;1-正常,0-停用 */
+    private Integer status;
 
     /** 备注信息 */
     private String remark;

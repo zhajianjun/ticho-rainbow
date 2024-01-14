@@ -114,26 +114,28 @@ public class MenuRepositoryImpl extends RootServiceImpl<MenuMapper, Menu> implem
     }
 
     @Override
-    public long countByTypesAndPath(List<Integer> types, String path, Long excludeId) {
+    public Menu getByTypesAndPath(List<Integer> types, String path, Long excludeId) {
         if (CollUtil.isEmpty(types) || StrUtil.isBlank(path)) {
-            return -1;
+            return null;
         }
         LambdaQueryWrapper<Menu> wrapper = Wrappers.lambdaQuery();
         wrapper.in(Menu::getType, types);
         wrapper.eq(Menu::getPath, path);
         wrapper.ne(Objects.nonNull(excludeId), Menu::getId, excludeId);
-        return count(wrapper);
+        wrapper.last("limit 1");
+       return getOne(wrapper);
     }
 
-    public long countByTypeAndComName(Integer type, String componentName, Long excludeId) {
-        if (Objects.isNull(type) || StrUtil.isBlank(componentName)) {
-            return -1;
+    public Menu getByTypesAndComNameExcludeId(List<Integer> types, String componentName, Long excludeId) {
+        if (Objects.isNull(types) || StrUtil.isBlank(componentName)) {
+            return  null;
         }
         LambdaQueryWrapper<Menu> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(Menu::getType, type);
+        wrapper.in(Menu::getType, types);
         wrapper.eq(Menu::getComponentName, componentName);
         wrapper.ne(Objects.nonNull(excludeId), Menu::getId, excludeId);
-        return count(wrapper);
+        wrapper.last("limit 1");
+        return getOne(wrapper);
     }
 
 

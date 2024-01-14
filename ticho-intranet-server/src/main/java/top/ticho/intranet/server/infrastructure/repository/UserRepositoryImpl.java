@@ -40,31 +40,24 @@ public class UserRepositoryImpl extends RootServiceImpl<UserMapper, User> implem
     public List<User> list(UserQuery query) {
         LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(Objects.nonNull(query.getId()), User::getId, query.getId());
-        wrapper.eq(StrUtil.isNotBlank(query.getUsername()), User::getUsername, query.getUsername());
-        wrapper.eq(StrUtil.isNotBlank(query.getPassword()), User::getPassword, query.getPassword());
-        wrapper.eq(StrUtil.isNotBlank(query.getNickname()), User::getNickname, query.getNickname());
-        wrapper.eq(StrUtil.isNotBlank(query.getRealname()), User::getRealname, query.getRealname());
+        wrapper.like(StrUtil.isNotBlank(query.getUsername()), User::getUsername, query.getUsername());
+        wrapper.like(StrUtil.isNotBlank(query.getNickname()), User::getNickname, query.getNickname());
+        wrapper.like(StrUtil.isNotBlank(query.getRealname()), User::getRealname, query.getRealname());
         wrapper.eq(StrUtil.isNotBlank(query.getIdcard()), User::getIdcard, query.getIdcard());
         wrapper.eq(Objects.nonNull(query.getSex()), User::getSex, query.getSex());
         wrapper.eq(Objects.nonNull(query.getAge()), User::getAge, query.getAge());
         wrapper.eq(Objects.nonNull(query.getBirthday()), User::getBirthday, query.getBirthday());
-        wrapper.eq(StrUtil.isNotBlank(query.getAddress()), User::getAddress, query.getAddress());
-        wrapper.eq(StrUtil.isNotBlank(query.getEducation()), User::getEducation, query.getEducation());
-        wrapper.eq(StrUtil.isNotBlank(query.getEmail()), User::getEmail, query.getEmail());
-        wrapper.eq(Objects.nonNull(query.getQq()), User::getQq, query.getQq());
-        wrapper.eq(StrUtil.isNotBlank(query.getWechat()), User::getWechat, query.getWechat());
-        wrapper.eq(StrUtil.isNotBlank(query.getMobile()), User::getMobile, query.getMobile());
-        wrapper.eq(StrUtil.isNotBlank(query.getPhoto()), User::getPhoto, query.getPhoto());
+        wrapper.like(StrUtil.isNotBlank(query.getAddress()), User::getAddress, query.getAddress());
+        wrapper.like(StrUtil.isNotBlank(query.getEducation()), User::getEducation, query.getEducation());
+        wrapper.like(StrUtil.isNotBlank(query.getEmail()), User::getEmail, query.getEmail());
+        wrapper.like(Objects.nonNull(query.getQq()), User::getQq, query.getQq());
+        wrapper.like(StrUtil.isNotBlank(query.getWechat()), User::getWechat, query.getWechat());
+        wrapper.like(StrUtil.isNotBlank(query.getMobile()), User::getMobile, query.getMobile());
         wrapper.eq(StrUtil.isNotBlank(query.getLastIp()), User::getLastIp, query.getLastIp());
         wrapper.eq(Objects.nonNull(query.getLastTime()), User::getLastTime, query.getLastTime());
         wrapper.eq(Objects.nonNull(query.getStatus()), User::getStatus, query.getStatus());
-        wrapper.eq(StrUtil.isNotBlank(query.getRemark()), User::getRemark, query.getRemark());
-        wrapper.eq(Objects.nonNull(query.getVersion()), User::getVersion, query.getVersion());
-        wrapper.eq(StrUtil.isNotBlank(query.getCreateBy()), User::getCreateBy, query.getCreateBy());
-        wrapper.eq(Objects.nonNull(query.getCreateTime()), User::getCreateTime, query.getCreateTime());
-        wrapper.eq(StrUtil.isNotBlank(query.getUpdateBy()), User::getUpdateBy, query.getUpdateBy());
-        wrapper.eq(Objects.nonNull(query.getUpdateTime()), User::getUpdateTime, query.getUpdateTime());
-        wrapper.eq(Objects.nonNull(query.getIsDelete()), User::getIsDelete, query.getIsDelete());
+        wrapper.like(StrUtil.isNotBlank(query.getRemark()), User::getRemark, query.getRemark());
+        wrapper.orderByDesc(User::getId);
         return list(wrapper);
     }
 

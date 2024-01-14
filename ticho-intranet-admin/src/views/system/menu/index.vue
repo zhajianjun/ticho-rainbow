@@ -48,13 +48,10 @@
 </template>
 <script lang="ts">
   import { defineComponent, ref } from 'vue';
-
   import { BasicTable, TableAction, useTable } from '@/components/Table';
   import { delMenu, getMenuList } from '@/api/system/menu';
-
   import { useDrawer } from '@/components/Drawer';
   import MenuDrawer from './MenuDrawer.vue';
-
   import { columns } from './menu.data';
   import { cloneDeep } from 'lodash-es';
   import { usePermission } from '@/hooks/web/usePermission';
@@ -77,12 +74,15 @@
             rows: res,
           };
         },
+        rowKey: 'id',
         columns,
         useSearchForm: showSelect,
         formConfig: {
-          showActionButtonGroup: false,
-          // showSubmitButton: showSelect,
-          // showResetButton: showSelect,
+          labelWidth: 120,
+          autoSubmitOnEnter: true,
+          showActionButtonGroup: showSelect,
+          showSubmitButton: showSelect,
+          showResetButton: showSelect,
         },
         tableSetting: {
           redo: showSelect,
@@ -103,7 +103,6 @@
           slots: { customRender: 'action' },
           fixed: undefined,
         },
-        rowKey: 'id',
         // rowSelection: {
         //   type: 'radio',
         //   onSelect: onSelect,

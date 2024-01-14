@@ -52,6 +52,8 @@ public class RoleServiceImpl extends UpmsHandle implements RoleService {
     @Transactional(rollbackFor = Exception.class)
     public void save(RoleDTO roleDTO) {
         Role role = RoleAssembler.INSTANCE.dtoToEntity(roleDTO);
+        Role dbDictType = roleRepository.getByCodeExcludeId(role.getCode(), null);
+        Assert.isNull(dbDictType, BizErrCode.FAIL, "保存失败，角色已存在");
         Assert.isTrue(roleRepository.save(role), BizErrCode.FAIL, "保存失败");
         List<Long> menuIds = roleDTO.getMenuIds();
         RoleMenuDTO roleMenuDTO = new RoleMenuDTO();
@@ -75,6 +77,8 @@ public class RoleServiceImpl extends UpmsHandle implements RoleService {
     @Transactional(rollbackFor = Exception.class)
     public void updateById(RoleDTO roleDTO) {
         Role role = RoleAssembler.INSTANCE.dtoToEntity(roleDTO);
+        Role dbDictType = roleRepository.getByCodeExcludeId(role.getCode(), role.getId());
+        Assert.isNull(dbDictType, BizErrCode.FAIL, "修改失败，角色已存在");
         Assert.isTrue(roleRepository.updateById(role), BizErrCode.FAIL, "修改失败");
         List<Long> menuIds = roleDTO.getMenuIds();
         RoleMenuDTO roleMenuDTO = new RoleMenuDTO();

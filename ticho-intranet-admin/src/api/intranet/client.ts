@@ -19,7 +19,7 @@ export function modifyClient(params: ClientDTO) {
   return defHttp.put<any>({ url: Api.Client, params }, { errorMessageMode: 'message' });
 }
 
-export function modifyClientEnabled(params: ClientDTO) {
+export function modifyClientStatus(params: ClientDTO) {
   return defHttp.put<any>({ url: Api.Client, params }, { errorMessageMode: 'none' });
 }
 

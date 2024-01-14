@@ -1,7 +1,5 @@
 package top.ticho.intranet.server.domain.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +19,7 @@ import top.ticho.intranet.server.interfaces.dto.DictTypeDTO;
 import top.ticho.intranet.server.interfaces.query.DictTypeQuery;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -41,16 +40,21 @@ public class DictTypeServiceImpl implements DictTypeService {
     @Override
     public void save(DictTypeDTO dictTypeDTO) {
         ValidUtil.valid(dictTypeDTO, ValidGroup.Add.class);
-        this.isRepeatDictTypePreCheck(dictTypeDTO, true);
         DictType dictType = DictTypeAssembler.INSTANCE.dtoToEntity(dictTypeDTO);
+        DictType dbDictType = dictTypeRepository.getByCodeExcludeId(dictType.getCode(), null);
+        Assert.isNull(dbDictType, BizErrCode.FAIL, "保存失败，字典已存在");
         dictType.setId(CloudIdUtil.getId());
+        Integer isSys = Optional.ofNullable(dictType.getIsSys()).orElse(0);
+        dictType.setIsSys(isSys);
         Assert.isTrue(dictTypeRepository.save(dictType), BizErrCode.FAIL, "保存失败");
     }
 
     @Override
     public void removeById(Long id) {
         Assert.isNotEmpty(id, BizErrCode.PARAM_ERROR, "编号不能为空");
-        boolean existsDict = dictRepository.existsByTypeId(id);
+        DictType dbDictType = dictTypeRepository.getById(id);
+        Assert.isNotNull(dbDictType, BizErrCode.FAIL, "删除失败，字典不存在");
+        boolean existsDict = dictRepository.existsByCode(dbDictType.getCode());
         Assert.isTrue(!existsDict, BizErrCode.PARAM_ERROR, "删除失败，请先删除所有字典");
         Assert.isTrue(dictTypeRepository.removeById(id), BizErrCode.FAIL, "删除失败");
     }
@@ -58,8 +62,9 @@ public class DictTypeServiceImpl implements DictTypeService {
     @Override
     public void updateById(DictTypeDTO dictTypeDTO) {
         Assert.isNotEmpty(dictTypeDTO.getId(), BizErrCode.PARAM_ERROR, "编号不能为空");
-        this.isRepeatDictTypePreCheck(dictTypeDTO, false);
         DictType dictType = DictTypeAssembler.INSTANCE.dtoToEntity(dictTypeDTO);
+        DictType dbDictType = dictTypeRepository.getByCodeExcludeId(dictType.getCode(), dictType.getId());
+        Assert.isNull(dbDictType, BizErrCode.FAIL, "修改失败，字典已存在");
         Assert.isTrue(dictTypeRepository.updateById(dictType), BizErrCode.FAIL, "修改失败");
     }
 
@@ -83,21 +88,4 @@ public class DictTypeServiceImpl implements DictTypeService {
         // @formatter:on
     }
 
-    /**
-     * 数据字典是否重复预校验
-     */
-    private void isRepeatDictTypePreCheck(DictTypeDTO dictTypeDTO, boolean saveOrUpdate) {
-        String selectCode = null;
-        if (!saveOrUpdate) {
-            LambdaQueryWrapper<DictType> queryWrapper = Wrappers.lambdaQuery();
-            queryWrapper.select(DictType::getId, DictType::getCode);
-            queryWrapper.eq(DictType::getId, dictTypeDTO.getId());
-            DictType select = dictTypeRepository.getOne(queryWrapper);
-            selectCode = select.getCode();
-        }
-        LambdaQueryWrapper<DictType> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(DictType::getCode, dictTypeDTO.getCode());
-        queryWrapper.ne(selectCode != null, DictType::getCode, selectCode);
-        Assert.isTrue(dictTypeRepository.count(queryWrapper) == 0, BizErrCode.FAIL, "数据字典类型重复");
-    }
 }

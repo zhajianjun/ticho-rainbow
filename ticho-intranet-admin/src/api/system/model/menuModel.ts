@@ -1,21 +1,9 @@
-import type { RouteMeta } from 'vue-router';
 import { defineComponent } from 'vue';
 
 export type Component<T = any> =
   | ReturnType<typeof defineComponent>
   | (() => Promise<typeof import('*.vue')>)
   | (() => Promise<T>);
-
-export interface RouteItem {
-  path: string;
-  component: any;
-  meta: RouteMeta;
-  name?: string;
-  alias?: string | string[];
-  redirect?: string;
-  caseSensitive?: boolean;
-  children?: RouteItem[];
-}
 
 export interface MenuDtlDTO {
   /** 菜单id */

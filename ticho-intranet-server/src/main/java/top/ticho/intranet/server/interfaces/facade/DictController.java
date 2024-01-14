@@ -35,7 +35,7 @@ public class DictController {
     @Autowired
     private DictService dictService;
 
-    @PreAuthorize("@perm.hasPerms('upms:dict:save')")
+    @PreAuthorize("@perm.hasPerms('system:dict:save')")
     @ApiOperation(value = "保存数据字典")
     @ApiOperationSupport(order = 10)
     @PostMapping
@@ -44,7 +44,7 @@ public class DictController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:dict:remove')")
+    @PreAuthorize("@perm.hasPerms('system:dict:remove')")
     @ApiOperation(value = "删除数据字典")
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
@@ -54,7 +54,7 @@ public class DictController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:dict:update')")
+    @PreAuthorize("@perm.hasPerms('system:dict:update')")
     @ApiOperation(value = "修改数据字典")
     @ApiOperationSupport(order = 30)
     @PutMapping
@@ -63,7 +63,7 @@ public class DictController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:dict:get')")
+    @PreAuthorize("@perm.hasPerms('system:dict:get')")
     @ApiOperation(value = "主键查询数据字典")
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
@@ -72,7 +72,7 @@ public class DictController {
         return Result.ok(dictService.getById(id));
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:dict:page')")
+    @PreAuthorize("@perm.hasPerms('system:dict:page')")
     @ApiOperation(value = "分页查询数据字典")
     @ApiOperationSupport(order = 50)
     @GetMapping("page")

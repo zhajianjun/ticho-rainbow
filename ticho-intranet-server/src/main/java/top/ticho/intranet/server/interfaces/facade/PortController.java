@@ -2,6 +2,7 @@ package top.ticho.intranet.server.interfaces.facade;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.core.Result;
 import io.swagger.annotations.Api;
@@ -34,6 +35,7 @@ public class PortController {
     @Autowired
     private PortService portService;
 
+    @PreAuthorize("@perm.hasPerms('intranet:port:save')")
     @ApiOperation(value = "保存端口信息")
     @ApiOperationSupport(order = 10)
     @PostMapping
@@ -42,6 +44,7 @@ public class PortController {
         return Result.ok();
     }
 
+    @PreAuthorize("@perm.hasPerms('intranet:port:remove')")
     @ApiOperation(value = "删除端口信息")
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
@@ -51,6 +54,7 @@ public class PortController {
         return Result.ok();
     }
 
+    @PreAuthorize("@perm.hasPerms('intranet:port:update')")
     @ApiOperation(value = "修改端口信息")
     @ApiOperationSupport(order = 30)
     @PutMapping
@@ -59,6 +63,7 @@ public class PortController {
         return Result.ok();
     }
 
+    @PreAuthorize("@perm.hasPerms('intranet:port:getById')")
     @ApiOperation(value = "主键查询端口信息")
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
@@ -67,6 +72,7 @@ public class PortController {
         return Result.ok(portService.getById(id));
     }
 
+    @PreAuthorize("@perm.hasPerms('intranet:port:page')")
     @ApiOperation(value = "分页查询端口信息")
     @ApiOperationSupport(order = 50)
     @GetMapping("page")

@@ -30,10 +30,10 @@ public class ClientRepositoryImpl extends RootServiceImpl<ClientMapper, Client> 
         LambdaQueryWrapper<Client> wrapper = Wrappers.lambdaQuery();
         wrapper.like(StrUtil.isNotBlank(query.getAccessKey()), Client::getAccessKey, query.getAccessKey());
         wrapper.like(StrUtil.isNotBlank(query.getName()), Client::getName, query.getName());
-        wrapper.eq(Objects.nonNull(query.getEnabled()), Client::getEnabled, query.getEnabled());
+        wrapper.eq(Objects.nonNull(query.getStatus()), Client::getStatus, query.getStatus());
         wrapper.like(StrUtil.isNotBlank(query.getRemark()), Client::getRemark, query.getRemark());
         wrapper.orderByAsc(Client::getSort);
-        wrapper.orderByAsc(Client::getId);
+        wrapper.orderByDesc(Client::getId);
         return list(wrapper);
         // @formatter:on
     }

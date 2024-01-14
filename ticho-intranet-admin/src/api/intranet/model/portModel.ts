@@ -9,7 +9,7 @@ export interface PortDTO {
   endpoint: string;
   /** 域名 */
   domain: string;
-  /** 是否开启;1-开启,0-关闭 */
+  /** 状态;1-正常,0-停用 */
   enabled: number;
   /** 是否永久 */
   forever: number;

@@ -36,7 +36,7 @@ public class DictTypeController {
     @Autowired
     private DictTypeService dictTypeService;
 
-    @PreAuthorize("@perm.hasPerms('upms:dictType:save')")
+    @PreAuthorize("@perm.hasPerms('system:dictType:save')")
     @ApiOperation(value = "保存数据字典类型")
     @ApiOperationSupport(order = 10)
     @PostMapping
@@ -45,7 +45,7 @@ public class DictTypeController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:dictType:remove')")
+    @PreAuthorize("@perm.hasPerms('system:dictType:remove')")
     @ApiOperation(value = "删除数据字典类型")
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
@@ -55,7 +55,7 @@ public class DictTypeController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:dictType:update')")
+    @PreAuthorize("@perm.hasPerms('system:dictType:update')")
     @ApiOperation(value = "修改数据字典类型")
     @ApiOperationSupport(order = 30)
     @PutMapping
@@ -64,7 +64,7 @@ public class DictTypeController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:dictType:get')")
+    @PreAuthorize("@perm.hasPerms('system:dictType:get')")
     @ApiOperation(value = "主键查询数据字典类型")
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
@@ -73,7 +73,7 @@ public class DictTypeController {
         return Result.ok(dictTypeService.getById(id));
     }
 
-    @PreAuthorize("@perm.hasPerms('upms:dictType:page')")
+    @PreAuthorize("@perm.hasPerms('system:dictType:page')")
     @ApiOperation(value = "分页查询数据字典类型")
     @ApiOperationSupport(order = 50)
     @GetMapping("page")
