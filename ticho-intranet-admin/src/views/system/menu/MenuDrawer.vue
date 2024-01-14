@@ -55,12 +55,17 @@
         setDrawerProps({ confirmLoading: false });
         isUpdate.value = !!data?.isUpdate;
         if (unref(isUpdate)) {
+          let parentId = data.record.parentId;
+          if (data.record.parentId === '0') {
+            parentId = null;
+          }
           let perms = data.record.perms.map((n: string) => n.split(':'));
           let icon = data.record.icon ?? '';
           await setFieldsValue({
             ...data.record,
             icon: icon,
             perms: perms,
+            parentId: parentId,
           });
         } else {
           let parentId = data.record.id;
@@ -125,6 +130,9 @@
           values.componentName = 'LAYOUT';
         }
         let promis: Promise<any>;
+        if (values.parentId === null) {
+          values.parentId = '0';
+        }
         if (unref(isUpdate)) {
           promis = modifyMenu(values);
         } else {

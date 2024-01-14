@@ -45,6 +45,7 @@
       </template>
     </BasicTable>
     <UserModel @register="registerModal" @success="handleSuccess" />
+    <UserPasswordModal @register="registerPasswordModal" @success="handleSuccess" />
   </PageWrapper>
 </template>
 <script lang="ts">
@@ -58,10 +59,11 @@
   import { useGo } from '@/hooks/web/usePage';
   import { usePermission } from '@/hooks/web/usePermission';
   import { Tag, Space } from 'ant-design-vue';
+  import UserPasswordModal from './UserPasswordModal.vue';
 
   export default defineComponent({
     name: 'AccountManagement',
-    components: { BasicTable, PageWrapper, UserModel, TableAction, Tag, Space },
+    components: { BasicTable, PageWrapper, UserModel, TableAction, Tag, Space, UserPasswordModal },
     setup() {
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('UserSelect');
@@ -132,8 +134,7 @@
         });
       }
 
-      function handleSuccess({ isUpdate, values }) {
-        console.table(isUpdate, values);
+      function handleSuccess() {
         reload();
       }
 

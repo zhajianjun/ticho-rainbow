@@ -146,11 +146,7 @@ public class MenuServiceImpl extends UpmsHandle implements MenuService {
         MenuDtlDTO root = new MenuDtlDTO();
         root.setId(0L);
         TreeUtil.tree(menuFuncDtls, root, null, consumer);
-        List<MenuDtlDTO> result = root.getChildren();
-        if (CollUtil.isNotEmpty(result)) {
-            result.get(0).setParentId(null);
-        }
-        return result;
+        return root.getChildren();
     }
 
     @Override

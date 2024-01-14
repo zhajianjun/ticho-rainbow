@@ -100,7 +100,6 @@ export const formSchema: FormSchema[] = [
     component: 'Input',
     required: true,
   },
-
   {
     field: 'parentId',
     label: '上级菜单',

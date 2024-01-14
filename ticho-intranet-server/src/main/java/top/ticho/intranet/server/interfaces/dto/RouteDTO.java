@@ -48,8 +48,12 @@ public class RouteDTO extends TreeNode<RouteDTO> implements Serializable {
     @ApiModelProperty(value = "组件路径", position = 70)
     private String component;
 
+    /** 转发地址 */
+    @ApiModelProperty(value = "转发地址", position = 80)
+    private String redirect;
+
     /** 权限标识 */
-    @ApiModelProperty(value = "按钮名称", position = 45)
+    @ApiModelProperty(value = "按钮名称", position = 90)
     private List<String> buttons;
 
 }
