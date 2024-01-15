@@ -145,7 +145,7 @@ public class MenuServiceImpl extends UpmsHandle implements MenuService {
 
     @Override
     public List<MenuDtlDTO> list() {
-        List<Menu> menus = menuRepository.list();
+        List<Menu> menus = menuRepository.cacheList();
         List<MenuDtlDTO> menuFuncDtls = getMenuDtls(menus, null, null);
         Consumer<MenuDtlDTO> consumer = (root) -> {
             List<MenuDtlDTO> children = root.getChildren();
@@ -171,7 +171,7 @@ public class MenuServiceImpl extends UpmsHandle implements MenuService {
         }
         List<Menu> menus;
         if (roleCodes.contains(SecurityConst.ADMIN)) {
-            menus = menuRepository.list();
+            menus = menuRepository.cacheList();
         } else {
             menus = getMenusByRoleCodes(roleCodes, Function.identity()).collect(Collectors.toList());
         }

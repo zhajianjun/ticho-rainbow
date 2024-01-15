@@ -69,7 +69,7 @@ public class DictTypeController {
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
-    public Result<DictTypeDTO> get(@RequestParam("id") Long id) {
+    public Result<DictTypeDTO> getById(@RequestParam("id") Long id) {
         return Result.ok(dictTypeService.getById(id));
     }
 

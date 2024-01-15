@@ -15,6 +15,13 @@ import java.util.List;
 public interface MenuRepository extends RootService<Menu> {
 
     /**
+     * 查询Menu列表
+     *
+     * @return {@link List}<{@link Menu}>
+     */
+    List<Menu> cacheList();
+
+    /**
      * 根据条件查询Menu列表
      *
      * @param query 查询条件

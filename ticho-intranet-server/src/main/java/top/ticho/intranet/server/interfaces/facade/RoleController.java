@@ -86,7 +86,7 @@ public class RoleController {
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
-    public Result<RoleDTO> get(@RequestParam("id") Serializable id) {
+    public Result<RoleDTO> getById(@RequestParam("id") Serializable id) {
         return Result.ok(roleService.getById(id));
     }
 

@@ -142,7 +142,7 @@ public class UpmsHandle {
             return Stream.empty();
         }
         // 菜单信息
-        List<Menu> menus = menuRepository.list();
+        List<Menu> menus = menuRepository.cacheList();
         return menus
             .stream()
             .filter(x-> menuIds.contains(x.getId()))
@@ -200,7 +200,7 @@ public class UpmsHandle {
         // 合并的角色后所有的菜单
         List<Long> menuIds = roleMenus.stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
         // 菜单信息
-        List<Menu> menus = menuRepository.list();
+        List<Menu> menus = menuRepository.cacheList();
         // 查询到的角色信息组装填充
         List<RoleDTO> roleDtos = new ArrayList<>();
         roleIds = new ArrayList<>();

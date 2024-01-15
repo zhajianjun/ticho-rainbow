@@ -71,7 +71,7 @@ public class MenuController {
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
-    public Result<MenuDTO> get(@RequestParam("id") Long id) {
+    public Result<MenuDTO> getById(@RequestParam("id") Long id) {
         return Result.ok(menuService.getById(id));
     }
 

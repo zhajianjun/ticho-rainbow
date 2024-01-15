@@ -6,7 +6,7 @@ package top.ticho.intranet.server.infrastructure.core.constant;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-public class RedisConst {
+public class CacheConst {
 
     public static final String USER_INFO_KEY = "ticho-intranet:user:info:";
 
