@@ -13,12 +13,12 @@
   import { computed, defineComponent, ref, unref } from 'vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   import { BasicForm, useForm } from '@/components/Form/index';
-  import { getModalFormColumns } from './dictType.data';
-  import { modifyDictType, saveDictType } from '@/api/system/dictType';
-  import { DictTypeDTO } from '@/api/system/model/dictTypeModel';
+  import { getModalFormColumns } from './dict.data';
+  import { modifyDict, saveDict } from '@/api/system/dict';
+  import { DictDTO } from '@/api/system/model/dictModel';
 
   export default defineComponent({
-    name: 'DictTypeModal',
+    name: 'DictModal',
     components: { BasicModal, BasicForm },
     emits: ['success', 'register'],
     setup(_, { emit }) {
@@ -37,23 +37,21 @@
         await resetFields();
         setModalProps({ confirmLoading: false });
         isUpdate.value = !!data?.isUpdate;
-        if (unref(isUpdate)) {
-          await setFieldsValue({
-            ...data.record,
-          });
-        }
+        await setFieldsValue({
+          ...data.record,
+        });
       });
 
       const getTitle = computed(() => (!unref(isUpdate) ? '新增字典' : '编辑字典'));
 
       async function handleSubmit() {
         try {
-          const values = (await validate()) as DictTypeDTO;
+          const values = (await validate()) as DictDTO;
           setModalProps({ confirmLoading: true });
           if (unref(isUpdate)) {
-            await modifyDictType(values);
+            await modifyDict(values);
           } else {
-            await saveDictType(values);
+            await saveDict(values);
           }
           closeModal();
           // 触发父组件方法

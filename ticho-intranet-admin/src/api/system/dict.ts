@@ -18,9 +18,7 @@ export function modifyDict(params: DictDTO) {
   return defHttp.put<DictDTO>({ url: Api.Dict, params }, { errorMessageMode: 'message' });
 }
 
-export function getByCode(params: string) {
-  return defHttp.get<DictDTO[]>(
-    { url: Api.Dict + '?code=', params },
-    { errorMessageMode: 'message' },
-  );
+export function getByCode(code: string) {
+  const params = { code: code };
+  return defHttp.get<DictDTO[]>({ url: Api.Dict, params }, { errorMessageMode: 'message' });
 }

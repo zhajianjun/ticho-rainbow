@@ -1,6 +1,43 @@
 <template>
   <div class="h-full flex">
     <div class="w-1/2">
+      <BasicTable @register="registerTypeTable">
+        <template #toolbar>
+          <a-button type="primary" @click="handleTypeCreate"> 新增 </a-button>
+        </template>
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'code'">
+            <Tag color="success" @click="handleDict(record)">
+              {{ record.code }}
+            </Tag>
+          </template>
+        </template>
+        <template #action="{ record }">
+          <TableAction
+            :actions="[
+              {
+                icon: 'clarity:note-edit-line',
+                onClick: handleTypeEdit.bind(null, record),
+                tooltip: '修改',
+                ifShow: hasPermission('DictTypeEdit'),
+              },
+              {
+                icon: 'ant-design:delete-outlined',
+                color: 'error',
+                popConfirm: {
+                  title: '是否确认删除',
+                  confirm: handleTypeDelete.bind(null, record),
+                },
+                tooltip: '删除',
+                ifShow: hasPermission('DictTypeDel'),
+              },
+            ]"
+          />
+        </template>
+      </BasicTable>
+      <DictTypeModal @register="registerTypeModal" @success="handleTypeSuccess" />
+    </div>
+    <div class="w-1/2 p-4">
       <BasicTable @register="registerTable">
         <template #toolbar>
           <a-button type="primary" @click="handleCreate"> 新增 </a-button>
@@ -28,38 +65,42 @@
           />
         </template>
       </BasicTable>
-      <DictTypeModal @register="registerModal" @success="handleSuccess" />
-    </div>
-    <div class="w-1/2">
-      <!-- 右侧部分的内容 -->
+      <DictModal @register="registerModal" @success="handleSuccess" />
     </div>
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent } from 'vue';
+  import { defineComponent, ref, unref } from 'vue';
   import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { useModal } from '@/components/Modal';
   import DictTypeModal from './DictTypeModal.vue';
-  import { getTableColumns, getSearchColumns } from './dictType.data';
+  import DictModal from './DictModal.vue';
+  import {
+    getTableColumns as getTypeTableColumns,
+    getSearchColumns as getTypeSearchColumns,
+  } from './dictType.data';
+  import { getTableColumns } from './dict.data';
   import { dictTypePage, delDictType } from '@/api/system/dictType';
+  import { getByCode, delDict } from '@/api/system/dict';
   import { usePermission } from '@/hooks/web/usePermission';
+  import { Tag } from 'ant-design-vue';
 
   export default defineComponent({
     name: 'DictType',
-    components: { BasicTable, DictTypeModal, TableAction },
+    components: { Tag, BasicTable, DictTypeModal, TableAction, DictModal },
     setup() {
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('DictTypeSelect');
-      const [registerModal, { openModal }] = useModal();
-      const [registerTable, { reload }] = useTable({
-        title: '数据字典列表',
+      const [registerTypeModal, { openModal: openTypeModal }] = useModal();
+      const [registerTypeTable, { reload: reloadType }] = useTable({
+        title: '字典列表',
         api: dictTypePage,
         rowKey: 'id',
-        columns: getTableColumns(),
+        columns: getTypeTableColumns(),
         useSearchForm: true,
         formConfig: {
           labelWidth: 120,
-          schemas: getSearchColumns(),
+          schemas: getTypeSearchColumns(),
           showActionButtonGroup: showSelect,
           showSubmitButton: showSelect,
           showResetButton: showSelect,
@@ -83,9 +124,83 @@
           position: ['bottomLeft'],
         },
       });
+      const codeRef = ref<string | null>(null);
+      const nameRef = ref<string>('');
+      const [registerModal, { openModal }] = useModal();
+      const [registerTable, { reload }] = useTable({
+        title: () => {
+          const code = unref(nameRef);
+          if (code) {
+            return '字典列表-' + unref(nameRef) + '(' + unref(codeRef) + ')';
+          }
+          return '字典列表';
+        },
+        api: async () => {
+          let code = unref(codeRef);
+          if (!code) {
+            return Promise.resolve();
+          }
+          return getByCode(code);
+        },
+        rowKey: 'id',
+        columns: getTableColumns(),
+        useSearchForm: false,
+        formConfig: {
+          labelWidth: 120,
+        },
+        tableSetting: {
+          redo: showSelect,
+        },
+        immediate: false,
+        showTableSetting: true,
+        bordered: true,
+        showIndexColumn: false,
+        actionColumn: {
+          width: 100,
+          title: '操作',
+          dataIndex: 'action',
+          slots: { customRender: 'action' },
+          fixed: undefined,
+        },
+        pagination: false,
+      });
+
+      function handleTypeCreate() {
+        openTypeModal(true, {
+          isUpdate: false,
+        });
+      }
+
+      function handleTypeEdit(record: Recordable) {
+        openTypeModal(true, {
+          record,
+          isUpdate: true,
+        });
+      }
+
+      function handleTypeDelete(record: Recordable) {
+        delDictType(record.id).then(() => {
+          reloadType();
+        });
+      }
+
+      function handleTypeSuccess() {
+        reloadType();
+      }
+
+      function handleDict(record: Recordable) {
+        codeRef.value = record.code;
+        nameRef.value = record.name;
+        reload();
+      }
 
       function handleCreate() {
+        if (!unref(codeRef)) {
+          return;
+        }
+        const record = { code: unref(codeRef), name: unref(nameRef) } as Recordable;
         openModal(true, {
+          record,
           isUpdate: false,
         });
       }
@@ -98,7 +213,7 @@
       }
 
       function handleDelete(record: Recordable) {
-        delDictType(record.id).then(() => {
+        delDict(record.id).then(() => {
           reload();
         });
       }
@@ -108,11 +223,18 @@
       }
 
       return {
+        registerTypeTable,
         registerTable,
+        registerTypeModal,
         registerModal,
+        handleTypeCreate,
+        handleTypeEdit,
+        handleDict,
         handleCreate,
         handleEdit,
+        handleTypeDelete,
         handleDelete,
+        handleTypeSuccess,
         handleSuccess,
         hasPermission,
       };

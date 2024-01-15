@@ -1,5 +1,6 @@
 package top.ticho.intranet.server.interfaces.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -8,6 +9,7 @@ import top.ticho.boot.web.util.valid.ValidGroup;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 数据字典类型DTO
@@ -47,5 +49,10 @@ public class DictTypeDTO implements Serializable {
     /** 备注信息 */
     @ApiModelProperty(value = "备注信息", position = 60)
     private String remark;
+
+    /** 创建时间 */
+    @ApiModelProperty(value = "创建时间", position = 70)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime createTime;
 
 }

@@ -1,5 +1,6 @@
 package top.ticho.intranet.server.interfaces.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 数据字典DTO
@@ -26,12 +28,12 @@ public class DictDTO implements Serializable {
 
     /** 主键编号; */
     @ApiModelProperty(value = "主键编号", position = 10)
-    @NotBlank(message = "字典编号不能为空", groups = {ValidGroup.Upd.class})
+    @NotNull(message = "字典编号不能为空", groups = {ValidGroup.Upd.class})
     private Long id;
 
     /** 字典类型id */
     @ApiModelProperty(value = "字典编码", position = 30)
-    @NotNull(message = "字典编码不能为空", groups = {ValidGroup.Add.class})
+    @NotBlank(message = "字典编码不能为空", groups = {ValidGroup.Add.class})
     private String code;
 
     /** 字典名称 */
@@ -59,5 +61,10 @@ public class DictDTO implements Serializable {
     @ApiModelProperty(value = "备注信息", position = 100)
     @Size(max = 1024, message = "备注信息最大不能超过1024个字符")
     private String remark;
+
+    /** 创建时间 */
+    @ApiModelProperty(value = "创建时间", position = 110)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime createTime;
 
 }

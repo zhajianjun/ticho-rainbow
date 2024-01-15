@@ -168,9 +168,13 @@ export function getModalFormColumns(): FormSchema[] {
     {
       field: `remark`,
       label: `备注信息`,
-      component: 'Input',
+      component: 'InputTextArea',
       componentProps: {
+        defaultValue: '',
         placeholder: '请输入备注信息',
+        maxlength: 120,
+        showCount: true,
+        rows: 4,
       },
       colProps: {
         span: 24,

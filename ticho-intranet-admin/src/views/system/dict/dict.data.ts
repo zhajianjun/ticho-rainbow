@@ -7,12 +7,14 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'id',
       resizable: true,
       width: 100,
+      ifShow: false,
     },
     {
       title: '字典编码',
       dataIndex: 'code',
       resizable: true,
       width: 100,
+      ifShow: false,
     },
     {
       title: '字典标签',
@@ -24,19 +26,19 @@ export function getTableColumns(): BasicColumn[] {
       title: '字典值',
       dataIndex: 'value',
       resizable: true,
-      width: 100,
+      width: 50,
     },
     {
       title: '排序',
       dataIndex: 'sort',
       resizable: true,
-      width: 100,
+      width: 50,
     },
     {
       title: '状态',
       dataIndex: 'status',
       resizable: true,
-      width: 100,
+      width: 50,
     },
     {
       title: '备注信息',
@@ -48,96 +50,7 @@ export function getTableColumns(): BasicColumn[] {
       title: '创建时间',
       dataIndex: 'createTime',
       resizable: true,
-      width: 100,
-    },
-  ];
-}
-
-export function getSearchColumns(): FormSchema[] {
-  return [
-    {
-      field: `id`,
-      label: `主键编号`,
-      component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
-      componentProps: {
-        placeholder: '请输入主键编号',
-      },
-    },
-    {
-      field: `code`,
-      label: `字典编码`,
-      component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
-      componentProps: {
-        placeholder: '请输入字典编码',
-      },
-    },
-    {
-      field: `label`,
-      label: `字典标签`,
-      component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
-      componentProps: {
-        placeholder: '请输入字典标签',
-      },
-    },
-    {
-      field: `value`,
-      label: `字典值`,
-      component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
-      componentProps: {
-        placeholder: '请输入字典值',
-      },
-    },
-    {
-      field: `sort`,
-      label: `排序`,
-      component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
-      componentProps: {
-        placeholder: '请输入排序',
-      },
-    },
-    {
-      field: `status`,
-      label: `状态`,
-      component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
-      componentProps: {
-        placeholder: '请输入状态',
-      },
-    },
-    {
-      field: `remark`,
-      label: `备注信息`,
-      component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
-      componentProps: {
-        placeholder: '请输入备注信息',
-      },
+      width: 80,
     },
   ];
 }
@@ -154,6 +67,7 @@ export function getModalFormColumns(): FormSchema[] {
       colProps: {
         span: 24,
       },
+      ifShow: false,
     },
     {
       field: `code`,
@@ -161,6 +75,7 @@ export function getModalFormColumns(): FormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入字典编码',
+        disabled: true,
       },
       colProps: {
         span: 24,
@@ -191,8 +106,12 @@ export function getModalFormColumns(): FormSchema[] {
     {
       field: `sort`,
       label: `排序`,
-      component: 'Input',
+      component: 'InputNumber',
       componentProps: {
+        min: 0,
+        max: 10000,
+        defaultValue: 10,
+        step: 10,
         placeholder: '请输入排序',
       },
       colProps: {
@@ -213,9 +132,13 @@ export function getModalFormColumns(): FormSchema[] {
     {
       field: `remark`,
       label: `备注信息`,
-      component: 'Input',
+      component: 'InputTextArea',
       componentProps: {
+        defaultValue: '',
         placeholder: '请输入备注信息',
+        maxlength: 120,
+        showCount: true,
+        rows: 4,
       },
       colProps: {
         span: 24,

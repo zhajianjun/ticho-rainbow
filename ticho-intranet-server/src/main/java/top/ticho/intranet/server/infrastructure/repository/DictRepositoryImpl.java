@@ -56,7 +56,7 @@ public class DictRepositoryImpl extends RootServiceImpl<DictMapper, Dict> implem
     public boolean existsByCode(String code) {
         LambdaQueryWrapper<Dict> wrapper = Wrappers.lambdaQuery();
         wrapper.select(Dict::getId);
-        wrapper.gt(Dict::getCode, code);
+        wrapper.eq(Dict::getCode, code);
         wrapper.last("limit 1");
         return getOne(wrapper) != null;
     }
