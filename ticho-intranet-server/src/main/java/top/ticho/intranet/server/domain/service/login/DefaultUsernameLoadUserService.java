@@ -16,7 +16,6 @@ import top.ticho.intranet.server.domain.repository.UserRoleRepository;
 import top.ticho.intranet.server.infrastructure.core.enums.UserStatus;
 import top.ticho.intranet.server.infrastructure.entity.Role;
 import top.ticho.intranet.server.infrastructure.entity.User;
-import top.ticho.intranet.server.infrastructure.entity.UserRole;
 import top.ticho.intranet.server.interfaces.dto.SecurityUser;
 
 import java.util.List;
@@ -60,8 +59,7 @@ public class DefaultUsernameLoadUserService implements LoadUserService {
     }
 
     private SecurityUser getSecurityUser(User user) {
-        List<UserRole> userRoles = userRoleRepository.listByUserId(user.getId());
-        List<Long> roleIds = userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList());
+        List<Long> roleIds = userRoleRepository.getRoleIdsByUserId(user.getId());
         List<Role> roles = roleRepository.listByIds(roleIds);
         List<String> codes = roles.stream().filter(x -> Objects.equals(1, x.getStatus())).map(Role::getCode).collect(Collectors.toList());
         SecurityUser securityUser = new SecurityUser();

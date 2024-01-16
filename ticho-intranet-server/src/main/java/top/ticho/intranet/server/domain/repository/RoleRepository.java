@@ -16,6 +16,13 @@ import java.util.List;
 public interface RoleRepository extends RootService<Role> {
 
     /**
+     * 所有角色缓存查询
+     *
+     * @return {@link List}<{@link Role}>
+     */
+    List<Role> cacheList();
+
+    /**
      * 根据条件查询Role列表
      *
      * @param query 查询条件

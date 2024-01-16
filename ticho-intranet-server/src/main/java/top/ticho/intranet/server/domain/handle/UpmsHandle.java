@@ -15,7 +15,6 @@ import top.ticho.intranet.server.infrastructure.entity.Menu;
 import top.ticho.intranet.server.infrastructure.entity.Role;
 import top.ticho.intranet.server.infrastructure.entity.RoleMenu;
 import top.ticho.intranet.server.infrastructure.entity.User;
-import top.ticho.intranet.server.infrastructure.entity.UserRole;
 import top.ticho.intranet.server.interfaces.assembler.MenuAssembler;
 import top.ticho.intranet.server.interfaces.assembler.RoleAssembler;
 import top.ticho.intranet.server.interfaces.assembler.UserAssembler;
@@ -78,8 +77,7 @@ public class UpmsHandle {
         if (userRoleMenuDtlDTO == null) {
             return null;
         }
-        List<UserRole> userRoles = userRoleRepository.listByUserId(user.getId());
-        List<Long> roleIds = userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList());
+        List<Long> roleIds = userRoleRepository.getRoleIdsByUserId(user.getId());
         RoleMenuDtlDTO roleMenuFuncDtl = mergeRoleByIds(roleIds, false, false);
         if (roleMenuFuncDtl == null) {
             return null;
@@ -90,24 +88,6 @@ public class UpmsHandle {
         userRoleMenuDtlDTO.setRoles(roleMenuFuncDtl.getRoles());
         userRoleMenuDtlDTO.setMenus(roleMenuFuncDtl.getMenus());
         return userRoleMenuDtlDTO;
-    }
-
-
-    /**
-     * 合并菜单按角色code列表
-     *
-     * @param roleCodes 角色code列表
-     * @param showAll 显示所有信息，匹配到的信息，设置匹配字段checkbox=true
-     * @param treeHandle 是否进行树化
-     * @return {@link RoleMenuDtlDTO}
-     */
-    public RoleMenuDtlDTO mergeRoleByCodes(List<String> roleCodes, boolean showAll, boolean treeHandle) {
-        if (CollUtil.isEmpty(roleCodes)) {
-            return null;
-        }
-        // 根据角色id列表 查询角色信息
-        List<Role> roles = roleRepository.listByCodes(roleCodes);
-        return getRoleMenuDtl(roles, showAll, treeHandle);
     }
 
     /**

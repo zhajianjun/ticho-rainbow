@@ -2,14 +2,16 @@ package top.ticho.intranet.server.infrastructure.repository;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import top.ticho.intranet.server.domain.repository.RoleRepository;
-import top.ticho.intranet.server.infrastructure.core.prop.CacheProperty;
+import top.ticho.intranet.server.infrastructure.core.constant.CacheConst;
 import top.ticho.intranet.server.infrastructure.entity.Role;
 import top.ticho.intranet.server.infrastructure.mapper.RoleMapper;
 import top.ticho.intranet.server.interfaces.query.RoleQuery;
@@ -19,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 角色信息 repository实现
@@ -29,41 +32,29 @@ import java.util.Objects;
 @Slf4j
 @Service
 public class RoleRepositoryImpl extends RootServiceImpl<RoleMapper, Role> implements RoleRepository {
-
-    // @Autowired
-    // private RedisUtil<String, String> redisUtil;
-
-    @Autowired
-    private CacheProperty cacheProperty;
+    public static final String ROLE_LIST = CacheConst.ROLE_LIST;
 
     @Override
-    public List<Role> list() {
-        // @formatter:off
-        // boolean exists = redisUtil.exists(RedisConst.ROLE_LIST_KEY);
-        // if (exists) {
-        //     String vGet = redisUtil.vGet(RedisConst.ROLE_LIST_KEY);
-        //     return JsonUtil.toList(vGet, Role.class);
-        // }
-        List<Role> list = super.list();
-        // redisUtil.vSet(RedisConst.ROLE_LIST_KEY, JsonUtil.toJsonString(list), cacheProperty.getRoleExpire(), TimeUnit.SECONDS);
-        return list;
-        // @formatter:on
+    @Cacheable(value = CacheConst.COMMON, key = "#root.target.ROLE_LIST", sync = true)
+    public List<Role> cacheList() {
+        return super.list();
     }
 
+    @Override
+    @CacheEvict(value = CacheConst.COMMON, key = "#root.target.ROLE_LIST")
+    public boolean save(Role role) {
+        return super.save(role);
+    }
 
     @Override
+    @CacheEvict(value = CacheConst.COMMON, key = "#root.target.ROLE_LIST")
     public boolean removeById(Serializable id) {
-        // if (remove) {
-        //     redisUtil.delete(RedisConst.ROLE_LIST_KEY);
-        // }
         return super.removeById(id);
     }
 
     @Override
+    @CacheEvict(value = CacheConst.COMMON, key = "#root.target.ROLE_LIST")
     public boolean updateById(Role role) {
-        // if (update) {
-        //     redisUtil.delete(RedisConst.ROLE_LIST_KEY);
-        // }
         return super.updateById(role);
     }
 
@@ -81,15 +72,17 @@ public class RoleRepositoryImpl extends RootServiceImpl<RoleMapper, Role> implem
 
     @Override
     public List<Role> listByCodes(List<String> codes) {
+        // @formatter:off
         if (CollUtil.isEmpty(codes)) {
             return Collections.emptyList();
         }
-        List<Role> list = list();
-        list.removeIf(x -> {
-            boolean contains = codes.contains(x.getCode());
-            return !contains;
-        });
-        return list;
+        RoleRepositoryImpl bean = SpringUtil.getBean(getClass());
+        List<Role> list = bean.cacheList();
+        return list
+            .stream()
+            .filter(x-> codes.contains(x.getCode()))
+            .collect(Collectors.toList());
+        // @formatter:on
     }
 
     @Override
@@ -106,9 +99,12 @@ public class RoleRepositoryImpl extends RootServiceImpl<RoleMapper, Role> implem
         if (CollUtil.isEmpty(ids)) {
             return Collections.emptyList();
         }
-        List<Role> list = list();
-        list.removeIf(x -> !ids.contains(x.getId()));
-        return list;
+        RoleRepositoryImpl bean = SpringUtil.getBean(getClass());
+        List<Role> list = bean.cacheList();
+        return list
+            .stream()
+            .filter(x-> ids.contains(x.getId()))
+            .collect(Collectors.toList());
     }
 
 }

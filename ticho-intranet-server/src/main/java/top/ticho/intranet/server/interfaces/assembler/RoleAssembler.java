@@ -33,12 +33,4 @@ public interface RoleAssembler {
      */
     RoleDTO entityToDto(Role entity);
 
-    /**
-     * 角色信息DTO
-     *
-     * @param roles 角色信息
-     * @return {@link RoleDTO}
-     */
-    List<RoleDTO> entityToDtos(List<Role> roles);
-
 }

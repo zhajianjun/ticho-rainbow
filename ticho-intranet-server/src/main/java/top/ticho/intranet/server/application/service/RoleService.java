@@ -41,7 +41,7 @@ public interface RoleService {
     /**
      * 更新状态
      *
-     * @param id id
+     * @param id     id
      * @param status 状态
      */
     void updateStatus(Long id, Integer status);
@@ -83,14 +83,6 @@ public interface RoleService {
      * @param roleDtlQuery 迪泰查询角色
      * @return {@link RoleMenuDtlDTO}
      */
-    RoleMenuDtlDTO listByCodes(RoleDtlQuery roleDtlQuery);
-
-    /**
-     * 角色菜单详情查询
-     *
-     * @param roleDtlQuery 迪泰查询角色
-     * @return {@link RoleMenuDtlDTO}
-     */
-    RoleMenuDtlDTO listByIds(RoleDtlQuery roleDtlQuery);
+    RoleMenuDtlDTO listRoleMenuByIds(RoleDtlQuery roleDtlQuery);
 }
 

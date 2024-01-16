@@ -15,20 +15,20 @@ import java.util.List;
 public interface UserRoleRepository extends RootService<UserRole> {
 
     /**
-     * 通过用户id查询
+     * 通过用户id查询角色id
      *
      * @param userId 用户id
      * @return {@link List}<{@link UserRole}>
      */
-    List<UserRole> listByUserId(Long userId);
+    List<Long> getRoleIdsByUserId(Long userId);
 
     /**
-     * 通过用户id列表查询
+     * 移除用户角色信息，并重新保存角色id
      *
-     * @param userIds 用户id列表
-     * @return {@link List}<{@link UserRole}>
+     * @param userId  用户id
+     * @param roleIds 角色id列表
      */
-    List<UserRole> listByUserIds(Collection<Long> userIds);
+    void removeAndSave(Long userId, Collection<Long> roleIds);
 
     /**
      * 根据角色id列表查询是否存在
@@ -37,14 +37,6 @@ public interface UserRoleRepository extends RootService<UserRole> {
      * @return boolean
      */
     boolean existsByRoleIds(Collection<Long> roleIds);
-
-    /**
-     * 通过用户id删除
-     *
-     * @param userId 用户id
-     * @return boolean
-     */
-    boolean removeByUserId(Long userId);
 
 }
 

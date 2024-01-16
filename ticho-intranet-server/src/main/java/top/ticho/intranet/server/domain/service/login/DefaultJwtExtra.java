@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * 转换token时需要额外添加的信息
  *
  * @author zhajianjun
  * @date 2024-01-08 20:30

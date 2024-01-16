@@ -19,13 +19,11 @@ import top.ticho.intranet.server.domain.handle.UpmsHandle;
 import top.ticho.intranet.server.domain.repository.RoleRepository;
 import top.ticho.intranet.server.domain.repository.UserRepository;
 import top.ticho.intranet.server.domain.repository.UserRoleRepository;
-import top.ticho.intranet.server.infrastructure.core.enums.TenantStatus;
 import top.ticho.intranet.server.infrastructure.core.enums.UserStatus;
 import top.ticho.intranet.server.infrastructure.core.util.CaptchaUtil;
 import top.ticho.intranet.server.infrastructure.core.util.UserUtil;
 import top.ticho.intranet.server.infrastructure.entity.Role;
 import top.ticho.intranet.server.infrastructure.entity.User;
-import top.ticho.intranet.server.infrastructure.entity.UserRole;
 import top.ticho.intranet.server.interfaces.assembler.RoleAssembler;
 import top.ticho.intranet.server.interfaces.assembler.UserAssembler;
 import top.ticho.intranet.server.interfaces.dto.RoleDTO;
@@ -44,6 +42,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -175,12 +174,7 @@ public class UserServiceImpl extends UpmsHandle implements UserService {
         ValidUtil.valid(userRoleDTO);
         Long userId = userRoleDTO.getUserId();
         List<Long> roleIds = Optional.ofNullable(userRoleDTO.getRoleIds()).orElseGet(ArrayList::new);
-        userRoleRepository.removeByUserId(userId);
-        List<UserRole> userRoles = roleIds
-            .stream()
-            .map(x-> convertToUserRole(userId, x))
-            .collect(Collectors.toList());
-        userRoleRepository.saveBatch(userRoles);
+        userRoleRepository.removeAndSave(userId, roleIds);
         // @formatter:on
     }
 
@@ -229,13 +223,6 @@ public class UserServiceImpl extends UpmsHandle implements UserService {
         }
     }
 
-    private UserRole convertToUserRole(Long userId, Long roleId) {
-        UserRole userRole = new UserRole();
-        userRole.setUserId(userId);
-        userRole.setRoleId(roleId);
-        return userRole;
-    }
-
     /**
      * 保存或者修改用户信息重复数据判断，用户名称、邮箱、手机号保证其唯一性
      *
@@ -269,29 +256,23 @@ public class UserServiceImpl extends UpmsHandle implements UserService {
         if (CollUtil.isEmpty(userDtos)) {
             return;
         }
-        List<Long> userIds = userDtos.stream().map(UserDTO::getId).collect(Collectors.toList());
-        List<UserRole> userRoles = userRoleRepository.listByUserIds(userIds);
-        List<Long> roleIds = userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList());
+        Map<Long, List<Long>> userRoleIdsMap = userDtos
+            .stream()
+            .collect(Collectors.toMap(UserDTO::getId, x-> userRoleRepository.getRoleIdsByUserId(x.getId())));
+        List<Long> roleIds = userRoleIdsMap.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
         List<Role> roles = roleRepository.listByIds(roleIds);
         Map<Long, Role> roleMap = roles
             .stream()
             .collect(Collectors.toMap(Role::getId, Function.identity()));
-        Map<Long, List<Role>> userRoleMap = userRoles
-            .stream()
-            .collect(Collectors.groupingBy(
-                UserRole::getUserId,
-                    Collectors.mapping(x-> {
-                            Long roleId = x.getRoleId();
-                            return roleMap.get(roleId);
-                        }
-                        , Collectors.toList())
-                    )
-            );
         for (UserDTO userDto : userDtos) {
             Long id = userDto.getId();
-            List<RoleDTO> roleDTOS = Optional.ofNullable(RoleAssembler.INSTANCE.entityToDtos(userRoleMap.get(id)))
+            List<Long> itemRoleIds = Optional.ofNullable(userRoleIdsMap.get(id))
                 .orElseGet(ArrayList::new);
-            List<Long> itemRoleIds = roleDTOS.stream().map(RoleDTO::getId).collect(Collectors.toList());
+            List<RoleDTO> roleDTOS = itemRoleIds
+                .stream()
+                .map(x-> RoleAssembler.INSTANCE.entityToDto(roleMap.get(x)))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
             userDto.setRoleIds(itemRoleIds);
             userDto.setRoles(roleDTOS);
         }

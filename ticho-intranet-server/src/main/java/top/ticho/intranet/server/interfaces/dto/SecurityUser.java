@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import top.ticho.boot.view.core.BaseSecurityUser;
 
 /**
- *
+ * 用户信息
  *
  * @author zhajianjun
  * @date 2024-01-08 20:30
@@ -22,7 +22,7 @@ public class SecurityUser extends BaseSecurityUser implements UserHelper {
     private Integer status = 2;
 
     @Override
-    public String toString(){
+    public String toString() {
         return super.toString();
     }
 

@@ -22,10 +22,6 @@ public class RoleDtlQuery {
     @ApiModelProperty(value = "角色id列表", position = 10)
     private List<Long> roleIds;
 
-    /** 角色code */
-    @ApiModelProperty(value = "角色code列表", position = 30)
-    private List<String> roleCodes;
-
     /** 显示所有 */
     @ApiModelProperty(value = "是否显示所有", position = 40)
     private Boolean showAll = false;

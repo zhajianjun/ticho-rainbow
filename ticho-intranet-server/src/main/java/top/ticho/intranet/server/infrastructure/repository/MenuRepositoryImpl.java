@@ -5,21 +5,17 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import top.ticho.intranet.server.domain.repository.MenuRepository;
 import top.ticho.intranet.server.infrastructure.core.constant.CacheConst;
-import top.ticho.intranet.server.infrastructure.core.prop.CacheProperty;
 import top.ticho.intranet.server.infrastructure.entity.Menu;
 import top.ticho.intranet.server.infrastructure.mapper.MenuMapper;
 import top.ticho.intranet.server.interfaces.query.MenuQuery;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,31 +28,28 @@ import java.util.Objects;
 @Slf4j
 @Service
 public class MenuRepositoryImpl extends RootServiceImpl<MenuMapper, Menu> implements MenuRepository {
-
-    @Autowired
-    private CacheProperty cacheProperty;
-
+    public static final String MENU_LIST = CacheConst.MENU_LIST;
 
     @Override
-    @Cacheable(value = CacheConst.MENU_LIST_KEY, sync = true)
+    @Cacheable(value = CacheConst.COMMON, key = "#root.target.MENU_LIST", sync = true)
     public List<Menu> cacheList() {
         return super.list();
     }
 
     @Override
-    @CacheEvict(value = CacheConst.MENU_LIST_KEY, allEntries = true)
+    @CacheEvict(value = CacheConst.COMMON, key = "#root.target.MENU_LIST")
     public boolean save(Menu menu) {
         return super.save(menu);
     }
 
     @Override
-    @CacheEvict(value = CacheConst.MENU_LIST_KEY, allEntries = true)
+    @CacheEvict(value = CacheConst.COMMON, key = "#root.target.MENU_LIST")
     public boolean removeById(Serializable id) {
         return super.removeById(id);
     }
 
     @Override
-    @CacheEvict(value = CacheConst.MENU_LIST_KEY, allEntries = true)
+    @CacheEvict(value = CacheConst.COMMON, key = "#root.target.MENU_LIST")
     public boolean updateById(Menu menu) {
         return super.updateById(menu);
     }

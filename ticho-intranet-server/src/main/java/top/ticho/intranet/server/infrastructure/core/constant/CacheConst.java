@@ -8,18 +8,16 @@ package top.ticho.intranet.server.infrastructure.core.constant;
  */
 public class CacheConst {
 
-    public static final String USER_INFO_KEY = "ticho-intranet:user:info:";
+    public static final String COMMON = "ticho-intranet:common";
 
-    public static final String ROLE_INFO_KEY = "ticho-intranet:role:info:";
+    public static final String USER_INFO = "ticho-intranet:user:info:";
 
-    public static final String ROLE_LIST_KEY = "ticho-intranet:role:list";
+    public static final String ROLE_LIST = "ticho-intranet:role:list";
 
-    public static final String MENU_INFO_KEY = "ticho-intranet:menu:info:";
+    public static final String MENU_LIST = "ticho-intranet:menu:list";
 
-    public static final String MENU_LIST_KEY = "ticho-intranet:menu:list";
+    public static final String USER_ROLE_INFO = "ticho-intranet:user_role:info";
 
-    public static final String USER_ROLE_LIST_KEY = "ticho-intranet:user_role:list";
-
-    public static final String ROLE_MENU_LIST_KEY = "ticho-intranet:role_menu:list";
+    public static final String ROLE_MENU_INFO = "ticho-intranet:role_menu:info";
 
 }

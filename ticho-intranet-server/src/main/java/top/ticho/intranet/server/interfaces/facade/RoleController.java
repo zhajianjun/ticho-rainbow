@@ -116,19 +116,11 @@ public class RoleController {
     }
 
     @IgnoreJwtCheck(IgnoreType.INNER)
-    @ApiOperation(value = "根据角色code查询角色菜单信息")
-    @ApiOperationSupport(order = 70)
-    @PostMapping("listRoleMenuByCodes")
-    public Result<RoleMenuDtlDTO> listByCodes(@RequestBody RoleDtlQuery roleDtlQuery) {
-        return Result.ok(roleService.listByCodes(roleDtlQuery));
-    }
-
-    @IgnoreJwtCheck(IgnoreType.INNER)
     @ApiOperation(value = "根据角色id查询角色菜单信息")
-    @ApiOperationSupport(order = 80)
+    @ApiOperationSupport(order = 70)
     @PostMapping("listRoleMenuByIds")
-    public Result<RoleMenuDtlDTO> listByIds(@RequestBody RoleDtlQuery roleDtlQuery) {
-        return Result.ok(roleService.listByIds(roleDtlQuery));
+    public Result<RoleMenuDtlDTO> listRoleMenuByIds(@RequestBody RoleDtlQuery roleDtlQuery) {
+        return Result.ok(roleService.listRoleMenuByIds(roleDtlQuery));
     }
 
 }

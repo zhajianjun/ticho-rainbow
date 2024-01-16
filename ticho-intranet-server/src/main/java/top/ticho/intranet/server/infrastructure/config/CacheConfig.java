@@ -35,8 +35,8 @@ public class CacheConfig {
     // 定义cache名称、超时时长（秒）、最大容量
     @Getter
     public enum CacheEnum {
-        MENU_LIST(CacheConst.MENU_LIST_KEY, 10000, 10),
-        MENU_INFO(CacheConst.MENU_INFO_KEY, 10000, 10),
+        COMMON(CacheConst.COMMON, 10000, 1800),
+        USER_ROLE_INFO(CacheConst.USER_ROLE_INFO, 10000, 1800),
         ;
 
         CacheEnum(String key, int maxSize, int ttl) {
