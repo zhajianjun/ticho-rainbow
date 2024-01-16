@@ -28,28 +28,27 @@ import java.util.Objects;
 @Slf4j
 @Service
 public class MenuRepositoryImpl extends RootServiceImpl<MenuMapper, Menu> implements MenuRepository {
-    public static final String MENU_LIST = CacheConst.MENU_LIST;
 
     @Override
-    @Cacheable(value = CacheConst.COMMON, key = "#root.target.MENU_LIST", sync = true)
+    @Cacheable(value = CacheConst.COMMON, key = "'ticho-intranet:menu:list'", sync = true)
     public List<Menu> cacheList() {
         return super.list();
     }
 
     @Override
-    @CacheEvict(value = CacheConst.COMMON, key = "#root.target.MENU_LIST")
+    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-intranet:menu:list'")
     public boolean save(Menu menu) {
         return super.save(menu);
     }
 
     @Override
-    @CacheEvict(value = CacheConst.COMMON, key = "#root.target.MENU_LIST")
+    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-intranet:menu:list'")
     public boolean removeById(Serializable id) {
         return super.removeById(id);
     }
 
     @Override
-    @CacheEvict(value = CacheConst.COMMON, key = "#root.target.MENU_LIST")
+    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-intranet:menu:list'")
     public boolean updateById(Menu menu) {
         return super.updateById(menu);
     }

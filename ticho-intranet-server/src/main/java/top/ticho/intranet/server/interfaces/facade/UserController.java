@@ -53,8 +53,8 @@ public class UserController {
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @DeleteMapping
-    public Result<Void> removeById(@RequestParam("id") Long id) {
-        userService.removeById(id);
+    public Result<Void> removeByUsername(@RequestParam("username") String username) {
+        userService.removeByUsername(username);
         return Result.ok();
     }
 
@@ -76,21 +76,13 @@ public class UserController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('system:user:getById')")
-    @ApiOperation(value = "主键查询用户信息")
+    @PreAuthorize("@perm.hasPerms('system:user:getByUsername')")
+    @ApiOperation(value = "查询用户信息")
     @ApiOperationSupport(order = 50)
-    @ApiImplicitParam(value = "编号", name = "id", required = true)
+    @ApiImplicitParam(value = "用户名", name = "username", required = true)
     @GetMapping
-    public Result<UserDTO> getById(@RequestParam("id") Long id) {
-        return Result.ok(userService.getById(id));
-    }
-
-    @PreAuthorize("@perm.hasPerms('system:user:page')")
-    @ApiOperation(value = "分页查询用户信息")
-    @ApiOperationSupport(order = 60)
-    @GetMapping("page")
-    public Result<PageResult<UserDTO>> page(UserQuery query) {
-        return Result.ok(userService.page(query));
+    public Result<UserDTO> getByUsername(@RequestParam("username") String username) {
+        return Result.ok(userService.getByUsername(username));
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:getUserDtl')")
@@ -99,6 +91,14 @@ public class UserController {
     @GetMapping("getUserDtl")
     public Result<UserRoleMenuDtlDTO> getUserDtl(String username) {
         return Result.ok(userService.getUserDtl(username));
+    }
+
+    @PreAuthorize("@perm.hasPerms('system:user:page')")
+    @ApiOperation(value = "分页查询用户信息")
+    @ApiOperationSupport(order = 60)
+    @GetMapping("page")
+    public Result<PageResult<UserDTO>> page(UserQuery query) {
+        return Result.ok(userService.page(query));
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:bindRole')")

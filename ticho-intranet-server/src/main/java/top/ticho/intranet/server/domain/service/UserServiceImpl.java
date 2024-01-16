@@ -100,6 +100,7 @@ public class UserServiceImpl extends UpmsHandle implements UserService {
         User updateEntity = new User();
         updateEntity.setId(user.getId());
         updateEntity.setStatus(UserStatus.NORMAL.code());
+        updateEntity.setUsername(username);
         Assert.isTrue(userRepository.updateById(updateEntity), BizErrCode.FAIL, "确认失败");
     }
 
@@ -120,11 +121,12 @@ public class UserServiceImpl extends UpmsHandle implements UserService {
     }
 
     @Override
-    public void removeById(Long id) {
-        User user = userRepository.getById(id);
+    public void removeByUsername(String username) {
+        User user = userRepository.getByUsername(username);
         Assert.isNotNull(user, BizErrCode.FAIL, "注销失败,用户不存在");
         // 账户注销
         user.setStatus(UserStatus.LOG_OUT.code());
+        user.setUsername(username);
         boolean b = userRepository.updateById(user);
         Assert.isNotNull(b, BizErrCode.FAIL, "注销失败");
     }
@@ -145,8 +147,8 @@ public class UserServiceImpl extends UpmsHandle implements UserService {
     }
 
     @Override
-    public UserDTO getById(Long id) {
-        User user = userRepository.getById(id);
+    public UserDTO getByUsername(String username) {
+        User user = userRepository.getByUsername(username);
         UserDTO userDTO = UserAssembler.INSTANCE.entityToDto(user);
         setRoles(Collections.singletonList(userDTO));
         return userDTO;
@@ -198,6 +200,7 @@ public class UserServiceImpl extends UpmsHandle implements UserService {
         String encodedPasswordNew = passwordEncoder.encode(passwordNew);
         User user = new User();
         user.setId(queryUser.getId());
+        user.setUsername(username);
         user.setPassword(encodedPasswordNew);
         // 更新密码
         boolean update = userRepository.updateById(user);
@@ -258,7 +261,7 @@ public class UserServiceImpl extends UpmsHandle implements UserService {
         }
         Map<Long, List<Long>> userRoleIdsMap = userDtos
             .stream()
-            .collect(Collectors.toMap(UserDTO::getId, x-> userRoleRepository.getRoleIdsByUserId(x.getId())));
+            .collect(Collectors.toMap(UserDTO::getId, x-> userRoleRepository.listByUserId(x.getId())));
         List<Long> roleIds = userRoleIdsMap.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
         List<Role> roles = roleRepository.listByIds(roleIds);
         Map<Long, Role> roleMap = roles

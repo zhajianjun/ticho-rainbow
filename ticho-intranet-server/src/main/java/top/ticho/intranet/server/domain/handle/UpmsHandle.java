@@ -26,6 +26,7 @@ import top.ticho.intranet.server.interfaces.dto.UserRoleMenuDtlDTO;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -77,7 +78,7 @@ public class UpmsHandle {
         if (userRoleMenuDtlDTO == null) {
             return null;
         }
-        List<Long> roleIds = userRoleRepository.getRoleIdsByUserId(user.getId());
+        List<Long> roleIds = userRoleRepository.listByUserId(user.getId());
         RoleMenuDtlDTO roleMenuFuncDtl = mergeRoleByIds(roleIds, false, false);
         if (roleMenuFuncDtl == null) {
             return null;
@@ -111,13 +112,12 @@ public class UpmsHandle {
         if (CollUtil.isEmpty(roleIds)) {
             return Stream.empty();
         }
-        // 根据角色id列表 查询角色菜单关联信息
-        List<RoleMenu> roleMenus = roleMenuRepository.listByRoleIds(roleIds);
-        if (CollUtil.isEmpty(roleMenus)) {
-            return Stream.empty();
-        }
         // 合并的角色后所有的菜单
-        List<Long> menuIds = roleMenus.stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
+        List<Long> menuIds = roleIds
+            .stream()
+            .map(roleMenuRepository::listByRoleId)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
         if (CollUtil.isEmpty(menuIds)) {
             return Stream.empty();
         }
@@ -175,10 +175,12 @@ public class UpmsHandle {
         if (CollUtil.isEmpty(roleIds)) {
             return null;
         }
-        // 根据角色id列表 查询角色菜单关联信息
-        List<RoleMenu> roleMenus = roleMenuRepository.listByRoleIds(roleIds);
         // 合并的角色后所有的菜单
-        List<Long> menuIds = roleMenus.stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
+        List<Long> menuIds = roleIds
+            .stream()
+            .map(roleMenuRepository::listByRoleId)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
         // 菜单信息
         List<Menu> menus = menuRepository.cacheList();
         // 查询到的角色信息组装填充

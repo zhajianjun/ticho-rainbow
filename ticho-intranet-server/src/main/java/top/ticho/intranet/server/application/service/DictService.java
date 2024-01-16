@@ -3,6 +3,7 @@ package top.ticho.intranet.server.application.service;
 import top.ticho.intranet.server.interfaces.dto.DictDTO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 数据字典 服务接口
@@ -40,6 +41,16 @@ public interface DictService {
      * @return {@link DictDTO}
      */
     List<DictDTO> getByCode(String code);
+
+    /**
+     * 查询所有有效字典
+     */
+    Map<String, Map<String, String>> getAllDict();
+
+    /**
+     * 刷新所有有效字典
+     */
+    void flushAllDict();
 
 }
 

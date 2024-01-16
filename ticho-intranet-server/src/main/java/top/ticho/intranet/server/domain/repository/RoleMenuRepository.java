@@ -17,10 +17,10 @@ public interface RoleMenuRepository extends RootService<RoleMenu> {
     /**
      * 根据角色id列表查询
      *
-     * @param roleIds 角色id
+     * @param roleId 角色id
      * @return {@link List}<{@link RoleMenu}>
      */
-    List<RoleMenu> listByRoleIds(List<Long> roleIds);
+    List<Long> listByRoleId(Long roleId);
 
     /**
      * 根据角色id列表查询是否存在
@@ -39,13 +39,12 @@ public interface RoleMenuRepository extends RootService<RoleMenu> {
     boolean existsByMenuIds(Collection<Long> menuIds);
 
     /**
-     * 根据角色id和菜单id列表删除
+     * 移除角色菜单信息，并重新保存菜单
      *
-     * @param roleId 角色id
+     * @param roleId  角色id
      * @param menuIds 菜单id列表
-     * @return boolean
      */
-    boolean removeByRoleIdAndMenuIds(Long roleId, Collection<Long> menuIds);
+    void removeAndSave(Long roleId, Collection<Long> menuIds);
 
 }
 

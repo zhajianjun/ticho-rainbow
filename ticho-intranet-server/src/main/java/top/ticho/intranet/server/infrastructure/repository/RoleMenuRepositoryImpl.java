@@ -4,18 +4,19 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.ticho.boot.datasource.service.impl.RootServiceImpl;
-import top.ticho.boot.json.util.JsonUtil;
 import top.ticho.intranet.server.domain.repository.RoleMenuRepository;
+import top.ticho.intranet.server.infrastructure.core.constant.CacheConst;
 import top.ticho.intranet.server.infrastructure.entity.RoleMenu;
 import top.ticho.intranet.server.infrastructure.mapper.RoleMenuMapper;
 
-import javax.annotation.PostConstruct;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -29,74 +30,15 @@ import java.util.stream.Collectors;
 @Service
 public class RoleMenuRepositoryImpl extends RootServiceImpl<RoleMenuMapper, RoleMenu> implements RoleMenuRepository {
 
-    // @Autowired
-    // private RedisUtil<String, String> redisUtil;
-
-    @PostConstruct
-    public void init() {
-        list();
-    }
-
-    public List<RoleMenu> list() {
-        // @formatter:off
-        // if (redisUtil.exists(RedisConst.ROLE_MENU_LIST_KEY)) {
-        //     Map<String, String> str = redisUtil.hGetAll(RedisConst.ROLE_MENU_LIST_KEY);
-        //     return str.values()
-        //         .stream()
-        //         .map(x-> JsonUtil.toList(x, RoleMenu.class))
-        //         .flatMap(Collection::stream)
-        //         .collect(Collectors.toList());
-        // }
-        List<RoleMenu> list = super.list();
-        saveCache(list);
-        return list;
-        // @formatter:on
-    }
-
     @Override
-    public boolean saveBatch(Collection<RoleMenu> entityList) {
-        boolean saveBatch = super.saveBatch(entityList);
-        if (!saveBatch) {
-            return false;
-        }
-        saveCache(entityList);
-        return false;
-        // @formatter:on
-    }
-
-    public void saveCache(Collection<RoleMenu> entityList) {
-        // @formatter:off
-        Map<String, List<RoleMenu>> collect = entityList
-            .stream()
-            .collect(Collectors.groupingBy(x-> x.getRoleId().toString(), Collectors.toList()));
-        Map<String, String> result = collect
-            .entrySet()
-            .stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, x -> JsonUtil.toJsonString(x.getValue())));
-        // redisUtil.hPutAll(RedisConst.ROLE_MENU_LIST_KEY, result);
-        // @formatter:on
-    }
-
-    @Override
-    public List<RoleMenu> listByRoleIds(List<Long> roleIds) {
-        // @formatter:off
-        if (CollUtil.isEmpty(roleIds)) {
+    @Cacheable(value = CacheConst.ROLE_MENU_INFO, key = "#roleId")
+    public List<Long> listByRoleId(Long roleId) {
+        if (Objects.isNull(roleId)) {
             return Collections.emptyList();
         }
-        List<String> roleStrs = roleIds.stream().map(Object::toString).collect(Collectors.toList());
-        // boolean exists = redisUtil.exists(RedisConst.ROLE_MENU_LIST_KEY);
-        // if (!exists) {
-        //     List<String> roleMenus = redisUtil.hMultiGet(RedisConst.ROLE_MENU_LIST_KEY, roleStrs);
-        //     return roleMenus
-        //         .stream()
-        //         .map(x-> JsonUtil.toList(x, RoleMenu.class))
-        //         .flatMap(Collection::stream)
-        //         .collect(Collectors.toList());
-        // }
         LambdaQueryWrapper<RoleMenu> wrapper = Wrappers.lambdaQuery();
-        wrapper.in(RoleMenu::getRoleId, roleIds);
-        return list(wrapper);
-        // @formatter:on
+        wrapper.eq(RoleMenu::getRoleId, roleId);
+        return list(wrapper).stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
     }
 
     @Override
@@ -122,18 +64,33 @@ public class RoleMenuRepositoryImpl extends RootServiceImpl<RoleMenuMapper, Role
     }
 
     @Override
-    public boolean removeByRoleIdAndMenuIds(Long roleId, Collection<Long> menuIds) {
-        if (Objects.isNull(roleId) || CollUtil.isEmpty(menuIds)) {
-            return false;
+    @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(value = CacheConst.ROLE_MENU_INFO, key = "#roleId")
+    public void removeAndSave(Long roleId, Collection<Long> menuIds) {
+        // @formatter:off
+        if (Objects.isNull(roleId)) {
+            return;
         }
-        List<RoleMenu> roleMenus = listByRoleIds(Collections.singletonList(roleId));
         LambdaQueryWrapper<RoleMenu> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(RoleMenu::getRoleId, roleId);
-        wrapper.in(RoleMenu::getMenuId, menuIds);
-        boolean remove = remove(wrapper);
-        roleMenus.removeIf(x -> menuIds.contains(x.getMenuId()));
-        // redisUtil.hPut(RedisConst.ROLE_MENU_LIST_KEY, roleId.toString(), JsonUtil.toJsonString(roleMenus));
-        return remove;
+        remove(wrapper);
+        if (CollUtil.isEmpty(menuIds)) {
+            return;
+        }
+        // 需要添加角色用户关联关系
+        List<RoleMenu> roleMenus = menuIds
+            .stream()
+            .map(x -> convertToRoleMenu(roleId, x))
+            .collect(Collectors.toList());
+        saveBatch(roleMenus);
+        // @formatter:on
+    }
+
+    private RoleMenu convertToRoleMenu(Long roleId, Long x) {
+        RoleMenu roleMenu = new RoleMenu();
+        roleMenu.setRoleId(roleId);
+        roleMenu.setMenuId(x);
+        return roleMenu;
     }
 
 

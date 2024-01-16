@@ -32,28 +32,27 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class RoleRepositoryImpl extends RootServiceImpl<RoleMapper, Role> implements RoleRepository {
-    public static final String ROLE_LIST = CacheConst.ROLE_LIST;
 
     @Override
-    @Cacheable(value = CacheConst.COMMON, key = "#root.target.ROLE_LIST", sync = true)
+    @Cacheable(value = CacheConst.COMMON, key = "'ticho-intranet:role:list'", sync = true)
     public List<Role> cacheList() {
         return super.list();
     }
 
     @Override
-    @CacheEvict(value = CacheConst.COMMON, key = "#root.target.ROLE_LIST")
+    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-intranet:role:list'")
     public boolean save(Role role) {
         return super.save(role);
     }
 
     @Override
-    @CacheEvict(value = CacheConst.COMMON, key = "#root.target.ROLE_LIST")
+    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-intranet:role:list'")
     public boolean removeById(Serializable id) {
         return super.removeById(id);
     }
 
     @Override
-    @CacheEvict(value = CacheConst.COMMON, key = "#root.target.ROLE_LIST")
+    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-intranet:role:list'")
     public boolean updateById(Role role) {
         return super.updateById(role);
     }

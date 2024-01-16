@@ -36,7 +36,9 @@ public class CacheConfig {
     @Getter
     public enum CacheEnum {
         COMMON(CacheConst.COMMON, 10000, 1800),
+        USER_INFO(CacheConst.USER_INFO, 10000, 1800),
         USER_ROLE_INFO(CacheConst.USER_ROLE_INFO, 10000, 1800),
+        ROLE_MENU_INFO(CacheConst.ROLE_MENU_INFO, 10000, 1800),
         ;
 
         CacheEnum(String key, int maxSize, int ttl) {

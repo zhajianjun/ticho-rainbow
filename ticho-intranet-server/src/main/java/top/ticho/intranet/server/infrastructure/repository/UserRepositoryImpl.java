@@ -5,9 +5,13 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import top.ticho.boot.datasource.service.impl.RootServiceImpl;
+import top.ticho.boot.view.util.Assert;
 import top.ticho.intranet.server.domain.repository.UserRepository;
+import top.ticho.intranet.server.infrastructure.core.constant.CacheConst;
 import top.ticho.intranet.server.infrastructure.entity.User;
 import top.ticho.intranet.server.infrastructure.mapper.UserMapper;
 import top.ticho.intranet.server.interfaces.query.UserAccountQuery;
@@ -26,10 +30,20 @@ import java.util.Objects;
 @Service
 public class UserRepositoryImpl extends RootServiceImpl<UserMapper, User> implements UserRepository {
 
+    @Override
+    @Cacheable(value = CacheConst.USER_INFO, key = "#username")
     public User getByUsername(String username) {
         LambdaQueryWrapper<User> queryWrapper = getUserLambdaQueryWrapper();
         queryWrapper.eq(User::getUsername, username);
         return getOne(queryWrapper);
+    }
+
+    @Override
+    @CacheEvict(value = CacheConst.USER_INFO, key = "#user.username")
+    public boolean updateById(User user) {
+        // 为了保证缓存，用户名不能为空
+        Assert.isNotBlank(user.getUsername(), "用户名不能为空");
+        return super.updateById(user);
     }
 
     private LambdaQueryWrapper<User> getUserLambdaQueryWrapper() {

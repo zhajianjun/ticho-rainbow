@@ -1,5 +1,6 @@
 package top.ticho.intranet.server.infrastructure.repository;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ public class UserRoleRepositoryImpl extends RootServiceImpl<UserRoleMapper, User
 
     @Override
     @Cacheable(value = CacheConst.USER_ROLE_INFO, key = "#userId")
-    public List<Long> getRoleIdsByUserId(Long userId) {
+    public List<Long> listByUserId(Long userId) {
         if (Objects.isNull(userId)) {
             return Collections.emptyList();
         }
@@ -44,8 +45,14 @@ public class UserRoleRepositoryImpl extends RootServiceImpl<UserRoleMapper, User
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = CacheConst.USER_ROLE_INFO, key = "#userId")
     public void removeAndSave(Long userId, Collection<Long> roleIds) {
+        if (Objects.isNull(userId)) {
+            return;
+        }
         // @formatter:off
         removeByUserId(userId);
+        if (CollUtil.isEmpty(roleIds)) {
+            return;
+        }
         List<UserRole> userRoles = roleIds
             .stream()
             .map(x-> convertToUserRole(userId, x))

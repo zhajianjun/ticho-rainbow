@@ -1,5 +1,11 @@
 import { defHttp } from '@/utils/http/axios';
-import { UserPasswordDTO, UserQuery, UserRoleDTO, UserRoleMenuDtlDTO } from './model/userModel';
+import {
+  UserDTO,
+  UserPasswordDTO,
+  UserQuery,
+  UserRoleDTO,
+  UserRoleMenuDtlDTO,
+} from './model/userModel';
 import { ContentTypeEnum } from '@/enums/httpEnum';
 import { LoginRequest, Oauth2AccessToken } from '@/api/system/model/loginModel';
 
@@ -10,7 +16,6 @@ enum Api {
   Logout = '/logout',
   GetUserInfo = '/user/getUserDtl',
   UserInfo = '/user',
-  DelUserBatch = '/user/removeByIds',
   UserPage = '/user/page',
   BindRole = '/user/bindRole',
   UpdatePassword = '/user/updatePassword',
@@ -40,10 +45,7 @@ export function getUserInfo(params?: any) {
 }
 
 export function userPage(params?: UserQuery) {
-  return defHttp.get<UserRoleMenuDtlDTO>(
-    { url: Api.UserPage, params },
-    { errorMessageMode: 'none' },
-  );
+  return defHttp.get<UserDTO>({ url: Api.UserPage, params }, { errorMessageMode: 'none' });
 }
 
 export function saveUser(params: any) {
@@ -53,13 +55,6 @@ export function saveUser(params: any) {
 export function delUser(params: string) {
   return defHttp.delete<any>(
     { url: Api.UserInfo + '?id=', params },
-    { errorMessageMode: 'message' },
-  );
-}
-
-export function delUserBatch(params: string) {
-  return defHttp.delete<any>(
-    { url: Api.DelUserBatch + '?ids=', params },
     { errorMessageMode: 'message' },
   );
 }

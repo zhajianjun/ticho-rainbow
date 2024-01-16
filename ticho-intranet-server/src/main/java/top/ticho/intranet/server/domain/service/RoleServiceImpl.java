@@ -131,25 +131,8 @@ public class RoleServiceImpl extends UpmsHandle implements RoleService {
     public void bindMenu(RoleMenuDTO roleMenuDTO) {
         // @formatter:off
         ValidUtil.valid(roleMenuDTO);
-        Long roleId = roleMenuDTO.getRoleId();
-        List<Long> menuIds = Optional.ofNullable(roleMenuDTO.getMenuIds()).orElseGet(ArrayList::new);
-        List<RoleMenu> roleMenus = roleMenuRepository.listByRoleIds(Collections.singletonList(roleId));
-        List<Long> selectMenuIds = roleMenus.stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
-        // 需要添加角色用户关联关系
-        List<RoleMenu> addRoleMenus = menuIds
-            .stream()
-            .filter(x-> !selectMenuIds.contains(x))
-            .map(x-> convertToRoleMenu(roleId, x))
-            .collect(Collectors.toList());
-        // 需要删除的菜单id列表
-        List<Long> removeMenuIds = selectMenuIds
-            .stream()
-            .filter(x-> !menuIds.contains(x))
-            .collect(Collectors.toList());
         // 删除角色绑定的菜单
-        roleMenuRepository.removeByRoleIdAndMenuIds(roleId, removeMenuIds);
-        // 保存角色绑定的菜单
-        roleMenuRepository.saveBatch(addRoleMenus);
+        roleMenuRepository.removeAndSave(roleMenuDTO.getRoleId(), roleMenuDTO.getMenuIds());
         // @formatter:on
     }
 

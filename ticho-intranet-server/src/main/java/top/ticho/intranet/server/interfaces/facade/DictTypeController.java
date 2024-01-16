@@ -21,6 +21,8 @@ import top.ticho.intranet.server.application.service.DictTypeService;
 import top.ticho.intranet.server.interfaces.dto.DictTypeDTO;
 import top.ticho.intranet.server.interfaces.query.DictTypeQuery;
 
+import java.util.Map;
+
 /**
  * 数据字典类型 控制器
  *

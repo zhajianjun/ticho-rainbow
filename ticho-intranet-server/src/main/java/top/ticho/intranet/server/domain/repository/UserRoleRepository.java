@@ -20,7 +20,7 @@ public interface UserRoleRepository extends RootService<UserRole> {
      * @param userId 用户id
      * @return {@link List}<{@link UserRole}>
      */
-    List<Long> getRoleIdsByUserId(Long userId);
+    List<Long> listByUserId(Long userId);
 
     /**
      * 移除用户角色信息，并重新保存角色id

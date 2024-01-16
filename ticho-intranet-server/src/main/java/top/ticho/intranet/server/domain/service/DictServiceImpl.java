@@ -1,6 +1,10 @@
 package top.ticho.intranet.server.domain.service;
 
+import cn.hutool.core.collection.CollUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import top.ticho.boot.view.enums.BizErrCode;
 import top.ticho.boot.view.util.Assert;
@@ -9,11 +13,20 @@ import top.ticho.boot.web.util.valid.ValidGroup;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.intranet.server.application.service.DictService;
 import top.ticho.intranet.server.domain.repository.DictRepository;
+import top.ticho.intranet.server.domain.repository.DictTypeRepository;
+import top.ticho.intranet.server.infrastructure.core.constant.CacheConst;
 import top.ticho.intranet.server.infrastructure.entity.Dict;
+import top.ticho.intranet.server.infrastructure.entity.DictType;
 import top.ticho.intranet.server.interfaces.assembler.DictAssembler;
 import top.ticho.intranet.server.interfaces.dto.DictDTO;
+import top.ticho.intranet.server.interfaces.query.DictTypeQuery;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -27,6 +40,12 @@ public class DictServiceImpl implements DictService {
 
     @Autowired
     private DictRepository dictRepository;
+
+    @Autowired
+    private DictTypeRepository dictTypeRepository;
+
+    @Autowired
+    private CacheManager cacheManager;
 
     @Override
     public void save(DictDTO dictDTO) {
@@ -66,6 +85,38 @@ public class DictServiceImpl implements DictService {
             .map(DictAssembler.INSTANCE::entityToDto)
             .collect(Collectors.toList());
         // @formatter:on
+    }
+
+    @Override
+    @Cacheable(value = CacheConst.COMMON, key = "'ticho-intranet:dict:all'")
+    public Map<String, Map<String, String>> getAllDict() {
+        // @formatter:off
+        DictTypeQuery dictTypeQuery = new DictTypeQuery();
+        dictTypeQuery.setStatus(1);
+        List<DictType> dictTypes = dictTypeRepository.list(dictTypeQuery);
+        List<String> codes = dictTypes.stream().map(DictType::getCode).collect(Collectors.toList());
+        if (CollUtil.isEmpty(codes)) {
+            return Collections.emptyMap();
+        }
+        List<Dict> dicts = dictRepository.getByCodes(codes);
+        return dicts
+            .stream()
+            .collect(Collectors.groupingBy(Dict::getCode, LinkedHashMap::new, Collectors.collectingAndThen(
+                Collectors.toList(),
+                x -> x.stream()
+                    .filter(y-> Objects.equals(y.getStatus(), 1))
+                    .sorted(Comparator.nullsLast(Comparator.comparing(Dict::getSort)))
+                    .collect(Collectors.toMap(Dict::getValue, Dict::getLabel, (v1, v2)-> v2,  LinkedHashMap::new))
+            )));
+        // @formatter:on
+    }
+
+    public void flushAllDict() {
+        Cache cache = cacheManager.getCache(CacheConst.COMMON);
+        if (Objects.isNull(cache)) {
+            return;
+        }
+        cache.put("ticho-intranet:dict:all", getAllDict());
     }
 
 }

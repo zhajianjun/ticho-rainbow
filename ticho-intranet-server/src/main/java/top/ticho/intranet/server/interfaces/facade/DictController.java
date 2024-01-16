@@ -19,6 +19,7 @@ import top.ticho.intranet.server.application.service.DictService;
 import top.ticho.intranet.server.interfaces.dto.DictDTO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 数据字典 控制器
@@ -70,6 +71,23 @@ public class DictController {
     @GetMapping
     public Result<List<DictDTO>> getByCode(String code) {
         return Result.ok(dictService.getByCode(code));
+    }
+
+    @PreAuthorize("@perm.hasPerms('system:dict:getAllDict')")
+    @ApiOperation(value = "查询所有有效字典")
+    @ApiOperationSupport(order = 60)
+    @GetMapping("getAllDict")
+    public Result<Map<String, Map<String, String>>> getAllDict() {
+        return Result.ok(dictService.getAllDict());
+    }
+
+    @PreAuthorize("@perm.hasPerms('system:dict:flushAllDict')")
+    @ApiOperation(value = "刷新所有有效字典")
+    @ApiOperationSupport(order = 70)
+    @GetMapping("flushAllDict")
+    public Result<Void> flushAllDict() {
+        dictService.flushAllDict();
+        return Result.ok();
     }
 
 }

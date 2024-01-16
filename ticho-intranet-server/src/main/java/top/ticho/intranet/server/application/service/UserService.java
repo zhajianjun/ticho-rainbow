@@ -40,9 +40,9 @@ public interface UserService {
     /**
      * 删除用户信息
      *
-     * @param id 主键
+     * @param username 用户名
      */
-    void removeById(Long id);
+    void removeByUsername(String username);
 
     /**
      * 修改用户信息
@@ -59,12 +59,12 @@ public interface UserService {
     void updatePassword(UserPasswordDTO userPassworUpdDTO);
 
     /**
-     * 根据id查询用户信息
+     * 根据用户名查询用户
      *
-     * @param id 主键
+     * @param username 用户名
      * @return {@link UserDTO}
      */
-    UserDTO getById(Long id);
+    UserDTO getByUsername(String username);
 
     /**
      * 分页查询用户信息列表
@@ -75,7 +75,7 @@ public interface UserService {
     PageResult<UserDTO> page(UserQuery query);
 
     /**
-     * 根据用户名查询用户
+     * 根据用户名查询用户角色菜单功能号信息
      *
      * @param username 用户名
      * @return {@link UserRoleMenuDtlDTO}
