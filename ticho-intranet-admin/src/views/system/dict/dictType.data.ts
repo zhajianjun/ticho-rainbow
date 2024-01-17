@@ -31,11 +31,17 @@ export function getTableColumns(): BasicColumn[] {
       title: '状态',
       dataIndex: 'status',
       resizable: true,
-      width: 100,
+      width: 60,
     },
     {
       title: '备注信息',
       dataIndex: 'remark',
+      resizable: true,
+      width: 100,
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
       resizable: true,
       width: 100,
     },
