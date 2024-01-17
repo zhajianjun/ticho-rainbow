@@ -15,14 +15,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 数据字典DTO
+ * 字典DTO
  *
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "数据字典DTO")
+@ApiModel(value = "字典DTO")
 public class DictDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 

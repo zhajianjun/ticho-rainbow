@@ -10,14 +10,14 @@ import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
- * 数据字典类型查询条件
+ * 字典类型查询条件
  *
  * @author zhajianjun
  * @date 2024-01-14 13:43
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "数据字典类型查询条件")
+@ApiModel(value = "字典类型查询条件")
 public class DictTypeQuery extends BasePageQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 

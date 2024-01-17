@@ -8,7 +8,7 @@ import top.ticho.intranet.server.interfaces.query.DictTypeQuery;
 import java.util.List;
 
 /**
- * 数据字典类型 repository接口
+ * 字典类型 repository接口
  *
  * @author zhajianjun
  * @date 2024-01-08 20:30

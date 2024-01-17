@@ -36,7 +36,7 @@ CREATE TABLE `sys_dict` (
   `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   `is_delete` tinyint DEFAULT '0' COMMENT '删除标识;0-未删除,1-已删除',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='数据字典';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='字典';
 
 DROP TABLE IF EXISTS `sys_dict_type`;
 CREATE TABLE `sys_dict_type` (
@@ -53,7 +53,7 @@ CREATE TABLE `sys_dict_type` (
   `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `is_delete` tinyint DEFAULT '0' COMMENT '删除标识;0-未删除,1-已删除',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='数据字典类型';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='字典类型';
 
 DROP TABLE IF EXISTS `sys_menu`;
 CREATE TABLE `sys_menu` (

@@ -4,7 +4,6 @@ import top.ticho.boot.datasource.service.RootService;
 import top.ticho.intranet.server.infrastructure.entity.Dict;
 import top.ticho.intranet.server.interfaces.query.DictQuery;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -30,14 +29,6 @@ public interface DictRepository extends RootService<Dict> {
      * @return boolean
      */
     List<Dict> getByCode(String code);
-
-    /**
-     * 根据字典编码列表查询
-     *
-     * @param codes 字典编码列表
-     * @return boolean
-     */
-    List<Dict> getByCodes(Collection<String> codes);
 
     /**
      * 根据字典编码查询是否存在

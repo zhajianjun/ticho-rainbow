@@ -9,14 +9,14 @@ import top.ticho.boot.view.core.BasePageQuery;
 import java.io.Serializable;
 
 /**
- * 数据字典查询条件
+ * 字典查询条件
  *
  * @author zhajianjun
  * @date 2024-01-14 13:43
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "数据字典查询条件")
+@ApiModel(value = "字典查询条件")
 public class DictQuery extends BasePageQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 

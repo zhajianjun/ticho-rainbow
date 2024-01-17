@@ -15,7 +15,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 数据字典类型
+ * 字典类型
  *
  * @author zhajianjun
  * @date 2024-01-14 13:43

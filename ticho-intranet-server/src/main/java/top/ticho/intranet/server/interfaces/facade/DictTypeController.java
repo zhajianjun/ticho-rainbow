@@ -24,14 +24,14 @@ import top.ticho.intranet.server.interfaces.query.DictTypeQuery;
 import java.util.Map;
 
 /**
- * 数据字典类型 控制器
+ * 字典类型 控制器
  *
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
 @RestController
 @RequestMapping("dictType")
-@Api(tags = "数据字典类型")
+@Api(tags = "字典类型")
 @ApiSort(70)
 public class DictTypeController {
 
@@ -39,7 +39,7 @@ public class DictTypeController {
     private DictTypeService dictTypeService;
 
     @PreAuthorize("@perm.hasPerms('system:dictType:save')")
-    @ApiOperation(value = "保存数据字典类型")
+    @ApiOperation(value = "保存字典类型")
     @ApiOperationSupport(order = 10)
     @PostMapping
     public Result<Void> save(@RequestBody DictTypeDTO dictTypeDTO) {
@@ -48,7 +48,7 @@ public class DictTypeController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:dictType:remove')")
-    @ApiOperation(value = "删除数据字典类型")
+    @ApiOperation(value = "删除字典类型")
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @DeleteMapping
@@ -58,7 +58,7 @@ public class DictTypeController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:dictType:update')")
-    @ApiOperation(value = "修改数据字典类型")
+    @ApiOperation(value = "修改字典类型")
     @ApiOperationSupport(order = 30)
     @PutMapping
     public Result<Void> update(@RequestBody DictTypeDTO dictTypeDTO) {
@@ -67,7 +67,7 @@ public class DictTypeController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:dictType:get')")
-    @ApiOperation(value = "主键查询数据字典类型")
+    @ApiOperation(value = "主键查询字典类型")
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
@@ -76,7 +76,7 @@ public class DictTypeController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:dictType:page')")
-    @ApiOperation(value = "分页查询数据字典类型")
+    @ApiOperation(value = "分页查询字典类型")
     @ApiOperationSupport(order = 50)
     @GetMapping("page")
     public Result<PageResult<DictTypeDTO>> page(DictTypeQuery query) {

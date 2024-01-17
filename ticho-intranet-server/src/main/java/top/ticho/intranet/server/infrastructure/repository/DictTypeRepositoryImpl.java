@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 数据字典类型 repository实现
+ * 字典类型 repository实现
  *
  * @author zhajianjun
  * @date 2024-01-08 20:30

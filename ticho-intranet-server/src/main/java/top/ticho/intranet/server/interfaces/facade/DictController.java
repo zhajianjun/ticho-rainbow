@@ -17,19 +17,19 @@ import org.springframework.web.bind.annotation.RestController;
 import top.ticho.boot.view.core.Result;
 import top.ticho.intranet.server.application.service.DictService;
 import top.ticho.intranet.server.interfaces.dto.DictDTO;
+import top.ticho.intranet.server.interfaces.dto.DictTypeDTO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
- * 数据字典 控制器
+ * 字典 控制器
  *
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
 @RestController
 @RequestMapping("dict")
-@Api(tags = "数据字典")
+@Api(tags = "字典")
 @ApiSort(80)
 public class DictController {
 
@@ -37,7 +37,7 @@ public class DictController {
     private DictService dictService;
 
     @PreAuthorize("@perm.hasPerms('system:dict:save')")
-    @ApiOperation(value = "保存数据字典")
+    @ApiOperation(value = "保存字典")
     @ApiOperationSupport(order = 10)
     @PostMapping
     public Result<Void> save(@RequestBody DictDTO dictDTO) {
@@ -46,17 +46,17 @@ public class DictController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:dict:remove')")
-    @ApiOperation(value = "删除数据字典")
+    @ApiOperation(value = "删除字典")
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @DeleteMapping
-    public Result<Void> remove(Long id, Boolean isDelChilds) {
-        dictService.removeById(id, isDelChilds);
+    public Result<Void> remove(Long id) {
+        dictService.removeById(id);
         return Result.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:dict:update')")
-    @ApiOperation(value = "修改数据字典")
+    @ApiOperation(value = "修改字典")
     @ApiOperationSupport(order = 30)
     @PutMapping
     public Result<Void> update(@RequestBody DictDTO dictDTO) {
@@ -65,7 +65,7 @@ public class DictController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:dict:getByCode')")
-    @ApiOperation(value = "根据字典编码查询数据字典")
+    @ApiOperation(value = "根据字典编码查询字典")
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "字典编码", name = "code", required = true)
     @GetMapping
@@ -77,7 +77,7 @@ public class DictController {
     @ApiOperation(value = "查询所有有效字典")
     @ApiOperationSupport(order = 60)
     @GetMapping("getAllDict")
-    public Result<Map<String, Map<String, String>>> getAllDict() {
+    public Result<List<DictTypeDTO>> getAllDict() {
         return Result.ok(dictService.getAllDict());
     }
 
@@ -85,9 +85,8 @@ public class DictController {
     @ApiOperation(value = "刷新所有有效字典")
     @ApiOperationSupport(order = 70)
     @GetMapping("flushAllDict")
-    public Result<Void> flushAllDict() {
-        dictService.flushAllDict();
-        return Result.ok();
+    public Result<List<DictTypeDTO>> flushAllDict() {
+        return Result.ok(dictService.flushAllDict());
     }
 
 }

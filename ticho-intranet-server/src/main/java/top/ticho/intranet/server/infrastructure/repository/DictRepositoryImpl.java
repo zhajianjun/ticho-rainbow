@@ -1,6 +1,5 @@
 package top.ticho.intranet.server.infrastructure.repository;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -12,7 +11,6 @@ import top.ticho.intranet.server.infrastructure.entity.Dict;
 import top.ticho.intranet.server.infrastructure.mapper.DictMapper;
 import top.ticho.intranet.server.interfaces.query.DictQuery;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -49,18 +47,6 @@ public class DictRepositoryImpl extends RootServiceImpl<DictMapper, Dict> implem
         }
         LambdaQueryWrapper<Dict> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(Dict::getCode, code);
-        wrapper.orderByAsc(Dict::getSort);
-        wrapper.orderByDesc(Dict::getId);
-        return list(wrapper);
-    }
-
-    @Override
-    public List<Dict> getByCodes(Collection<String> codes) {
-        if (CollUtil.isEmpty(codes)) {
-            return Collections.emptyList();
-        }
-        LambdaQueryWrapper<Dict> wrapper = Wrappers.lambdaQuery();
-        wrapper.in(Dict::getCode, codes);
         wrapper.orderByAsc(Dict::getSort);
         wrapper.orderByDesc(Dict::getId);
         return list(wrapper);
