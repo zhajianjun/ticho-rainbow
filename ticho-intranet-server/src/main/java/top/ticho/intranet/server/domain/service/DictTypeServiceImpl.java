@@ -50,7 +50,7 @@ public class DictTypeServiceImpl implements DictTypeService {
         dictType.setStatus(status);
         dictType.setIsSys(isSys);
         // 系统字典默认为正常
-        if (Objects.equals(dbDictType.getIsSys(), 1)) {
+        if (Objects.equals(dictType.getIsSys(), 1)) {
             dictType.setStatus(1);
         }
         Assert.isTrue(dictTypeRepository.save(dictType), BizErrCode.FAIL, "保存失败");

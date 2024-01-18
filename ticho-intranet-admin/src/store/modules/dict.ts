@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { DictDTO } from '@/api/system/model/dictModel';
+import { Dict, DictDTO } from '@/api/system/model/dictModel';
 import { getAllDict } from '@/api/system/dict';
 import { DictTypeDTO } from '@/api/system/model/dictTypeModel';
 import { Persistent } from '@/utils/cache/persistent';
@@ -51,7 +51,13 @@ export const useDictStore = defineStore({
   },
 });
 
-export function getDictByCode(code: string) {
+/**
+ * 获取字典
+ *
+ * @param code  字典编码
+ * @param toNum value值是否转int，默认为true
+ */
+export function getDictByCode(code: string, toNum: boolean = true) {
   const dictStore = useDictStore();
   const dicts = dictStore.getDicts;
   if (!dicts || dicts.size <= 0) {
@@ -61,9 +67,21 @@ export function getDictByCode(code: string) {
   if (!dictLables) {
     return [];
   }
-  return Array.from(dictLables.values()).sort((x) => x.sort);
+  return Array.from(dictLables.values())
+    .sort((x) => x.sort)
+    .map((x) => {
+      const converValue = toNum ? parseInt(x.value) : x.value;
+      const dict: Dict = { label: x.label, value: converValue };
+      return dict;
+    });
 }
 
+/**
+ * 获取字典值
+ *
+ * @param code  字典编码
+ * @param value 字典值
+ */
 export function getDictByCodeAndValue(code: string, value: string | number) {
   if (!code || !value) {
     return value;

@@ -14,3 +14,10 @@ export interface DictDTO {
   /** 备注信息 */
   remark: string;
 }
+
+export interface Dict {
+  /** 字典标签 */
+  label: string;
+  /** 字典值 */
+  value: string | number;
+}
