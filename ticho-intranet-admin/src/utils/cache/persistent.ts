@@ -8,6 +8,7 @@ import {
   TOKEN_KEY,
   USER_INFO_KEY,
   ROLES_KEY,
+  DICTS_KEY,
   LOCK_INFO_KEY,
   PROJ_CFG_KEY,
   APP_LOCAL_CACHE_KEY,
@@ -19,11 +20,13 @@ import { DEFAULT_CACHE_TIME } from '@/settings/encryptionSetting';
 import { toRaw } from 'vue';
 import { pick, omit } from 'lodash-es';
 import { UserRoleMenuDtlDTO } from '@/api/system/model/userModel';
+import { DictDTO } from '@/api/system/model/dictModel';
 
 interface BasicStore {
   [TOKEN_KEY]: string | number | null | undefined;
   [USER_INFO_KEY]: UserRoleMenuDtlDTO;
   [ROLES_KEY]: string[];
+  [DICTS_KEY]: Map<string, Map<string, DictDTO>>;
   [LOCK_INFO_KEY]: LockInfo;
   [PROJ_CFG_KEY]: ProjectConfig;
   [MULTIPLE_TABS_KEY]: RouteLocationNormalized[];

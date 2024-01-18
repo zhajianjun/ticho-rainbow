@@ -1,4 +1,7 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
+import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
+
+const commonStatus = 'commonStatus';
 
 export function getTableColumns(): BasicColumn[] {
   return [
@@ -39,6 +42,9 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'status',
       resizable: true,
       width: 50,
+      customRender({ text }) {
+        return getDictByCodeAndValue(commonStatus, text);
+      },
     },
     {
       title: '备注信息',
@@ -121,8 +127,9 @@ export function getModalFormColumns(): FormSchema[] {
     {
       field: `status`,
       label: `状态`,
-      component: 'Input',
+      component: 'Select',
       componentProps: {
+        options: getDictByCode(commonStatus),
         placeholder: '请输入状态',
       },
       colProps: {

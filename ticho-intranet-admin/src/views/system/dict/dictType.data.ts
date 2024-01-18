@@ -1,4 +1,8 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
+import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
+
+const yesOrNo = 'yesOrNo';
+const commonStatus = 'commonStatus';
 
 export function getTableColumns(): BasicColumn[] {
   return [
@@ -26,12 +30,18 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'isSys',
       resizable: true,
       width: 100,
+      customRender({ text }) {
+        return getDictByCodeAndValue(yesOrNo, text);
+      },
     },
     {
       title: '状态',
       dataIndex: 'status',
       resizable: true,
       width: 60,
+      customRender({ text }) {
+        return getDictByCodeAndValue(commonStatus, text);
+      },
     },
     {
       title: '备注信息',
@@ -76,25 +86,27 @@ export function getSearchColumns(): FormSchema[] {
     },
     {
       field: `isSys`,
-      label: `是否系统字典`,
-      component: 'Input',
+      label: `系统字典`,
+      component: 'Select',
       colProps: {
         xl: 12,
         xxl: 8,
       },
       componentProps: {
+        options: getDictByCode(yesOrNo),
         placeholder: '请输入是否系统字典',
       },
     },
     {
       field: `status`,
       label: `状态`,
-      component: 'Input',
+      component: 'Select',
       colProps: {
         xl: 12,
         xxl: 8,
       },
       componentProps: {
+        options: getDictByCode(commonStatus),
         placeholder: '请输入状态',
       },
     },
@@ -151,10 +163,11 @@ export function getModalFormColumns(): FormSchema[] {
     },
     {
       field: `isSys`,
-      label: `是否系统字典`,
-      component: 'Input',
+      label: `系统字典`,
+      component: 'Select',
       componentProps: {
-        placeholder: '请输入是否系统字典',
+        options: getDictByCode(yesOrNo),
+        placeholder: '是否系统字典',
       },
       colProps: {
         span: 24,
@@ -163,8 +176,9 @@ export function getModalFormColumns(): FormSchema[] {
     {
       field: `status`,
       label: `状态`,
-      component: 'Input',
+      component: 'Select',
       componentProps: {
+        options: getDictByCode(commonStatus),
         placeholder: '请输入状态',
       },
       colProps: {
