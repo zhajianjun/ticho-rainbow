@@ -1,3 +1,5 @@
+import { DictDTO } from '@/api/system/model/dictModel';
+
 export interface DictTypeDTO {
   /** 主键编号 */
   id: number;
@@ -11,6 +13,10 @@ export interface DictTypeDTO {
   status: number;
   /** 备注信息 */
   remark: string;
+  /** 创建时间 */
+  createTime: string;
+  /** 字典详情 */
+  details: DictDTO[];
 }
 
 export interface DictTypeQuery {

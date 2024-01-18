@@ -14,6 +14,7 @@ import { RouteRecordRaw } from 'vue-router';
 import { PAGE_NOT_FOUND_ROUTE } from '@/router/routes/basic';
 import { h } from 'vue';
 import { RoleDTO } from '@/api/system/model/roleModel';
+import { useDictStore } from "@/store/modules/dict";
 
 interface UserState {
   userInfo: Nullable<UserRoleMenuDtlDTO>;
@@ -131,6 +132,8 @@ export const useUserStore = defineStore({
       const { roles } = userInfo;
       this.setRoleList(roles);
       this.setUserInfo(userInfo);
+      const dictStore = useDictStore();
+      await dictStore.initDicts();
       return userInfo;
     },
     /**
