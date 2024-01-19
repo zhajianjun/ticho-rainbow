@@ -3,7 +3,7 @@
     <div class="w-1/2">
       <BasicTable @register="registerTable">
         <template #toolbar>
-          <a-button type="primary" @click="openDictAddModel"> 新增 </a-button>
+          <a-button type="primary" v-auth="'DictAdd'" @click="openDictAddModel"> 新增 </a-button>
           <a-button type="primary" @click="flushDicts"> 刷新缓存 </a-button>
         </template>
         <template #bodyCell="{ column, record }">
@@ -20,7 +20,7 @@
                 icon: 'clarity:note-edit-line',
                 onClick: openDictEditModel.bind(null, record),
                 tooltip: '修改',
-                ifShow: hasPermission('DictTypeEdit'),
+                ifShow: hasPermission('DictEdit'),
               },
               {
                 icon: 'ant-design:delete-outlined',
@@ -30,7 +30,7 @@
                   confirm: handleDictDel.bind(null, record),
                 },
                 tooltip: '删除',
-                ifShow: hasPermission('DictTypeDel'),
+                ifShow: hasPermission('DictDel'),
               },
             ]"
           />
@@ -41,7 +41,7 @@
     <div class="w-1/2 p-4">
       <BasicTable @register="registerDictLabelTable">
         <template #toolbar>
-          <a-button type="primary" @click="openDictLabelAddModel"> 新增 </a-button>
+          <a-button type="primary" v-auth="'DictAdd'" @click="openDictLabelAddModel"> 新增 </a-button>
         </template>
         <template #action="{ record }">
           <TableAction
@@ -50,7 +50,7 @@
                 icon: 'clarity:note-edit-line',
                 onClick: openDictLabeEditModel.bind(null, record),
                 tooltip: '修改',
-                ifShow: hasPermission('DictTypeEdit'),
+                ifShow: hasPermission('DictEdit'),
               },
               {
                 icon: 'ant-design:delete-outlined',
@@ -60,7 +60,7 @@
                   confirm: handleDictLabelDel.bind(null, record),
                 },
                 tooltip: '删除',
-                ifShow: hasPermission('DictTypeDel'),
+                ifShow: hasPermission('DictDel'),
               },
             ]"
           />
@@ -94,7 +94,7 @@
       const codeRef = ref<string | null>(null);
       const nameRef = ref<string>('');
       const { hasPermission } = usePermission();
-      let showSelect = hasPermission('DictTypeSelect');
+      let showSelect = hasPermission('DictSelect');
       const [registerDictLabelModal, { openModal }] = useModal();
       const [registerDictLabelTable, { reload: reloadDictLabel }] = useTable({
         title: () => {
@@ -116,6 +116,10 @@
         useSearchForm: false,
         formConfig: {
           labelWidth: 120,
+          showActionButtonGroup: showSelect,
+          showSubmitButton: showSelect,
+          showResetButton: showSelect,
+          autoSubmitOnEnter: showSelect,
         },
         tableSetting: {
           redo: showSelect,

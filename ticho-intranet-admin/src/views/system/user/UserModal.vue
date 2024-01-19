@@ -70,7 +70,6 @@
             if (!values.parentId) {
               values.parentId = 0;
             }
-            values.tenantId = '000000';
             await saveUser(values);
           }
           closeModal();

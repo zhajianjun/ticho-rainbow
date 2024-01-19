@@ -81,7 +81,7 @@ public class RoleController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('system:role:get')")
+    @PreAuthorize("@perm.hasPerms('system:role:getById')")
     @ApiOperation(value = "主键查询角色信息")
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
@@ -116,11 +116,11 @@ public class RoleController {
     }
 
     @IgnoreJwtCheck(IgnoreType.INNER)
-    @ApiOperation(value = "根据角色id查询角色菜单信息")
+    @ApiOperation(value = "根据条件查询角色菜单信息")
     @ApiOperationSupport(order = 70)
-    @PostMapping("listRoleMenuByIds")
-    public Result<RoleMenuDtlDTO> listRoleMenuByIds(@RequestBody RoleDtlQuery roleDtlQuery) {
-        return Result.ok(roleService.listRoleMenuByIds(roleDtlQuery));
+    @PostMapping("listRoleMenu")
+    public Result<RoleMenuDtlDTO> listRoleMenu(@RequestBody RoleDtlQuery roleDtlQuery) {
+        return Result.ok(roleService.listRoleMenu(roleDtlQuery));
     }
 
 }

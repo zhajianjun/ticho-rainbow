@@ -137,6 +137,12 @@ export const userFormSchema: FormSchema[] = [
     required: true,
   },
   {
+    field: 'mobile',
+    label: '手机号',
+    component: 'Input',
+    required: true,
+  },
+  {
     label: '邮箱',
     field: 'email',
     component: 'Input',

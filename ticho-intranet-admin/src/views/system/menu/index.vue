@@ -22,18 +22,21 @@
               icon: 'ant-design:file-add-outlined',
               type: 'link',
               color: 'warning',
-              ifShow: hasPermission('MenuAdd'),
+              ifShow: hasPermission('MenuCopy'),
               onClick: handleCreate.bind(null, record),
+              tooltip: '复制新增',
             },
             {
               icon: 'clarity:note-edit-line',
               ifShow: hasPermission('MenuEdit'),
               onClick: handleEdit.bind(null, record),
+              tooltip: '修改',
             },
             {
               icon: 'ant-design:delete-outlined',
               color: 'error',
               ifShow: hasPermission('MenuDel'),
+              tooltip: '删除',
               popConfirm: {
                 title: '是否确认删除',
                 confirm: handleDelete.bind(null, record),

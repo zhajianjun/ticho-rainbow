@@ -66,7 +66,7 @@ public class DictController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('system:dict:get')")
+    @PreAuthorize("@perm.hasPerms('system:dict:getById')")
     @ApiOperation(value = "主键查询字典")
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)

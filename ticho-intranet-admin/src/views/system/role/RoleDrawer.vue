@@ -15,6 +15,7 @@
           :fieldNames="{ title: 'name', key: 'id' }"
           :checkedKeys="checkedKeys"
           @change="check"
+          checkStrictly
           checkable
           toolbar
           title="菜单分配"
@@ -30,7 +31,7 @@
   import { BasicDrawer, useDrawerInner } from '@/components/Drawer';
   import { BasicTree, TreeItem } from '@/components/Tree';
 
-  import { listRoleMenuByIds, modifyRole, saveRole } from '@/api/system/role';
+  import { listRoleMenu, modifyRole, saveRole } from '@/api/system/role';
   import { RoleMenuQueryDTO } from '@/api/system/model/roleModel';
 
   export default defineComponent({
@@ -50,16 +51,17 @@
       });
 
       const [registerDrawer, { setDrawerProps, closeDrawer }] = useDrawerInner(async (data) => {
-        resetFields();
+        await resetFields();
         setDrawerProps({ confirmLoading: false });
         isUpdate.value = !!data?.isUpdate;
+        const roleIds = data?.record?.id ? [data.record.id] : [];
         // 需要在setFieldsValue之前先填充treeData，否则Tree组件可能会报key not exist警告
         const query = {
-          roleIds: [data.record.id],
+          roleIds: roleIds,
           showAll: true,
           treeHandle: true,
         } as unknown as RoleMenuQueryDTO;
-        const { menuIds, menus } = await listRoleMenuByIds(query);
+        const { menuIds, menus } = await listRoleMenu(query);
         treeData.value = menus as any as TreeItem[];
         checkedKeys.value = menuIds;
 
@@ -80,7 +82,6 @@
           if (unref(isUpdate)) {
             await modifyRole(values);
           } else {
-            values.tenantId = '000000';
             await saveRole(values);
           }
           closeDrawer();

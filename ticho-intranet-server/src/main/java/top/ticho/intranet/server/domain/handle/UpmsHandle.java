@@ -159,7 +159,7 @@ public class UpmsHandle {
      */
     public RoleMenuDtlDTO mergeRoleByIds(List<Long> roleIds, boolean showAll, boolean treeHandle) {
         if (CollUtil.isEmpty(roleIds)) {
-            return null;
+            return getRoleMenuDtl(Collections.emptyList(), showAll, treeHandle);
         }
         // 1.根据角色id列表查询角色信息、菜单信息、角色菜单信息、角色权限标识信息、菜单权限标识信息
         // 根据角色id列表 查询角色信息
@@ -171,10 +171,7 @@ public class UpmsHandle {
         // @formatter:off
         RoleMenuDtlDTO roleMenuDtlDTO = new RoleMenuDtlDTO();
         List<Long> roleIds = roles.stream().map(Role::getId).collect(Collectors.toList());
-         roleMenuDtlDTO.setRoleIds(roleIds);
-        if (CollUtil.isEmpty(roleIds)) {
-            return null;
-        }
+        roleMenuDtlDTO.setRoleIds(roleIds);
         // 合并的角色后所有的菜单
         List<Long> menuIds = roleIds
             .stream()
@@ -193,6 +190,7 @@ public class UpmsHandle {
             roleCodes.add(role.getCode());
             roleDtos.add(roleDTO);
         }
+        roleMenuDtlDTO.setRoleIds(roleIds);
         roleMenuDtlDTO.setRoleCodes(roleCodes);
         roleMenuDtlDTO.setRoles(roleDtos);
         List<String> perms = new ArrayList<>();

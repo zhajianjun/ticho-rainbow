@@ -83,6 +83,6 @@ public interface RoleService {
      * @param roleDtlQuery 迪泰查询角色
      * @return {@link RoleMenuDtlDTO}
      */
-    RoleMenuDtlDTO listRoleMenuByIds(RoleDtlQuery roleDtlQuery);
+    RoleMenuDtlDTO listRoleMenu(RoleDtlQuery roleDtlQuery);
 }
 

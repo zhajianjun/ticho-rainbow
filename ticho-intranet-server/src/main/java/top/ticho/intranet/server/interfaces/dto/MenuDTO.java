@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 import top.ticho.boot.web.util.valid.ValidGroup;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.io.Serializable;
@@ -47,7 +46,7 @@ public class MenuDTO implements Serializable {
 
     /** 权限标识 */
     @ApiModelProperty(value = "权限标识", position = 45)
-    @NotEmpty(message = "权限标识不能为空", groups = {Button.class})
+    // @NotEmpty(message = "权限标识不能为空", groups = {Button.class})
     private List<String> perms;
 
     /** 标题;目录名称、菜单名称、按钮名称 */

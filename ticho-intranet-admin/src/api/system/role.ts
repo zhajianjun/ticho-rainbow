@@ -10,7 +10,7 @@ enum Api {
   Role = '/role',
   RolePage = '/role/page',
   RoleList = '/role/list',
-  ListRoleMenuByIds = '/role/listRoleMenuByIds',
+  ListRoleMenu = '/role/listRoleMenu',
   BindMenu = '/role/bindMenu',
   UpdateStatus = '/role/updateStatus',
 }
@@ -39,9 +39,9 @@ export function modifyRoleStatus(params: any) {
   return defHttp.put<any>({ url: Api.UpdateStatus, params }, { errorMessageMode: 'message' });
 }
 
-export function listRoleMenuByIds(params?: RoleMenuQueryDTO) {
+export function listRoleMenu(params?: RoleMenuQueryDTO) {
   return defHttp.post<RoleMenuDtlDTO>(
-    { url: Api.ListRoleMenuByIds, params },
+    { url: Api.ListRoleMenu, params },
     { errorMessageMode: 'message' },
   );
 }

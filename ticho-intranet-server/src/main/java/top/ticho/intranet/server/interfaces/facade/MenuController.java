@@ -66,7 +66,7 @@ public class MenuController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('system:menu:get')")
+    @PreAuthorize("@perm.hasPerms('system:menu:getById')")
     @ApiOperation(value = "主键查询菜单信息")
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
