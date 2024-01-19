@@ -14,7 +14,7 @@ import { RouteRecordRaw } from 'vue-router';
 import { PAGE_NOT_FOUND_ROUTE } from '@/router/routes/basic';
 import { h } from 'vue';
 import { RoleDTO } from '@/api/system/model/roleModel';
-import { useDictStore } from "@/store/modules/dict";
+import { useDictStore } from '@/store/modules/dict';
 
 interface UserState {
   userInfo: Nullable<UserRoleMenuDtlDTO>;
@@ -147,6 +147,8 @@ export const useUserStore = defineStore({
       //     console.log('注销Token失败');
       //   }
       // }
+      const dictStore = useDictStore();
+      dictStore.clearDicts();
       this.setToken(undefined);
       this.setSessionTimeout(false);
       this.setUserInfo(null);

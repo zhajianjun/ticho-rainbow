@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.core.Result;
 import top.ticho.intranet.server.application.service.DictService;
 import top.ticho.intranet.server.interfaces.dto.DictDTO;
-import top.ticho.intranet.server.interfaces.dto.DictTypeDTO;
+import top.ticho.intranet.server.interfaces.query.DictQuery;
 
 import java.util.List;
 
@@ -30,7 +32,7 @@ import java.util.List;
 @RestController
 @RequestMapping("dict")
 @Api(tags = "字典")
-@ApiSort(80)
+@ApiSort(70)
 public class DictController {
 
     @Autowired
@@ -50,7 +52,7 @@ public class DictController {
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @DeleteMapping
-    public Result<Void> remove(Long id) {
+    public Result<Void> removeById(@RequestParam("id") Long id) {
         dictService.removeById(id);
         return Result.ok();
     }
@@ -64,29 +66,37 @@ public class DictController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('system:dict:getByCode')")
-    @ApiOperation(value = "根据字典编码查询字典")
+    @PreAuthorize("@perm.hasPerms('system:dict:get')")
+    @ApiOperation(value = "主键查询字典")
     @ApiOperationSupport(order = 40)
-    @ApiImplicitParam(value = "字典编码", name = "code", required = true)
+    @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
-    public Result<List<DictDTO>> getByCode(String code) {
-        return Result.ok(dictService.getByCode(code));
+    public Result<DictDTO> getById(@RequestParam("id") Long id) {
+        return Result.ok(dictService.getById(id));
     }
 
-    @PreAuthorize("@perm.hasPerms('system:dict:getAllDict')")
+    @PreAuthorize("@perm.hasPerms('system:dict:page')")
+    @ApiOperation(value = "分页查询字典")
+    @ApiOperationSupport(order = 50)
+    @GetMapping("page")
+    public Result<PageResult<DictDTO>> page(DictQuery query) {
+        return Result.ok(dictService.page(query));
+    }
+
+    @PreAuthorize("@perm.hasPerms('system:dict:list')")
     @ApiOperation(value = "查询所有有效字典")
     @ApiOperationSupport(order = 60)
-    @GetMapping("getAllDict")
-    public Result<List<DictTypeDTO>> getAllDict() {
-        return Result.ok(dictService.getAllDict());
+    @GetMapping("list")
+    public Result<List<DictDTO>> list() {
+        return Result.ok(dictService.list());
     }
 
-    @PreAuthorize("@perm.hasPerms('system:dict:flushAllDict')")
+    @PreAuthorize("@perm.hasPerms('system:dict:flush')")
     @ApiOperation(value = "刷新所有有效字典")
     @ApiOperationSupport(order = 70)
-    @GetMapping("flushAllDict")
-    public Result<List<DictTypeDTO>> flushAllDict() {
-        return Result.ok(dictService.flushAllDict());
+    @GetMapping("flush")
+    public Result<List<DictDTO>> flush() {
+        return Result.ok(dictService.flush());
     }
 
 }

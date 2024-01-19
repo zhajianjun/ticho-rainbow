@@ -33,16 +33,13 @@ public class Dict extends Model<Dict> implements Serializable {
     /** 字典编码 */
     private String code;
 
-    /** 字典标签 */
-    private String label;
+    /** 字典名称 */
+    private String name;
 
-    /** 字典值 */
-    private String value;
+    /** 是否系统字典;1-是,0-否 */
+    private Integer isSys;
 
-    /** 排序 */
-    private Integer sort;
-
-    /** 状态;1-正常,0-停用 */
+    /** 状态;1-启用,0-停用 */
     private Integer status;
 
     /** 备注信息 */
@@ -64,7 +61,7 @@ public class Dict extends Model<Dict> implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateBy;
 
-    /** 修改时间 */
+    /** 更新时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;

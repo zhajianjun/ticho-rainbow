@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia';
-import { Dict, DictDTO } from '@/api/system/model/dictModel';
-import { getAllDict } from '@/api/system/dict';
-import { DictTypeDTO } from '@/api/system/model/dictTypeModel';
+import { DictLabel, DictLabelDTO } from '@/api/system/model/dictLabelModel';
+import { flush, list } from '@/api/system/dict';
+import { DictDTO } from '@/api/system/model/dictModel';
 import { Persistent } from '@/utils/cache/persistent';
 import { DICTS_KEY } from '@/enums/cacheEnum';
 
 interface DictInfo {
-  dicts: Nullable<Map<string, Map<string, DictDTO>>>;
+  dicts: Nullable<Map<string, Map<string, DictLabelDTO>>>;
 }
 
 export const useDictStore = defineStore({
@@ -15,14 +15,16 @@ export const useDictStore = defineStore({
     dicts: Persistent.getLocal(DICTS_KEY),
   }),
   getters: {
-    getDicts(state): Map<string, Map<string, DictDTO>> {
+    getDicts(state): Map<string, Map<string, DictLabelDTO>> {
       return (
-        state.dicts || Persistent.getLocal(DICTS_KEY) || new Map<string, Map<string, DictDTO>>()
+        state.dicts ||
+        Persistent.getLocal(DICTS_KEY) ||
+        new Map<string, Map<string, DictLabelDTO>>()
       );
     },
   },
   actions: {
-    setDicts(dicts: Map<string, Map<string, DictDTO>>) {
+    setDicts(dicts: Map<string, Map<string, DictLabelDTO>>) {
       this.dicts = dicts;
       Persistent.setLocal(DICTS_KEY, this.dicts, true);
     },
@@ -31,25 +33,32 @@ export const useDictStore = defineStore({
       this.dicts = null;
     },
     async initDicts() {
-      getAllDict().then((res) => {
+      list().then((res) => {
         if (!res || res.length <= 0) {
           return;
         }
-        const dicts = res as DictTypeDTO[];
-        const dictMap: Map<string, Map<string, DictDTO>> = dicts.reduce((map, dict) => {
-          const value = dict.details ? dict.details : [];
-          const dictLabelMap: Map<string, DictDTO> = value.reduce((mmap, dictLabel) => {
-            mmap.set(dictLabel.value, dictLabel);
-            return mmap;
-          }, new Map<string, DictDTO>());
-          map.set(dict.code, dictLabelMap);
-          return map;
-        }, new Map<string, Map<string, DictDTO>>());
+        const dicts = res as DictDTO[];
+        const dictMap: Map<string, Map<string, DictLabelDTO>> = convert(dicts);
         this.setDicts(dictMap);
       });
     },
   },
 });
+
+function convert(dicts: Nullable<DictDTO[]>) {
+  if (!dicts || dicts.length <= 0) {
+    return new Map<string, Map<string, DictLabelDTO>>();
+  }
+  return dicts.reduce((map, dict) => {
+    const value = dict.details ? dict.details : [];
+    const dictLabelMap: Map<string, DictLabelDTO> = value.reduce((mmap, dictLabel) => {
+      mmap.set(dictLabel.value, dictLabel);
+      return mmap;
+    }, new Map<string, DictLabelDTO>());
+    map.set(dict.code, dictLabelMap);
+    return map;
+  }, new Map<string, Map<string, DictLabelDTO>>());
+}
 
 /**
  * 获取字典
@@ -71,7 +80,7 @@ export function getDictByCode(code: string, toNum: boolean = true) {
     .sort((x) => x.sort)
     .map((x) => {
       const converValue = toNum ? parseInt(x.value) : x.value;
-      const dict: Dict = { label: x.label, value: converValue };
+      const dict: DictLabel = { label: x.label, value: converValue };
       return dict;
     });
 }
@@ -83,7 +92,8 @@ export function getDictByCode(code: string, toNum: boolean = true) {
  * @param value 字典值
  */
 export function getDictByCodeAndValue(code: string, value: string | number) {
-  if (!code || !value) {
+  const valueStr = value + '';
+  if (!code || !valueStr) {
     return value;
   }
   const dictStore = useDictStore();
@@ -95,10 +105,17 @@ export function getDictByCodeAndValue(code: string, value: string | number) {
   if (!dictLableMap || dictLableMap.size <= 0) {
     return value;
   }
-  const valueStr = value + '';
   const dictLable = dictLableMap.get(valueStr);
   if (!dictLable) {
     return value;
   }
   return dictLable.label;
+}
+
+export async function flushDicts() {
+  const dictStore = useDictStore();
+  flush().then((res) => {
+    const dictMap: Map<string, Map<string, DictLabelDTO>> = convert(res);
+    dictStore.setDicts(dictMap);
+  });
 }

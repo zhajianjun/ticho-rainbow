@@ -7,18 +7,17 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import top.ticho.boot.web.util.valid.ValidGroup;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 字典DTO
  *
  * @author zhajianjun
- * @date 2024-01-08 20:30
+ * @date 2024-01-14 13:43
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -26,45 +25,39 @@ import java.time.LocalDateTime;
 public class DictDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** 主键编号; */
+    /** 主键编号 */
     @ApiModelProperty(value = "主键编号", position = 10)
-    @NotNull(message = "字典编号不能为空", groups = {ValidGroup.Upd.class})
+    @NotNull(message = "编号不能为空", groups = {ValidGroup.Upd.class})
     private Long id;
 
-    /** 字典类型id */
-    @ApiModelProperty(value = "字典编码", position = 30)
-    @NotBlank(message = "字典编码不能为空", groups = {ValidGroup.Add.class})
+    /** 字典编码 */
+    @ApiModelProperty(value = "字典编码", position = 20)
+    @NotBlank(message = "编码不能为空", groups = {ValidGroup.Add.class})
     private String code;
 
     /** 字典名称 */
-    @ApiModelProperty(value = "字典标签", position = 50)
-    @NotBlank(message = "字典标签不能为空")
-    @Size(max = 50, message = "字典标签最大不能超过50个字符")
-    private String label;
+    @ApiModelProperty(value = "字典名称", position = 30)
+    @NotBlank(message = "名称不能为空", groups = {ValidGroup.Add.class})
+    private String name;
 
-    /** 字典编码 */
-    @ApiModelProperty(value = "字典值", position = 40)
-    @NotBlank(message = "字典值不能为空")
-    @Size(max = 50, message = "字典值最大不能超过50个字符")
-    private String value;
+    /** 是否系统字典;1-是,0-否 */
+    @ApiModelProperty(value = "是否系统字典;1-是,0-否", position = 40)
+    private Integer isSys;
 
-    /** 排序 */
-    @ApiModelProperty(value = "排序", position = 60)
-    @Max(value = 65535, message = "排序最大值为65535")
-    private Integer sort;
-
-    /** 状态;1-正常,0-停用 */
-    @ApiModelProperty(value = "状态;1-正常,0-停用", position = 90)
+    /** 状态;1-启用,0-停用 */
+    @ApiModelProperty(value = "状态;1-启用,0-停用", position = 50)
     private Integer status;
 
     /** 备注信息 */
-    @ApiModelProperty(value = "备注信息", position = 100)
-    @Size(max = 1024, message = "备注信息最大不能超过1024个字符")
+    @ApiModelProperty(value = "备注信息", position = 60)
     private String remark;
 
     /** 创建时间 */
-    @ApiModelProperty(value = "创建时间", position = 110)
+    @ApiModelProperty(value = "创建时间", position = 70)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
+
+    @ApiModelProperty(value = "字典标签详情", position = 70)
+    private List<DictLabelDTO> details;
 
 }

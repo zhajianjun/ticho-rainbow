@@ -15,15 +15,15 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 字典类型
+ * 字典标签
  *
  * @author zhajianjun
  * @date 2024-01-14 13:43
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("sys_dict_type")
-public class DictType extends Model<DictType> implements Serializable {
+@TableName("sys_dict_label")
+public class DictLabel extends Model<DictLabel> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /** 主键编号 */
@@ -33,13 +33,16 @@ public class DictType extends Model<DictType> implements Serializable {
     /** 字典编码 */
     private String code;
 
-    /** 字典名称 */
-    private String name;
+    /** 字典标签 */
+    private String label;
 
-    /** 是否系统字典;1-是,0-否 */
-    private Integer isSys;
+    /** 字典值 */
+    private String value;
 
-    /** 状态;1-正常,0-停用 */
+    /** 排序 */
+    private Integer sort;
+
+    /** 状态;1-启用,0-停用 */
     private Integer status;
 
     /** 备注信息 */
@@ -61,7 +64,7 @@ public class DictType extends Model<DictType> implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateBy;
 
-    /** 更新时间 */
+    /** 修改时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;

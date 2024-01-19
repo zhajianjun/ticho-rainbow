@@ -1,7 +1,6 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
 
-const yesOrNo = 'yesOrNo';
 const commonStatus = 'commonStatus';
 
 export function getTableColumns(): BasicColumn[] {
@@ -14,31 +13,35 @@ export function getTableColumns(): BasicColumn[] {
       ifShow: false,
     },
     {
-      title: '字典名称',
-      dataIndex: 'name',
-      resizable: true,
-      width: 100,
-    },
-    {
       title: '字典编码',
       dataIndex: 'code',
       resizable: true,
       width: 100,
+      ifShow: false,
     },
     {
-      title: '系统字典',
-      dataIndex: 'isSys',
+      title: '字典标签',
+      dataIndex: 'label',
       resizable: true,
       width: 100,
-      customRender({ text }) {
-        return getDictByCodeAndValue(yesOrNo, text);
-      },
+    },
+    {
+      title: '字典值',
+      dataIndex: 'value',
+      resizable: true,
+      width: 50,
+    },
+    {
+      title: '排序',
+      dataIndex: 'sort',
+      resizable: true,
+      width: 50,
     },
     {
       title: '状态',
       dataIndex: 'status',
       resizable: true,
-      width: 60,
+      width: 50,
       customRender({ text }) {
         return getDictByCodeAndValue(commonStatus, text);
       },
@@ -53,74 +56,7 @@ export function getTableColumns(): BasicColumn[] {
       title: '创建时间',
       dataIndex: 'createTime',
       resizable: true,
-      width: 100,
-    },
-  ];
-}
-
-export function getSearchColumns(): FormSchema[] {
-  return [
-    {
-      field: `code`,
-      label: `字典编码`,
-      component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 8,
-      },
-      componentProps: {
-        placeholder: '请输入字典编码',
-      },
-    },
-    {
-      field: `name`,
-      label: `字典名称`,
-      component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 8,
-      },
-      componentProps: {
-        placeholder: '请输入字典名称',
-      },
-    },
-    {
-      field: `isSys`,
-      label: `系统字典`,
-      component: 'Select',
-      colProps: {
-        xl: 12,
-        xxl: 8,
-      },
-      componentProps: {
-        options: getDictByCode(yesOrNo),
-        placeholder: '请输入是否系统字典',
-      },
-    },
-    {
-      field: `status`,
-      label: `状态`,
-      component: 'Select',
-      colProps: {
-        xl: 12,
-        xxl: 8,
-      },
-      componentProps: {
-        options: getDictByCode(commonStatus),
-        placeholder: '请输入状态',
-      },
-    },
-    {
-      field: `remark`,
-      label: `备注信息`,
-      component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 8,
-      },
-      componentProps: {
-        placeholder: '请输入备注信息',
-      },
+      width: 80,
     },
   ];
 }
@@ -145,29 +81,47 @@ export function getModalFormColumns(): FormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入字典编码',
+        disabled: true,
       },
       colProps: {
         span: 24,
       },
+      required: true,
     },
     {
-      field: `name`,
-      label: `字典名称`,
+      field: `label`,
+      label: `字典标签`,
       component: 'Input',
       componentProps: {
-        placeholder: '请输入字典名称',
+        placeholder: '请输入字典标签',
       },
       colProps: {
         span: 24,
       },
+      required: true,
     },
     {
-      field: `isSys`,
-      label: `系统字典`,
-      component: 'Select',
+      field: `value`,
+      label: `字典值`,
+      component: 'Input',
       componentProps: {
-        options: getDictByCode(yesOrNo),
-        placeholder: '是否系统字典',
+        placeholder: '请输入字典值',
+      },
+      colProps: {
+        span: 24,
+      },
+      required: true,
+    },
+    {
+      field: `sort`,
+      label: `排序`,
+      component: 'InputNumber',
+      defaultValue: 10,
+      componentProps: {
+        min: 0,
+        max: 10000,
+        step: 10,
+        placeholder: '请输入排序',
       },
       colProps: {
         span: 24,
@@ -176,14 +130,15 @@ export function getModalFormColumns(): FormSchema[] {
     {
       field: `status`,
       label: `状态`,
-      component: 'Select',
+      component: 'RadioButtonGroup',
+      defaultValue: 1,
       componentProps: {
         options: getDictByCode(commonStatus),
-        placeholder: '请输入状态',
       },
       colProps: {
         span: 24,
       },
+      required: true,
     },
     {
       field: `remark`,

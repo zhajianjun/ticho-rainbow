@@ -28,8 +28,8 @@ public class ClientQuery extends BasePageQuery implements Serializable {
     @ApiModelProperty(value = "客户端名称", position = 30)
     private String name;
 
-    /** 状态;1-正常,0-停用 */
-    @ApiModelProperty(value = "状态;1-正常,0-停用", position = 40)
+    /** 状态;1-启用,0-停用 */
+    @ApiModelProperty(value = "状态;1-启用,0-停用", position = 40)
     private Integer status;
 
     /** 备注信息 */

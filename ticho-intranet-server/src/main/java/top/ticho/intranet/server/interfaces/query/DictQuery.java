@@ -1,12 +1,11 @@
 package top.ticho.intranet.server.interfaces.query;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import top.ticho.boot.view.core.BasePageQuery;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.ticho.boot.view.core.BasePageQuery;
-
-import java.io.Serializable;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 字典查询条件
@@ -28,24 +27,20 @@ public class DictQuery extends BasePageQuery implements Serializable {
     @ApiModelProperty(value = "字典编码", position = 20)
     private String code;
 
-    /** 字典标签 */
-    @ApiModelProperty(value = "字典标签", position = 30)
-    private String label;
+    /** 字典名称 */
+    @ApiModelProperty(value = "字典名称", position = 30)
+    private String name;
 
-    /** 字典值 */
-    @ApiModelProperty(value = "字典值", position = 40)
-    private String value;
+    /** 是否系统字典;1-是,0-否 */
+    @ApiModelProperty(value = "是否系统字典;1-是,0-否", position = 40)
+    private Integer isSys;
 
-    /** 排序 */
-    @ApiModelProperty(value = "排序", position = 50)
-    private Integer sort;
-
-    /** 状态;1-正常,0-停用 */
-    @ApiModelProperty(value = "状态;1-正常,0-停用", position = 60)
+    /** 状态;1-启用,0-停用 */
+    @ApiModelProperty(value = "状态;1-启用,0-停用", position = 50)
     private Integer status;
 
     /** 备注信息 */
-    @ApiModelProperty(value = "备注信息", position = 70)
+    @ApiModelProperty(value = "备注信息", position = 60)
     private String remark;
 
 }

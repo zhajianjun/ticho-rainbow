@@ -3,21 +3,12 @@ import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
 import { clientAll } from '@/api/intranet/client';
 import { isNull } from '@/utils/is';
+import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
+import { isUndefined } from 'lodash-es';
 
-const protocolType = [
-  { code: 0, msg: 'HTTP' },
-  { code: 1, msg: 'HTTPS' },
-  { code: 2, msg: 'SSH' },
-  { code: 3, msg: 'TELNET' },
-  { code: 4, msg: 'DATABASE' },
-  { code: 5, msg: 'RDESKTOP' },
-  { code: 6, msg: 'TCP' },
-];
-
-const protocolTypeMap = protocolType.reduce((acc, { code, msg }) => {
-  acc[code] = msg.toLowerCase();
-  return acc;
-}, {});
+const yesOrNo = 'yesOrNo';
+const commonStatus = 'commonStatus';
+const protocolType = 'protocolType';
 
 export function getTableColumns(): BasicColumn[] {
   return [
@@ -44,6 +35,9 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'forever',
       resizable: true,
       width: 50,
+      customRender({ text }) {
+        return getDictByCodeAndValue(yesOrNo, text);
+      },
     },
     {
       title: '过期时间',
@@ -62,14 +56,15 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'type',
       resizable: true,
       width: 50,
-      customRender: ({ record }) => {
-        if (record.type === undefined || isNull(record.type)) {
-          return '';
+      customRender({ text }) {
+        const label = getDictByCodeAndValue(protocolType, text);
+        if (text === undefined || isNull(text)) {
+          return label;
         }
-        if (record.type === 1) {
-          return h(Tag, { color: 'red' }, () => protocolTypeMap[record.type]);
+        if (text === 2) {
+          return h(Tag, { color: 'red' }, () => label);
         }
-        return h(Tag, { color: 'blue' }, () => protocolTypeMap[record.type]);
+        return h(Tag, { color: 'blue' }, () => label);
       },
     },
     {
@@ -77,6 +72,9 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'status',
       resizable: true,
       width: 50,
+      customRender({ text }) {
+        return getDictByCodeAndValue(commonStatus, text);
+      },
     },
     {
       title: '通道状态',
@@ -147,6 +145,19 @@ export function getSearchColumns(): FormSchema[] {
       },
     },
     {
+      field: `status`,
+      label: `状态`,
+      component: 'Select',
+      colProps: {
+        xl: 12,
+        xxl: 4,
+      },
+      componentProps: {
+        options: getDictByCode(commonStatus),
+        placeholder: '请选择状态',
+      },
+    },
+    {
       field: `domain`,
       label: `域名`,
       component: 'Input',
@@ -167,12 +178,8 @@ export function getSearchColumns(): FormSchema[] {
         xxl: 4,
       },
       componentProps: {
+        options: getDictByCode(protocolType),
         placeholder: '请输入协议类型',
-        options: protocolType,
-        fieldNames: {
-          label: 'msg',
-          value: 'code',
-        },
       },
     },
     {
@@ -264,12 +271,8 @@ export function getModalFormColumns(): FormSchema[] {
       label: `协议类型`,
       component: 'Select',
       componentProps: {
-        placeholder: '请选择协议类型',
-        options: protocolType,
-        fieldNames: {
-          label: 'msg',
-          value: 'code',
-        },
+        options: getDictByCode(protocolType),
+        placeholder: '请输入协议类型',
       },
       colProps: {
         span: 24,
@@ -296,14 +299,14 @@ export function getModalFormColumns(): FormSchema[] {
         return [
           {
             trigger: 'blur',
-            required: values.type === 1,
+            required: values.type && values.type === 2,
             validator: (_, value) => {
-              const isNullFlag = isNull(value);
-              if (!isNull(values.type) && values.type !== 1 && isNullFlag) {
+              const domainIsNull = isNull(value) || isUndefined(value);
+              if (domainIsNull) {
+                if (values.type === 2) {
+                  return Promise.reject('请输入域名');
+                }
                 return Promise.resolve();
-              }
-              if (isNullFlag) {
-                return Promise.reject('请输入域名');
               }
               const reg = new RegExp('^([a-z0-9-]+\\.)+[a-z]{2,}(/\\S*)?$');
               if (!value.match(reg)) {
@@ -318,13 +321,10 @@ export function getModalFormColumns(): FormSchema[] {
     {
       field: `status`,
       label: `状态`,
-      component: 'Switch',
-      defaultValue: 0,
+      component: 'RadioButtonGroup',
+      defaultValue: 1,
       componentProps: {
-        checkedChildren: '开启',
-        unCheckedChildren: '禁用',
-        checkedValue: 1,
-        unCheckedValue: 0,
+        options: getDictByCode(commonStatus),
       },
     },
     {

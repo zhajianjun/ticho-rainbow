@@ -3,6 +3,9 @@ import { h } from 'vue';
 import { Switch } from 'ant-design-vue';
 import { useMessage } from '@/hooks/web/useMessage';
 import { modifyRoleStatus } from '@/api/system/role';
+import { getDictByCode } from '@/store/modules/dict';
+
+const commonStatus = 'commonStatus';
 
 export const columns: BasicColumn[] = [
   {
@@ -31,8 +34,8 @@ export const columns: BasicColumn[] = [
       }
       return h(Switch, {
         checked: record.status === 1,
-        checkedChildren: '已启用',
-        unCheckedChildren: '已禁用',
+        checkedChildren: '启用',
+        unCheckedChildren: '禁用',
         loading: record.pendingStatus,
         onChange(checked) {
           record.pendingStatus = true;
@@ -90,10 +93,8 @@ export const searchFormSchema: FormSchema[] = [
     label: '状态',
     component: 'Select',
     componentProps: {
-      options: [
-        { label: '启用', value: 1 },
-        { label: '停用', value: 0 },
-      ],
+      options: getDictByCode(commonStatus),
+      placeholder: '请选择状态',
     },
     colProps: { span: 8 },
   },
@@ -122,12 +123,9 @@ export const formSchema: FormSchema[] = [
     field: 'status',
     label: '状态',
     component: 'RadioButtonGroup',
-    defaultValue: '0',
+    defaultValue: 0,
     componentProps: {
-      options: [
-        { label: '启用', value: 1 },
-        { label: '停用', value: 0 },
-      ],
+      options: getDictByCode(commonStatus),
     },
   },
   {

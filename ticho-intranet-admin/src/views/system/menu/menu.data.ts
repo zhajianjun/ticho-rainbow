@@ -2,6 +2,11 @@ import { BasicColumn, FormSchema } from '@/components/Table';
 import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
 import Icon from '@/components/Icon/Icon.vue';
+import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
+
+const commonStatus = 'commonStatus';
+const yesOrNo = 'yesOrNo';
+const menuType = 'menuType';
 
 export const columns: BasicColumn[] = [
   {
@@ -22,9 +27,8 @@ export const columns: BasicColumn[] = [
     title: '类型',
     dataIndex: 'type',
     width: 100,
-    customRender: ({ record }) => {
-      const textArr = ['目录', '菜单', '按钮'];
-      return record.type ? textArr[record.type - 1] : null;
+    customRender({ text }) {
+      return getDictByCodeAndValue(menuType, text);
     },
   },
   {
@@ -86,11 +90,7 @@ export const formSchema: FormSchema[] = [
     label: '菜单类型',
     component: 'RadioButtonGroup',
     componentProps: {
-      options: [
-        { label: '目录', value: 1 },
-        { label: '菜单', value: 2 },
-        { label: '按钮', value: 3 },
-      ],
+      options: getDictByCode(menuType),
     },
     colProps: { lg: 24, md: 24 },
   },
@@ -172,10 +172,7 @@ export const formSchema: FormSchema[] = [
     component: 'RadioButtonGroup',
     defaultValue: 1,
     componentProps: {
-      options: [
-        { label: '启用', value: 1 },
-        { label: '禁用', value: 0 },
-      ],
+      options: getDictByCode(commonStatus),
     },
   },
   {
@@ -184,10 +181,7 @@ export const formSchema: FormSchema[] = [
     component: 'RadioButtonGroup',
     defaultValue: 0,
     componentProps: {
-      options: [
-        { label: '否', value: 0 },
-        { label: '是', value: 1 },
-      ],
+      options: getDictByCode(yesOrNo),
     },
     ifShow: ({ values }) => !isButton(values.type),
   },
@@ -198,10 +192,7 @@ export const formSchema: FormSchema[] = [
     component: 'RadioButtonGroup',
     defaultValue: 0,
     componentProps: {
-      options: [
-        { label: '否', value: 0 },
-        { label: '是', value: 1 },
-      ],
+      options: getDictByCode(yesOrNo),
     },
     ifShow: ({ values }) => isMenu(values.type),
   },
@@ -212,10 +203,7 @@ export const formSchema: FormSchema[] = [
     component: 'RadioButtonGroup',
     defaultValue: 1,
     componentProps: {
-      options: [
-        { label: '是', value: 1 },
-        { label: '否', value: 0 },
-      ],
+      options: getDictByCode(yesOrNo),
     },
     ifShow: ({ values }) => !isButton(values.type),
   },

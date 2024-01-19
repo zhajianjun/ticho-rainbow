@@ -1,7 +1,9 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { listRoles } from '@/api/system/role';
+import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
 
-// @ts-ignore
+const userStatus = 'userStatus';
+
 export const columns: BasicColumn[] = [
   {
     title: '用户名',
@@ -22,6 +24,9 @@ export const columns: BasicColumn[] = [
     title: '状态',
     dataIndex: 'status',
     width: 80,
+    customRender({ text }) {
+      return getDictByCodeAndValue(userStatus, text);
+    },
   },
   {
     title: '创建时间',
@@ -58,6 +63,15 @@ export const searchFormSchema: FormSchema[] = [
     label: '邮箱',
     component: 'Input',
     colProps: { span: 8 },
+  },
+  {
+    field: 'status',
+    label: '状态',
+    component: 'Select',
+    colProps: { span: 8 },
+    componentProps: {
+      options: getDictByCode(userStatus),
+    },
   },
 ];
 
@@ -122,14 +136,21 @@ export const userFormSchema: FormSchema[] = [
     component: 'Input',
     required: true,
   },
-
   {
     label: '邮箱',
     field: 'email',
     component: 'Input',
     required: true,
   },
-
+  {
+    label: '状态',
+    field: 'status',
+    component: 'Select',
+    required: true,
+    componentProps: {
+      options: getDictByCode(userStatus),
+    },
+  },
   {
     label: '备注',
     field: 'remark',

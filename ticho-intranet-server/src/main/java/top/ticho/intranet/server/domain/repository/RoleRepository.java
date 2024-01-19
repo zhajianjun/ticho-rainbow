@@ -1,7 +1,7 @@
 package top.ticho.intranet.server.domain.repository;
 
 import top.ticho.boot.datasource.service.RootService;
-import top.ticho.intranet.server.infrastructure.entity.Dict;
+import top.ticho.intranet.server.infrastructure.entity.DictLabel;
 import top.ticho.intranet.server.infrastructure.entity.Role;
 import top.ticho.intranet.server.interfaces.query.RoleQuery;
 
@@ -44,7 +44,7 @@ public interface RoleRepository extends RootService<Role> {
      *
      * @param code      角色编码
      * @param excludeId 排除的主键编号
-     * @return {@link Dict}
+     * @return {@link DictLabel}
      */
     Role getByCodeExcludeId(String code, Long excludeId);
 

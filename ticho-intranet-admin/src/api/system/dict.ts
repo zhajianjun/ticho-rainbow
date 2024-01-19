@@ -1,11 +1,12 @@
 import { defHttp } from '@/utils/http/axios';
-import { DictDTO } from './model/dictModel';
-import { DictTypeDTO } from '@/api/system/model/dictTypeModel';
+import { DictDTO, DictQuery } from './model/dictModel';
+import { PageResult } from '@/api/system/model/baseModel';
 
 enum Api {
   Dict = '/dict',
-  GetAllDict = '/dict/getAllDict',
-  flushAllDict = '/dict/flushAllDict',
+  DictPage = '/dict/page',
+  list = '/dict/list',
+  flush = '/dict/flush',
 }
 
 export function saveDict(params: DictDTO) {
@@ -17,18 +18,20 @@ export function delDict(params: string) {
 }
 
 export function modifyDict(params: DictDTO) {
-  return defHttp.put<DictDTO>({ url: Api.Dict, params }, { errorMessageMode: 'message' });
+  return defHttp.put<any>({ url: Api.Dict, params }, { errorMessageMode: 'message' });
 }
 
-export function getByCode(code: string) {
-  const params = { code: code };
-  return defHttp.get<DictDTO[]>({ url: Api.Dict, params }, { errorMessageMode: 'message' });
+export function dictPage(params?: DictQuery) {
+  return defHttp.get<PageResult<DictDTO>>(
+    { url: Api.DictPage, params },
+    { errorMessageMode: 'none' },
+  );
 }
 
-export function getAllDict() {
-  return defHttp.get<DictTypeDTO[]>({ url: Api.GetAllDict }, { errorMessageMode: 'none' });
+export function list() {
+  return defHttp.get<DictDTO[]>({ url: Api.list }, { errorMessageMode: 'none' });
 }
 
-export function flushAllDict() {
-  return defHttp.get<DictTypeDTO[]>({ url: Api.flushAllDict }, { errorMessageMode: 'message' });
+export function flush() {
+  return defHttp.get<DictDTO[]>({ url: Api.flush }, { errorMessageMode: 'message' });
 }

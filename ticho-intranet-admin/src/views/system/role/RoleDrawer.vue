@@ -15,7 +15,6 @@
           :fieldNames="{ title: 'name', key: 'id' }"
           :checkedKeys="checkedKeys"
           @change="check"
-          checkStrictly
           checkable
           toolbar
           title="菜单分配"

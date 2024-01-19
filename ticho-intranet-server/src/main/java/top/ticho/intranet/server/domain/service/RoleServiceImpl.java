@@ -141,11 +141,4 @@ public class RoleServiceImpl extends UpmsHandle implements RoleService {
         return mergeRoleByIds(roleDtlQuery.getRoleIds(), roleDtlQuery.getShowAll(), roleDtlQuery.getTreeHandle());
     }
 
-    private RoleMenu convertToRoleMenu(Long roleId, Long x) {
-        RoleMenu roleMenu = new RoleMenu();
-        roleMenu.setRoleId(roleId);
-        roleMenu.setMenuId(x);
-        return roleMenu;
-    }
-
 }

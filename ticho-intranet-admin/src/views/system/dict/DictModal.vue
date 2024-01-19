@@ -23,7 +23,7 @@
     emits: ['success', 'register'],
     setup(_, { emit }) {
       const isUpdate = ref(true);
-      const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
+      const [registerForm, { setFieldsValue, resetFields, validate, updateSchema }] = useForm({
         labelWidth: 100,
         baseColProps: { span: 24 },
         schemas: getModalFormColumns(),
@@ -37,9 +37,15 @@
         await resetFields();
         setModalProps({ confirmLoading: false });
         isUpdate.value = !!data?.isUpdate;
-        await setFieldsValue({
-          ...data.record,
-        });
+        if (unref(isUpdate)) {
+          await updateSchema({
+            field: 'code',
+            componentProps: { disabled: true },
+          });
+          await setFieldsValue({
+            ...data.record,
+          });
+        }
       });
 
       const getTitle = computed(() => (!unref(isUpdate) ? '新增字典' : '编辑字典'));

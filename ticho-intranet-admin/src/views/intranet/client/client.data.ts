@@ -1,6 +1,9 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
+import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
+
+const commonStatus = 'commonStatus';
 
 export function getTableColumns(): BasicColumn[] {
   return [
@@ -28,6 +31,9 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'status',
       resizable: true,
       width: 50,
+      customRender({ text }) {
+        return getDictByCodeAndValue(commonStatus, text);
+      },
     },
     {
       title: '通道状态',
@@ -85,13 +91,14 @@ export function getSearchColumns(): FormSchema[] {
     {
       field: `status`,
       label: `状态`,
-      component: 'Input',
+      component: 'Select',
       colProps: {
         xl: 12,
         xxl: 4,
       },
       componentProps: {
-        placeholder: '请输入状态',
+        options: getDictByCode(commonStatus),
+        placeholder: '请选择状态',
       },
     },
     {
@@ -142,23 +149,20 @@ export function getModalFormColumns(): FormSchema[] {
     {
       field: `status`,
       label: `状态`,
-      component: 'Switch',
-      defaultValue: 0,
+      component: 'RadioButtonGroup',
+      defaultValue: 1,
       componentProps: {
-        checkedChildren: '开启',
-        unCheckedChildren: '禁用',
-        checkedValue: 1,
-        unCheckedValue: 0,
+        options: getDictByCode(commonStatus),
       },
     },
     {
       field: `sort`,
       label: `排序`,
       component: 'InputNumber',
+      defaultValue: 10,
       componentProps: {
         min: 0,
         max: 10000,
-        defaultValue: 10,
         step: 10,
         placeholder: '请输入排序',
       },

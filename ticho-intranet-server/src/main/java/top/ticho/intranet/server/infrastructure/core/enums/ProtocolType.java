@@ -12,13 +12,13 @@ import java.util.Optional;
 public enum ProtocolType {
 
     /**  */
-    HTTP(0, "http"),
-    HTTPS(1, "https"),
-    SSH(2, "ssh"),
-    TELNET(3, "telnet"),
-    DATABASE(4, "data base"),
-    RDESKTOP(5, "remote desktop"),
-    TCP(6, "tcp");
+    HTTP(1, "http"),
+    HTTPS(2, "https"),
+    SSH(3, "ssh"),
+    TELNET(4, "telnet"),
+    DATABASE(5, "data base"),
+    RDESKTOP(6, "remote desktop"),
+    TCP(7, "tcp");
 
     private final int code;
     private final String type;

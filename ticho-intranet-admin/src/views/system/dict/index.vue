@@ -1,9 +1,10 @@
 <template>
   <div class="h-full flex">
     <div class="w-1/2">
-      <BasicTable @register="registerTypeTable">
+      <BasicTable @register="registerTable">
         <template #toolbar>
-          <a-button type="primary" @click="handleTypeCreate"> 新增 </a-button>
+          <a-button type="primary" @click="openDictAddModel"> 新增 </a-button>
+          <a-button type="primary" @click="flushDicts"> 刷新缓存 </a-button>
         </template>
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'code'">
@@ -17,7 +18,7 @@
             :actions="[
               {
                 icon: 'clarity:note-edit-line',
-                onClick: handleTypeEdit.bind(null, record),
+                onClick: openDictEditModel.bind(null, record),
                 tooltip: '修改',
                 ifShow: hasPermission('DictTypeEdit'),
               },
@@ -26,7 +27,7 @@
                 color: 'error',
                 popConfirm: {
                   title: '是否确认删除',
-                  confirm: handleTypeDelete.bind(null, record),
+                  confirm: handleDictDel.bind(null, record),
                 },
                 tooltip: '删除',
                 ifShow: hasPermission('DictTypeDel'),
@@ -35,19 +36,19 @@
           />
         </template>
       </BasicTable>
-      <DictTypeModal @register="registerTypeModal" @success="handleTypeSuccess" />
+      <DictModal @register="registerModal" @success="handleDictSuccess" />
     </div>
     <div class="w-1/2 p-4">
-      <BasicTable @register="registerTable">
+      <BasicTable @register="registerDictLabelTable">
         <template #toolbar>
-          <a-button type="primary" @click="handleCreate"> 新增 </a-button>
+          <a-button type="primary" @click="openDictLabelAddModel"> 新增 </a-button>
         </template>
         <template #action="{ record }">
           <TableAction
             :actions="[
               {
                 icon: 'clarity:note-edit-line',
-                onClick: handleEdit.bind(null, record),
+                onClick: openDictLabeEditModel.bind(null, record),
                 tooltip: '修改',
                 ifShow: hasPermission('DictTypeEdit'),
               },
@@ -56,7 +57,7 @@
                 color: 'error',
                 popConfirm: {
                   title: '是否确认删除',
-                  confirm: handleDelete.bind(null, record),
+                  confirm: handleDictLabelDel.bind(null, record),
                 },
                 tooltip: '删除',
                 ifShow: hasPermission('DictTypeDel'),
@@ -65,7 +66,7 @@
           />
         </template>
       </BasicTable>
-      <DictModal @register="registerModal" @success="handleSuccess" />
+      <DictLabelModal @register="registerDictLabelModal" @success="handleDictLabelSuccess" />
     </div>
   </div>
 </template>
@@ -73,34 +74,84 @@
   import { defineComponent, ref, unref } from 'vue';
   import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { useModal } from '@/components/Modal';
-  import DictTypeModal from './DictTypeModal.vue';
   import DictModal from './DictModal.vue';
+  import DictLabelModal from './DictLabelModal.vue';
   import {
-    getTableColumns as getTypeTableColumns,
-    getSearchColumns as getTypeSearchColumns,
-  } from './dictType.data';
-  import { getTableColumns } from './dict.data';
-  import { dictTypePage, delDictType } from '@/api/system/dictType';
-  import { getByCode, delDict } from '@/api/system/dict';
+    getTableColumns as getDictTableColumns,
+    getSearchColumns as getDictSearchColumns,
+  } from './dict.data';
+  import { getTableColumns as getDictLabelTableColumns } from './dictLabel.data';
+  import { dictPage, delDict } from '@/api/system/dict';
+  import { getByCode, delDictLabel } from '@/api/system/dictLabel';
   import { usePermission } from '@/hooks/web/usePermission';
   import { Tag } from 'ant-design-vue';
+  import { flushDicts } from '@/store/modules/dict';
 
   export default defineComponent({
     name: 'DictType',
-    components: { Tag, BasicTable, DictTypeModal, TableAction, DictModal },
+    components: { Tag, BasicTable, DictModal, TableAction, DictLabelModal },
     setup() {
+      const codeRef = ref<string | null>(null);
+      const nameRef = ref<string>('');
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('DictTypeSelect');
-      const [registerTypeModal, { openModal: openTypeModal }] = useModal();
-      const [registerTypeTable, { reload: reloadType }] = useTable({
-        title: '字典列表',
-        api: dictTypePage,
+      const [registerDictLabelModal, { openModal }] = useModal();
+      const [registerDictLabelTable, { reload: reloadDictLabel }] = useTable({
+        title: () => {
+          const code = unref(nameRef);
+          if (code) {
+            return '字典列表-' + unref(nameRef) + '(' + unref(codeRef) + ')';
+          }
+          return '字典列表';
+        },
+        api: async () => {
+          let code = unref(codeRef);
+          if (!code) {
+            return Promise.resolve();
+          }
+          return getByCode(code);
+        },
         rowKey: 'id',
-        columns: getTypeTableColumns(),
+        columns: getDictLabelTableColumns(),
+        useSearchForm: false,
+        formConfig: {
+          labelWidth: 120,
+        },
+        tableSetting: {
+          redo: showSelect,
+        },
+        immediate: false,
+        showTableSetting: true,
+        bordered: true,
+        showIndexColumn: false,
+        actionColumn: {
+          width: 100,
+          title: '操作',
+          dataIndex: 'action',
+          slots: { customRender: 'action' },
+          fixed: undefined,
+        },
+        pagination: false,
+      });
+      const [registerModal, { openModal: openDictModal }] = useModal();
+      const [registerTable, { reload: reloadDict }] = useTable({
+        title: '字典列表',
+        api: dictPage,
+        afterFetch: (res) => {
+          if (res && res.length > 0) {
+            const firstRecord = res[0];
+            codeRef.value = firstRecord.code;
+            nameRef.value = firstRecord.name;
+            reloadDictLabel();
+          }
+          return res;
+        },
+        rowKey: 'id',
+        columns: getDictTableColumns(),
         useSearchForm: true,
         formConfig: {
           labelWidth: 120,
-          schemas: getTypeSearchColumns(),
+          schemas: getDictSearchColumns(),
           showActionButtonGroup: showSelect,
           showSubmitButton: showSelect,
           showResetButton: showSelect,
@@ -124,77 +175,33 @@
           position: ['bottomLeft'],
         },
       });
-      const codeRef = ref<string | null>(null);
-      const nameRef = ref<string>('');
-      const [registerModal, { openModal }] = useModal();
-      const [registerTable, { reload }] = useTable({
-        title: () => {
-          const code = unref(nameRef);
-          if (code) {
-            return '字典列表-' + unref(nameRef) + '(' + unref(codeRef) + ')';
-          }
-          return '字典列表';
-        },
-        api: async () => {
-          let code = unref(codeRef);
-          if (!code) {
-            return Promise.resolve();
-          }
-          return getByCode(code);
-        },
-        rowKey: 'id',
-        columns: getTableColumns(),
-        useSearchForm: false,
-        formConfig: {
-          labelWidth: 120,
-        },
-        tableSetting: {
-          redo: showSelect,
-        },
-        immediate: false,
-        showTableSetting: true,
-        bordered: true,
-        showIndexColumn: false,
-        actionColumn: {
-          width: 100,
-          title: '操作',
-          dataIndex: 'action',
-          slots: { customRender: 'action' },
-          fixed: undefined,
-        },
-        pagination: false,
-      });
 
-      function handleTypeCreate() {
-        openTypeModal(true, {
+      function openDictAddModel() {
+        openDictModal(true, {
           isUpdate: false,
         });
       }
 
-      function handleTypeEdit(record: Recordable) {
-        openTypeModal(true, {
+      function openDictEditModel(record: Recordable) {
+        openDictModal(true, {
           record,
           isUpdate: true,
         });
       }
 
-      function handleTypeDelete(record: Recordable) {
-        delDictType(record.id).then(() => {
-          reloadType();
+      function handleDictDel(record: Recordable) {
+        delDict(record.id).then(() => {
+          reloadDict();
         });
-      }
-
-      function handleTypeSuccess() {
-        reloadType();
       }
 
       function handleDict(record: Recordable) {
         codeRef.value = record.code;
         nameRef.value = record.name;
-        reload();
+        reloadDictLabel();
       }
 
-      function handleCreate() {
+      function openDictLabelAddModel() {
         if (!unref(codeRef)) {
           return;
         }
@@ -205,38 +212,43 @@
         });
       }
 
-      function handleEdit(record: Recordable) {
+      function openDictLabeEditModel(record: Recordable) {
         openModal(true, {
           record,
           isUpdate: true,
         });
       }
 
-      function handleDelete(record: Recordable) {
-        delDict(record.id).then(() => {
-          reload();
+      function handleDictLabelDel(record: Recordable) {
+        delDictLabel(record.id).then(() => {
+          reloadDictLabel();
         });
       }
 
-      function handleSuccess() {
-        reload();
+      function handleDictSuccess() {
+        reloadDict();
+      }
+
+      function handleDictLabelSuccess() {
+        reloadDictLabel();
       }
 
       return {
-        registerTypeTable,
         registerTable,
-        registerTypeModal,
         registerModal,
-        handleTypeCreate,
-        handleTypeEdit,
+        openDictAddModel,
+        openDictEditModel,
+        handleDictDel,
+        handleDictSuccess,
+        registerDictLabelTable,
+        registerDictLabelModal,
+        openDictLabelAddModel,
+        openDictLabeEditModel,
+        handleDictLabelDel,
+        handleDictLabelSuccess,
         handleDict,
-        handleCreate,
-        handleEdit,
-        handleTypeDelete,
-        handleDelete,
-        handleTypeSuccess,
-        handleSuccess,
         hasPermission,
+        flushDicts,
       };
     },
   });

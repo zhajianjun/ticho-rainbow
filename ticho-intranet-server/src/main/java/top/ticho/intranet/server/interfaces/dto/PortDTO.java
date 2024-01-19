@@ -55,8 +55,8 @@ public class PortDTO implements Serializable {
     @Pattern(message = "域名格式不正确", regexp = "^([a-z0-9-]+\\.)+[a-z]{2,}(/\\S*)?$")
     private String domain;
 
-    /** 状态;1-正常,0-停用 */
-    @ApiModelProperty(value = "状态;1-正常,0-停用", position = 60)
+    /** 状态;1-启用,0-停用 */
+    @ApiModelProperty(value = "状态;1-启用,0-停用", position = 60)
     @NotNull(message = "是否开启不能为空")
     private Integer status;
 
