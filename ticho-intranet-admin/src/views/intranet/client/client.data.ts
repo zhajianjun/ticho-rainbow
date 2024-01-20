@@ -1,7 +1,7 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
-import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
+import { getDictByCode } from '@/store/modules/dict';
 
 const commonStatus = 'commonStatus';
 
@@ -31,9 +31,6 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'status',
       resizable: true,
       width: 50,
-      customRender({ text }) {
-        return getDictByCodeAndValue(commonStatus, text);
-      },
     },
     {
       title: '通道状态',

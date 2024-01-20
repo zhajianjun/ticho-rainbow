@@ -6,7 +6,6 @@ import { isNull } from '@/utils/is';
 import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
 import { isUndefined } from 'lodash-es';
 
-const yesOrNo = 'yesOrNo';
 const commonStatus = 'commonStatus';
 const protocolType = 'protocolType';
 
@@ -35,9 +34,6 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'forever',
       resizable: true,
       width: 50,
-      customRender({ text }) {
-        return getDictByCodeAndValue(yesOrNo, text);
-      },
     },
     {
       title: '过期时间',
@@ -72,9 +68,6 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'status',
       resizable: true,
       width: 50,
-      customRender({ text }) {
-        return getDictByCodeAndValue(commonStatus, text);
-      },
     },
     {
       title: '通道状态',
