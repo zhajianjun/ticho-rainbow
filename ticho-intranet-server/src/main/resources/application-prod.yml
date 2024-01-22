@@ -2,7 +2,7 @@ ticho:
   datasource:
     url: jdbc:mysql://192.168.243.138:10030/ticho_intranet?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true
     username: ENC(8yUwi7gFsHhtfKcuEHa6Kg==)
-    password: ENC(EMiOSD5Q5fe3ER0cP2BU70iZ5hM/OPeQ)
+    password: ENC(7xqTr9Bm6d2RCeaWdwMGlugy9f3P9sAK)
     driver-class-name: com.mysql.cj.jdbc.Driver
     log:
       enable: true
