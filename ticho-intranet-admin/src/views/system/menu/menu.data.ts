@@ -127,7 +127,6 @@ export const formSchema: FormSchema[] = [
     defaultValue: 10,
     componentProps: {
       min: 0,
-      max: 10000,
       step: 10,
       placeholder: '请输入排序',
     },

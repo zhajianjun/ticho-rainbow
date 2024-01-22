@@ -353,7 +353,6 @@ export function getModalFormColumns(): FormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
-        max: 10000,
         defaultValue: 10,
         step: 10,
         placeholder: '请输入排序',
