@@ -295,7 +295,7 @@ export function getModalFormColumns(): FormSchema[] {
             required: values.type && values.type === 2,
             validator: (_, value) => {
               const domainIsNull = isNull(value) || isUndefined(value);
-              if (domainIsNull) {
+              if (domainIsNull || value === "") {
                 if (values.type === 2) {
                   return Promise.reject('请输入域名');
                 }
