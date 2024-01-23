@@ -51,15 +51,22 @@ public class ServerHandler {
 
     private final ServerProperty serverProperty;
 
+    /**
+     * 接收客户端的连接。
+     * serverBoss的线程数量可以设置为CPU核心数的一半。这是因为serverBoss主要负责接收客户端的连接，进行TCP握手等操作，不需要太多的处理能力，因此一般可以设置为较小的值。另外，serverBoss的线程数不宜过大，以免占用过多的系统资源。
+     */
     private final NioEventLoopGroup serverBoss;
-
+    /**
+     * 处理客户端的实际业务逻辑。
+     * serverWorker的线程数量可以设置为CPU核心数或者更多。serverWorker负责处理客户端的实际业务逻辑，因此需要更多的处理能力。通常情况下，可以设置为CPU核心数或者CPU核心数的倍数，以充分利用机器的多核处理能力。
+     */
     private final NioEventLoopGroup serverWorker;
 
     public ServerHandler(ServerProperty serverProperty) {
         try {
             log.info("内网映射服务启动中，端口：{}，是否开启ssl：{}, ssl端口：{}", serverProperty.getPort(), serverProperty.getSslEnable(), serverProperty.getSslPort());
-            this.serverBoss = new NioEventLoopGroup();
-            this.serverWorker = new NioEventLoopGroup();
+            this.serverBoss = new NioEventLoopGroup(serverProperty.getBossThreads());
+            this.serverWorker = new NioEventLoopGroup(serverProperty.getWorkerThreads());
             this.serverProperty = serverProperty;
             this.appHandler = new AppHandler(serverProperty, this, serverBoss, serverWorker);
             int servPort = serverProperty.getPort();

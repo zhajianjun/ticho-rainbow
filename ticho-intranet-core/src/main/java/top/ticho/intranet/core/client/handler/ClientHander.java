@@ -57,7 +57,8 @@ public class ClientHander {
 
     public ClientHander(ClientProperty clientProperty) {
         this.clientProperty = clientProperty;
-        this.workerGroup = new NioEventLoopGroup();
+        // 工作线程初始化
+        this.workerGroup = new NioEventLoopGroup(clientProperty.getWorkerThreads());
         this.appHandler = new AppHandler(workerGroup);
         this.bootstrap = new Bootstrap();
         this.bootstrap.group(workerGroup);

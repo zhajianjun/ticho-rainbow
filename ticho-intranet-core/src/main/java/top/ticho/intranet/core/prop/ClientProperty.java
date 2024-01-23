@@ -25,5 +25,7 @@ public class ClientProperty {
     private String sslPassword;
     /** 最大线程数量 */
     private Integer maxPoolSize = 100;
+    /** 处理客户端连接线程数量 */
+    private int workerThreads = Runtime.getRuntime().availableProcessors() * 2;
 
 }

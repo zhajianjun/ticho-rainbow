@@ -25,5 +25,9 @@ public class ServerProperty {
     private Long maxRequests = 1024L;
     /** 最大绑定端口数 */
     private Long maxBindPorts = 10000L;
+    /** 接收客户端连接处理线程数量。默认为当前机器cpu数的二分一 */
+    private int bossThreads = Math.max(1, Runtime.getRuntime().availableProcessors() / 2);
+    /** 处理客户端连接线程数量。默认为当前机器cpu数的两倍 */
+    private int workerThreads = Runtime.getRuntime().availableProcessors() * 2;
 
 }
