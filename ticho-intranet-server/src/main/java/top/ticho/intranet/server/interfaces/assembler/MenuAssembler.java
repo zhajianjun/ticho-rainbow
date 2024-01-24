@@ -11,13 +11,15 @@ import top.ticho.intranet.server.interfaces.dto.MenuDtlDTO;
 import top.ticho.intranet.server.interfaces.dto.RouteDTO;
 import top.ticho.intranet.server.interfaces.dto.RouteMetaDTO;
 
+import java.util.Objects;
+
 /**
  * 菜单信息 转换
  *
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-@Mapper(imports = {StrUtil.class, CollUtil.class})
+@Mapper(imports = {StrUtil.class, CollUtil.class, Objects.class})
 public interface MenuAssembler {
     MenuAssembler INSTANCE = Mappers.getMapper(MenuAssembler.class);
 
@@ -39,7 +41,7 @@ public interface MenuAssembler {
     @Mapping(target = "perms", expression = "java(StrUtil.split(entity.getPerms(), ','))")
     MenuDTO entityToDto(Menu entity);
 
-    @Mapping(target = "perms", expression = "java(StrUtil.split(entity.getPerms(), ','))")
+    @Mapping(target = "perms", expression = "java(StrUtil.split(Objects.equals(entity.getPerms(), \"\") ? null : entity.getPerms(), ','))")
     MenuDtlDTO entityToDtlDto(Menu entity);
 
     @Mapping(source = "name", target = "title")

@@ -123,8 +123,8 @@
       async function handleSubmit() {
         const values = await validate();
         setDrawerProps({ confirmLoading: true });
-        if (values.type === 3 && values.perms?.length) {
-          values.perms = values.perms.map((n: []) => n.join(':'));
+        if (values.type === 3) {
+          values.perms = values.perms?.length ? values.perms.map((n: []) => n.join(':')) : [];
         }
         if (values.type === 1) {
           values.component = 'LAYOUT';

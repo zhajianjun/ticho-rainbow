@@ -13,7 +13,6 @@ import top.ticho.intranet.server.domain.repository.UserRoleRepository;
 import top.ticho.intranet.server.infrastructure.core.enums.MenuType;
 import top.ticho.intranet.server.infrastructure.entity.Menu;
 import top.ticho.intranet.server.infrastructure.entity.Role;
-import top.ticho.intranet.server.infrastructure.entity.RoleMenu;
 import top.ticho.intranet.server.infrastructure.entity.User;
 import top.ticho.intranet.server.interfaces.assembler.MenuAssembler;
 import top.ticho.intranet.server.interfaces.assembler.RoleAssembler;

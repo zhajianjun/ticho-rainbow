@@ -50,7 +50,7 @@ if exist "!APP_CONF!" (
     for /f "usebackq eol=# delims== tokens=1,*" %%i in ("!APP_CONF!") do set %%i=%%j
 )
 
-@REM 获取ACCESS_KEY
+@REM 获取accessKey
 if "!accessKey!" equ "" (
     @echo !APP_LINE!
     set /p accessKey="请输入访问密钥："
@@ -63,7 +63,7 @@ if "!accessKey!" equ "" (
     @echo accessKey=!accessKey!> "!APP_CONF!"
 )
 
-@REM 获取SERVER_HOST
+@REM 获取serverHost
 if "!serverHost!" equ "" (
     @echo !APP_LINE!
     set /p serverHost="请输入服务器主机地址："
@@ -76,7 +76,7 @@ if "!serverHost!" equ "" (
     @echo serverHost=!serverHost!>> "!APP_CONF!"
 )
 
-@REM 获取SERVER_PORT
+@REM 获取serverPort
 if "!serverPort!" equ "" (
     @echo !APP_LINE!
     set /p serverPort="请输入服务器主机端口："

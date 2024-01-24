@@ -45,37 +45,37 @@ input()
         . $APP_CONF
     fi
 
-    # 获取ACCESS_KEY
-    if [ -z "$ACCESS_KEY" ]; then
+    # 获取accessKey
+    if [ -z "$accessKey" ]; then
         echo "请输入访问密钥："
         read accessKey
-        if [ -z "$ACCESS_KEY" ]; then
+        if [ -z "$accessKey" ]; then
             echo "请输入访问密钥"
             exit $APP_ERR
         fi
-        echo "accessKey=$ACCESS_KEY" > $APP_CONF
+        echo "accessKey=$accessKey" > $APP_CONF
     fi
 
-    # 获取SERVER_HOST
-    if [ -z "$SERVER_HOST" ]; then
+    # 获取serverHost
+    if [ -z "$serverHost" ]; then
         echo "请输入服务器主机地址："
         read serverHost
-        if [ -z "$SERVER_HOST" ]; then
+        if [ -z "$serverHost" ]; then
             echo "请输入服务器地址"
             exit $APP_ERR
         fi
-        echo "serverHost=$SERVER_HOST" >> $APP_CONF
+        echo "serverHost=$serverHost" >> $APP_CONF
     fi
 
-        # 获取SERVER_PORT
-    if [ -z "$SERVER_PORT" ]; then
+    # 获取serverPort
+    if [ -z "$serverPort" ]; then
         echo "请输入服务器主机端口："
         read serverPort
-        if [ -z "$SERVER_PORT" ]; then
+        if [ -z "$serverPort" ]; then
             echo "请输入服务器端口"
             exit $APP_ERR
         fi
-        echo "serverPort=$SERVER_PORT" >> $APP_CONF
+        echo "serverPort=$serverPort" >> $APP_CONF
     fi
 }
 
