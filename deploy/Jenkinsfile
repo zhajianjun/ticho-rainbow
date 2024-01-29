@@ -1,4 +1,4 @@
-// 定义文本参数[BRANCH] [JASYPT_ENCRYPTOR_PASSWORD]
+// 定义文本参数[BRANCH] [APP_VERSION] [JASYPT_ENCRYPTOR_PASSWORD]
 def LAST_BUILD_NUMBER = env.BUILD_NUMBER.toInteger() - 1
 pipeline {
     agent any
@@ -7,16 +7,13 @@ pipeline {
     APP_FRONT_MODULE = "ticho-intranet-admin"
     APP_BACKEND_MODULE = "ticho-intranet-server"
     APP_PORT = "5121"
-    APP_LOG = "/dockerData/ticho/ticho-intranet/logs"
-    DATASOURCE_URL = "jdbc:mysql://192.168.243.138:10032/ticho_intranet?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true"
+    APP_LOG = "/ticho/ticho-intranet/logs"
+    DATASOURCE_URL = "jdbc:mysql://192.168.243.138:10030/ticho_intranet?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true"
     DATASOURCE_USERNAME = "ENC(8yUwi7gFsHhtfKcuEHa6Kg==)"
-    DATASOURCE_PASSWORD = "ENC(EMiOSD5Q5fe3ER0cP2BU70iZ5hM/OPeQ)"
-    APP_VERSION = "SNAPSHOT-${BUILD_NUMBER}"
-    LAST_APP_VERSION = "SNAPSHOT-${LAST_BUILD_NUMBER}"
+    DATASOURCE_PASSWORD = "ENC(7xqTr9Bm6d2RCeaWdwMGlugy9f3P9sAK)"
     GIT_URL = "https://gitee.com/zhajianjun/ticho-intranet.git"
     REGISTRY = "registry.cn-hangzhou.aliyuncs.com"
     IMGAGE_NAME = "${REGISTRY}/feature/${APP_NAME}:${APP_VERSION}"
-    LAST_IMGAGE_NAME = "${REGISTRY}/feature/${APP_NAME}:${LAST_APP_VERSION}"
     DOCKFILE = "deploy/Dockerfile"
     JRE_PATH = "/var/jenkins_home/jdk/jdk8/jre"
     PNPM_STORE = "/var/jenkins_home/pnpm"
@@ -42,10 +39,12 @@ pipeline {
     stage("前端应用编译") {
       steps {
         nodejs('node16.18.0'){
+            sh "npm cache clean --force"
+            sh "npm config set strict-ssl false"
             sh "npm config set registry https://registry.npm.taobao.org"
             sh "npm install pnpm -g"
             sh "pnpm config set store-dir ${PNPM_STORE}"
-            sh "cd ${APP_FRONT_MODULE} && pnpm install && pnpm build && tar -zcvf dist.tar.gz dist"
+            sh "cd ${APP_FRONT_MODULE} && pnpm install && pnpm build && tar -zcvf dist.tar.gz dist && rm -rf ./node_modules"
         }
       }
     }
@@ -97,12 +96,12 @@ pipeline {
             -v ${APP_LOG}:/logs \
             --restart always \
             ${IMGAGE_NAME}"
-        script {
-            def result = sh(script: "docker rmi -f ${LAST_IMGAGE_NAME}", returnStatus: true)
-            if (result != 0) {
-                echo '${LAST_IMGAGE_NAME}容器不存在'
-            }
-        }
+        // script {
+        //     def result = sh(script: "docker rmi -f ${LAST_IMGAGE_NAME}", returnStatus: true)
+        //     if (result != 0) {
+        //         echo '${LAST_IMGAGE_NAME}镜像不存在'
+        //     }
+        // }
       }
     }
   }
