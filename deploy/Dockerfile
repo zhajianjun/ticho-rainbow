@@ -23,9 +23,9 @@ ENV JAVA_OPTS='-Xms256m -Xmx512m -Xmn170m'
 
 VOLUME /tmp
 COPY ./jre /jre
-COPY ./ticho-intranet-server/target/*.jar app.jar
-COPY ./ticho-intranet-admin/dist /usr/share/nginx/html
-COPY ./ticho-intranet-admin/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./ticho-rainbow-app/target/*.jar app.jar
+COPY ./ticho-rainbow-web/dist /usr/share/nginx/html
+COPY ./ticho-rainbow-web/nginx.conf /etc/nginx/conf.d/default.conf
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 COPY ./deploy/start.sh /docker-entrypoint.d/50-start.sh
 RUN chmod 0755 /docker-entrypoint.d/50-start.sh
