@@ -7,9 +7,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import top.ticho.intranet.core.server.entity.ClientInfo;
-import top.ticho.intranet.core.server.handler.ServerHandler;
 import top.ticho.intranet.server.application.service.ClientService;
+import top.ticho.tool.intranet.server.entity.ClientInfo;
+import top.ticho.tool.intranet.server.handler.ServerHandler;
 
 import java.util.List;
 

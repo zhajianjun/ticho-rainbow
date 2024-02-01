@@ -22,13 +22,8 @@
         </dependency>
 
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>top.ticho</groupId>
-            <artifactId>ticho-intranet-core</artifactId>
+            <groupId>top.ticho.tool</groupId>
+            <artifactId>ticho-intranet</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 

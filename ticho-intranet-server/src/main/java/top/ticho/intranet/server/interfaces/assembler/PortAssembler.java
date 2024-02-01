@@ -2,9 +2,9 @@ package top.ticho.intranet.server.interfaces.assembler;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-import top.ticho.intranet.core.server.entity.PortInfo;
 import top.ticho.intranet.server.infrastructure.entity.Port;
 import top.ticho.intranet.server.interfaces.dto.PortDTO;
+import top.ticho.tool.intranet.server.entity.PortInfo;
 
 /**
  * 端口信息 转换

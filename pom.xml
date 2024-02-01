@@ -10,13 +10,6 @@
 
     <modules>
         <module>ticho-intranet-server</module>
-        <module>ticho-intranet-client</module>
-        <module>ticho-intranet-core</module>
     </modules>
-
-    <dependencies>
-
-
-    </dependencies>
 
 </project>

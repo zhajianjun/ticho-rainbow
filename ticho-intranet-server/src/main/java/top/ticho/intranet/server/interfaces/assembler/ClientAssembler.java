@@ -2,9 +2,9 @@ package top.ticho.intranet.server.interfaces.assembler;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-import top.ticho.intranet.core.server.entity.ClientInfo;
 import top.ticho.intranet.server.infrastructure.entity.Client;
 import top.ticho.intranet.server.interfaces.dto.ClientDTO;
+import top.ticho.tool.intranet.server.entity.ClientInfo;
 
 /**
  * 客户端信息 转换

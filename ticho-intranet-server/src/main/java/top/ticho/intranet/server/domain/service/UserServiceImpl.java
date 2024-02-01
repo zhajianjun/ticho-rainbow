@@ -34,7 +34,7 @@ import top.ticho.intranet.server.interfaces.dto.UserRoleDTO;
 import top.ticho.intranet.server.interfaces.dto.UserSignUpDTO;
 import top.ticho.intranet.server.interfaces.query.UserAccountQuery;
 import top.ticho.intranet.server.interfaces.query.UserQuery;
-import top.ticho.trace.spring.util.IpUtil;
+import top.ticho.tool.trace.spring.util.IpUtil;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;

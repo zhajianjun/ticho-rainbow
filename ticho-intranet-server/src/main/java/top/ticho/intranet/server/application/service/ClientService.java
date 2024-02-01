@@ -1,9 +1,9 @@
 package top.ticho.intranet.server.application.service;
 
 import top.ticho.boot.view.core.PageResult;
-import top.ticho.intranet.core.server.entity.ClientInfo;
 import top.ticho.intranet.server.interfaces.dto.ClientDTO;
 import top.ticho.intranet.server.interfaces.query.ClientQuery;
+import top.ticho.tool.intranet.server.entity.ClientInfo;
 
 import java.util.List;
 

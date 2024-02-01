@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import top.ticho.intranet.core.prop.ServerProperty;
-import top.ticho.intranet.core.server.handler.ServerHandler;
+import top.ticho.tool.intranet.prop.ServerProperty;
+import top.ticho.tool.intranet.server.handler.ServerHandler;
 
 /**
  * 通用配置
