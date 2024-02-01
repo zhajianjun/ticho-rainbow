@@ -5,10 +5,10 @@ pipeline {
   environment {
     APP_NAME = "ticho-rainbow"
     APP_FRONT_MODULE = "ticho-rainbow-web"
-    APP_BACKEND_MODULE = "ticho-rainbow"
+    APP_BACKEND_MODULE = "ticho-rainbow-app"
     APP_PORT = "5121"
     APP_LOG = "./logs"
-    DATASOURCE_URL = "jdbc:mysql://192.168.243.138:10030/ticho_intranet?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true"
+    DATASOURCE_URL = "jdbc:mysql://192.168.243.138:10030/ticho_rainbow?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true"
     DATASOURCE_USERNAME = "ENC(8yUwi7gFsHhtfKcuEHa6Kg==)"
     DATASOURCE_PASSWORD = "ENC(7xqTr9Bm6d2RCeaWdwMGlugy9f3P9sAK)"
     GIT_URL = "https://gitee.com/zhajianjun/ticho-rainbow.git"
