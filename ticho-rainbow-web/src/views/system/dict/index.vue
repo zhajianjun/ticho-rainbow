@@ -100,9 +100,9 @@
         title: () => {
           const code = unref(nameRef);
           if (code) {
-            return '字典列表-' + unref(nameRef) + '(' + unref(codeRef) + ')';
+            return '标签列表-' + unref(nameRef) + '(' + unref(codeRef) + ')';
           }
-          return '字典列表';
+          return '标签列表';
         },
         api: async () => {
           let code = unref(codeRef);

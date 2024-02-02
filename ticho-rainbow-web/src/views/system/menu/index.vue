@@ -24,7 +24,7 @@
               color: 'warning',
               ifShow: hasPermission('MenuCopy'),
               onClick: handleCreate.bind(null, record),
-              tooltip: '复制新增',
+              tooltip: '新增',
             },
             {
               icon: 'clarity:note-edit-line',
