@@ -13,6 +13,7 @@ import { ErrorMessageMode } from '#/axios';
 
 enum Api {
   Login = '/oauth/token',
+  ImgCode = '/oauth/imgCode',
   Logout = '/logout',
   GetUserInfo = '/user/getUserDtl',
   UserInfo = '/user',
@@ -37,11 +38,20 @@ export function loginApi(params: LoginRequest, mode: ErrorMessageMode = 'modal')
   );
 }
 
-export function getUserInfo(params?: any) {
-  return defHttp.get<UserRoleMenuDtlDTO>(
-    { url: Api.GetUserInfo, params },
-    { errorMessageMode: 'none' },
+export function getImgCode(imgKey: string) {
+  const params = { imgKey: imgKey };
+  return defHttp.get<Blob>(
+    {
+      url: Api.ImgCode,
+      responseType: 'blob',
+      params,
+    },
+    { isTransformResponse: false, withToken: false },
   );
+}
+
+export function getUserInfo() {
+  return defHttp.get<UserRoleMenuDtlDTO>({ url: Api.GetUserInfo }, { errorMessageMode: 'none' });
 }
 
 export function userPage(params?: UserQuery) {

@@ -24,8 +24,23 @@
         :placeholder="t('sys.login.password')"
       />
     </FormItem>
+    <ARow class="enter-x" type="flex">
+      <ACol :flex="4">
+        <FormItem name="imgCode">
+          <Input
+            size="large"
+            visibilityToggle
+            v-model:value="formData.imgCode"
+            :placeholder="t('sys.login.imgCode')"
+          />
+        </FormItem>
+      </ACol>
+      <ACol :flex="2">
+        <img :src="imgCodeShow" alt="imgCode" @click="flushImgCode" />
+      </ACol>
+    </ARow>
 
-    <ARow class="enter-x">
+    <ARow class="enter-x" :gutter="[16, 16]">
       <ACol :span="12">
         <FormItem>
           <!-- No logic, you need to deal with it yourself -->
@@ -48,9 +63,6 @@
       <Button type="primary" size="large" block @click="handleLogin" :loading="loading">
         {{ t('sys.login.loginButton') }}
       </Button>
-      <!-- <Button size="large" class="mt-4 enter-x" block @click="handleRegister">
-        {{ t('sys.login.registerButton') }}
-      </Button> -->
     </FormItem>
     <ARow class="enter-x" :gutter="[16, 16]">
       <ACol :md="8" :xs="24">
@@ -82,7 +94,7 @@
   </Form>
 </template>
 <script lang="ts" setup>
-  import { reactive, ref, unref, computed } from 'vue';
+  import { reactive, ref, unref, computed, onMounted } from 'vue';
 
   import { Checkbox, Form, Input, Row, Col, Button, Divider } from 'ant-design-vue';
   import {
@@ -101,6 +113,8 @@
   import { LoginStateEnum, useLoginState, useFormRules, useFormValid } from './useLogin';
   import { useDesign } from '@/hooks/web/useDesign';
   //import { onKeyStroke } from '@vueuse/core';
+  import { getImgCode } from '@/api/system/user';
+  import { buildUUID } from '@/utils/uuid';
 
   const ACol = Col;
   const ARow = Row;
@@ -118,9 +132,13 @@
   const loading = ref(false);
   const rememberMe = ref(false);
 
+  const imgCodeShow = ref('');
+
   const formData = reactive({
-    account: null,
-    password: null,
+    account: '',
+    password: '',
+    imgKey: buildUUID(),
+    imgCode: '',
   });
 
   const { validForm } = useFormValid(formRef);
@@ -128,6 +146,17 @@
   //onKeyStroke('Enter', handleLogin);
 
   const getShow = computed(() => unref(getLoginState) === LoginStateEnum.LOGIN);
+
+  onMounted(() => {
+    flushImgCode();
+  });
+
+  async function flushImgCode() {
+    const imgKey = formData.imgKey.toString();
+    getImgCode(imgKey).then((res) => {
+      imgCodeShow.value = window.URL.createObjectURL(res);
+    });
+  }
 
   async function handleLogin() {
     const data = await validForm();
@@ -137,6 +166,8 @@
       const userInfo = await userStore.login({
         username: data.account,
         password: data.password,
+        imgCode: data.imgCode,
+        imgKey: formData.imgKey,
         mode: 'none',
       });
       if (userInfo) {
@@ -152,6 +183,7 @@
         content: (error as unknown as Error).message || t('sys.api.networkExceptionMsg'),
         getContainer: () => document.body.querySelector(`.${prefixCls}`) || document.body,
       });
+      flushImgCode();
     } finally {
       loading.value = false;
     }

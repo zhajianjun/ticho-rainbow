@@ -1,16 +1,22 @@
 package top.ticho.rainbow.domain.service;
 
+import cn.hutool.captcha.CaptchaUtil;
+import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.core.collection.CollUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.ticho.boot.json.util.JsonUtil;
 import top.ticho.boot.view.core.PageResult;
+import top.ticho.boot.view.core.Result;
 import top.ticho.boot.view.enums.BizErrCode;
+import top.ticho.boot.view.exception.BizException;
 import top.ticho.boot.view.util.Assert;
 import top.ticho.boot.web.util.valid.ValidGroup;
 import top.ticho.boot.web.util.valid.ValidUtil;
@@ -19,8 +25,9 @@ import top.ticho.rainbow.domain.handle.UpmsHandle;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
+import top.ticho.rainbow.infrastructure.core.component.CacheTemplate;
+import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.enums.UserStatus;
-import top.ticho.rainbow.infrastructure.core.util.CaptchaUtil;
 import top.ticho.rainbow.infrastructure.core.util.UserUtil;
 import top.ticho.rainbow.infrastructure.entity.Role;
 import top.ticho.rainbow.infrastructure.entity.User;
@@ -34,13 +41,13 @@ import top.ticho.rainbow.interfaces.dto.UserRoleDTO;
 import top.ticho.rainbow.interfaces.dto.UserSignUpDTO;
 import top.ticho.rainbow.interfaces.query.UserAccountQuery;
 import top.ticho.rainbow.interfaces.query.UserQuery;
-import top.ticho.tool.trace.spring.util.IpUtil;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -71,13 +78,13 @@ public class UserServiceImpl extends UpmsHandle implements UserService {
     private UserRoleRepository userRoleRepository;
 
     @Autowired(required = false)
-    private HttpServletRequest request;
-
-    @Autowired(required = false)
     private HttpServletResponse response;
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private CacheTemplate cacheTemplate;
 
     @Override
     public void signUp(UserSignUpDTO userSignUpDTO) {
@@ -182,7 +189,6 @@ public class UserServiceImpl extends UpmsHandle implements UserService {
 
     @Override
     public void updatePassword(UserPasswordDTO userPasswordDTO) {
-        // @formatter:off
         ValidUtil.valid(userPasswordDTO);
         String username = userPasswordDTO.getUsername();
         String password = userPasswordDTO.getPassword();
@@ -208,21 +214,33 @@ public class UserServiceImpl extends UpmsHandle implements UserService {
     }
 
     @Override
-    public void verifyByCode() {
-        String ip = IpUtil.getIp(request);
+    public void imgCode(String imgKey) throws IOException {
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-cache");
         response.setDateHeader("Expires", 0);
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         try (OutputStream out = response.getOutputStream()) {
-            CaptchaUtil captchaUtils = new CaptchaUtil();
-            String result = captchaUtils.getCode();
-            //ip + code
-            // redisUtil.vSet(ip + " code", result, 60, TimeUnit.SECONDS);
-            BufferedImage buffImg = captchaUtils.getBuffImg();
+            Assert.isNotBlank(imgKey, "验证码秘钥不能为空");
+            LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
+            gifCaptcha.createCode();
+            String code = gifCaptcha.getCode();
+            cacheTemplate.put(CacheConst.VERIFY_CODE, imgKey, code);
+            BufferedImage buffImg = gifCaptcha.getImage();
             ImageIO.write(buffImg, "png", out);
         } catch (Exception e) {
             log.error("获取验证码失败，error {}", e.getMessage(), e);
+            String message = e.getMessage();
+            int code = BizErrCode.FAIL.getCode();
+            if (e instanceof BizException) {
+                BizException bizException = ((BizException)e);
+                code = bizException.getCode();
+                message = bizException.getMsg();
+            }
+            Result<String> result = Result.of(code, message, null);
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setContentType("application/json");
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+            response.getWriter().write(JsonUtil.toJsonString(result));
         }
     }
 
@@ -254,7 +272,7 @@ public class UserServiceImpl extends UpmsHandle implements UserService {
         }
     }
 
-    public void setRoles(List<UserDTO> userDtos){
+    public void setRoles(List<UserDTO> userDtos) {
         // @formatter:off
         if (CollUtil.isEmpty(userDtos)) {
             return;

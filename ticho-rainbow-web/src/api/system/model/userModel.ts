@@ -7,6 +7,8 @@ import { RoleDTO } from '@/api/system/model/roleModel';
 export interface LoginParams {
   username: string;
   password: string;
+  imgKey: string;
+  imgCode: string;
 }
 
 export interface UserQuery {

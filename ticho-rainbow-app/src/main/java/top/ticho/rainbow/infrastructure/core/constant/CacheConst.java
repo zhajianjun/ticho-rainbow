@@ -10,6 +10,8 @@ public class CacheConst {
 
     public static final String COMMON = "ticho-rainbow:common";
 
+    public static final String VERIFY_CODE = "ticho-rainbow:verify_code";
+
     public static final String USER_INFO = "ticho-rainbow:user:info:";
 
     public static final String USER_ROLE_INFO = "ticho-rainbow:user_role:info";

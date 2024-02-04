@@ -26,4 +26,15 @@ public class UserLoginDTO implements LoginRequest {
     @NotBlank(message = "密码不能为空")
     @ApiModelProperty(value = "密码", position = 30)
     private String password;
+
+    /** 验证码秘钥 */
+    @NotBlank(message = "验证码秘钥不能为空")
+    @ApiModelProperty(value = "验证码秘钥", position = 40)
+    private String imgKey;
+
+    /** 验证码 */
+    @NotBlank(message = "验证码不能为空")
+    @ApiModelProperty(value = "验证码", position = 50)
+    private String imgCode;
+
 }

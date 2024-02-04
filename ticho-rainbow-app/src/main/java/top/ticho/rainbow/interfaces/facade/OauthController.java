@@ -27,6 +27,7 @@ import top.ticho.rainbow.application.service.UserService;
 import top.ticho.rainbow.interfaces.dto.UserLoginDTO;
 import top.ticho.rainbow.interfaces.dto.UserSignUpDTO;
 
+import java.io.IOException;
 import java.security.Principal;
 
 /**
@@ -57,7 +58,7 @@ public class OauthController {
     }
 
     @PreAuthorize("@perm.hasPerms('login:oauth:confirm')")
-    @ApiOperation(value = "用户注册确认", notes = "租户隔离")
+    @ApiOperation(value = "用户注册确认")
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "账户", name = "username", required = true)
     @PutMapping("confirm")
@@ -79,9 +80,9 @@ public class OauthController {
     @View(ignore = true)
     @ApiOperation(value = "登录验证码", notes = "登录验证码", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 80)
-    @GetMapping("imgcode")
-    public void setCode() {
-        userService.verifyByCode();
+    @GetMapping("imgCode")
+    public void imgCode(String imgKey) throws IOException {
+        userService.imgCode(imgKey);
     }
 
     @IgnoreJwtCheck

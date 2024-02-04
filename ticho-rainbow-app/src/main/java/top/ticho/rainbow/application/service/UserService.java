@@ -8,6 +8,8 @@ import top.ticho.rainbow.interfaces.dto.UserRoleMenuDtlDTO;
 import top.ticho.rainbow.interfaces.dto.UserSignUpDTO;
 import top.ticho.rainbow.interfaces.query.UserQuery;
 
+import java.io.IOException;
+
 /**
  * 用户信息 服务接口
  *
@@ -92,7 +94,7 @@ public interface UserService {
     /**
      * 验证码
      */
-    void verifyByCode();
+    void imgCode(String imgKey) throws IOException;
 
 }
 
