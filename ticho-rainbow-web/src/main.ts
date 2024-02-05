@@ -25,7 +25,7 @@ async function bootstrap() {
   // 配置 store
   setupStore(app);
 
-  // Initialize internal intranet configuration
+  // Initialize internal system configuration
   // 初始化内部系统配置
   initAppConfigStore();
 

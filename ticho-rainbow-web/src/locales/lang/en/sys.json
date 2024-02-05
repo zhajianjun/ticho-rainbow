@@ -87,7 +87,8 @@
     "imgCode": "ImgCode",
     "confirmPassword": "Confirm Password",
     "email": "Email",
-    "smsCode": "SMS code",
+    "smsCode": "SMS Code",
+    "emailCode": "Email Code",
     "mobile": "Mobile"
   }
 }

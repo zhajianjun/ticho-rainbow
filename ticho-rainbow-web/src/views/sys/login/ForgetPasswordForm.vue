@@ -10,14 +10,14 @@
         />
       </FormItem>
 
-      <FormItem name="mobile" class="enter-x">
-        <Input size="large" v-model:value="formData.mobile" :placeholder="t('sys.login.mobile')" />
+      <FormItem name="email" class="enter-x">
+        <Input size="large" v-model:value="formData.email" :placeholder="t('sys.login.email')" />
       </FormItem>
-      <FormItem name="sms" class="enter-x">
+      <FormItem name="emailCode" class="enter-x">
         <CountdownInput
           size="large"
-          v-model:value="formData.sms"
-          :placeholder="t('sys.login.smsCode')"
+          v-model:value="formData.emailCode"
+          :placeholder="t('sys.login.emailCode')"
         />
       </FormItem>
 
@@ -50,8 +50,8 @@
 
   const formData = reactive({
     account: '',
-    mobile: '',
-    sms: '',
+    email: '',
+    emailCode: '',
   });
 
   const getShow = computed(() => unref(getLoginState) === LoginStateEnum.RESET_PASSWORD);

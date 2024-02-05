@@ -10,11 +10,11 @@
           :placeholder="t('sys.login.userName')"
         />
       </FormItem>
-      <FormItem name="mobile" class="enter-x">
+      <FormItem name="email" class="enter-x">
         <Input
           size="large"
-          v-model:value="formData.mobile"
-          :placeholder="t('sys.login.mobile')"
+          v-model:value="formData.email"
+          :placeholder="t('sys.login.email')"
           class="fix-auto-fill"
         />
       </FormItem>
@@ -22,8 +22,8 @@
         <CountdownInput
           size="large"
           class="fix-auto-fill"
-          v-model:value="formData.sms"
-          :placeholder="t('sys.login.smsCode')"
+          v-model:value="formData.emailCode"
+          :placeholder="t('sys.login.emailCode')"
         />
       </FormItem>
       <FormItem name="password" class="enter-x">
@@ -86,8 +86,8 @@
     account: '',
     password: '',
     confirmPassword: '',
-    mobile: '',
-    sms: '',
+    email: '',
+    emailCode: '',
     policy: false,
   });
 

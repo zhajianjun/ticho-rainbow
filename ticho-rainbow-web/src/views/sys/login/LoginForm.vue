@@ -24,21 +24,19 @@
         :placeholder="t('sys.login.password')"
       />
     </FormItem>
-    <ARow class="enter-x" type="flex">
-      <ACol :flex="4">
-        <FormItem name="imgCode">
-          <Input
-            size="large"
-            visibilityToggle
-            v-model:value="formData.imgCode"
-            :placeholder="t('sys.login.imgCode')"
-          />
-        </FormItem>
-      </ACol>
-      <ACol :flex="2">
-        <img :src="imgCodeShow" alt="imgCode" @click="flushImgCode" />
-      </ACol>
-    </ARow>
+    <FormItem name="imgCode" class="enter-x">
+      <Input
+        class="imgCode-input"
+        size="large"
+        visibilityToggle
+        v-model:value="formData.imgCode"
+        :placeholder="t('sys.login.imgCode')"
+      >
+        <template #addonAfter>
+          <img :src="imgCodeShow" alt="imgCode" @click="flushImgCode" />
+        </template>
+      </Input>
+    </FormItem>
 
     <ARow class="enter-x" :gutter="[16, 16]">
       <ACol :span="12">
@@ -189,3 +187,24 @@
     }
   }
 </script>
+<style lang="less">
+  .imgCode-input {
+    .ant-input-group-addon {
+      padding-right: 0;
+      border: none;
+      background-color: transparent;
+
+      button {
+        font-size: 14px;
+      }
+    }
+    img {
+      margin: 0 0 0 0;
+      padding: 0 0 0 0;
+      border-radius: 8px;
+      width: 160px;
+      height: 40px;
+      border: 1px solid #d4d4d4;
+    }
+  }
+</style>

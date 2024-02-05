@@ -147,9 +147,9 @@
   },
   "system": {
     "moduleName": "System management",
-    "user": "Account management",
+    "account": "Account management",
     "vxeTableAccount": "Account management(VxeTable)",
-    "user_detail": "Account detail",
+    "account_detail": "Account detail",
     "password": "Change password",
     "dept": "Department management",
     "menu": "Menu management",
