@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.boot.security.annotation.IgnoreJwtCheck;
-import top.ticho.boot.security.annotation.IgnoreType;
 import top.ticho.boot.security.constant.BaseOAuth2Const;
 import top.ticho.boot.security.dto.Oauth2AccessToken;
 import top.ticho.boot.security.handle.LoginUserHandle;
@@ -54,6 +53,15 @@ public class OauthController {
     @PostMapping("signUp")
     public Result<Void> signUp(@RequestBody UserSignUpDTO userSignUpDTO) {
         userService.signUp(userSignUpDTO);
+        return Result.ok();
+    }
+
+    @IgnoreJwtCheck
+    @ApiOperation("注册邮箱发送")
+    @ApiOperationSupport(order = 11)
+    @PostMapping("signUpEmailSend")
+    public Result<Void> signUpEmailSend(String email) {
+        userService.signUpEmailSend(email);
         return Result.ok();
     }
 
@@ -100,7 +108,6 @@ public class OauthController {
         return Result.ok(SecurityContextHolder.getContext().getAuthentication());
     }
 
-    @IgnoreJwtCheck(IgnoreType.INNER)
     @ApiOperation("获取公钥")
     @ApiOperationSupport(order = 60)
     @GetMapping("publicKey")

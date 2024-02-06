@@ -138,3 +138,14 @@ export interface UserPasswordDTO {
   /** 新密码 */
   newPassword: number;
 }
+
+export interface UserSignUpDTO {
+  /** 用户名 */
+  username: string;
+  /** 密码 */
+  password: string;
+  /** 邮箱 */
+  email: string;
+  /** 邮箱验证码 */
+  emailCode: string;
+}

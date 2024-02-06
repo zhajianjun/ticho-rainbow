@@ -10,11 +10,6 @@ import top.ticho.boot.view.util.Assert;
 import top.ticho.rainbow.infrastructure.core.component.CacheTemplate;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.interfaces.dto.UserLoginDTO;
-import top.ticho.tool.trace.spring.util.IpUtil;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Objects;
 
 /**
  * @author zhajianjun
@@ -23,8 +18,6 @@ import java.util.Objects;
 @Service
 public class DefaultLoginUserHandle extends BaseLoginUserHandle {
 
-    @Resource
-    private HttpServletRequest request;
     @Autowired
     private CacheTemplate cacheTemplate;
 
@@ -32,10 +25,10 @@ public class DefaultLoginUserHandle extends BaseLoginUserHandle {
     public Oauth2AccessToken token(LoginRequest loginRequest) {
         if (loginRequest instanceof UserLoginDTO) {
             UserLoginDTO userLogin = (UserLoginDTO) loginRequest;
-            String ip = IpUtil.getIp(request);
             String imgCode = userLogin.getImgCode();
             String key = userLogin.getImgKey();
             String cacheImgCode = cacheTemplate.get(CacheConst.VERIFY_CODE, key, String.class);
+            Assert.isNotBlank(cacheImgCode, "验证码过期或者不存在");
             cacheTemplate.evict(CacheConst.VERIFY_CODE, key);
             Assert.isTrue(imgCode.equalsIgnoreCase(cacheImgCode), "验证码不正确");
         }

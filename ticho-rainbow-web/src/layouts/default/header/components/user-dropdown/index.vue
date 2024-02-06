@@ -11,13 +11,19 @@
 
     <template #overlay>
       <Menu @click="handleMenuClick">
-        <!--<MenuItem
+        <MenuItem
           key="doc"
           :text="t('layout.header.dropdownItemDoc')"
           icon="ion:document-text-outline"
           v-if="getShowDoc"
-        />-->
+        />
         <Menu.Divider v-if="getShowDoc" />
+        <MenuItem
+          v-if="getShowApi"
+          key="api"
+          :text="t('layout.header.dropdownChangeApi')"
+          icon="ant-design:swap-outlined"
+        />
         <MenuItem
           v-if="getUseLockPage"
           key="lock"
@@ -33,6 +39,7 @@
     </template>
   </Dropdown>
   <LockAction @register="register" />
+  <ChangeApi @register="registerApi" />
 </template>
 <script lang="ts" setup>
   import { Dropdown, Menu } from 'ant-design-vue';
@@ -53,6 +60,7 @@
 
   const MenuItem = createAsyncComponent(() => import('./DropMenuItem.vue'));
   const LockAction = createAsyncComponent(() => import('../lock/LockModal.vue'));
+  const ChangeApi = createAsyncComponent(() => import('../ChangeApi/index.vue'));
 
   defineOptions({ name: 'UserDropdown' });
 
@@ -62,7 +70,7 @@
 
   const { prefixCls } = useDesign('header-user-dropdown');
   const { t } = useI18n();
-  const { getShowDoc, getUseLockPage } = useHeaderSetting();
+  const { getShowDoc, getUseLockPage, getShowApi } = useHeaderSetting();
   const userStore = useUserStore();
 
   const getUserInfo = computed(() => {
@@ -71,9 +79,14 @@
   });
 
   const [register, { openModal }] = useModal();
+  const [registerApi, { openModal: openApiModal }] = useModal();
 
   function handleLock() {
     openModal(true);
+  }
+
+  function handleApi() {
+    openApiModal(true, {});
   }
 
   //  login out
@@ -96,6 +109,9 @@
         break;
       case 'lock':
         handleLock();
+        break;
+      case 'api':
+        handleApi();
         break;
     }
   }

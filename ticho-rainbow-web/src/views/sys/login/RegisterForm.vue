@@ -2,11 +2,11 @@
   <div v-if="getShow">
     <LoginFormTitle class="enter-x" />
     <Form class="p-4 enter-x" :model="formData" :rules="getFormRules" ref="formRef">
-      <FormItem name="account" class="enter-x">
+      <FormItem name="username" class="enter-x">
         <Input
           class="fix-auto-fill"
           size="large"
-          v-model:value="formData.account"
+          v-model:value="formData.username"
           :placeholder="t('sys.login.userName')"
         />
       </FormItem>
@@ -18,10 +18,11 @@
           class="fix-auto-fill"
         />
       </FormItem>
-      <FormItem name="sms" class="enter-x">
+      <FormItem name="emailCode" class="enter-x">
         <CountdownInput
           size="large"
           class="fix-auto-fill"
+          :sendCodeApi="signUpEmailSendHandle"
           v-model:value="formData.emailCode"
           :placeholder="t('sys.login.emailCode')"
         />
@@ -73,6 +74,8 @@
   import { CountdownInput } from '@/components/CountDown';
   import { useI18n } from '@/hooks/web/useI18n';
   import { useLoginState, useFormRules, useFormValid, LoginStateEnum } from './useLogin';
+  import {signUp, signUpEmailSend} from '@/api/system/user';
+  import {UserSignUpDTO} from '@/api/system/model/userModel';
 
   const FormItem = Form.Item;
   const InputPassword = Input.Password;
@@ -83,7 +86,7 @@
   const loading = ref(false);
 
   const formData = reactive({
-    account: '',
+    username: '',
     password: '',
     confirmPassword: '',
     email: '',
@@ -99,6 +102,17 @@
   async function handleRegister() {
     const data = await validForm();
     if (!data) return;
-    console.log(data);
+    const signData = data as UserSignUpDTO;
+    signUp(signData);
+  }
+
+  async function signUpEmailSendHandle() {
+    const data = await validForm(['email']);
+    if (!data) {
+      return Promise.resolve(false);
+    }
+    return signUpEmailSend(formData.email)
+      .then((res) => {})
+      .catch((err) => {});
   }
 </script>

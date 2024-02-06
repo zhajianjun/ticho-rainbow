@@ -3,9 +3,13 @@ package top.ticho.rainbow.domain.service;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.RegexPool;
+import cn.hutool.core.util.ReUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.beetl.core.GroupTemplate;
+import org.beetl.core.Template;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,21 +17,26 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.ticho.boot.json.util.JsonUtil;
+import top.ticho.boot.mail.component.MailContent;
+import top.ticho.boot.mail.component.MailInines;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.core.Result;
 import top.ticho.boot.view.enums.BizErrCode;
 import top.ticho.boot.view.exception.BizException;
 import top.ticho.boot.view.util.Assert;
+import top.ticho.boot.web.file.BaseMultPartFile;
 import top.ticho.boot.web.util.valid.ValidGroup;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.UserService;
-import top.ticho.rainbow.domain.handle.UpmsHandle;
+import top.ticho.rainbow.domain.handle.AuthHandle;
+import top.ticho.rainbow.domain.repository.EmailRepository;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.core.component.CacheTemplate;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.enums.UserStatus;
+import top.ticho.rainbow.infrastructure.core.util.BeetlUtil;
 import top.ticho.rainbow.infrastructure.core.util.UserUtil;
 import top.ticho.rainbow.infrastructure.entity.Role;
 import top.ticho.rainbow.infrastructure.entity.User;
@@ -66,7 +75,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class UserServiceImpl extends UpmsHandle implements UserService {
+public class UserServiceImpl extends AuthHandle implements UserService {
 
     @Autowired
     private UserRepository userRepository;
@@ -86,18 +95,50 @@ public class UserServiceImpl extends UpmsHandle implements UserService {
     @Autowired
     private CacheTemplate cacheTemplate;
 
+    @Autowired
+    private EmailRepository emailRepository;
+
     @Override
     public void signUp(UserSignUpDTO userSignUpDTO) {
         ValidUtil.valid(userSignUpDTO);
+        String email = userSignUpDTO.getEmail();
+        String cacheEmailCode = cacheTemplate.get(CacheConst.VERIFY_CODE, email, String.class);
+        Assert.isNotBlank(cacheEmailCode, "验证码过期或者不存在");
+        cacheTemplate.evict(CacheConst.VERIFY_CODE, email);
+        Assert.isTrue(userSignUpDTO.getEmailCode().equalsIgnoreCase(cacheEmailCode), "验证码不正确");
         String username = userSignUpDTO.getUsername();
         String password = userSignUpDTO.getPassword();
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
-        user.setStatus(UserStatus.NOT_ACTIVE.code());
+        user.setStatus(UserStatus.NORMAL.code());
         UserAccountQuery accountDTO = UserAssembler.INSTANCE.entityToAccount(user);
         preCheckRepeatUser(accountDTO, null);
         Assert.isTrue(userRepository.save(user), BizErrCode.FAIL, "注册失败");
+    }
+
+    @Override
+    public void signUpEmailSend(String email) {
+        Assert.isNotBlank(email, "邮箱不能为空");
+        boolean match = ReUtil.isMatch(RegexPool.EMAIL, email);
+        Assert.isTrue(match, "邮箱格式不正确");
+        String code = cacheTemplate.get(CacheConst.VERIFY_CODE, email, String.class);
+        Assert.isBlank(code, "验证码已发送，请稍后再试");
+        LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
+        gifCaptcha.createCode();
+        code = gifCaptcha.getCode();
+        cacheTemplate.put(CacheConst.VERIFY_CODE, email, code);
+        GroupTemplate groupTemplate = BeetlUtil.getGroupTemplate(true);
+        Template template = groupTemplate.getTemplate("/template/mail.html");
+        MailInines mailInines = new MailInines();
+        mailInines.setContentId("p01");
+        mailInines.setFile(new BaseMultPartFile("captcha", "captcha.png", MediaType.IMAGE_PNG_VALUE, gifCaptcha.getImageBytes()));
+        MailContent mailContent = new MailContent();
+        mailContent.setTo(email);
+        mailContent.setSubject("注册");
+        mailContent.setContent(template.render());
+        mailContent.setInlines(Collections.singletonList(mailInines));
+        emailRepository.sendMail(mailContent);
     }
 
     @Override
@@ -232,7 +273,7 @@ public class UserServiceImpl extends UpmsHandle implements UserService {
             String message = e.getMessage();
             int code = BizErrCode.FAIL.getCode();
             if (e instanceof BizException) {
-                BizException bizException = ((BizException)e);
+                BizException bizException = ((BizException) e);
                 code = bizException.getCode();
                 message = bizException.getMsg();
             }

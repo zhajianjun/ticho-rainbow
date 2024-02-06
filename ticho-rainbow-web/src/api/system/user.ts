@@ -4,7 +4,7 @@ import {
   UserPasswordDTO,
   UserQuery,
   UserRoleDTO,
-  UserRoleMenuDtlDTO,
+  UserRoleMenuDtlDTO, UserSignUpDTO,
 } from './model/userModel';
 import { ContentTypeEnum } from '@/enums/httpEnum';
 import { LoginRequest, Oauth2AccessToken } from '@/api/system/model/loginModel';
@@ -14,6 +14,8 @@ import { ErrorMessageMode } from '#/axios';
 enum Api {
   Login = '/oauth/token',
   ImgCode = '/oauth/imgCode',
+  SignUpEmailSend = '/oauth/signUpEmailSend',
+  SignUp = '/oauth/signUp',
   Logout = '/logout',
   GetUserInfo = '/user/getUserDtl',
   UserInfo = '/user',
@@ -38,7 +40,23 @@ export function loginApi(params: LoginRequest, mode: ErrorMessageMode = 'modal')
   );
 }
 
-export function getImgCode(imgKey: string) {
+export function signUpEmailSend(email: string, mode: ErrorMessageMode = 'modal') {
+  return defHttp.post<any>(
+    {
+      url: Api.SignUpEmailSend + '?email=' + email,
+    },
+    {
+      errorMessageMode: mode,
+      withToken: false,
+    },
+  );
+}
+
+export function signUp(params: UserSignUpDTO, mode: ErrorMessageMode = 'none') {
+  return defHttp.post<any>({ url: Api.SignUp, params }, { errorMessageMode: mode });
+}
+
+export function getImgCode(imgKey: string, mode: ErrorMessageMode = 'modal') {
   const params = { imgKey: imgKey };
   return defHttp.get<Blob>(
     {
@@ -46,7 +64,7 @@ export function getImgCode(imgKey: string) {
       responseType: 'blob',
       params,
     },
-    { isTransformResponse: false, withToken: false },
+    { isTransformResponse: false, withToken: false, errorMessageMode: mode },
   );
 }
 

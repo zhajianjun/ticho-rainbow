@@ -1,0 +1,42 @@
+{
+  "properties": [
+    {
+      "name": "ticho.intranet.server.port",
+      "type": "java.lang.Integer",
+      "description": "服务配置，端口."
+    },
+    {
+      "name": "ticho.intranet.server.sslEnable",
+      "type": "java.lang.Boolean",
+      "defaultValue": "false",
+      "description": "服务配置，是否开启ssl."
+    },
+    {
+      "name": "ticho.intranet.server.sslPort",
+      "type": "java.lang.Integer",
+      "description": "服务配置，ssl端口."
+    },
+    {
+      "name": "ticho.intranet.server.sslPath",
+      "type": "java.lang.String",
+      "description": "服务配置，ssl证书路径."
+    },
+    {
+      "name": "ticho.intranet.server.sslPassword",
+      "type": "java.lang.String",
+      "description": "服务配置，ssl证书密码."
+    },
+    {
+      "name": "ticho.intranet.server.maxRequests",
+      "type": "java.lang.Long",
+      "defaultValue": "1024L",
+      "description": "服务配置，最大请求数."
+    },
+    {
+      "name": "ticho.intranet.server.maxBindPorts",
+      "type": "java.lang.Long",
+      "defaultValue": "10000L",
+      "description": "服务配置，最大绑定端口数."
+    }
+  ]
+}

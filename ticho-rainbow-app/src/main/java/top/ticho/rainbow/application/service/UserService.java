@@ -26,6 +26,13 @@ public interface UserService {
     void signUp(UserSignUpDTO userSignUpDTO);
 
     /**
+     * 注册邮箱发送
+     *
+     * @param email 注册dto
+     */
+    void signUpEmailSend(String email);
+
+    /**
      * 注册确认
      *
      * @param username 账户名称

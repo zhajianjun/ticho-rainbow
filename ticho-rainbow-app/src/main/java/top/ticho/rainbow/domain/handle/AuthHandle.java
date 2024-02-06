@@ -43,7 +43,7 @@ import java.util.stream.Stream;
  * @author zhajianjun
 * @date 2023-12-17 08:30
  */
-public class UpmsHandle {
+public class AuthHandle {
 
     @Autowired
     private UserRepository userRepository;

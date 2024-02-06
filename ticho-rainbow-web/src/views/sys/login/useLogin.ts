@@ -2,7 +2,7 @@ import type { FormInstance } from 'ant-design-vue/lib/form/Form';
 import type {
   RuleObject,
   NamePath,
-  Rule as ValidationRule,
+  Rule as ValidationRule, ValidateOptions,
 } from 'ant-design-vue/lib/form/interface';
 import { ref, computed, unref, Ref } from 'vue';
 import { useI18n } from '@/hooks/web/useI18n';
@@ -40,10 +40,10 @@ export function useFormValid<T extends Object = any>(formRef: Ref<FormInstance>)
     return form?.validate ?? ((_nameList?: NamePath) => Promise.resolve());
   });
 
-  async function validForm() {
+  async function validForm(nameList?: NamePath[] | string, options?: ValidateOptions) {
     const form = unref(formRef);
     if (!form) return;
-    const data = await form.validate();
+    const data = await form.validate(nameList, options);
     return data as T;
   }
 
@@ -56,6 +56,7 @@ export function useFormRules(formData?: Recordable) {
   const getAccountFormRule = computed(() => createRule(t('sys.login.accountPlaceholder')));
   const getPasswordFormRule = computed(() => createRule(t('sys.login.passwordPlaceholder')));
   const getSmsFormRule = computed(() => createRule(t('sys.login.smsPlaceholder')));
+  const getEmailFormRule = computed(() => createRule(t('sys.login.emailPlaceholder')));
   const getMobileFormRule = computed(() => createRule(t('sys.login.mobilePlaceholder')));
 
   const validatePolicy = async (_: RuleObject, value: boolean) => {
@@ -77,31 +78,38 @@ export function useFormRules(formData?: Recordable) {
   const getFormRules = computed((): { [k: string]: ValidationRule | ValidationRule[] } => {
     const accountFormRule = unref(getAccountFormRule);
     const passwordFormRule = unref(getPasswordFormRule);
+    const emailCodeFormRule = unref(getSmsFormRule);
     const smsFormRule = unref(getSmsFormRule);
+    const emailFormRule = unref(getEmailFormRule);
     const mobileFormRule = unref(getMobileFormRule);
 
     const mobileRule = {
       sms: smsFormRule,
       mobile: mobileFormRule,
     };
+
+    const emailRule = {
+      emailCode: emailCodeFormRule,
+      email: emailFormRule,
+    };
     switch (unref(currentState)) {
       // register form rules
       case LoginStateEnum.REGISTER:
         return {
-          account: accountFormRule,
+          username: accountFormRule,
           password: passwordFormRule,
           confirmPassword: [
             { validator: validateConfirmPassword(formData?.password), trigger: 'change' },
           ],
           policy: [{ validator: validatePolicy, trigger: 'change' }],
-          ...mobileRule,
+          ...emailRule,
         };
 
       // reset password form rules
       case LoginStateEnum.RESET_PASSWORD:
         return {
           account: accountFormRule,
-          ...mobileRule,
+          ...emailRule,
         };
 
       // mobile form rules
@@ -113,6 +121,7 @@ export function useFormRules(formData?: Recordable) {
         return {
           account: accountFormRule,
           password: passwordFormRule,
+          imgCode: emailCodeFormRule,
         };
     }
   });

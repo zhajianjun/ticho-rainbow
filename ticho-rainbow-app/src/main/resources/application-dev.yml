@@ -34,3 +34,24 @@ ticho:
     print: true
   swagger:
     enable: true
+  mail:
+    # 配置 SMTP 服务器地址
+    host: ENC(KaLsKm7W9pkoyWkfAfZyczaZOtVGvYjE)
+    # SMTP 服务器的端口
+    port: 587
+    # 配置邮箱用户名
+    username: ENC(MEtHRUmgiDUB5WbRcSeyNdlhcDN2qNx1b2qdhhabHM4=)
+    # 配置密码，注意，不是真正的密码，而是申请到的授权码
+    password: ENC(smiBr2v3UplE9o4Z2w36s3w5gQrw7D/wqh4HSc1tPU4=)
+    # 发件人名称
+    sender-name: ticho-rainbow
+    # 默认的邮件编码
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+        mail.smtp.connectiontimeout: 5000
+        # 配饰 SSL 加密工厂
+        socketFactoryClass: javax.net.ssl.SSLSocketFactory
+        # 表示开启 DEBUG 模式，这样，邮件发送过程的日志会在控制台打印出来，方便排查错误
+        debug: false

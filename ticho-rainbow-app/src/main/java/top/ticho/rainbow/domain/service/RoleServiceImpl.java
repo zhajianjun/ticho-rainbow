@@ -10,12 +10,11 @@ import top.ticho.boot.view.enums.BizErrCode;
 import top.ticho.boot.view.util.Assert;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.RoleService;
-import top.ticho.rainbow.domain.handle.UpmsHandle;
+import top.ticho.rainbow.domain.handle.AuthHandle;
 import top.ticho.rainbow.domain.repository.RoleMenuRepository;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.entity.Role;
-import top.ticho.rainbow.infrastructure.entity.RoleMenu;
 import top.ticho.rainbow.interfaces.assembler.RoleAssembler;
 import top.ticho.rainbow.interfaces.dto.RoleDTO;
 import top.ticho.rainbow.interfaces.dto.RoleMenuDTO;
@@ -24,10 +23,8 @@ import top.ticho.rainbow.interfaces.query.RoleDtlQuery;
 import top.ticho.rainbow.interfaces.query.RoleQuery;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -37,7 +34,7 @@ import java.util.stream.Collectors;
  * @date 2024-01-08 20:30
  */
 @Service
-public class RoleServiceImpl extends UpmsHandle implements RoleService {
+public class RoleServiceImpl extends AuthHandle implements RoleService {
 
     @Autowired
     private RoleRepository roleRepository;

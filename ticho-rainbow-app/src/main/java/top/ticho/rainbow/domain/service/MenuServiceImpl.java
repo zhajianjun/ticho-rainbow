@@ -12,7 +12,7 @@ import top.ticho.boot.web.util.TreeUtil;
 import top.ticho.boot.web.util.valid.ValidGroup;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.MenuService;
-import top.ticho.rainbow.domain.handle.UpmsHandle;
+import top.ticho.rainbow.domain.handle.AuthHandle;
 import top.ticho.rainbow.domain.repository.MenuRepository;
 import top.ticho.rainbow.domain.repository.RoleMenuRepository;
 import top.ticho.rainbow.infrastructure.core.constant.CommConst;
@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
  * @date 2024-01-08 20:30
  */
 @Service
-public class MenuServiceImpl extends UpmsHandle implements MenuService {
+public class MenuServiceImpl extends AuthHandle implements MenuService {
 
     @Autowired
     private MenuRepository menuRepository;
