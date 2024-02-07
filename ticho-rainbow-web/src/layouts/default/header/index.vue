@@ -36,8 +36,8 @@
       <AppSearch v-if="getShowSearch" :class="`${prefixCls}-action__item `" />
 
       <ErrorAction v-if="getUseErrorHandle" :class="`${prefixCls}-action__item error-action`" />
-      <!--  TODO zhajianjun 暂时隐藏通知    -->
-      <!--  <Notify v-if="getShowNotice" :class="`${prefixCls}-action__item notify-item`" /> -->
+
+      <Notify v-if="getShowNotice" :class="`${prefixCls}-action__item notify-item`" />
 
       <FullScreen v-if="getShowFullScreen" :class="`${prefixCls}-action__item fullscreen-item`" />
 

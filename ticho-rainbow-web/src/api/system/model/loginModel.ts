@@ -1,10 +1,9 @@
+import { UserLoginDTO } from '@/api/system/model/userModel';
+
 /**
  * 登录请求参数
  */
-export interface LoginRequest {
-  username: string;
-  password: string;
-}
+export type LoginRequest = UserLoginDTO;
 
 /**
  * 登录返回参数

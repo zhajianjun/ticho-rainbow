@@ -4,6 +4,7 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.RegexPool;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ReUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -25,6 +26,7 @@ import top.ticho.boot.view.enums.BizErrCode;
 import top.ticho.boot.view.exception.BizException;
 import top.ticho.boot.view.util.Assert;
 import top.ticho.boot.web.file.BaseMultPartFile;
+import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.boot.web.util.valid.ValidGroup;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.UserService;
@@ -45,6 +47,7 @@ import top.ticho.rainbow.interfaces.assembler.UserAssembler;
 import top.ticho.rainbow.interfaces.dto.RoleDTO;
 import top.ticho.rainbow.interfaces.dto.SecurityUser;
 import top.ticho.rainbow.interfaces.dto.UserDTO;
+import top.ticho.rainbow.interfaces.dto.UserLoginDTO;
 import top.ticho.rainbow.interfaces.dto.UserPasswordDTO;
 import top.ticho.rainbow.interfaces.dto.UserRoleDTO;
 import top.ticho.rainbow.interfaces.dto.UserSignUpDTO;
@@ -99,7 +102,8 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     private EmailRepository emailRepository;
 
     @Override
-    public void signUp(UserSignUpDTO userSignUpDTO) {
+    @Transactional(rollbackFor = Exception.class)
+    public UserLoginDTO signUp(UserSignUpDTO userSignUpDTO) {
         ValidUtil.valid(userSignUpDTO);
         String email = userSignUpDTO.getEmail();
         String cacheEmailCode = cacheTemplate.get(CacheConst.VERIFY_CODE, email, String.class);
@@ -109,12 +113,29 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         String username = userSignUpDTO.getUsername();
         String password = userSignUpDTO.getPassword();
         User user = new User();
+        user.setId(CloudIdUtil.getId());
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setStatus(UserStatus.NORMAL.code());
         UserAccountQuery accountDTO = UserAssembler.INSTANCE.entityToAccount(user);
         preCheckRepeatUser(accountDTO, null);
+        user.setNickname(username);
         Assert.isTrue(userRepository.save(user), BizErrCode.FAIL, "注册失败");
+        Role guestRole = roleRepository.getGuestRole();
+        Assert.isNotNull(guestRole, "默认角色不存在，请联系管理员进行处理");
+        userRoleRepository.removeAndSave(user.getId(), Collections.singletonList(guestRole.getId()));
+        // 返回登录使用参数
+        String imgKey = IdUtil.fastSimpleUUID();
+        LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
+        gifCaptcha.createCode();
+        String code = gifCaptcha.getCode();
+        cacheTemplate.put(CacheConst.VERIFY_CODE, imgKey, code);
+        UserLoginDTO userLoginDTO = new UserLoginDTO();
+        userLoginDTO.setUsername(username);
+        userLoginDTO.setImgKey(imgKey);
+        userLoginDTO.setImgCode(code);
+        return userLoginDTO;
+
     }
 
     @Override

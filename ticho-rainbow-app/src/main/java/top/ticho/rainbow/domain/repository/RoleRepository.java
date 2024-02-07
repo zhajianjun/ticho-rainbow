@@ -38,6 +38,13 @@ public interface RoleRepository extends RootService<Role> {
      */
     List<Role> listByCodes(List<String> codes);
 
+    /**
+     * 获取游客角色
+     *
+     * @return {@link Role}
+     */
+    Role getGuestRole();
+
 
     /**
      * 根据字典编码排除主键编号查询

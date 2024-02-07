@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.core.constant.CommConst;
 import top.ticho.rainbow.infrastructure.entity.Role;
 import top.ticho.rainbow.infrastructure.mapper.RoleMapper;
 import top.ticho.rainbow.interfaces.query.RoleQuery;
@@ -82,6 +83,11 @@ public class RoleRepositoryImpl extends RootServiceImpl<RoleMapper, Role> implem
             .filter(x-> codes.contains(x.getCode()))
             .collect(Collectors.toList());
         // @formatter:on
+    }
+
+    @Override
+    public Role getGuestRole() {
+        return listByCodes(Collections.singletonList(CommConst.GUEST_ROLE_CODE)).stream().findFirst().orElse(null);
     }
 
     @Override

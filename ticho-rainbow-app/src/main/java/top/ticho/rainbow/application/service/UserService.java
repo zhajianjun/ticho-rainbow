@@ -2,6 +2,7 @@ package top.ticho.rainbow.application.service;
 
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.rainbow.interfaces.dto.UserDTO;
+import top.ticho.rainbow.interfaces.dto.UserLoginDTO;
 import top.ticho.rainbow.interfaces.dto.UserPasswordDTO;
 import top.ticho.rainbow.interfaces.dto.UserRoleDTO;
 import top.ticho.rainbow.interfaces.dto.UserRoleMenuDtlDTO;
@@ -23,7 +24,7 @@ public interface UserService {
      *
      * @param userSignUpDTO 注册dto
      */
-    void signUp(UserSignUpDTO userSignUpDTO);
+    UserLoginDTO signUp(UserSignUpDTO userSignUpDTO);
 
     /**
      * 注册邮箱发送

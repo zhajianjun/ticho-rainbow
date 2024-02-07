@@ -1,4 +1,8 @@
 {
+  "common": {
+    "success": "success",
+    "fail": "fail"
+  },
   "api": {
     "operationSuccess": "Operation Success",
     "operationFailed": "Operation failed",
@@ -80,6 +84,7 @@
     "passwordPlaceholder": "Please input password",
     "smsPlaceholder": "Please input sms code",
     "mobilePlaceholder": "Please input mobile",
+    "sendSuccess": "Seng Success",
     "emailPlaceholder": "Please input email",
     "policyPlaceholder": "Register after checking",
     "diffPwd": "The two passwords are inconsistent",

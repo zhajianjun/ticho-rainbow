@@ -64,12 +64,12 @@
     </FormItem>
     <ARow class="enter-x" :gutter="[16, 16]">
       <ACol :md="8" :xs="24">
-        <Button block @click="setLoginState(LoginStateEnum.MOBILE)">
+        <Button block @click="setLoginState(LoginStateEnum.MOBILE)" disabled>
           {{ t('sys.login.mobileSignInFormTitle') }}
         </Button>
       </ACol>
       <ACol :md="8" :xs="24">
-        <Button block @click="setLoginState(LoginStateEnum.QR_CODE)">
+        <Button block @click="setLoginState(LoginStateEnum.QR_CODE)" disabled>
           {{ t('sys.login.qrSignInFormTitle') }}
         </Button>
       </ACol>
@@ -80,7 +80,7 @@
       </ACol>
     </ARow>
 
-    <Divider class="enter-x">{{ t('sys.login.otherSignIn') }}</Divider>
+    <!--<Divider class="enter-x">{{ t('sys.login.otherSignIn') }}</Divider>
 
     <div class="flex justify-evenly enter-x" :class="`${prefixCls}-sign-in-way`">
       <GithubFilled />
@@ -88,20 +88,20 @@
       <AlipayCircleFilled />
       <GoogleCircleFilled />
       <TwitterCircleFilled />
-    </div>
+    </div>-->
   </Form>
 </template>
 <script lang="ts" setup>
   import { reactive, ref, unref, computed, onMounted } from 'vue';
 
-  import { Checkbox, Form, Input, Row, Col, Button, Divider } from 'ant-design-vue';
-  import {
+  import { Checkbox, Form, Input, Row, Col, Button } from 'ant-design-vue';
+  /*import {
     GithubFilled,
     WechatFilled,
     AlipayCircleFilled,
     GoogleCircleFilled,
     TwitterCircleFilled,
-  } from '@ant-design/icons-vue';
+  } from '@ant-design/icons-vue';*/
   import LoginFormTitle from './LoginFormTitle.vue';
 
   import { useI18n } from '@/hooks/web/useI18n';
@@ -161,13 +161,15 @@
     if (!data) return;
     try {
       loading.value = true;
-      const userInfo = await userStore.login({
-        username: data.account,
-        password: data.password,
-        imgCode: data.imgCode,
-        imgKey: formData.imgKey,
-        mode: 'none',
-      });
+      const userInfo = await userStore.login(
+        {
+          username: data.account,
+          password: data.password,
+          imgCode: data.imgCode,
+          imgKey: formData.imgKey,
+        },
+        true,
+      );
       if (userInfo) {
         notification.success({
           message: t('sys.login.loginSuccessTitle'),
@@ -181,7 +183,7 @@
         content: (error as unknown as Error).message || t('sys.api.networkExceptionMsg'),
         getContainer: () => document.body.querySelector(`.${prefixCls}`) || document.body,
       });
-      flushImgCode();
+      await flushImgCode();
     } finally {
       loading.value = false;
     }

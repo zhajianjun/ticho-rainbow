@@ -4,7 +4,7 @@ import { store } from '@/store';
 import { PageEnum } from '@/enums/pageEnum';
 import { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '@/enums/cacheEnum';
 import { getAuthCache, setAuthCache } from '@/utils/auth';
-import { UserRoleMenuDtlDTO, LoginParams } from '@/api/system/model/userModel';
+import { UserRoleMenuDtlDTO, UserLoginDTO } from '@/api/system/model/userModel';
 import { getUserInfo, loginApi } from '@/api/system/user';
 import { useI18n } from '@/hooks/web/useI18n';
 import { useMessage } from '@/hooks/web/useMessage';
@@ -82,17 +82,13 @@ export const useUserStore = defineStore({
      * @description: login
      */
     async login(
-      params: LoginParams & {
-        goHome?: boolean;
-        mode?: ErrorMessageMode;
-      },
+      params: UserLoginDTO,
+      goHome: boolean = false,
+      mode: ErrorMessageMode = 'none',
     ): Promise<UserRoleMenuDtlDTO | null> {
       try {
-        const { goHome = true, mode, ...loginParams } = params;
-        const data = await loginApi(loginParams, mode);
+        const data = await loginApi(params, mode);
         const { access_token } = data;
-
-        // save token
         this.setToken(access_token);
         return this.afterLoginAction(goHome);
       } catch (error) {

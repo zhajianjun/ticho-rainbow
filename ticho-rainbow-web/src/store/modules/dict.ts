@@ -26,7 +26,7 @@ export const useDictStore = defineStore({
   actions: {
     setDicts(dicts: Map<string, Map<string, DictLabelDTO>>) {
       this.dicts = dicts;
-      Persistent.setLocal(DICTS_KEY, this.dicts, true);
+      Persistent.setLocal(DICTS_KEY, dicts, true);
     },
     clearDicts() {
       Persistent.removeLocal(DICTS_KEY, true);

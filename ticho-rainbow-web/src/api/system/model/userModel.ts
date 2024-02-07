@@ -1,10 +1,7 @@
 import { MenuDtlDTO } from '@/api/system/model/menuModel';
 import { RoleDTO } from '@/api/system/model/roleModel';
 
-/**
- * @description: Login interface parameters
- */
-export interface LoginParams {
+export interface UserLoginDTO {
   username: string;
   password: string;
   imgKey: string;

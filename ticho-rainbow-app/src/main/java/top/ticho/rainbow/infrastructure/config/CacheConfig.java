@@ -42,7 +42,7 @@ public class CacheConfig {
         VERIFY_CODE(CacheConst.VERIFY_CODE, 300, 10000),
         ;
 
-        CacheEnum(String key, int maxSize, int ttl) {
+        CacheEnum(String key, int ttl, int maxSize) {
             this.key = key;
             this.maxSize = maxSize;
             this.ttl = ttl;
@@ -50,10 +50,10 @@ public class CacheConfig {
 
         /** key */
         private final String key;
-        /** 最大數量 */
-        private final int maxSize;
         /** 过期时间（秒） */
         private final int ttl;
+        /** 最大數量 */
+        private final int maxSize;
     }
 
     // 创建基于Caffeine的Cache Manager

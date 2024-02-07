@@ -51,9 +51,8 @@ public class OauthController {
     @ApiOperation("注册")
     @ApiOperationSupport(order = 10)
     @PostMapping("signUp")
-    public Result<Void> signUp(@RequestBody UserSignUpDTO userSignUpDTO) {
-        userService.signUp(userSignUpDTO);
-        return Result.ok();
+    public Result<UserLoginDTO> signUp(@RequestBody UserSignUpDTO userSignUpDTO) {
+        return Result.ok(userService.signUp(userSignUpDTO));
     }
 
     @IgnoreJwtCheck

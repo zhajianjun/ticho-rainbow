@@ -73,10 +73,10 @@ const setting: ProjectConfig = {
     // Whether to show the document button
     showDoc: true,
     // Whether to show the notification button
-    showNotice: true,
+    showNotice: false,
     // Whether to display the menu search
     showSearch: true,
-    showApi: true,
+    showApi: false,
   },
 
   // Menu configuration
