@@ -241,7 +241,7 @@ export function getModalFormColumns(): FormSchema[] {
       dynamicRules: () => {
         return [
           {
-            trigger: 'blur',
+            trigger: 'change',
             required: true,
             validator: (_, value) => {
               if (!value) {
@@ -272,7 +272,7 @@ export function getModalFormColumns(): FormSchema[] {
       },
       rules: [
         {
-          trigger: 'blur',
+          trigger: 'change',
           required: true,
           message: '请选择协议类型',
         },
@@ -291,7 +291,7 @@ export function getModalFormColumns(): FormSchema[] {
       dynamicRules: ({ values }) => {
         return [
           {
-            trigger: 'blur',
+            trigger: 'change',
             required: values.type && values.type === 2,
             validator: (_, value) => {
               const domainIsNull = isNull(value) || isUndefined(value);

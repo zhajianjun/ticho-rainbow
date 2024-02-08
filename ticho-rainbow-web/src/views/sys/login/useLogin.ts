@@ -2,7 +2,8 @@ import type { FormInstance } from 'ant-design-vue/lib/form/Form';
 import type {
   RuleObject,
   NamePath,
-  Rule as ValidationRule, ValidateOptions,
+  Rule as ValidationRule,
+  ValidateOptions,
 } from 'ant-design-vue/lib/form/interface';
 import { ref, computed, unref, Ref } from 'vue';
 import { useI18n } from '@/hooks/web/useI18n';
@@ -97,7 +98,23 @@ export function useFormRules(formData?: Recordable) {
       case LoginStateEnum.REGISTER:
         return {
           username: accountFormRule,
-          password: passwordFormRule,
+          password: [
+            {
+              validator: (_, value) => {
+                if (!value) {
+                  return Promise.reject(t('sys.login.passwordPlaceholder'));
+                }
+                const reg = new RegExp(
+                  '^(?![0-9]+$)(?![a-zA-Z]+$)(?![0-9a-zA-Z]+$)(?![0-9\\W]+$)(?![a-zA-Z\\W]+$)[0-9A-Za-z\\W]{6,18}$',
+                );
+                if (!value.match(reg)) {
+                  return Promise.reject(t('sys.login.passwordValidPlaceholder'));
+                }
+                return Promise.resolve();
+              },
+              trigger: 'change',
+            },
+          ],
           confirmPassword: [
             { validator: validateConfirmPassword(formData?.password), trigger: 'change' },
           ],

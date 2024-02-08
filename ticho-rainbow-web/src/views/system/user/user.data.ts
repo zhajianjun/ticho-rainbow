@@ -192,7 +192,7 @@ export function getPasswordModalFormColumns(): FormSchema[] {
       ifShow: ({ values }) => !values.id,
       rules: [
         {
-          trigger: 'blur',
+          trigger: 'change',
           required: true,
           message: '密码不能为空',
         },
@@ -211,7 +211,7 @@ export function getPasswordModalFormColumns(): FormSchema[] {
       dynamicRules: ({ values }) => {
         return [
           {
-            trigger: 'blur',
+            trigger: 'change',
             required: true,
             validator: (_, value) => {
               if (!value) {
@@ -242,7 +242,7 @@ export function getPasswordModalFormColumns(): FormSchema[] {
       dynamicRules: ({ values }) => {
         return [
           {
-            trigger: 'blur',
+            trigger: 'change',
             required: true,
             validator: (_, value) => {
               if (!value) {

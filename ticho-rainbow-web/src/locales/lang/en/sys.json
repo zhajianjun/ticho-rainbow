@@ -82,6 +82,7 @@
     "loginSuccessDesc": "Welcome back",
     "accountPlaceholder": "Please input username",
     "passwordPlaceholder": "Please input password",
+    "passwordValidPlaceholder": "The password must contain letters, numbers, and special characters, and be between 6~16 characters",
     "smsPlaceholder": "Please input sms code",
     "mobilePlaceholder": "Please input mobile",
     "sendSuccess": "Seng Success",

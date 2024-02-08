@@ -5,17 +5,24 @@
       <FormItem name="account" class="enter-x">
         <Input
           size="large"
-          v-model:value="formData.account"
+          class="fix-auto-fill"
+          v-model:value="formData.username"
           :placeholder="t('sys.login.userName')"
         />
       </FormItem>
 
       <FormItem name="email" class="enter-x">
-        <Input size="large" v-model:value="formData.email" :placeholder="t('sys.login.email')" />
+        <Input
+          class="fix-auto-fill"
+          size="large"
+          v-model:value="formData.email"
+          :placeholder="t('sys.login.email')"
+        />
       </FormItem>
       <FormItem name="emailCode" class="enter-x">
         <CountdownInput
           size="large"
+          class="fix-auto-fill"
           v-model:value="formData.emailCode"
           :placeholder="t('sys.login.emailCode')"
         />
@@ -49,7 +56,7 @@
   const loading = ref(false);
 
   const formData = reactive({
-    account: '',
+    username: '',
     email: '',
     emailCode: '',
   });
@@ -62,3 +69,8 @@
     await form.resetFields();
   }
 </script>
+<style lang="less">
+  .fix-auto-fill {
+    width: 428px;
+  }
+</style>

@@ -22,13 +22,13 @@
         visibilityToggle
         v-model:value="formData.password"
         :placeholder="t('sys.login.password')"
+        class="fix-auto-fill"
       />
     </FormItem>
-    <FormItem name="imgCode" class="enter-x">
+    <FormItem name="imgCode" class="enter-x fix-auto-fill">
       <Input
-        class="imgCode-input"
+        class="rainbow"
         size="large"
-        visibilityToggle
         v-model:value="formData.imgCode"
         :placeholder="t('sys.login.imgCode')"
       >
@@ -190,23 +190,21 @@
   }
 </script>
 <style lang="less">
-  .imgCode-input {
+  .fix-auto-fill {
+    width: 428px;
+
     .ant-input-group-addon {
       padding-right: 0;
       border: none;
       background-color: transparent;
-
-      button {
-        font-size: 14px;
+      img {
+        margin: 0 0 0 0;
+        padding: 0 0 0 0;
+        border-radius: 8px;
+        width: 120px;
+        height: 40px;
+        border: 1px solid #d4d4d4;
       }
-    }
-    img {
-      margin: 0 0 0 0;
-      padding: 0 0 0 0;
-      border-radius: 8px;
-      width: 160px;
-      height: 40px;
-      border: 1px solid #d4d4d4;
     }
   }
 </style>

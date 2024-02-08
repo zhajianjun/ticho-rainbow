@@ -82,6 +82,7 @@
     "loginSuccessDesc": "欢迎回来",
     "accountPlaceholder": "请输入账号",
     "passwordPlaceholder": "请输入密码",
+    "passwordValidPlaceholder": "密码必须包含字母、数字和特殊字符，且在6~16位之间",
     "smsPlaceholder": "请输入验证码",
     "mobilePlaceholder": "请输入手机号码",
     "sendSuccess": "发送成功",
