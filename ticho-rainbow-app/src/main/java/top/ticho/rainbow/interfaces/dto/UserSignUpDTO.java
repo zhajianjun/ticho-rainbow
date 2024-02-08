@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 /**
  * 用户注册DTO
@@ -34,6 +35,7 @@ public class UserSignUpDTO {
     /** 密码 */
     @NotBlank(message = "密码不能为空")
     @ApiModelProperty(value = "密码", position = 40)
+    @Pattern(regexp = "^(?![0-9]+$)(?![a-zA-Z]+$)(?![0-9a-zA-Z]+$)(?![0-9\\W]+$)(?![a-zA-Z\\W]+$)[0-9A-Za-z\\W]{6,18}$", message = "密码必须包含字母、数字和特殊字符，且在6~16位之间")
     private String password;
 
 }
