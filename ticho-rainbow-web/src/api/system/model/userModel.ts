@@ -146,3 +146,15 @@ export interface UserSignUpDTO {
   /** 邮箱验证码 */
   emailCode: string;
 }
+
+export interface ImgCodeDTO {
+  /** 邮箱 */
+  imgKey: string;
+  /** 邮箱 */
+  imgCode: string;
+}
+
+export interface ImgCodeEmailDTO extends ImgCodeDTO {
+  /** 邮箱 */
+  email: string;
+}

@@ -32,6 +32,13 @@ public interface UserRepository extends RootService<User> {
     User getByUsername(String username);
 
     /**
+     *
+     * @param email 邮箱
+     * @return {@link User}
+     */
+    User getByEmail(String email);
+
+    /**
      * 根据用户登录账号信息查询
      *
      * @param userAccountQuery 用户登录账号信息

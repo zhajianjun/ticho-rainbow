@@ -3,6 +3,7 @@ package top.ticho.rainbow.interfaces.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import top.ticho.boot.security.dto.LoginRequest;
 
 import javax.validation.constraints.NotBlank;
@@ -14,8 +15,9 @@ import javax.validation.constraints.NotBlank;
  * @date 2024-01-08 20:30
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "登录DTO")
-public class UserLoginDTO implements LoginRequest {
+public class UserLoginDTO extends ImgCodeDTO implements LoginRequest {
 
     /** 用户名 */
     @NotBlank(message = "用户名不能为空")
@@ -26,15 +28,5 @@ public class UserLoginDTO implements LoginRequest {
     @NotBlank(message = "密码不能为空")
     @ApiModelProperty(value = "密码", position = 30)
     private String password;
-
-    /** 验证码秘钥 */
-    @NotBlank(message = "验证码秘钥不能为空")
-    @ApiModelProperty(value = "验证码秘钥", position = 40)
-    private String imgKey;
-
-    /** 验证码 */
-    @NotBlank(message = "验证码不能为空")
-    @ApiModelProperty(value = "验证码", position = 50)
-    private String imgCode;
 
 }

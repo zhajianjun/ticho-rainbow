@@ -49,7 +49,8 @@
         loading.value = false;
       }
     } else {
-      start();
+      await handleStart();
     }
   }
+  defineExpose({ handleStart });
 </script>

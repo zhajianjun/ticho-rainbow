@@ -80,28 +80,28 @@
       </ACol>
     </ARow>
 
-    <!--<Divider class="enter-x">{{ t('sys.login.otherSignIn') }}</Divider>
+    <Divider class="enter-x">{{ t('sys.login.otherSignIn') }}</Divider>
 
     <div class="flex justify-evenly enter-x" :class="`${prefixCls}-sign-in-way`">
-      <GithubFilled />
-      <WechatFilled />
-      <AlipayCircleFilled />
-      <GoogleCircleFilled />
-      <TwitterCircleFilled />
-    </div>-->
+      <GithubFilled disabled />
+      <WechatFilled disabled />
+      <AlipayCircleFilled disabled />
+      <GoogleCircleFilled disabled />
+      <TwitterCircleFilled disabled />
+    </div>
   </Form>
 </template>
 <script lang="ts" setup>
   import { reactive, ref, unref, computed, onMounted } from 'vue';
 
-  import { Checkbox, Form, Input, Row, Col, Button } from 'ant-design-vue';
-  /*import {
+  import { Checkbox, Form, Input, Row, Col, Button, Divider } from 'ant-design-vue';
+  import {
     GithubFilled,
     WechatFilled,
     AlipayCircleFilled,
     GoogleCircleFilled,
     TwitterCircleFilled,
-  } from '@ant-design/icons-vue';*/
+  } from '@ant-design/icons-vue';
   import LoginFormTitle from './LoginFormTitle.vue';
 
   import { useI18n } from '@/hooks/web/useI18n';

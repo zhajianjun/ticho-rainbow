@@ -1,7 +1,13 @@
 <template>
   <a-input v-bind="$attrs" :class="prefixCls" :size="size" :value="state">
     <template #addonAfter>
-      <CountButton :size="size" :count="count" :value="state" :beforeStartFunc="sendCodeApi" />
+      <CountButton
+        ref="countButton"
+        :size="size"
+        :count="count"
+        :value="state"
+        :beforeStartFunc="sendCodeApi"
+      />
     </template>
     <template #[item]="data" v-for="item in Object.keys($slots).filter((k) => k !== 'addonAfter')">
       <slot :name="item" v-bind="data || {}"></slot>
@@ -9,7 +15,7 @@
   </a-input>
 </template>
 <script lang="ts" setup>
-  import { PropType } from 'vue';
+  import { PropType, ref } from 'vue';
   import CountButton from './CountButton.vue';
   import { useDesign } from '@/hooks/web/useDesign';
   import { useRuleFormItem } from '@/hooks/component/useFormItem';
@@ -28,6 +34,11 @@
 
   const { prefixCls } = useDesign('countdown-input');
   const [state] = useRuleFormItem(props);
+  const countButton = ref();
+  const handleStart = () => {
+    countButton.value.handleStart();
+  };
+  defineExpose({ handleStart });
 </script>
 <style lang="less">
   @prefix-cls: ~'@{namespace}-countdown-input';

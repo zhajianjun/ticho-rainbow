@@ -125,7 +125,26 @@ export function useFormRules(formData?: Recordable) {
       // reset password form rules
       case LoginStateEnum.RESET_PASSWORD:
         return {
-          account: accountFormRule,
+          password: [
+            {
+              validator: (_, value) => {
+                if (!value) {
+                  return Promise.reject(t('sys.login.passwordPlaceholder'));
+                }
+                const reg = new RegExp(
+                  '^(?![0-9]+$)(?![a-zA-Z]+$)(?![0-9a-zA-Z]+$)(?![0-9\\W]+$)(?![a-zA-Z\\W]+$)[0-9A-Za-z\\W]{6,18}$',
+                );
+                if (!value.match(reg)) {
+                  return Promise.reject(t('sys.login.passwordValidPlaceholder'));
+                }
+                return Promise.resolve();
+              },
+              trigger: 'change',
+            },
+          ],
+          confirmPassword: [
+            { validator: validateConfirmPassword(formData?.password), trigger: 'change' },
+          ],
           ...emailRule,
         };
 

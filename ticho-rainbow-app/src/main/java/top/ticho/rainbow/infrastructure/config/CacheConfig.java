@@ -36,10 +36,12 @@ public class CacheConfig {
     @Getter
     public enum CacheEnum {
         COMMON(CacheConst.COMMON, 1800, 10000),
+        VERIFY_CODE(CacheConst.VERIFY_CODE, 300, 10000),
+        SIGN_UP_CODE(CacheConst.SIGN_UP_CODE, 300, 10000),
+        RESET_PASSWORD_CODE(CacheConst.RESET_PASSWORD_CODE, 300, 10000),
         USER_INFO(CacheConst.USER_INFO, 1800, 10000),
         USER_ROLE_INFO(CacheConst.USER_ROLE_INFO, 1800, 10000),
         ROLE_MENU_INFO(CacheConst.ROLE_MENU_INFO, 1800, 10000),
-        VERIFY_CODE(CacheConst.VERIFY_CODE, 300, 10000),
         ;
 
         CacheEnum(String key, int ttl, int maxSize) {

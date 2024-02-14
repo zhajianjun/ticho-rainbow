@@ -44,7 +44,7 @@ ticho:
     # 配置密码，注意，不是真正的密码，而是申请到的授权码
     password: ENC(smiBr2v3UplE9o4Z2w36s3w5gQrw7D/wqh4HSc1tPU4=)
     # 发件人名称
-    sender-name: 梦幻天堂
+    sender-name: Rainbow
     # 默认的邮件编码
     default-encoding: UTF-8
     properties:

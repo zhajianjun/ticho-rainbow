@@ -33,8 +33,22 @@ public class UserRepositoryImpl extends RootServiceImpl<UserMapper, User> implem
     @Override
     @Cacheable(value = CacheConst.USER_INFO, key = "#username")
     public User getByUsername(String username) {
+        if (StrUtil.isBlank(username)) {
+            return null;
+        }
         LambdaQueryWrapper<User> queryWrapper = getUserLambdaQueryWrapper();
         queryWrapper.eq(User::getUsername, username);
+        return getOne(queryWrapper);
+    }
+
+    @Override
+    @Cacheable(value = CacheConst.USER_INFO, unless = "#result == null", key = "#result==null ? '' : result.username")
+    public User getByEmail(String email) {
+        if (StrUtil.isBlank(email)) {
+            return null;
+        }
+        LambdaQueryWrapper<User> queryWrapper = getUserLambdaQueryWrapper();
+        queryWrapper.eq(User::getEmail, email);
         return getOne(queryWrapper);
     }
 

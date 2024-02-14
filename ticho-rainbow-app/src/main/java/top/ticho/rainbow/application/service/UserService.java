@@ -1,12 +1,14 @@
 package top.ticho.rainbow.application.service;
 
 import top.ticho.boot.view.core.PageResult;
+import top.ticho.rainbow.interfaces.dto.ImgCodeDTO;
+import top.ticho.rainbow.interfaces.dto.ImgCodeEmailDTO;
 import top.ticho.rainbow.interfaces.dto.UserDTO;
 import top.ticho.rainbow.interfaces.dto.UserLoginDTO;
 import top.ticho.rainbow.interfaces.dto.UserPasswordDTO;
 import top.ticho.rainbow.interfaces.dto.UserRoleDTO;
 import top.ticho.rainbow.interfaces.dto.UserRoleMenuDtlDTO;
-import top.ticho.rainbow.interfaces.dto.UserSignUpDTO;
+import top.ticho.rainbow.interfaces.dto.UserSignUpOrResetDTO;
 import top.ticho.rainbow.interfaces.query.UserQuery;
 
 import java.io.IOException;
@@ -14,31 +16,45 @@ import java.io.IOException;
 /**
  * 用户信息 服务接口
  *
- * @author zhajianjun
  * @date 2023-12-17 20:12
  */
 public interface UserService {
 
     /**
+     * 图片验证码校验
+     *
+     * @param imgCodeDTO 图片验证码DTO
+     */
+    void imgCodeValid(ImgCodeDTO imgCodeDTO);
+
+
+    /**
+     * 注册验证码邮箱发送
+     *
+     * @param imgCodeEmailDTO 邮箱验证码发送时图片验证码DTO
+     */
+    void signUpEmailSend(ImgCodeEmailDTO imgCodeEmailDTO);
+
+    /**
      * 注册
      *
-     * @param userSignUpDTO 注册dto
+     * @param userSignUpOrResetDTO 注册dto
      */
-    UserLoginDTO signUp(UserSignUpDTO userSignUpDTO);
+    UserLoginDTO signUp(UserSignUpOrResetDTO userSignUpOrResetDTO);
 
     /**
-     * 注册邮箱发送
+     * 重置邮箱验证码发送
      *
-     * @param email 注册dto
+     * @param imgCodeEmailDTO 邮箱验证码发送时图片验证码DTO
      */
-    void signUpEmailSend(String email);
+    String resetPasswordEmailSend(ImgCodeEmailDTO imgCodeEmailDTO);
 
     /**
-     * 注册确认
+     * 重置用户密码
      *
-     * @param username 账户名称
+     * @param userSignUpOrResetDTO 重置密码DTO
      */
-    void confirm(String username);
+    UserLoginDTO resetPassword(UserSignUpOrResetDTO userSignUpOrResetDTO);
 
     /**
      * 保存用户信息

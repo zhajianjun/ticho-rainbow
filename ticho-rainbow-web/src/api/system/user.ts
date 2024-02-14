@@ -1,5 +1,6 @@
 import { defHttp } from '@/utils/http/axios';
 import {
+  ImgCodeEmailDTO,
   UserDTO,
   UserLoginDTO,
   UserPasswordDTO,
@@ -18,6 +19,8 @@ enum Api {
   ImgCode = '/oauth/imgCode',
   SignUpEmailSend = '/oauth/signUpEmailSend',
   SignUp = '/oauth/signUp',
+  ResetPasswordEmailSend = '/oauth/resetPasswordEmailSend',
+  ResetPassword = '/oauth/resetPassword',
   Logout = '/logout',
   GetUserInfo = '/user/getUserDtl',
   UserInfo = '/user',
@@ -26,9 +29,18 @@ enum Api {
   UpdatePassword = '/user/updatePassword',
 }
 
-/**
- * @description: user login api
- */
+export function getImgCode(imgKey: string, mode: ErrorMessageMode = 'modal') {
+  const params = { imgKey: imgKey };
+  return defHttp.get<Blob>(
+    {
+      url: Api.ImgCode,
+      responseType: 'blob',
+      params,
+    },
+    { isTransformResponse: false, withToken: false, errorMessageMode: mode },
+  );
+}
+
 export function loginApi(params: LoginRequest, mode: ErrorMessageMode = 'modal') {
   return defHttp.post<Oauth2AccessToken>(
     {
@@ -42,10 +54,11 @@ export function loginApi(params: LoginRequest, mode: ErrorMessageMode = 'modal')
   );
 }
 
-export function signUpEmailSend(email: string, mode: ErrorMessageMode = 'none') {
+export function signUpEmailSend(params: ImgCodeEmailDTO, mode: ErrorMessageMode = 'none') {
   return defHttp.post<any>(
     {
-      url: Api.SignUpEmailSend + '?email=' + email,
+      url: Api.SignUpEmailSend,
+      params,
     },
     {
       errorMessageMode: mode,
@@ -58,16 +71,21 @@ export function signUp(params: UserSignUpDTO, mode: ErrorMessageMode = 'none') {
   return defHttp.post<UserLoginDTO>({ url: Api.SignUp, params }, { errorMessageMode: mode });
 }
 
-export function getImgCode(imgKey: string, mode: ErrorMessageMode = 'modal') {
-  const params = { imgKey: imgKey };
-  return defHttp.get<Blob>(
+export function resetPasswordEmailSend(params: ImgCodeEmailDTO, mode: ErrorMessageMode = 'none') {
+  return defHttp.post<any>(
     {
-      url: Api.ImgCode,
-      responseType: 'blob',
+      url: Api.ResetPasswordEmailSend,
       params,
     },
-    { isTransformResponse: false, withToken: false, errorMessageMode: mode },
+    {
+      errorMessageMode: mode,
+      withToken: false,
+    },
   );
+}
+
+export function resetPassword(params: UserSignUpDTO, mode: ErrorMessageMode = 'none') {
+  return defHttp.post<UserLoginDTO>({ url: Api.ResetPassword, params }, { errorMessageMode: mode });
 }
 
 export function getUserInfo() {

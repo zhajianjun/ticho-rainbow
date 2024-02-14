@@ -1,7 +1,7 @@
 <template>
   <div v-if="getShow">
     <LoginFormTitle class="enter-x" />
-    <Form class="p-4 enter-x" :model="formData" :rules="getFormRules" ref="formRef">
+    <Form class="p-4 enter-x" :model="formData" :rules="getFormRules" ref="formRef" :loading="loading">
       <FormItem name="username" class="enter-x">
         <Input
           class="fix-auto-fill"
@@ -20,9 +20,10 @@
       </FormItem>
       <FormItem name="emailCode" class="enter-x">
         <CountdownInput
+          ref="countdownInput"
           size="large"
           class="fix-auto-fill"
-          :sendCodeApi="signUpEmailSendHandle"
+          :sendCodeApi="handleSendEmailCode"
           v-model:value="formData.emailCode"
           :placeholder="t('sys.login.emailCode')"
         />
@@ -56,7 +57,6 @@
         size="large"
         block
         @click="handleRegister"
-        :loading="loading"
       >
         {{ t('sys.login.registerButton') }}
       </Button>
@@ -64,6 +64,7 @@
         {{ t('sys.login.backSignIn') }}
       </Button>
     </Form>
+    <ImgCodeModal @register="registerModal" @success="handleAgainSendEmailCode" forceRender />
   </div>
 </template>
 <script lang="ts" setup>
@@ -75,10 +76,17 @@
   import { useI18n } from '@/hooks/web/useI18n';
   import { useLoginState, useFormRules, useFormValid, LoginStateEnum } from './useLogin';
   import { signUp, signUpEmailSend } from '@/api/system/user';
-  import { UserLoginDTO, UserSignUpDTO } from '@/api/system/model/userModel';
+  import {
+    ImgCodeDTO,
+    ImgCodeEmailDTO,
+    UserLoginDTO,
+    UserSignUpDTO,
+  } from '@/api/system/model/userModel';
   import { useMessage } from '@/hooks/web/useMessage';
   import { useDesign } from '@/hooks/web/useDesign';
   import { useUserStore } from '@/store/modules/user';
+  import ImgCodeModal from './ImgCodeModal.vue';
+  import { useModal } from '@/components/Modal';
 
   const { notification, createErrorModal } = useMessage();
   const { prefixCls } = useDesign('login');
@@ -103,6 +111,12 @@
 
   const formData = reactive(defaultFormData);
 
+  const imgCodeData = reactive({
+    email: '',
+    imgKey: '',
+    imgCode: '',
+  });
+
   const { getFormRules } = useFormRules(formData);
   const { validForm } = useFormValid(formRef);
 
@@ -112,6 +126,7 @@
     const data = await validForm();
     if (!data) return;
     try {
+      loading.value = true;
       // 1.注册
       const signData = data as UserSignUpDTO;
       const res = await signUp(signData).then((res) => {
@@ -144,16 +159,37 @@
         getContainer: () => document.body.querySelector(`.${prefixCls}`) || document.body,
       });
     } finally {
-      handleBackLogin();
+      loading.value = false;
     }
   }
+  // 验证码子组件组件点击触发事件
+  const countdownInput = ref();
+  const countdownInputOnClick = () => {
+    countdownInput.value.handleStart();
+  };
+  // 是否可以发送邮件
+  const isSendEmail = ref<boolean>(false);
 
-  async function signUpEmailSendHandle() {
-    const data = await validForm(['email']);
-    if (!data) {
+  function handleAgainSendEmailCode(test: ImgCodeDTO) {
+    Object.assign(imgCodeData, test);
+    imgCodeData.email = formData.email;
+    isSendEmail.value = true;
+    countdownInputOnClick();
+  }
+
+  const [registerModal, { openModal }] = useModal();
+
+  async function handleSendEmailCode() {
+    const emailData = await validForm(['email']);
+    if (!emailData) {
       return Promise.resolve(false);
     }
-    return await signUpEmailSend(formData.email)
+    if (isSendEmail.value !== true) {
+      openModal();
+      return Promise.resolve(false);
+    }
+    const data = Object.assign(imgCodeData, { email: emailData.email }) as ImgCodeEmailDTO;
+    return await signUpEmailSend(data)
       .then(() => {
         notification.success({
           message: t('sys.api.successTip'),
@@ -166,9 +202,11 @@
         createErrorModal({
           title: t('sys.api.errorTip'),
           content: (error as unknown as Error).message || t('sys.api.networkExceptionMsg'),
-          getContainer: () => document.body.querySelector(`.${prefixCls}`) || document.body,
         });
         return Promise.resolve(false);
+      })
+      .finally(() => {
+        isSendEmail.value = false;
       });
   }
 </script>
