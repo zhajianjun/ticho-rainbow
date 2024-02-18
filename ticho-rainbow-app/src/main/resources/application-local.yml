@@ -35,6 +35,7 @@ ticho:
   swagger:
     enable: true
   mail:
+    enable: true
     # 配置 SMTP 服务器地址
     host: ENC(KaLsKm7W9pkoyWkfAfZyczaZOtVGvYjE)
     # SMTP 服务器的端口
@@ -55,3 +56,9 @@ ticho:
         socketFactoryClass: javax.net.ssl.SSLSocketFactory
         # 表示开启 DEBUG 模式，这样，邮件发送过程的日志会在控制台打印出来，方便排查错误
         debug: false
+  minio:
+    enable: true
+    endpoint: ENC(diszoGs9mfsEYGMJWWH5hUB4/dz8FFyQ56TQkUiYwfsrcdcFUg/FGg==)
+    access-key: ENC(vdv33gwg0YDyLBADSkNwhw==)
+    secret-key: ENC(O+IXOhFaX/idBjtRralPvQQefCMvXFME)
+    default-bucket: rainbow
