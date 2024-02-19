@@ -1,19 +1,21 @@
-package top.ticho.rainbow.domain.repository;
+package top.ticho.rainbow.application.service;
 
 
 import top.ticho.rainbow.interfaces.dto.BucketInfoDTO;
+import top.ticho.rainbow.interfaces.dto.ChunkDTO;
+import top.ticho.rainbow.interfaces.dto.ChunkFileDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoReqDTO;
 
 import java.util.List;
 
 /**
- * minio repository接口
+ * 文件 服务接口
  *
  * @author zhajianjun
  * @date 2024-02-18 12:08
  */
-public interface MinioRepository {
+public interface FileService {
 
     /**
      * 文件桶是否存在
@@ -77,6 +79,21 @@ public interface MinioRepository {
      * @return 资源链接
      */
     String getUrl(String storageId, Integer expires);
+
+    /**
+     * 分片文件上传
+     *
+     * @param chunkFileDTO 分片文件信息
+     * @return {@link ChunkDTO}
+     */
+    ChunkDTO uploadChunk(ChunkFileDTO chunkFileDTO);
+
+    /**
+     * 分片文件合并
+     *
+     * @param md5 文件md5
+     */
+    void composeChunk(String md5);
 
 }
 

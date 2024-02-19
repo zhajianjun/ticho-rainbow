@@ -22,4 +22,6 @@ public class CacheConst {
 
     public static final String ROLE_MENU_INFO = "ticho-rainbow:role_menu:info";
 
+    public static final String UPLOAD_CHUNK = "ticho-rainbow:upload_chunk";
+
 }

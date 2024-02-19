@@ -1,17 +1,17 @@
-package top.ticho.rainbow.infrastructure.repository;
+package top.ticho.rainbow.domain.service;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import io.minio.GetObjectResponse;
-import io.minio.Result;
 import io.minio.messages.Bucket;
-import io.minio.messages.Item;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Headers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
 import top.ticho.boot.minio.component.MinioTemplate;
@@ -20,9 +20,14 @@ import top.ticho.boot.view.enums.BizErrCode;
 import top.ticho.boot.view.exception.BizException;
 import top.ticho.boot.view.util.Assert;
 import top.ticho.boot.web.util.CloudIdUtil;
-import top.ticho.rainbow.domain.repository.MinioRepository;
+import top.ticho.boot.web.util.valid.ValidUtil;
+import top.ticho.rainbow.application.service.FileService;
+import top.ticho.rainbow.infrastructure.core.component.CacheTemplate;
+import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.enums.MioErrCode;
 import top.ticho.rainbow.interfaces.dto.BucketInfoDTO;
+import top.ticho.rainbow.interfaces.dto.ChunkDTO;
+import top.ticho.rainbow.interfaces.dto.ChunkFileDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoReqDTO;
 
@@ -33,19 +38,21 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * minio repository实现
+ * 文件 服务接口实现
  *
  * @author zhajianjun
  * @date 2024-02-18 12:08
  */
-@Repository
+@Service
 @Slf4j
-public class MinioRepositoryImpl implements MinioRepository {
+public class FileServiceImpl implements FileService {
     public static final String X_AMZ_META_PREFIX = "x-amz-meta-";
     public static final String FILENAME_KEY = "fileName";
     public static final String REMARK_KEY = "remark";
@@ -60,15 +67,24 @@ public class MinioRepositoryImpl implements MinioRepository {
     @Resource
     private HttpServletResponse response;
 
+    @Autowired
+    private CacheTemplate cacheTemplate;
+
     @PostConstruct
     public void init() {
         String defaultBucket = minioProperty.getDefaultBucket();
-        if (StrUtil.isBlank(defaultBucket)) {
-            return;
+        String chunkBucket = minioProperty.getChunkBucket();
+        if (StrUtil.isNotBlank(defaultBucket)) {
+            boolean bucketExists = bucketExists(defaultBucket);
+            if (!bucketExists) {
+                minioTemplate.createBucket(defaultBucket);
+            }
         }
-        boolean bucketExists = bucketExists(defaultBucket);
-        if (!bucketExists) {
-            minioTemplate.createBucket(defaultBucket);
+        if (StrUtil.isNotBlank(chunkBucket)) {
+            boolean bucketExists = bucketExists(chunkBucket);
+            if (!bucketExists) {
+                minioTemplate.createBucket(chunkBucket);
+            }
         }
     }
 
@@ -89,22 +105,12 @@ public class MinioRepositoryImpl implements MinioRepository {
     @Override
     public void removeBucket(String bucketName, boolean delAllFile) {
         Assert.isTrue(bucketExists(bucketName), MioErrCode.BUCKET_IS_ALREAD_EXISITS);
-
         // 获取当前桶内所有文件
-        List<Result<Item>> allObjects = minioTemplate.listObjects(bucketName, "", true);
+        List<String> allObjects = minioTemplate.listObjectNames(bucketName, "", false);
         if (!delAllFile) {
             Assert.isTrue(allObjects.isEmpty(), MioErrCode.BUCKET_IS_NOT_EMPTY);
         }
-        try {
-            for (Result<Item> itemResult : allObjects) {
-                String objectName = itemResult.get().objectName();
-                minioTemplate.removeObject(bucketName, objectName);
-            }
-        } catch (Exception e) {
-            log.error("删除文件异常，{}", e.getMessage(), e);
-            throw new BizException(MioErrCode.DELETE_OBJECT_ERROR);
-        }
-        minioTemplate.removeBucket(bucketName);
+        minioTemplate.removeObjects(bucketName, allObjects);
     }
 
     @Override
@@ -198,6 +204,82 @@ public class MinioRepositoryImpl implements MinioRepository {
             Assert.isTrue(expires <= TimeUnit.DAYS.toSeconds(7), BizErrCode.PARAM_ERROR, "过期时间最长为7天");
         }
         return minioTemplate.getObjectUrl(minioProperty.getDefaultBucket(), storageId, expires);
+    }
+
+    @Override
+    public ChunkDTO uploadChunk(ChunkFileDTO chunkFileDTO) {
+        ValidUtil.valid(chunkFileDTO);
+        String md5 = chunkFileDTO.getMd5();
+        String fileName = chunkFileDTO.getFileName();
+        MultipartFile file = chunkFileDTO.getFile();
+        Integer index = chunkFileDTO.getIndex();
+        String originalFilename = file.getOriginalFilename();
+        // 后缀名 .png
+        String extName = StrUtil.DOT + FileNameUtil.extName(originalFilename);
+        String objectNamePrefix = CloudIdUtil.getId() + "";
+        String objectName = objectNamePrefix + extName;
+        if (StrUtil.isNotBlank(fileName)) {
+            Assert.isTrue(fileName.endsWith(extName), "文件名与上传的文件后缀格式不统一！");
+        } else {
+            fileName = originalFilename;
+        }
+        ChunkDTO chunkDTO = cacheTemplate.get(CacheConst.UPLOAD_CHUNK, md5, ChunkDTO.class);
+        if (Objects.isNull(chunkDTO)) {
+            chunkDTO = new ChunkDTO();
+            chunkDTO.setMd5(md5);
+            chunkDTO.setChunkCount(chunkFileDTO.getChunkCount());
+            chunkDTO.setFileName(fileName);
+            chunkDTO.setObjectName(objectName);
+            chunkDTO.setExtName(extName);
+            chunkDTO.setIndexs(new ConcurrentSkipListSet<>());
+        }
+        ConcurrentSkipListSet<Integer> indexs = chunkDTO.getIndexs();
+        if (indexs.contains(index)) {
+            log.warn("分片文件{}，md5={}，index={}已上传", fileName, md5, index);
+        } else {
+            String chunkBucket = minioProperty.getChunkBucket();
+            String chunkObjectName = objectNamePrefix + "/" + index;
+            minioTemplate.putObject(chunkBucket, chunkObjectName, null, file);
+            log.info("分片文件{}，md5={}，index={}上传成功", fileName, md5, index);
+            indexs.add(index);
+        }
+        // 分片上传数量
+        int chunkUploadCount = Long.valueOf(indexs.stream().distinct().count()).intValue();
+        // 分片上传是否完成
+        boolean complete = Objects.equals(chunkUploadCount, chunkDTO.getChunkCount());
+        chunkDTO.setComplete(complete);
+        cacheTemplate.put(CacheConst.UPLOAD_CHUNK, md5, chunkDTO);
+        return chunkDTO;
+    }
+
+    @Override
+    public void composeChunk(String md5) {
+        // @formatter:off
+        Assert.isNotBlank(md5, "md5不能为空");
+        ChunkDTO chunkDTO = cacheTemplate.get(CacheConst.UPLOAD_CHUNK, md5, ChunkDTO.class);
+        Assert.isNotNull(chunkDTO, "分片文件不存在");
+        ConcurrentSkipListSet<Integer> indexs = Optional.ofNullable(chunkDTO.getIndexs()).orElseGet(ConcurrentSkipListSet::new);
+        // 分片上传是否完成
+        boolean complete = Boolean.TRUE.equals(chunkDTO.getComplete());
+        Assert.isTrue(complete, "分片文件未全部上传");
+        String chunkBucket = minioProperty.getChunkBucket();
+        String defaultBucket = minioProperty.getDefaultBucket();
+        String objectName = chunkDTO.getObjectName();
+        String fileName = chunkDTO.getFileName();
+        String mimeType = FileUtil.getMimeType(fileName);
+        String objectNamePrefix = FileNameUtil.getPrefix(objectName);
+        // 构建自定义 header
+        Map<String, String> userMetadata = new HashMap<>(1);
+        userMetadata.put(FILENAME_KEY, fileName);
+        List<String> chunkNames = indexs
+            .stream()
+            .sorted()
+            .map(x -> objectNamePrefix + "/" + x)
+            .collect(Collectors.toList());
+        minioTemplate.composeObject(chunkBucket, defaultBucket, chunkNames, objectName, mimeType, userMetadata, true);
+        // 清除缓存
+        cacheTemplate.evict(CacheConst.UPLOAD_CHUNK, md5);
+        // @formatter:on
     }
 
     /**
