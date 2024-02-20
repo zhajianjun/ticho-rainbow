@@ -58,7 +58,7 @@ ticho:
         debug: false
   minio:
     enable: true
-    endpoint: ENC(diszoGs9mfsEYGMJWWH5hUB4/dz8FFyQ56TQkUiYwfsrcdcFUg/FGg==)
+    endpoint: ENC(weaZbjnQyCVqBa/5QPh8jYkXFS158qR2hygRMAEXNnRXCkmVnuB+Kw==)
     access-key: ENC(vdv33gwg0YDyLBADSkNwhw==)
-    secret-key: ENC(O+IXOhFaX/idBjtRralPvQQefCMvXFME)
+    secret-key: ENC(iQiXG1+PnQrwTC+DrXMekl97Fivqiq6y)
     default-bucket: rainbow

@@ -213,18 +213,11 @@ public class FileServiceImpl implements FileService {
         String fileName = chunkFileDTO.getFileName();
         MultipartFile file = chunkFileDTO.getFile();
         Integer index = chunkFileDTO.getIndex();
-        String originalFilename = file.getOriginalFilename();
-        // 后缀名 .png
-        String extName = StrUtil.DOT + FileNameUtil.extName(originalFilename);
-        String objectNamePrefix = CloudIdUtil.getId() + "";
-        String objectName = objectNamePrefix + extName;
-        if (StrUtil.isNotBlank(fileName)) {
-            Assert.isTrue(fileName.endsWith(extName), "文件名与上传的文件后缀格式不统一！");
-        } else {
-            fileName = originalFilename;
-        }
         ChunkDTO chunkDTO = cacheTemplate.get(CacheConst.UPLOAD_CHUNK, md5, ChunkDTO.class);
         if (Objects.isNull(chunkDTO)) {
+            // 后缀名 .png
+            String extName = StrUtil.DOT + FileNameUtil.extName(fileName);
+            String objectName = CloudIdUtil.getId() + extName;
             chunkDTO = new ChunkDTO();
             chunkDTO.setMd5(md5);
             chunkDTO.setChunkCount(chunkFileDTO.getChunkCount());
@@ -234,15 +227,13 @@ public class FileServiceImpl implements FileService {
             chunkDTO.setIndexs(new ConcurrentSkipListSet<>());
         }
         ConcurrentSkipListSet<Integer> indexs = chunkDTO.getIndexs();
-        if (indexs.contains(index)) {
-            log.warn("分片文件{}，md5={}，index={}已上传", fileName, md5, index);
-        } else {
-            String chunkBucket = minioProperty.getChunkBucket();
-            String chunkObjectName = objectNamePrefix + "/" + index;
-            minioTemplate.putObject(chunkBucket, chunkObjectName, null, file);
-            log.info("分片文件{}，md5={}，index={}上传成功", fileName, md5, index);
-            indexs.add(index);
-        }
+        Assert.isTrue(index + 1 <= chunkFileDTO.getChunkCount(), "索引超出分片数量大小");
+        Assert.isTrue(!indexs.contains(index), "分片文件已上传");
+        String chunkBucket = minioProperty.getChunkBucket();
+        String chunkObjectName = FileUtil.getPrefix(chunkDTO.getObjectName()) + "/" + index;
+        minioTemplate.putObject(chunkBucket, chunkObjectName, null, file);
+        log.info("{}分片文件{}，md5={}，index={}上传成功", fileName, file.getOriginalFilename(), md5, index);
+        indexs.add(index);
         // 分片上传数量
         int chunkUploadCount = Long.valueOf(indexs.stream().distinct().count()).intValue();
         // 分片上传是否完成
