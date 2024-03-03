@@ -10,7 +10,7 @@ import type { CreateAxiosOptions } from './axiosTransform';
 import axios from 'axios';
 import qs from 'qs';
 import { AxiosCanceler } from './axiosCancel';
-import { isFunction } from '@/utils/is';
+import { isFunction, isString } from "@/utils/is";
 import { cloneDeep } from 'lodash-es';
 import { ContentTypeEnum, RequestEnum } from '@/enums/httpEnum';
 
@@ -148,6 +148,16 @@ export class VAxios {
 
         formData.append(key, params.data![key]);
       });
+    }
+
+    const { requestOptions } = this.options;
+    const opt: RequestOptions = Object.assign({}, requestOptions);
+    const { apiUrl, joinPrefix, urlPrefix } = opt;
+    if (joinPrefix) {
+      config.url = `${urlPrefix}${config.url}`;
+    }
+    if (apiUrl && isString(apiUrl)) {
+      config.url = `${apiUrl}${config.url}`;
     }
 
     return this.axiosInstance.request<T>({

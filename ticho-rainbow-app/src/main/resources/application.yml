@@ -3,12 +3,6 @@ spring:
     name: ticho-rainbow
   profiles:
     active: dev
-  servlet:
-    multipart:
-      enabled: true
-      file-size-threshold: 0
-      max-file-size: 20MB
-      max-request-size: 20MB
 server:
   port: 5122
 

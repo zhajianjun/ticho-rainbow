@@ -62,3 +62,4 @@ ticho:
     access-key: ENC(vdv33gwg0YDyLBADSkNwhw==)
     secret-key: ENC(O+IXOhFaX/idBjtRralPvQQefCMvXFME)
     default-bucket: rainbow
+    maxFileSize: 1024MB

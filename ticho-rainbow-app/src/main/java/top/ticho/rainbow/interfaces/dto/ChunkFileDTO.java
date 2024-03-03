@@ -22,7 +22,7 @@ public class ChunkFileDTO {
     @ApiModelProperty(value = "md5", required = true, position = 10)
     private String md5;
 
-    @Size(max = 20, message = "文件名过长，1-20字符以内！")
+    @Size(max = 100, message = "文件名过长，1-100字符以内！")
     @ApiModelProperty(value = "文件名", required = true, position = 20)
     private String fileName;
 

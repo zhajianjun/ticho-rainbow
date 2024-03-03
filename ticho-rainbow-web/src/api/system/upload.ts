@@ -1,14 +1,10 @@
 import { ChunkDTO, ChunkFileDTO, UploadApiResult } from './model/uploadModel';
 import { defHttp } from '@/utils/http/axios';
 import { UploadFileParams } from '#/axios';
-// import { useGlobSetting } from '@/hooks/setting';
 import { AxiosProgressEvent } from 'axios';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// const { uploadUrl = '' } = useGlobSetting();
-
 enum Api {
-  Upload = '/upload',
+  Upload = '/file/upload',
   UploadChunk = '/file/uploadChunk',
   ComposeChunk = '/file/composeChunk',
 }

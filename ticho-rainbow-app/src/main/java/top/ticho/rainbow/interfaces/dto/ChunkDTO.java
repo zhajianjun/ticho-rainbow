@@ -1,5 +1,6 @@
 package top.ticho.rainbow.interfaces.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -36,7 +37,8 @@ public class ChunkDTO {
     @ApiModelProperty(value = "文件后缀名，如：.png", position = 50)
     private String extName;
 
-    @ApiModelProperty(value = "已经上传的分片索引", position = 60)
+    @ApiModelProperty(value = "已经上传的分片索引", position = 60, hidden = true)
+    @JsonIgnore
     private ConcurrentSkipListSet<Integer> indexs;
 
     @ApiModelProperty(value = "分片上传是否完成", position = 70)

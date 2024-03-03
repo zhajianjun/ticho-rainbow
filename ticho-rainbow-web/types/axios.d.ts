@@ -49,7 +49,8 @@ export interface UploadFileParams {
   // File parameter interface field name
   name?: string;
   // file name
-  file: File | Blob;
+  // file: File | Blob;
+  file: File;
   // file name
   filename?: string;
   [key: string]: any;

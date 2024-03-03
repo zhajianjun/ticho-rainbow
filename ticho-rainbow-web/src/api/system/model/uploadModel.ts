@@ -12,7 +12,7 @@ export interface ChunkFileDTO {
   /** 分片数量 */
   chunkCount: number;
   /** 文件 */
-  file: File | Blob;
+  file: File;
   /** 分片索引 */
   index: number;
 }

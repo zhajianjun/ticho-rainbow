@@ -49,8 +49,8 @@
   </BasicModal>
 </template>
 <script lang="ts" setup>
-  import { ref, toRefs, unref, computed, PropType } from 'vue';
-  import { Upload, Alert } from 'ant-design-vue';
+  import { computed, PropType, ref, toRefs, unref } from 'vue';
+  import { Alert, Upload } from 'ant-design-vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   // hooks
   import { useUploadType } from '../hooks/useUpload';
@@ -58,7 +58,7 @@
   //   types
   import { FileItem, UploadResultStatus } from '../types/typing';
   import { basicProps } from '../props';
-  import { createTableColumns, createActionColumn } from './data';
+  import { createActionColumn, createTableColumns } from './data';
   // utils
   import { checkImgType, getBase64WithFile } from '../helper';
   import { buildUUID } from '@/utils/uuid';
@@ -183,8 +183,7 @@
           filename: props.filename,
         },
         function onUploadProgress(progressEvent: ProgressEvent) {
-          const complete = ((progressEvent.loaded / progressEvent.total) * 100) | 0;
-          item.percent = complete;
+          item.percent = ((progressEvent.loaded / progressEvent.total) * 100) | 0;
         },
       );
       const { data } = ret;
@@ -241,7 +240,6 @@
       return createMessage.warning(t('component.upload.saveWarn'));
     }
     const fileList: string[] = [];
-
     for (const item of fileListRef.value) {
       const { status, response } = item;
       if (status === UploadResultStatus.SUCCESS && response) {
