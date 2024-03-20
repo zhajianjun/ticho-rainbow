@@ -5,6 +5,7 @@
   },
   "header": {
     "dropdownChangeApi": "切换API",
+    "profile": "个人中心",
     "dropdownItemDoc": "文档",
     "dropdownItemLoginOut": "退出系统",
     "tooltipErrorLog": "错误日志",

@@ -19,6 +19,11 @@
         />
         <Menu.Divider v-if="getShowDoc" />
         <MenuItem
+          key="profile"
+          :text="t('layout.header.profile')"
+          icon="ant-design:user-outlined"
+        />
+        <MenuItem
           v-if="getShowApi"
           key="api"
           :text="t('layout.header.dropdownChangeApi')"
@@ -55,8 +60,9 @@
   import { propTypes } from '@/utils/propTypes';
   import { openWindow } from '@/utils';
   import { createAsyncComponent } from '@/utils/factory/createAsyncComponent';
+  import { useGo } from '@/hooks/web/usePage';
 
-  type MenuEvent = 'logout' | 'doc' | 'lock' | 'api';
+  type MenuEvent = 'logout' | 'doc' | 'lock' | 'api' | 'profile';
 
   const MenuItem = createAsyncComponent(() => import('./DropMenuItem.vue'));
   const LockAction = createAsyncComponent(() => import('../lock/LockModal.vue'));
@@ -72,6 +78,7 @@
   const { t } = useI18n();
   const { getShowDoc, getUseLockPage, getShowApi } = useHeaderSetting();
   const userStore = useUserStore();
+  const go = useGo();
 
   const getUserInfo = computed(() => {
     const { nickname = '' } = userStore.getUserInfo || {};
@@ -99,6 +106,10 @@
     openWindow(DOC_URL);
   }
 
+  function openProfile() {
+    go('/dashboard/profile');
+  }
+
   function handleMenuClick(e: MenuInfo) {
     switch (e.key as MenuEvent) {
       case 'logout':
@@ -112,6 +123,9 @@
         break;
       case 'api':
         handleApi();
+        break;
+      case 'profile':
+        openProfile();
         break;
     }
   }

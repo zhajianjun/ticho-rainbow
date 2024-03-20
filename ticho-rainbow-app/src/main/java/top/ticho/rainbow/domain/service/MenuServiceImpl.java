@@ -32,6 +32,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -114,6 +115,9 @@ public class MenuServiceImpl extends AuthHandle implements MenuService {
             if (!Objects.equals(menuDTO.getExtFlag(), 1)) {
                 ValidUtil.valid(menuDTO, MenuDTO.Ext.class);
             }
+            if (Objects.equals(menuDTO.getInvisible(), 1)) {
+                menuDTO.setCurrentActiveMenu("");
+            }
             Assert.isTrue(Objects.equals(parentType, MenuType.DIR.code()), BizErrCode.FAIL, StrUtil.format("{}下不能新建菜单", parentTypeName));
             Menu getByTypesAndPath = menuRepository.getByTypesAndPath(MenuType.dirOrMenus(), menuDTO.getPath(), menuDTO.getId());
             // 菜单或路由path不能重复
@@ -154,7 +158,7 @@ public class MenuServiceImpl extends AuthHandle implements MenuService {
         };
         MenuDtlDTO root = new MenuDtlDTO();
         root.setId(0L);
-        TreeUtil.tree(menuFuncDtls, root, null, consumer);
+        TreeUtil.tree(menuFuncDtls, root, (x, y) -> true, (x, y)-> {}, consumer);
         return root.getChildren();
     }
 
@@ -181,7 +185,7 @@ public class MenuServiceImpl extends AuthHandle implements MenuService {
             .sorted(Comparator.comparing(Menu::getParentId).thenComparing(Comparator.nullsLast(Comparator.comparing(Menu::getSort))))
             .map(this::getEntityToRouteDto)
             .collect(Collectors.toList());
-        Consumer<RouteDTO> consumer = (root) -> {
+        Consumer<RouteDTO> afterConsumer = (root) -> {
             if (!Objects.equals(root.getType(), 2)) {
                 return;
             }
@@ -192,7 +196,7 @@ public class MenuServiceImpl extends AuthHandle implements MenuService {
         };
         RouteDTO root = new RouteDTO();
         root.setId(0L);
-        TreeUtil.tree(routes, root, null, consumer);
+        TreeUtil.tree(routes, root, (x, y) -> true, (x, y)-> {}, afterConsumer);
         return root.getChildren();
         // @formatter:on
     }

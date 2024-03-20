@@ -85,6 +85,10 @@ public class MenuDTO implements Serializable {
     @ApiModelProperty(value = "菜单和目录是否可见;1-是,0-否", position = 110)
     private Integer invisible;
 
+    /** 当前激活的菜单 */
+    @ApiModelProperty(value = "当前激活的菜单", position = 115)
+    private String currentActiveMenu;
+
     /** 菜单是否可关闭;1-是,0-否 */
     @ApiModelProperty(value = "菜单是否可关闭;1-是,0-否", position = 120)
     private Integer closable;

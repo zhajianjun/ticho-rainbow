@@ -221,6 +221,20 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         return getUserLoginDTO(username);
     }
 
+    @Override
+    public void resetPassword(String username) {
+        boolean admin = UserUtil.isAdmin();
+        Assert.isTrue(admin, BizErrCode.FAIL, "无管理员操作权限");
+        UserDTO dbUser = getByUsername(username);
+        Assert.isNotNull(dbUser, "用户不存在");
+        String encodedPasswordNew = passwordEncoder.encode("123456");
+        User user = new User();
+        user.setId(dbUser.getId());
+        user.setUsername(dbUser.getUsername());
+        user.setPassword(encodedPasswordNew);
+        Assert.isTrue(userRepository.updateById(user), BizErrCode.FAIL, "重置密码失败");
+    }
+
     /**
      * 返回登录使用参数
      */
@@ -247,14 +261,15 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         UserAccountQuery accountDTO = UserAssembler.INSTANCE.entityToAccount(user);
         preCheckRepeatUser(accountDTO, null);
         Assert.isTrue(userRepository.save(user), BizErrCode.FAIL, "保存失败");
-        UserRoleDTO userRoleDTO = new UserRoleDTO();
-        userRoleDTO.setUserId(user.getId());
-        userRoleDTO.setRoleIds(userDTO.getRoleIds());
-        bindRole(userRoleDTO);
+        if (CollUtil.isEmpty(userDTO.getRoleIds())) {
+            return;
+        }
+        userRoleRepository.removeAndSave(user.getId(), userDTO.getRoleIds());
     }
 
     @Override
     public void removeByUsername(String username) {
+        Assert.isNotBlank(username, "用户名不能为空");
         User user = userRepository.getByUsername(username);
         Assert.isNotNull(user, BizErrCode.FAIL, "注销失败,用户不存在");
         // 账户注销
@@ -273,17 +288,17 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         UserAccountQuery accountDTO = UserAssembler.INSTANCE.entityToAccount(user);
         preCheckRepeatUser(accountDTO, userDTO.getId());
         Assert.isTrue(userRepository.updateById(user), BizErrCode.FAIL, "修改失败");
-        UserRoleDTO userRoleDTO = new UserRoleDTO();
-        userRoleDTO.setUserId(user.getId());
-        userRoleDTO.setRoleIds(userDTO.getRoleIds());
-        bindRole(userRoleDTO);
+        if (CollUtil.isEmpty(userDTO.getRoleIds())) {
+            return;
+        }
+        userRoleRepository.removeAndSave(user.getId(), userDTO.getRoleIds());
     }
 
     @Override
     public UserDTO getByUsername(String username) {
         User user = userRepository.getByUsername(username);
         UserDTO userDTO = UserAssembler.INSTANCE.entityToDto(user);
-        setRoles(Collections.singletonList(userDTO));
+        Optional.ofNullable(userDTO).ifPresent(x-> setRoles(Collections.singletonList(x)));
         return userDTO;
     }
 

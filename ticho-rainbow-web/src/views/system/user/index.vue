@@ -28,8 +28,11 @@
             },
             {
               icon: 'ant-design:security-scan-outlined',
-              onClick: handleEditPassword.bind(null, record),
-              tooltip: '修改密码',
+              popConfirm: {
+                title: '是否重置密码',
+                confirm: resetPassword.bind(null, record),
+              },
+              tooltip: '重置密码',
             },
             {
               icon: 'ant-design:delete-outlined',
@@ -45,13 +48,12 @@
       </template>
     </BasicTable>
     <UserModel @register="registerModal" @success="handleSuccess" />
-    <UserPasswordModal @register="registerPasswordModal" @success="handleSuccess" />
   </PageWrapper>
 </template>
 <script lang="ts">
   import { defineComponent, reactive } from 'vue';
   import { BasicTable, useTable, TableAction } from '@/components/Table';
-  import { userPage, delUser } from '@/api/system/user';
+  import { userPage, delUser, resetUserPassword } from '@/api/system/user';
   import { PageWrapper } from '@/components/Page';
   import { useModal } from '@/components/Modal';
   import UserModel from './UserModal.vue';
@@ -59,17 +61,16 @@
   import { useGo } from '@/hooks/web/usePage';
   import { usePermission } from '@/hooks/web/usePermission';
   import { Tag, Space } from 'ant-design-vue';
-  import UserPasswordModal from './UserPasswordModal.vue';
+  import { useMessage } from '@/hooks/web/useMessage';
 
   export default defineComponent({
     name: 'AccountManagement',
-    components: { BasicTable, PageWrapper, UserModel, TableAction, Tag, Space, UserPasswordModal },
+    components: { BasicTable, PageWrapper, UserModel, TableAction, Tag, Space },
     setup() {
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('UserSelect');
       const go = useGo();
       const [registerModal, { openModal }] = useModal();
-      const [registerPasswordModal, { openModal: openPassModal }] = useModal();
       const searchInfo = reactive<Recordable>({});
       const [registerTable, { reload }] = useTable({
         title: '用户列表',
@@ -105,6 +106,8 @@
         },
       });
 
+      const { createMessage } = useMessage();
+
       function handleCreate() {
         openModal(true, {
           isUpdate: false,
@@ -119,14 +122,15 @@
         });
       }
 
-      function handleEditPassword(record: Recordable) {
-        openPassModal(true, {
-          record,
+      function resetPassword(record: Recordable) {
+        resetUserPassword(record.username).then(() => {
+          createMessage.success(`重置${record.nickname}密码成功`);
         });
       }
 
       function handleDelete(record: Recordable) {
-        delUser(record.id).catch(() => {
+        delUser(record.username).then(() => {
+          createMessage.success('删除成功');
           reload();
         });
       }
@@ -147,10 +151,9 @@
       return {
         registerTable,
         registerModal,
-        registerPasswordModal,
         handleCreate,
         handleEdit,
-        handleEditPassword,
+        resetPassword,
         handleDelete,
         handleSuccess,
         handleSelect,

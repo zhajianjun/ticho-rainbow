@@ -4,8 +4,8 @@ import { store } from '@/store';
 import { PageEnum } from '@/enums/pageEnum';
 import { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '@/enums/cacheEnum';
 import { getAuthCache, setAuthCache } from '@/utils/auth';
-import { UserRoleMenuDtlDTO, UserLoginDTO } from '@/api/system/model/userModel';
-import { getUserInfo, loginApi } from '@/api/system/user';
+import { UserRoleMenuDtlDTO, UserLoginDTO, UserProfileDTO } from '@/api/system/model/userModel';
+import { getUserDtlInfo, loginApi } from '@/api/system/user';
 import { useI18n } from '@/hooks/web/useI18n';
 import { useMessage } from '@/hooks/web/useMessage';
 import { router } from '@/router';
@@ -69,6 +69,15 @@ export const useUserStore = defineStore({
       this.lastUpdateTime = new Date().getTime();
       setAuthCache(USER_INFO_KEY, info);
     },
+    updateUserInfo(info: UserProfileDTO | null) {
+      const userInfo = getAuthCache(USER_INFO_KEY);
+      if (userInfo) {
+        // 对象属性拷贝
+        Object.assign(userInfo, info);
+        setAuthCache(USER_INFO_KEY, userInfo);
+        this.userInfo = userInfo as UserRoleMenuDtlDTO;
+      }
+    },
     setSessionTimeout(flag: boolean) {
       this.sessionTimeout = flag;
     },
@@ -124,7 +133,7 @@ export const useUserStore = defineStore({
       if (!this.getToken) {
         return null;
       }
-      const userInfo = await getUserInfo();
+      const userInfo = await getUserDtlInfo();
       const { roles } = userInfo;
       this.setRoleList(roles);
       this.setUserInfo(userInfo);

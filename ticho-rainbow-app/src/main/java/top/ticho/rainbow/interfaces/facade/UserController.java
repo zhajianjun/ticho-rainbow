@@ -51,9 +51,9 @@ public class UserController {
     @PreAuthorize("@perm.hasPerms('system:user:remove')")
     @ApiOperation(value = "删除用户信息")
     @ApiOperationSupport(order = 20)
-    @ApiImplicitParam(value = "编号", name = "id", required = true)
+    @ApiImplicitParam(value = "用户名", name = "username", required = true)
     @DeleteMapping
-    public Result<Void> removeByUsername(@RequestParam("username") String username) {
+    public Result<Void> removeByUsername(String username) {
         userService.removeByUsername(username);
         return Result.ok();
     }
@@ -64,6 +64,15 @@ public class UserController {
     @PutMapping
     public Result<Void> update(@RequestBody UserDTO userDTO) {
         userService.updateById(userDTO);
+        return Result.ok();
+    }
+
+    @PreAuthorize("@perm.hasPerms('system:user:resetPassword')")
+    @ApiOperation(value = "重置用户密码", notes = "重置用户密码")
+    @ApiOperationSupport(order = 40)
+    @PutMapping("resetPassword")
+    public Result<Void> resetPassword(String username) {
+        userService.resetPassword(username);
         return Result.ok();
     }
 
@@ -78,10 +87,10 @@ public class UserController {
 
     @PreAuthorize("@perm.hasPerms('system:user:getByUsername')")
     @ApiOperation(value = "查询用户信息")
-    @ApiOperationSupport(order = 50)
+    @ApiOperationSupport(order = 60)
     @ApiImplicitParam(value = "用户名", name = "username", required = true)
     @GetMapping
-    public Result<UserDTO> getByUsername(@RequestParam("username") String username) {
+    public Result<UserDTO> getByUsername(String username) {
         return Result.ok(userService.getByUsername(username));
     }
 
@@ -95,7 +104,7 @@ public class UserController {
 
     @PreAuthorize("@perm.hasPerms('system:user:page')")
     @ApiOperation(value = "分页查询用户信息")
-    @ApiOperationSupport(order = 60)
+    @ApiOperationSupport(order = 80)
     @GetMapping("page")
     public Result<PageResult<UserDTO>> page(UserQuery query) {
         return Result.ok(userService.page(query));
@@ -103,7 +112,7 @@ public class UserController {
 
     @PreAuthorize("@perm.hasPerms('system:user:bindRole')")
     @ApiOperation(value = "用户绑定角色信息")
-    @ApiOperationSupport(order = 80)
+    @ApiOperationSupport(order = 90)
     @PostMapping("bindRole")
     public Result<Void> bindRole(@RequestBody UserRoleDTO userRoleDTO) {
         userService.bindRole(userRoleDTO);

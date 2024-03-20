@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
@@ -27,6 +29,7 @@ public class UserRoleDTO implements Serializable {
     private Long userId;
 
     /** 角色id列表 */
+    @NotEmpty(message = "角色id列表不能为空")
     @ApiModelProperty(value = "角色id列表", position = 20)
     private List<Long> roleIds;
 

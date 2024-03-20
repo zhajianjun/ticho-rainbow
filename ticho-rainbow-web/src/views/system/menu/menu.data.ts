@@ -191,7 +191,6 @@ export const formSchema: FormSchema[] = [
     },
     ifShow: ({ values }) => !isButton(values.type),
   },
-
   {
     field: 'keepAlive',
     label: '是否缓存',
@@ -202,7 +201,6 @@ export const formSchema: FormSchema[] = [
     },
     ifShow: ({ values }) => isMenu(values.type),
   },
-
   {
     field: 'invisible',
     label: '是否显示',
@@ -212,5 +210,11 @@ export const formSchema: FormSchema[] = [
       options: getDictByCode(yesOrNo),
     },
     ifShow: ({ values }) => !isButton(values.type),
+  },
+  {
+    field: 'currentActiveMenu',
+    label: '激活的菜单',
+    component: 'Input',
+    ifShow: ({ values }) => !isButton(values.type) && values.invisible !== 1,
   },
 ];

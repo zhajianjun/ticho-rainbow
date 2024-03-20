@@ -215,8 +215,10 @@ public class AuthHandle {
             return roleMenuDtlDTO;
         }
         // 菜单信息规整为树结构
-        List<MenuDtlDTO> tree = TreeUtil.tree(menuFuncDtls, 0L);
-        roleMenuDtlDTO.setMenus(tree);
+        MenuDtlDTO root = new MenuDtlDTO();
+        root.setId(0L);
+        TreeUtil.tree(menuFuncDtls, root);
+        roleMenuDtlDTO.setMenus(root.getChildren());
         roleMenuDtlDTO.setMenuIds(menuIds);
         roleMenuDtlDTO.setPerms(perms);
         return roleMenuDtlDTO;

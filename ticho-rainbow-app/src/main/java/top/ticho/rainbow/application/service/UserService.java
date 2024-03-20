@@ -50,11 +50,16 @@ public interface UserService {
     String resetPasswordEmailSend(ImgCodeEmailDTO imgCodeEmailDTO);
 
     /**
-     * 重置用户密码
+     * 重置用户密码(用户使用)
      *
      * @param userSignUpOrResetDTO 重置密码DTO
      */
     UserLoginDTO resetPassword(UserSignUpOrResetDTO userSignUpOrResetDTO);
+
+    /**
+     * 重置用户密码(管理员使用)
+     */
+    void resetPassword(String username);
 
     /**
      * 保存用户信息

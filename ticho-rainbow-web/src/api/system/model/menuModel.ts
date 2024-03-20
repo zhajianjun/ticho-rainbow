@@ -30,6 +30,8 @@ export interface MenuDtlDTO {
   keepAlive: number;
   /** 菜单和目录是否可见;1-是,0-否 */
   invisible: number;
+  /** 当前激活的菜单 */
+  currentActiveMenu: string;
   /** 菜单是否可关闭;1-是,0-否 */
   closable: number;
   /** 图标 */

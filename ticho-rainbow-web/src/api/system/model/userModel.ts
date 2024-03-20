@@ -122,6 +122,23 @@ export interface UserDTO {
   roles: RoleDTO[];
 }
 
+export interface UserProfileDTO {
+  /** 用户id */
+  id: string;
+  /** 账户 */
+  username: string;
+  /** 昵称 */
+  nickname: string;
+  /** 真实姓名 */
+  realname: string;
+  /** 邮箱 */
+  email: string;
+  /** 手机号码 */
+  mobile: string;
+  /** 备注信息 */
+  remark: string;
+}
+
 export interface UserRoleDTO {
   userId: string;
   roleIds: string[];

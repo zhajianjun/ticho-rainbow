@@ -22,11 +22,12 @@ enum Api {
   ResetPasswordEmailSend = '/oauth/resetPasswordEmailSend',
   ResetPassword = '/oauth/resetPassword',
   Logout = '/logout',
-  GetUserInfo = '/user/getUserDtl',
+  UserDtlInfo = '/user/getUserDtl',
   UserInfo = '/user',
   UserPage = '/user/page',
   BindRole = '/user/bindRole',
   UpdatePassword = '/user/updatePassword',
+  ResetUserPassword = '/user/resetPassword',
 }
 
 export function getImgCode(imgKey: string, mode: ErrorMessageMode = 'modal') {
@@ -88,15 +89,20 @@ export function resetPassword(params: UserSignUpDTO, mode: ErrorMessageMode = 'n
   return defHttp.post<UserLoginDTO>({ url: Api.ResetPassword, params }, { errorMessageMode: mode });
 }
 
-export function getUserInfo() {
-  return defHttp.get<UserRoleMenuDtlDTO>({ url: Api.GetUserInfo }, { errorMessageMode: 'none' });
+export function getUserDtlInfo() {
+  return defHttp.get<UserRoleMenuDtlDTO>({ url: Api.UserDtlInfo }, { errorMessageMode: 'none' });
 }
 
 export function userPage(params?: UserQuery) {
   return defHttp.get<UserDTO>({ url: Api.UserPage, params }, { errorMessageMode: 'none' });
 }
 
-export function saveUser(params: any) {
+export function getUserInfo(username: string) {
+  const params = { username: username };
+  return defHttp.get<UserDTO>({ url: Api.UserInfo, params }, { errorMessageMode: 'none' });
+}
+
+export function saveUser(params: UserDTO) {
   return defHttp.post<any>({ url: Api.UserInfo, params }, { errorMessageMode: 'message' });
 }
 
@@ -107,16 +113,23 @@ export function delUser(params: string) {
   );
 }
 
-export function modifyUser(params: any) {
-  return defHttp.put<any>({ url: Api.UserInfo, params }, { errorMessageMode: 'message' });
+export function modifyUser(params: UserDTO) {
+  return defHttp.put<void>({ url: Api.UserInfo, params }, { errorMessageMode: 'message' });
 }
 
 export function modifyUserPassword(params: UserPasswordDTO) {
-  return defHttp.put<any>({ url: Api.UpdatePassword, params }, { errorMessageMode: 'message' });
+  return defHttp.put<void>({ url: Api.UpdatePassword, params }, { errorMessageMode: 'message' });
+}
+
+export function resetUserPassword(username: string) {
+  return defHttp.put<void>(
+    { url: `${Api.ResetUserPassword}?username=${username}` },
+    { errorMessageMode: 'message' },
+  );
 }
 
 export function bindRole(params: UserRoleDTO) {
-  return defHttp.post<any>({ url: Api.BindRole, params }, { errorMessageMode: 'message' });
+  return defHttp.post<void>({ url: Api.BindRole, params }, { errorMessageMode: 'message' });
 }
 
 export function doLogout() {
