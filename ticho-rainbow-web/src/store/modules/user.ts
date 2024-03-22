@@ -73,9 +73,10 @@ export const useUserStore = defineStore({
       const userInfo = getAuthCache(USER_INFO_KEY);
       if (userInfo) {
         // 对象属性拷贝
-        Object.assign(userInfo, info);
-        setAuthCache(USER_INFO_KEY, userInfo);
-        this.userInfo = userInfo as UserRoleMenuDtlDTO;
+        const newUserInfo = {};
+        Object.assign(newUserInfo, userInfo, info);
+        setAuthCache(USER_INFO_KEY, newUserInfo);
+        this.userInfo = newUserInfo as UserRoleMenuDtlDTO;
       }
     },
     setSessionTimeout(flag: boolean) {

@@ -102,7 +102,7 @@
 
   function uploadAvatar(file) {
     console.log(file);
-    return Promise.resolve({url: ''});
+    return Promise.resolve({ url: '' });
   }
 </script>
 <style scoped lang="less"></style>
