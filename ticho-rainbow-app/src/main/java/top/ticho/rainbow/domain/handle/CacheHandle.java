@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  */
 public class CacheHandle {
 
-    private Map<String, Map<String, String>> MAP = new HashMap<>();
+    private final Map<String, Map<String, String>> MAP = new HashMap<>();
 
     public List<PermDTO> pushCurrentAppPerms() {
         List<PermDTO> perms = listCurrentAppPerms();

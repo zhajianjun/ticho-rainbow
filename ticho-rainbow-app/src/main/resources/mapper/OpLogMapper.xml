@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.ticho.rainbow.infrastructure.mapper.OpLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="OpLog_map" type="top.ticho.rainbow.infrastructure.entity.OpLog">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="url" property="url"/>
+        <result column="type" property="type"/>
+        <result column="position" property="position"/>
+        <result column="req_body" property="reqBody"/>
+        <result column="req_params" property="reqParams"/>
+        <result column="req_headers" property="reqHeaders"/>
+        <result column="res_body" property="resBody"/>
+        <result column="res_headers" property="resHeaders"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="consume" property="consume"/>
+        <result column="ip" property="ip"/>
+        <result column="res_status" property="resStatus"/>
+        <result column="operate_by" property="operateBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="is_err" property="isErr"/>
+        <result column="err_message" property="errMessage"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="OpLog_sql">
+        id, `name`, url, `type`, position, req_body, req_params, req_headers, res_body, res_headers, start_time, end_time, consume, ip, res_status, operate_by, create_time, is_err, err_message
+    </sql>
+
+
+</mapper>

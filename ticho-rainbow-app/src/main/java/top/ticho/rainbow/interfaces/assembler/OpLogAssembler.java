@@ -1,7 +1,9 @@
 package top.ticho.rainbow.interfaces.assembler;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+import top.ticho.boot.view.log.HttpLog;
 import top.ticho.rainbow.infrastructure.entity.OpLog;
 import top.ticho.rainbow.interfaces.dto.OpLogDTO;
 
@@ -9,7 +11,7 @@ import top.ticho.rainbow.interfaces.dto.OpLogDTO;
  * 日志信息 转换
  *
  * @author zhajianjun
- * @date 2024-01-08 20:30
+ * @date 2024-03-24 17:55
  */
 @Mapper
 public interface OpLogAssembler {
@@ -18,10 +20,11 @@ public interface OpLogAssembler {
     /**
      * 日志信息
      *
-     * @param dto 日志信息DTO
+     * @param httpLog 日志信息DTO
      * @return {@link OpLog}
      */
-    OpLog dtoToEntity(OpLogDTO dto);
+    @Mapping(ignore = true, target = "createTime")
+    OpLog toEntity(HttpLog httpLog);
 
     /**
      * 日志信息DTO

@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.springframework.stereotype.Component;
 import top.ticho.boot.json.util.JsonUtil;
-import top.ticho.rainbow.infrastructure.component.AbstracTask;
+import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
 
 /**
  * 测试定时任务
