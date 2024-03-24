@@ -11,6 +11,7 @@ import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.core.enums.MenuType;
+import top.ticho.rainbow.infrastructure.core.util.UserUtil;
 import top.ticho.rainbow.infrastructure.entity.Menu;
 import top.ticho.rainbow.infrastructure.entity.Role;
 import top.ticho.rainbow.infrastructure.entity.User;
@@ -61,17 +62,12 @@ public class AuthHandle {
     private MenuRepository menuRepository;
 
     /**
-     * 根据用户名查询用户
+     * 查询用户角色菜单权限标识信息
      *
      * @param username 用户名
      * @return {@link UserRoleMenuDtlDTO}
      */
     public UserRoleMenuDtlDTO getUserDtl(String username) {
-        if (StrUtil.isBlank(username)) {
-            SecurityUser baseSecurityUser = BaseUserUtil.getCurrentUser();
-            SecurityUser currentUser = Optional.ofNullable(baseSecurityUser).orElseGet(SecurityUser::new);
-            username = currentUser.getUsername();
-        }
         User user = userRepository.getByUsername(username);
         UserRoleMenuDtlDTO userRoleMenuDtlDTO = UserAssembler.INSTANCE.entityToDtl(user);
         if (userRoleMenuDtlDTO == null) {
@@ -88,6 +84,15 @@ public class AuthHandle {
         userRoleMenuDtlDTO.setRoles(roleMenuFuncDtl.getRoles());
         userRoleMenuDtlDTO.setMenus(roleMenuFuncDtl.getMenus());
         return userRoleMenuDtlDTO;
+    }
+
+    /**
+     * 查询登录人用户角色菜单权限标识信息
+     *
+     * @return {@link UserRoleMenuDtlDTO}
+     */
+    public UserRoleMenuDtlDTO getUserDtl() {
+        return getUserDtl(UserUtil.getCurrentUsername());
     }
 
     /**

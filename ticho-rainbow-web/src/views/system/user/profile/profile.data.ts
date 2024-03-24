@@ -49,18 +49,6 @@ export const basicFormSchema: FormSchema[] = [
 
 export const passwordFormSchema: FormSchema[] = [
   {
-    field: `username`,
-    label: `用户名`,
-    component: 'Input',
-    componentProps: {
-      placeholder: '请输入用户名',
-    },
-    colProps: {
-      span: 24,
-    },
-    show: false,
-  },
-  {
     field: 'password',
     label: '密码',
     component: 'InputPassword',

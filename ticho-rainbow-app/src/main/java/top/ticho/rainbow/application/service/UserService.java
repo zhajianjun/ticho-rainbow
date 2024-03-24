@@ -3,6 +3,7 @@ package top.ticho.rainbow.application.service;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.rainbow.interfaces.dto.ImgCodeDTO;
 import top.ticho.rainbow.interfaces.dto.ImgCodeEmailDTO;
+import top.ticho.rainbow.interfaces.dto.PasswordDTO;
 import top.ticho.rainbow.interfaces.dto.UserDTO;
 import top.ticho.rainbow.interfaces.dto.UserLoginDTO;
 import top.ticho.rainbow.interfaces.dto.UserPasswordDTO;
@@ -21,12 +22,16 @@ import java.io.IOException;
 public interface UserService {
 
     /**
+     * 验证码
+     */
+    void imgCode(String imgKey) throws IOException;
+
+    /**
      * 图片验证码校验
      *
      * @param imgCodeDTO 图片验证码DTO
      */
     void imgCodeValid(ImgCodeDTO imgCodeDTO);
-
 
     /**
      * 注册验证码邮箱发送
@@ -90,20 +95,26 @@ public interface UserService {
     void updatePassword(UserPasswordDTO userPassworUpdDTO);
 
     /**
+     * 修改登录人密码
+     *
+     * @param passwordDTO 密码信息
+     */
+    void updatePasswordForSelf(PasswordDTO passwordDTO);
+
+    /**
      * 根据用户名查询用户
      *
      * @param username 用户名
      * @return {@link UserDTO}
      */
-    UserDTO getByUsername(String username);
+    UserDTO getInfoByUsername(String username);
 
     /**
-     * 分页查询用户信息列表
+     * 查询登录人用户信息
      *
-     * @param query 查询
-     * @return {@link PageResult}<{@link UserDTO}>
+     * @return {@link UserDTO}
      */
-    PageResult<UserDTO> page(UserQuery query);
+    UserDTO getInfo();
 
     /**
      * 根据用户名查询用户角色菜单功能号信息
@@ -114,16 +125,26 @@ public interface UserService {
     UserRoleMenuDtlDTO getUserDtl(String username);
 
     /**
+     * 查询登录人用户角色菜单功能号信息
+     *
+     * @return {@link UserRoleMenuDtlDTO}
+     */
+    UserRoleMenuDtlDTO getUserDtl();
+
+    /**
+     * 分页查询用户信息列表
+     *
+     * @param query 查询
+     * @return {@link PageResult}<{@link UserDTO}>
+     */
+    PageResult<UserDTO> page(UserQuery query);
+
+    /**
      * 绑定角色
      *
      * @param userRoleDTO 用户角色dto
      */
     void bindRole(UserRoleDTO userRoleDTO);
-
-    /**
-     * 验证码
-     */
-    void imgCode(String imgKey) throws IOException;
 
 }
 

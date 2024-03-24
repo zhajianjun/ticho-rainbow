@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.core.Result;
 import top.ticho.rainbow.application.service.UserService;
+import top.ticho.rainbow.interfaces.dto.PasswordDTO;
 import top.ticho.rainbow.interfaces.dto.UserDTO;
 import top.ticho.rainbow.interfaces.dto.UserPasswordDTO;
 import top.ticho.rainbow.interfaces.dto.UserRoleDTO;
@@ -85,21 +85,46 @@ public class UserController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('system:user:getByUsername')")
-    @ApiOperation(value = "查询用户信息")
-    @ApiOperationSupport(order = 60)
-    @ApiImplicitParam(value = "用户名", name = "username", required = true)
-    @GetMapping
-    public Result<UserDTO> getByUsername(String username) {
-        return Result.ok(userService.getByUsername(username));
+    @PreAuthorize("@perm.hasPerms('system:user:updatePasswordForSelf')")
+    @ApiOperation(value = "修改登录人密码", notes = "修改登录人密码")
+    @ApiOperationSupport(order = 50)
+    @PutMapping("updatePasswordForSelf")
+    public Result<Void> updatePasswordForSelf(@RequestBody PasswordDTO passwordDTO) {
+        userService.updatePasswordForSelf(passwordDTO);
+        return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('system:user:getUserDtl')")
+    @PreAuthorize("@perm.hasPerms('system:user:info')")
+    @ApiOperation(value = "根据用户名查询用户信息")
+    @ApiOperationSupport(order = 60)
+    @ApiImplicitParam(value = "用户名", name = "username", required = true)
+    @GetMapping("info")
+    public Result<UserDTO> info(String username) {
+        return Result.ok(userService.getInfoByUsername(username));
+    }
+
+    @PreAuthorize("@perm.hasPerms('system:user:infoForSelf')")
+    @ApiOperation(value = "查询登录人用户信息")
+    @ApiOperationSupport(order = 60)
+    @GetMapping("infoForSelf")
+    public Result<UserDTO> info() {
+        return Result.ok(userService.getInfo());
+    }
+
+    @PreAuthorize("@perm.hasPerms('system:user:detail')")
     @ApiOperation(value = "查询用户角色菜单权限标识信息")
     @ApiOperationSupport(order = 70)
-    @GetMapping("getUserDtl")
-    public Result<UserRoleMenuDtlDTO> getUserDtl(String username) {
+    @GetMapping("detail")
+    public Result<UserRoleMenuDtlDTO> detail(String username) {
         return Result.ok(userService.getUserDtl(username));
+    }
+
+    @PreAuthorize("@perm.hasPerms('system:user:detailForSelf')")
+    @ApiOperation(value = "查询登录人用户角色菜单权限标识信息")
+    @ApiOperationSupport(order = 70)
+    @GetMapping("detailForSelf")
+    public Result<UserRoleMenuDtlDTO> detailForSelf() {
+        return Result.ok(userService.getUserDtl());
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:page')")

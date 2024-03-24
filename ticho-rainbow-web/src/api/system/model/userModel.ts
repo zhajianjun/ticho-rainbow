@@ -144,13 +144,16 @@ export interface UserRoleDTO {
   roleIds: string[];
 }
 
-export interface UserPasswordDTO {
-  /** 用户名 */
-  username: string;
+export interface PasswordDTO {
   /** 密码 */
   password: string;
   /** 新密码 */
   newPassword: number;
+}
+
+export interface UserPasswordDTO extends PasswordDTO {
+  /** 用户名 */
+  username: string;
 }
 
 export interface UserSignUpDTO {

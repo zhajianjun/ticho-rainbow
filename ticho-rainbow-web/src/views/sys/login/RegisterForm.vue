@@ -75,7 +75,7 @@
   import { CountdownInput } from '@/components/CountDown';
   import { useI18n } from '@/hooks/web/useI18n';
   import { useLoginState, useFormRules, useFormValid, LoginStateEnum } from './useLogin';
-  import { signUp, signUpEmailSend } from '@/api/system/user';
+  import { signUp, signUpEmailSend } from '@/api/system/login';
   import {
     ImgCodeDTO,
     ImgCodeEmailDTO,

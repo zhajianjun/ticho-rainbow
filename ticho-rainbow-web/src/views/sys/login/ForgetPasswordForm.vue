@@ -1,7 +1,13 @@
 <template>
   <div v-if="getShow">
     <LoginFormTitle class="enter-x" />
-    <Form class="p-4 enter-x" :model="formData" :rules="getFormRules" ref="formRef" :loading="loading">
+    <Form
+      class="p-4 enter-x"
+      :model="formData"
+      :rules="getFormRules"
+      ref="formRef"
+      :loading="loading"
+    >
       <FormItem name="email" class="enter-x">
         <Input
           size="large"
@@ -36,13 +42,7 @@
         />
       </FormItem>
 
-      <Button
-        type="primary"
-        class="enter-x"
-        size="large"
-        block
-        @click="handleResetPassword"
-      >
+      <Button type="primary" class="enter-x" size="large" block @click="handleResetPassword">
         {{ t('common.resetText') }}
       </Button>
       <Button size="large" block class="mt-4 enter-x" @click="handleBackLogin">
@@ -60,7 +60,7 @@
   import { CountdownInput } from '@/components/CountDown';
   import { useI18n } from '@/hooks/web/useI18n';
   import { useLoginState, useFormRules, useFormValid, LoginStateEnum } from './useLogin';
-  import { resetPassword, resetPasswordEmailSend } from '@/api/system/user';
+  import { resetPassword, resetPasswordEmailSend } from '@/api/system/login';
   import {
     ImgCodeDTO,
     ImgCodeEmailDTO,

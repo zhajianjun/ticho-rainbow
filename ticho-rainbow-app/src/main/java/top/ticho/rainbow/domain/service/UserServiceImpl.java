@@ -44,6 +44,7 @@ import top.ticho.rainbow.interfaces.assembler.RoleAssembler;
 import top.ticho.rainbow.interfaces.assembler.UserAssembler;
 import top.ticho.rainbow.interfaces.dto.ImgCodeDTO;
 import top.ticho.rainbow.interfaces.dto.ImgCodeEmailDTO;
+import top.ticho.rainbow.interfaces.dto.PasswordDTO;
 import top.ticho.rainbow.interfaces.dto.RoleDTO;
 import top.ticho.rainbow.interfaces.dto.SecurityUser;
 import top.ticho.rainbow.interfaces.dto.UserDTO;
@@ -100,6 +101,37 @@ public class UserServiceImpl extends AuthHandle implements UserService {
 
     @Autowired
     private EmailRepository emailRepository;
+
+    @Override
+    public void imgCode(String imgKey) throws IOException {
+        response.setHeader("Pragma", "No-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expires", 0);
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        try (OutputStream out = response.getOutputStream()) {
+            Assert.isNotBlank(imgKey, "验证码秘钥不能为空");
+            LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
+            gifCaptcha.createCode();
+            String code = gifCaptcha.getCode();
+            cacheTemplate.put(CacheConst.VERIFY_CODE, imgKey, code);
+            BufferedImage buffImg = gifCaptcha.getImage();
+            ImageIO.write(buffImg, "png", out);
+        } catch (Exception e) {
+            log.error("获取验证码失败，error {}", e.getMessage(), e);
+            String message = e.getMessage();
+            int code = BizErrCode.FAIL.getCode();
+            if (e instanceof BizException) {
+                BizException bizException = ((BizException) e);
+                code = bizException.getCode();
+                message = bizException.getMsg();
+            }
+            Result<String> result = Result.of(code, message, null);
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setContentType("application/json");
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+            response.getWriter().write(JsonUtil.toJsonString(result));
+        }
+    }
 
     public void imgCodeValid(ImgCodeDTO imgCodeDTO) {
         ValidUtil.valid(imgCodeDTO, ImgCodeDTO.ImgCodeValid.class);
@@ -225,7 +257,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     public void resetPassword(String username) {
         boolean admin = UserUtil.isAdmin();
         Assert.isTrue(admin, BizErrCode.FAIL, "无管理员操作权限");
-        UserDTO dbUser = getByUsername(username);
+        UserDTO dbUser = getInfoByUsername(username);
         Assert.isNotNull(dbUser, "用户不存在");
         String encodedPasswordNew = passwordEncoder.encode("123456");
         User user = new User();
@@ -295,11 +327,16 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     }
 
     @Override
-    public UserDTO getByUsername(String username) {
+    public UserDTO getInfoByUsername(String username) {
         User user = userRepository.getByUsername(username);
         UserDTO userDTO = UserAssembler.INSTANCE.entityToDto(user);
-        Optional.ofNullable(userDTO).ifPresent(x-> setRoles(Collections.singletonList(x)));
+        Optional.ofNullable(userDTO).ifPresent(x -> setRoles(Collections.singletonList(x)));
         return userDTO;
+    }
+
+    @Override
+    public UserDTO getInfo() {
+        return getInfoByUsername(UserUtil.getCurrentUsername());
     }
 
     @Override
@@ -331,58 +368,36 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     @Override
     public void updatePassword(UserPasswordDTO userPasswordDTO) {
         ValidUtil.valid(userPasswordDTO);
-        String username = userPasswordDTO.getUsername();
-        String password = userPasswordDTO.getPassword();
-        String passwordNew = userPasswordDTO.getNewPassword();
-        User dbUser = userRepository.getByUsername(username);
+        User dbUser = userRepository.getByUsername(userPasswordDTO.getUsername());
         Assert.isNotEmpty(dbUser, BizErrCode.FAIL, "用户不存在");
-        String encodedPassword = dbUser.getPassword();
         SecurityUser loginUser = UserUtil.getCurrentUser();
         // 非管理员用户，只能修改自己的用户
         if (!UserUtil.isAdmin(loginUser)) {
             Assert.isTrue(UserUtil.isSelf(dbUser, loginUser), BizErrCode.FAIL, "只能修改自己的密码");
         }
-        boolean matches = passwordEncoder.matches(password, encodedPassword);
+        updatePassword(userPasswordDTO, dbUser);
+    }
+
+    @Override
+    public void updatePasswordForSelf(PasswordDTO passwordDTO) {
+        ValidUtil.valid(passwordDTO);
+        SecurityUser loginUser = UserUtil.getCurrentUser();
+        User dbUser = userRepository.getByUsername(loginUser.getUsername());
+        Assert.isNotEmpty(dbUser, BizErrCode.FAIL, "用户不存在");
+        updatePassword(passwordDTO, dbUser);
+    }
+
+    private void updatePassword(PasswordDTO passwordDTO, User dbUser) {
+        boolean matches = passwordEncoder.matches(passwordDTO.getPassword(), dbUser.getPassword());
         Assert.isTrue(matches, BizErrCode.FAIL, "密码错误");
-        String encodedPasswordNew = passwordEncoder.encode(passwordNew);
+        String encodedPasswordNew = passwordEncoder.encode(passwordDTO.getNewPassword());
         User user = new User();
         user.setId(dbUser.getId());
-        user.setUsername(username);
+        user.setUsername(dbUser.getUsername());
         user.setPassword(encodedPasswordNew);
         // 更新密码
         boolean update = userRepository.updateById(user);
         Assert.isTrue(update, BizErrCode.FAIL, "更新密码失败");
-    }
-
-    @Override
-    public void imgCode(String imgKey) throws IOException {
-        response.setHeader("Pragma", "No-cache");
-        response.setHeader("Cache-Control", "no-cache");
-        response.setDateHeader("Expires", 0);
-        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-        try (OutputStream out = response.getOutputStream()) {
-            Assert.isNotBlank(imgKey, "验证码秘钥不能为空");
-            LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
-            gifCaptcha.createCode();
-            String code = gifCaptcha.getCode();
-            cacheTemplate.put(CacheConst.VERIFY_CODE, imgKey, code);
-            BufferedImage buffImg = gifCaptcha.getImage();
-            ImageIO.write(buffImg, "png", out);
-        } catch (Exception e) {
-            log.error("获取验证码失败，error {}", e.getMessage(), e);
-            String message = e.getMessage();
-            int code = BizErrCode.FAIL.getCode();
-            if (e instanceof BizException) {
-                BizException bizException = ((BizException) e);
-                code = bizException.getCode();
-                message = bizException.getMsg();
-            }
-            Result<String> result = Result.of(code, message, null);
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setContentType("application/json");
-            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-            response.getWriter().write(JsonUtil.toJsonString(result));
-        }
     }
 
     /**

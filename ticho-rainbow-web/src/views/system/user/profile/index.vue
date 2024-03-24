@@ -38,8 +38,8 @@
   import Icon from '@/components/Icon/Icon.vue';
   import { useUserStore } from '@/store/modules/user';
   import { basicFormSchema, passwordFormSchema } from '@/views/system/user/profile/profile.data';
-  import { UserDTO, UserPasswordDTO, UserProfileDTO } from '@/api/system/model/userModel';
-  import { modifyUser, modifyUserPassword } from '@/api/system/user';
+  import { PasswordDTO, UserDTO, UserProfileDTO } from '@/api/system/model/userModel';
+  import { modifyUser, modifyPasswordForSelf } from '@/api/system/user';
   import { useMessage } from '@/hooks/web/useMessage';
   import { onMounted } from 'vue';
 
@@ -94,8 +94,8 @@
 
   async function updateUserPassword() {
     await passwordSetFieldsValue(userInfo);
-    const values = (await passwordValidate()) as UserPasswordDTO;
-    await modifyUserPassword(values);
+    const values = (await passwordValidate()) as PasswordDTO;
+    await modifyPasswordForSelf(values);
     await passwordResetFields();
     createMessage.success('修改密码成功');
   }

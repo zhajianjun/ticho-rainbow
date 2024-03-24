@@ -31,7 +31,7 @@
   import { Input } from 'ant-design-vue';
   import { useI18n } from '@/hooks/web/useI18n';
   import { buildUUID } from '@/utils/uuid';
-  import { getImgCode } from '@/api/system/user';
+  import { getImgCode } from '@/api/system/login';
   import { ImgCodeDTO } from '@/api/system/model/userModel';
 
   export default defineComponent({

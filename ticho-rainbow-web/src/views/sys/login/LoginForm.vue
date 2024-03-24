@@ -111,7 +111,7 @@
   import { LoginStateEnum, useLoginState, useFormRules, useFormValid } from './useLogin';
   import { useDesign } from '@/hooks/web/useDesign';
   //import { onKeyStroke } from '@vueuse/core';
-  import { getImgCode } from '@/api/system/user';
+  import { getImgCode } from '@/api/system/login';
   import { buildUUID } from '@/utils/uuid';
 
   const ACol = Col;

@@ -46,17 +46,8 @@ public class OauthController {
     private UserService userService;
 
     @IgnoreJwtCheck
-    @View(ignore = true)
-    @ApiOperation(value = "验证码", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    @ApiOperationSupport(order = 10)
-    @GetMapping("imgCode")
-    public void imgCode(String imgKey) throws IOException {
-        userService.imgCode(imgKey);
-    }
-
-    @IgnoreJwtCheck
     @ApiOperation("注册邮箱发送")
-    @ApiOperationSupport(order = 20)
+    @ApiOperationSupport(order = 10)
     @PostMapping("signUpEmailSend")
     public Result<Void> signUpEmailSend(@RequestBody ImgCodeEmailDTO imgCodeEmailDTO) {
         userService.signUpEmailSend(imgCodeEmailDTO);
@@ -65,16 +56,15 @@ public class OauthController {
 
     @IgnoreJwtCheck
     @ApiOperation("注册")
-    @ApiOperationSupport(order = 30)
+    @ApiOperationSupport(order = 20)
     @PostMapping("signUp")
     public Result<UserLoginDTO> signUp(@RequestBody UserSignUpOrResetDTO userSignUpOrResetDTO) {
         return Result.ok(userService.signUp(userSignUpOrResetDTO));
     }
 
-
     @IgnoreJwtCheck
     @ApiOperation(value = "重置邮箱验证码发送")
-    @ApiOperationSupport(order = 40)
+    @ApiOperationSupport(order = 30)
     @PostMapping("resetPasswordEmailSend")
     public Result<String> resetPasswordEmailSend(@RequestBody ImgCodeEmailDTO imgCodeEmailDTO) {
         return Result.ok(userService.resetPasswordEmailSend(imgCodeEmailDTO));
@@ -82,10 +72,19 @@ public class OauthController {
 
     @IgnoreJwtCheck
     @ApiOperation(value = "重置用户密码")
-    @ApiOperationSupport(order = 50)
+    @ApiOperationSupport(order = 40)
     @PostMapping("resetPassword")
     public Result<UserLoginDTO> resetPassword(@RequestBody UserSignUpOrResetDTO userSignUpOrResetDTO) {
         return Result.ok(userService.resetPassword(userSignUpOrResetDTO));
+    }
+
+    @IgnoreJwtCheck
+    @View(ignore = true)
+    @ApiOperation(value = "验证码", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ApiOperationSupport(order = 50)
+    @GetMapping("imgCode")
+    public void imgCode(String imgKey) throws IOException {
+        userService.imgCode(imgKey);
     }
 
     @IgnoreJwtCheck

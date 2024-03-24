@@ -5,7 +5,7 @@ import { PageEnum } from '@/enums/pageEnum';
 import { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '@/enums/cacheEnum';
 import { getAuthCache, setAuthCache } from '@/utils/auth';
 import { UserRoleMenuDtlDTO, UserLoginDTO, UserProfileDTO } from '@/api/system/model/userModel';
-import { getUserDtlInfo, loginApi } from '@/api/system/user';
+import { userDtlForSelf, loginApi } from '@/api/system/login';
 import { useI18n } from '@/hooks/web/useI18n';
 import { useMessage } from '@/hooks/web/useMessage';
 import { router } from '@/router';
@@ -134,7 +134,7 @@ export const useUserStore = defineStore({
       if (!this.getToken) {
         return null;
       }
-      const userInfo = await getUserDtlInfo();
+      const userInfo = await userDtlForSelf();
       const { roles } = userInfo;
       this.setRoleList(roles);
       this.setUserInfo(userInfo);
