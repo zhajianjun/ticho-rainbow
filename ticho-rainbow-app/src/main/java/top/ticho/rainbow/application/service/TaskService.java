@@ -40,7 +40,7 @@ public interface TaskService {
      *
      * @param id 主键
      */
-    void run(Long id);
+    void runOnce(Long id);
 
     /**
      * 暂停定时任务调度

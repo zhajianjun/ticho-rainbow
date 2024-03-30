@@ -102,6 +102,7 @@
           fixed: undefined,
         },
         pagination: {
+          simple: false,
           position: ['bottomLeft'],
         },
       });

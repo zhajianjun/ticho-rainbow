@@ -1,10 +1,12 @@
 package top.ticho.rainbow.domain.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.ticho.boot.json.util.JsonUtil;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.enums.BizErrCode;
 import top.ticho.boot.view.util.Assert;
@@ -81,6 +83,8 @@ public class TaskServiceImpl implements TaskService {
         Assert.isTrue(addedJob, BizErrCode.FAIL, "添加任务失败");
         if (Objects.equals(task.getStatus(), 1)) {
             schedulerTemplate.resumeJob(task.getId().toString(), DEFAULT_JOB_GROUP);
+        } else {
+            schedulerTemplate.pauseJob(task.getId().toString(), DEFAULT_JOB_GROUP);
         }
     }
 
@@ -92,6 +96,11 @@ public class TaskServiceImpl implements TaskService {
         Assert.isTrue(present, BizErrCode.FAIL, "执行类不存在");
         boolean valid = SchedulerTemplate.isValid(task.getCronExpression());
         Assert.isTrue(valid, BizErrCode.FAIL, "cron表达式不正确");
+        String param = task.getParam();
+        if (StrUtil.isNotBlank(param)) {
+            boolean json = JsonUtil.isJson(param);
+            Assert.isTrue(json, BizErrCode.FAIL, "参数格式不正确");
+        }
     }
 
     @Override
@@ -124,7 +133,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void run(Long id) {
+    public void runOnce(Long id) {
         Assert.isNotNull(id, "编号不能为空");
         Task task = taskRepository.getById(id);
         Assert.isNotNull(task, BizErrCode.FAIL, "任务不存在");

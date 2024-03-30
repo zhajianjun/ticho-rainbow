@@ -85,7 +85,14 @@ public interface UserService {
      *
      * @param userDTO 用户信息DTO 对象
      */
-    void updateById(UserDTO userDTO);
+    void update(UserDTO userDTO);
+
+    /**
+     * 修改登录用户信息
+     *
+     * @param userDTO 用户信息DTO 对象
+     */
+    void updateForSelf(UserDTO userDTO);
 
     /**
      * 修改用户密码信息

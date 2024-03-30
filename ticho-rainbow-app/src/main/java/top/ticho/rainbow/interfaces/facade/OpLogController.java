@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +32,7 @@ public class OpLogController {
     @Autowired
     private OpLogService opLogService;
 
+    @PreAuthorize("@perm.hasPerms('system:opLog:getById')")
     @ApiOperation(value = "主键查询日志信息")
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
@@ -39,6 +41,7 @@ public class OpLogController {
         return Result.ok(opLogService.getById(id));
     }
 
+    @PreAuthorize("@perm.hasPerms('system:opLog:page')")
     @ApiOperation(value = "分页查询日志信息")
     @ApiOperationSupport(order = 50)
     @GetMapping("page")

@@ -59,11 +59,20 @@ public class UserController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:update')")
-    @ApiOperation(value = "修改用户信息", notes = "无法修改密码")
+    @ApiOperation(value = "修改用户信息", notes = "修改用户信息")
     @ApiOperationSupport(order = 30)
     @PutMapping
     public Result<Void> update(@RequestBody UserDTO userDTO) {
-        userService.updateById(userDTO);
+        userService.update(userDTO);
+        return Result.ok();
+    }
+
+    @PreAuthorize("@perm.hasPerms('system:user:updateForSelf')")
+    @ApiOperation(value = "修改登录用户信息", notes = "修改登录用户信息")
+    @ApiOperationSupport(order = 35)
+    @PutMapping("updateForSelf")
+    public Result<Void> updateForSelf(@RequestBody UserDTO userDTO) {
+        userService.updateForSelf(userDTO);
         return Result.ok();
     }
 

@@ -32,18 +32,16 @@ public class TaskRepositoryImpl extends RootServiceImpl<TaskMapper, Task> implem
         // @formatter:off
         LambdaQueryWrapper<Task> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(Objects.nonNull(query.getId()), Task::getId, query.getId());
-        wrapper.eq(StrUtil.isNotBlank(query.getName()), Task::getName, query.getName());
-        wrapper.eq(StrUtil.isNotBlank(query.getExecuteName()), Task::getExecuteName, query.getExecuteName());
-        wrapper.eq(StrUtil.isNotBlank(query.getParam()), Task::getParam, query.getParam());
-        wrapper.eq(StrUtil.isNotBlank(query.getCronExpression()), Task::getCronExpression, query.getCronExpression());
-        wrapper.eq(StrUtil.isNotBlank(query.getRemark()), Task::getRemark, query.getRemark());
+        wrapper.like(StrUtil.isNotBlank(query.getName()), Task::getName, query.getName());
+        wrapper.like(StrUtil.isNotBlank(query.getExecuteName()), Task::getExecuteName, query.getExecuteName());
+        wrapper.like(StrUtil.isNotBlank(query.getParam()), Task::getParam, query.getParam());
+        wrapper.like(StrUtil.isNotBlank(query.getCronExpression()), Task::getCronExpression, query.getCronExpression());
+        wrapper.like(StrUtil.isNotBlank(query.getRemark()), Task::getRemark, query.getRemark());
         wrapper.eq(Objects.nonNull(query.getStatus()), Task::getStatus, query.getStatus());
-        wrapper.eq(Objects.nonNull(query.getVersion()), Task::getVersion, query.getVersion());
         wrapper.eq(StrUtil.isNotBlank(query.getCreateBy()), Task::getCreateBy, query.getCreateBy());
         wrapper.eq(Objects.nonNull(query.getCreateTime()), Task::getCreateTime, query.getCreateTime());
         wrapper.eq(StrUtil.isNotBlank(query.getUpdateBy()), Task::getUpdateBy, query.getUpdateBy());
         wrapper.eq(Objects.nonNull(query.getUpdateTime()), Task::getUpdateTime, query.getUpdateTime());
-        wrapper.eq(Objects.nonNull(query.getIsDelete()), Task::getIsDelete, query.getIsDelete());
         return list(wrapper);
         // @formatter:on
     }

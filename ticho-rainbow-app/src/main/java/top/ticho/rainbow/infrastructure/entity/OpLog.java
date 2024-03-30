@@ -34,7 +34,7 @@ public class OpLog extends Model<OpLog> implements Serializable {
     /** 请求地址 */
     private String url;
 
-    /** 日志类型 */
+    /** 请求类型 */
     private String type;
 
     /** 请求方法 */

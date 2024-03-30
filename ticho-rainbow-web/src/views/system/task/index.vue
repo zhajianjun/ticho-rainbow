@@ -2,18 +2,7 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" v-auth="'ClientAdd'" @click="handleCreate"> 新增 </a-button>
-      </template>
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'status'">
-          <Switch
-            checked-children="开启"
-            un-checked-children="禁用"
-            :checked="record.status === 1"
-            :loading="record.pendingStatus"
-            @change="handleSwitchChange(record)"
-          />
-        </template>
+        <a-button type="primary" @click="handleCreate"> 新增 </a-button>
       </template>
       <template #action="{ record }">
         <TableAction
@@ -22,49 +11,72 @@
               icon: 'clarity:note-edit-line',
               onClick: handleEdit.bind(null, record),
               tooltip: '修改',
-              ifShow: hasPermission('ClientEdit'),
-              divider: true,
+              auth: 'TaskEdit',
             },
             {
               icon: 'ant-design:delete-outlined',
               color: 'error',
-              ifShow: hasPermission('ClientDel'),
               popConfirm: {
                 title: '是否确认删除',
                 confirm: handleDelete.bind(null, record),
               },
+              auth: 'TaskDel',
               tooltip: '删除',
-              divider: true,
+            },
+          ]"
+          :dropDownActions="[
+            {
+              label: '执行一次',
+              popConfirm: {
+                title: '是否执行一次？',
+                confirm: handleRunOnce.bind(null, record),
+              },
+              auth: 'TaskRunOnce',
+            },
+            {
+              label: '启动',
+              popConfirm: {
+                title: '是否启动？',
+                confirm: handleResume.bind(null, record),
+              },
+              disabled: record.status == 1,
+              auth: 'TaskResume',
+            },
+            {
+              label: '暂停',
+              popConfirm: {
+                title: '是否暂停？',
+                confirm: handlePause.bind(null, record),
+              },
+              disabled: record.status !== 1,
+              auth: 'TaskPause',
             },
           ]"
         />
       </template>
     </BasicTable>
-    <ClientModel @register="registerModal" @success="handleSuccess" />
+    <TaskModal @register="registerModal" @success="handleSuccess" />
   </div>
 </template>
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import { Switch } from 'ant-design-vue';
-  import { BasicTable, TableAction, useTable } from '@/components/Table';
+  import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { useModal } from '@/components/Modal';
-  import ClientModel from './ClientModal.vue';
-  import { getSearchColumns, getTableColumns } from './client.data';
-  import { clientPage, delClient, modifyClientStatus } from '@/api/intranet/client';
-  import { useMessage } from '@/hooks/web/useMessage';
-  import { ClientDTO } from '@/api/intranet/model/clientModel';
+  import TaskModal from './TaskModal.vue';
+  import { getTableColumns, getSearchColumns } from './task.data';
+  import { taskPage, delTask, runOnceTask, pauseTask, resumeTask } from '@/api/system/task';
   import { usePermission } from '@/hooks/web/usePermission';
 
   export default defineComponent({
-    name: 'ClientManagement',
-    components: { BasicTable, ClientModel, TableAction, Switch },
+    name: 'Task',
+    components: { BasicTable, TaskModal, TableAction },
     setup() {
       const { hasPermission } = usePermission();
-      let showSelect = hasPermission('ClientSelect');
+      let showSelect = hasPermission('TaskSelect');
       const [registerModal, { openModal }] = useModal();
       const [registerTable, { reload }] = useTable({
-        title: '客户端信息列表',
-        api: clientPage,
+        title: '定时任务调度信息列表',
+        api: taskPage,
         rowKey: 'id',
         columns: getTableColumns(),
         useSearchForm: true,
@@ -84,7 +96,7 @@
         bordered: true,
         showIndexColumn: false,
         actionColumn: {
-          width: 60,
+          width: 100,
           title: '操作',
           dataIndex: 'action',
           slots: { customRender: 'action' },
@@ -110,7 +122,25 @@
       }
 
       function handleDelete(record: Recordable) {
-        delClient(record.id).then(() => {
+        delTask(record.id).then(() => {
+          reload();
+        });
+      }
+
+      function handleRunOnce(record: Recordable) {
+        runOnceTask(record.id).then(() => {
+          reload();
+        });
+      }
+
+      function handlePause(record: Recordable) {
+        pauseTask(record.id).then(() => {
+          reload();
+        });
+      }
+
+      function handleResume(record: Recordable) {
+        resumeTask(record.id).then(() => {
           reload();
         });
       }
@@ -119,38 +149,16 @@
         reload();
       }
 
-      function handleSwitchChange(record: Recordable) {
-        record.pendingStatus = true;
-        const { createMessage } = useMessage();
-        let checked = record.status === 1;
-        if (checked) {
-          record.status = 0;
-        } else {
-          record.status = 1;
-        }
-        const params = { id: record.id, status: record.status } as ClientDTO;
-        const messagePrefix = !checked ? '启动' : '关闭';
-        modifyClientStatus(params)
-          .then(() => {
-            createMessage.success(messagePrefix + `成功`);
-          })
-          .catch(() => {
-            createMessage.error(messagePrefix + `失败`);
-          })
-          .finally(() => {
-            record.pendingStatus = false;
-            reload();
-          });
-      }
-
       return {
         registerTable,
         registerModal,
         handleCreate,
         handleEdit,
         handleDelete,
+        handleRunOnce,
+        handlePause,
+        handleResume,
         handleSuccess,
-        handleSwitchChange,
         hasPermission,
       };
     },

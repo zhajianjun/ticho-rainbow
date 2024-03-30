@@ -49,10 +49,6 @@ public class TaskQuery extends BasePageQuery implements Serializable {
     @ApiModelProperty(value = "任务状态;1-正常,0-停用", position = 70)
     private Integer status;
 
-    /** 乐观锁;控制版本更改 */
-    @ApiModelProperty(value = "乐观锁;控制版本更改", position = 80)
-    private Long version;
-
     /** 创建人 */
     @ApiModelProperty(value = "创建人", position = 90)
     private String createBy;
@@ -70,9 +66,5 @@ public class TaskQuery extends BasePageQuery implements Serializable {
     @ApiModelProperty(value = "更新时间", position = 120)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
-
-    /** 删除标识;0-未删除,1-已删除 */
-    @ApiModelProperty(value = "删除标识;0-未删除,1-已删除", position = 130)
-    private Integer isDelete;
 
 }

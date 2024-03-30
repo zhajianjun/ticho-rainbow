@@ -106,6 +106,10 @@
           slots: { customRender: 'action' },
           fixed: undefined,
         },
+        pagination: {
+          simple: false,
+          position: ['bottomLeft'],
+        },
         // rowSelection: {
         //   type: 'radio',
         //   onSelect: onSelect,

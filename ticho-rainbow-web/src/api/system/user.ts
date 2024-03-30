@@ -5,6 +5,7 @@ enum Api {
   UserInfo = '/user',
   UserPage = '/user/page',
   BindRole = '/user/bindRole',
+  UpdateForSelf = '/user/updateForSelf',
   UpdatePassword = '/user/updatePassword',
   UpdatePasswordForSelf = '/user/updatePasswordForSelf',
   ResetUserPassword = '/user/resetPassword',
@@ -32,6 +33,10 @@ export function delUser(params: string) {
 
 export function modifyUser(params: UserDTO) {
   return defHttp.put<void>({ url: Api.UserInfo, params }, { errorMessageMode: 'message' });
+}
+
+export function modifyUserForSelf(params: UserDTO) {
+  return defHttp.put<void>({ url: Api.UpdateForSelf, params }, { errorMessageMode: 'message' });
 }
 
 export function modifyUserPassword(params: UserPasswordDTO) {

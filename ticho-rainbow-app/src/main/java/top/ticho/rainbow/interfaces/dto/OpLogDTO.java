@@ -32,8 +32,8 @@ public class OpLogDTO implements Serializable {
     @ApiModelProperty(value = "请求地址", position = 30)
     private String url;
 
-    /** 日志类型 */
-    @ApiModelProperty(value = "日志类型", position = 40)
+    /** 请求类型 */
+    @ApiModelProperty(value = "请求类型", position = 40)
     private String type;
 
     /** 请求方法 */

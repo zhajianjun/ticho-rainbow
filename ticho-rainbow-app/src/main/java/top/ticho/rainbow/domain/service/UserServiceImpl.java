@@ -313,7 +313,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateById(UserDTO userDTO) {
+    public void update(UserDTO userDTO) {
         ValidUtil.valid(userDTO, ValidGroup.Upd.class);
         userDTO.setPassword(null);
         User user = UserAssembler.INSTANCE.dtoToEntity(userDTO);
@@ -324,6 +324,15 @@ public class UserServiceImpl extends AuthHandle implements UserService {
             return;
         }
         userRoleRepository.removeAndSave(user.getId(), userDTO.getRoleIds());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateForSelf(UserDTO userDTO) {
+        User dbUser = userRepository.getByUsername(UserUtil.getCurrentUsername());
+        Assert.isNotNull(dbUser, BizErrCode.FAIL, "修改失败,用户不存在");
+        userDTO.setId(dbUser.getId());
+        update(userDTO);
     }
 
     @Override
