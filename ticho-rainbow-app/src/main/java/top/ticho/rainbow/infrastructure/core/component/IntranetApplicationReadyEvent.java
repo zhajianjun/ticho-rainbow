@@ -31,9 +31,8 @@ public class IntranetApplicationReadyEvent implements ApplicationListener<Applic
 
     @Async
     public void onApplicationEvent(@NonNull ApplicationReadyEvent event) {
-        List<ClientInfo> clientInfos = clientService.listClientInfo();
+        List<ClientInfo> clientInfos = clientService.listEffectClientInfo();
         serverHandler.saveClientBatch(clientInfos);
-        serverHandler.initAllApp();
     }
 
 }

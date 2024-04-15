@@ -15,6 +15,7 @@ import top.ticho.rainbow.application.service.ClientService;
 import top.ticho.rainbow.domain.repository.ClientRepository;
 import top.ticho.rainbow.domain.repository.PortRepository;
 import top.ticho.rainbow.infrastructure.entity.Client;
+import top.ticho.rainbow.infrastructure.entity.Port;
 import top.ticho.rainbow.interfaces.assembler.ClientAssembler;
 import top.ticho.rainbow.interfaces.assembler.PortAssembler;
 import top.ticho.rainbow.interfaces.dto.ClientDTO;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -116,13 +118,14 @@ public class ClientServiceImpl implements ClientService {
         // @formatter:on
     }
 
-    public List<ClientInfo> listClientInfo() {
+    public List<ClientInfo> listEffectClientInfo() {
         // @formatter:off
         ClientQuery clientQuery = new ClientQuery();
         clientQuery.setStatus(1);
         List<Client> clients = clientRepository.list(clientQuery);
         List<String> accessKeys = clients.stream().map(Client::getAccessKey).collect(Collectors.toList());
-        Map<String, List<PortInfo>> protMap = portRepository.listAndGroupByAccessKey(accessKeys, PortAssembler.INSTANCE::entityToInfo, x -> Objects.equals(x.getStatus(), 1));
+        Predicate<Port> portPredicate = x -> Objects.equals(x.getStatus(), 1);
+        Map<String, List<PortInfo>> protMap = portRepository.listAndGroupByAccessKey(accessKeys, PortAssembler.INSTANCE::entityToInfo, portPredicate);
         return clients
                 .stream()
                 .map(ClientAssembler.INSTANCE::entityToInfo)

@@ -64,7 +64,7 @@ public interface ClientService {
      *
      * @return {@link List}<{@link ClientInfo}>
      */
-    List<ClientInfo> listClientInfo();
+    List<ClientInfo> listEffectClientInfo();
 
 }
 
