@@ -24,6 +24,7 @@ import top.ticho.tool.intranet.server.entity.ClientInfo;
 import top.ticho.tool.intranet.server.entity.PortInfo;
 import top.ticho.tool.intranet.server.handler.ServerHandler;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -124,7 +125,7 @@ public class ClientServiceImpl implements ClientService {
         clientQuery.setStatus(1);
         List<Client> clients = clientRepository.list(clientQuery);
         List<String> accessKeys = clients.stream().map(Client::getAccessKey).collect(Collectors.toList());
-        Predicate<Port> portPredicate = x -> Objects.equals(x.getStatus(), 1);
+        Predicate<Port> portPredicate = x -> Objects.equals(x.getStatus(), 1) && (Objects.equals(x.getForever(), 1) || LocalDateTime.now().isBefore(x.getExpireAt()));
         Map<String, List<PortInfo>> protMap = portRepository.listAndGroupByAccessKey(accessKeys, PortAssembler.INSTANCE::entityToInfo, portPredicate);
         return clients
                 .stream()

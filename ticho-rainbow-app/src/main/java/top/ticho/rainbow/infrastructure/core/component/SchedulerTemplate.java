@@ -20,6 +20,7 @@ import org.quartz.TriggerKey;
 import org.quartz.TriggerUtils;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.impl.triggers.CronTriggerImpl;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
@@ -43,6 +44,7 @@ import java.util.stream.Collectors;
 public class SchedulerTemplate {
     public static final String SCHEDULER_PARAM = "SCHEDULER_PARAM";
     public static final String TASK_NAME = "TASK_NAME";
+    public static final String MDC_INFO = "MDC_INFO";
 
     private Scheduler scheduler;
 
@@ -135,7 +137,10 @@ public class SchedulerTemplate {
     public boolean runOnce(String jobName, String jobGroup) {
         JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
         try {
-            scheduler.triggerJob(jobKey);
+            Map<String, String> mdcMap = MDC.getCopyOfContextMap();
+            JobDataMap jobDataMap = new JobDataMap();
+            jobDataMap.put(MDC_INFO, mdcMap);
+            scheduler.triggerJob(jobKey, jobDataMap);
             return true;
         } catch (SchedulerException e) {
             log.error("运行一次定时任务失败", e);

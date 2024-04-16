@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 @Slf4j
 public class OpLogListen {
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
-    private final List<String> ignoreResBodyPaths = Stream.of("/opLog/page").collect(Collectors.toList());
+    private final List<String> ignorePaths = Stream.of("/opLog/page").collect(Collectors.toList());
 
     @Autowired
     private OpLogRepository opLogRepository;
@@ -55,11 +55,11 @@ public class OpLogListen {
         entity.setIsErr(isError);
         entity.setResStatus(status);
         entity.setOperateBy(httpLog.getUsername());
-        boolean aniedMatch = ignoreResBodyPaths
+        boolean anyMatch = ignorePaths
             .stream()
             .anyMatch(x -> antPathMatcher.match(x, httpLog.getUrl()));
-        if (aniedMatch) {
-            entity.setResBody(null);
+        if (anyMatch) {
+            return;
         }
         if (StrUtil.isBlank(entity.getResBody())) {
             entity.setResBody(null);

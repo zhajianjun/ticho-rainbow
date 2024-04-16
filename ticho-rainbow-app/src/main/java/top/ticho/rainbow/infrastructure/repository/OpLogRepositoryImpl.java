@@ -47,6 +47,7 @@ public class OpLogRepositoryImpl extends RootServiceImpl<OpLogMapper, OpLog> imp
         wrapper.eq(Objects.nonNull(query.getCreateTime()), OpLog::getCreateTime, query.getCreateTime());
         wrapper.eq(Objects.nonNull(query.getIsErr()), OpLog::getIsErr, query.getIsErr());
         wrapper.eq(StrUtil.isNotBlank(query.getErrMessage()), OpLog::getErrMessage, query.getErrMessage());
+        wrapper.orderByDesc(OpLog::getCreateTime);
         return list(wrapper);
         // @formatter:on
     }
