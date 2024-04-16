@@ -6,24 +6,33 @@
     :maskClosable="false"
     @ok="handleSubmit"
   >
-    <BasicForm @register="registerForm" />
+    <BasicForm @register="registerForm">
+      <template #cronExpressionSlot="{ model, field }">
+        <a-input-group compact>
+          <a-input v-model:value="model[field]" style="width: calc(100% - 100px)" />
+          <a-button @click="openCronModal" style="width: 100px">Cron生成</a-button>
+        </a-input-group>
+      </template>
+    </BasicForm>
   </BasicModal>
+  <TaskCron @register="registerCronModel" @success="handleCronSuccess" />
 </template>
 <script lang="ts">
   import { computed, defineComponent, ref, unref } from 'vue';
-  import { BasicModal, useModalInner } from '@/components/Modal';
+  import { BasicModal, useModal, useModalInner } from '@/components/Modal';
   import { BasicForm, useForm } from '@/components/Form/index';
   import { getModalFormColumns } from './task.data';
   import { modifyTask, saveTask } from '@/api/system/task';
   import { TaskDTO } from '@/api/system/model/taskModel';
+  import TaskCron from './TaskCron.vue';
 
   export default defineComponent({
     name: 'TaskModal',
-    components: { BasicModal, BasicForm },
+    components: { BasicModal, BasicForm, TaskCron },
     emits: ['success', 'register'],
     setup(_, { emit }) {
       const isUpdate = ref(true);
-      const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
+      const [registerForm, { setFieldsValue, resetFields, validate, getFieldsValue }] = useForm({
         labelWidth: 100,
         baseColProps: { span: 24 },
         schemas: getModalFormColumns(),
@@ -63,7 +72,28 @@
         }
       }
 
-      return { registerModal, registerForm, getTitle, handleSubmit };
+      const [registerCronModel, { openModal }] = useModal();
+
+      function handleCronSuccess(cronValue: string) {
+        setFieldsValue({
+          cronExpression: cronValue,
+        });
+      }
+
+      function openCronModal() {
+        let fieldsValue = getFieldsValue();
+        openModal(true, fieldsValue.cronExpression);
+      }
+
+      return {
+        registerModal,
+        registerForm,
+        getTitle,
+        handleSubmit,
+        registerCronModel,
+        openCronModal,
+        handleCronSuccess,
+      };
     },
   });
 </script>

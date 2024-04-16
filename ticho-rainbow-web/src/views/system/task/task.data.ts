@@ -1,5 +1,5 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
-import {getDictByCode, getDictByCodeAndValue} from '@/store/modules/dict';
+import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
 
 const commonStatus = 'commonStatus';
 
@@ -31,7 +31,7 @@ export function getTableColumns(): BasicColumn[] {
       width: 100,
     },
     {
-      title: 'cron执行表达式',
+      title: 'Cron表达式',
       dataIndex: 'cronExpression',
       resizable: true,
       width: 100,
@@ -166,33 +166,11 @@ export function getModalFormColumns(): FormSchema[] {
       },
     },
     {
-      field: `param`,
-      label: `执行参数`,
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入执行参数',
-      },
-      colProps: {
-        span: 24,
-      },
-    },
-    {
       field: `cronExpression`,
-      label: `cron执行表达式`,
-      component: 'Input',
+      label: `Cron表达式`,
+      slot: 'cronExpressionSlot',
       componentProps: {
-        placeholder: '请输入cron执行表达式',
-      },
-      colProps: {
-        span: 24,
-      },
-    },
-    {
-      field: `remark`,
-      label: `备注信息`,
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入备注信息',
+        placeholder: '请输入Cron表达式',
       },
       colProps: {
         span: 24,
@@ -205,6 +183,35 @@ export function getModalFormColumns(): FormSchema[] {
       defaultValue: 0,
       componentProps: {
         options: getDictByCode(commonStatus),
+      },
+      colProps: {
+        span: 24,
+      },
+    },
+    {
+      field: `param`,
+      label: `执行参数`,
+      component: 'InputTextArea',
+      componentProps: {
+        placeholder: '请输入执行参数',
+        maxlength: 120,
+        showCount: true,
+        rows: 4,
+      },
+      colProps: {
+        span: 24,
+      },
+    },
+    {
+      field: `remark`,
+      label: `备注信息`,
+      component: 'InputTextArea',
+      componentProps: {
+        defaultValue: '',
+        placeholder: '请输入备注信息',
+        maxlength: 120,
+        showCount: true,
+        rows: 4,
       },
       colProps: {
         span: 24,

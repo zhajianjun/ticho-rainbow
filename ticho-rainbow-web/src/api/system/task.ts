@@ -28,7 +28,7 @@ export function taskPage(params?: TaskQuery) {
 
 export function runOnceTask(id: string) {
   const params = { id: id };
-  return defHttp.get<any>({ url: Api.RunOnceTask, params }, { errorMessageMode: 'message' });
+  return defHttp.get<any>({ url: Api.RunOnceTask, params }, { errorMessageMode: 'message', successMessageMode: 'message' });
 }
 
 export function pauseTask(id: string) {

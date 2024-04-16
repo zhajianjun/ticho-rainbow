@@ -59,7 +59,7 @@
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent } from 'vue';
+  import { defineComponent, ref } from 'vue';
   import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { useModal } from '@/components/Modal';
   import TaskModal from './TaskModal.vue';
@@ -71,11 +71,12 @@
     name: 'Task',
     components: { BasicTable, TaskModal, TableAction },
     setup() {
+      const cronValue = ref(null);
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('TaskSelect');
       const [registerModal, { openModal }] = useModal();
       const [registerTable, { reload }] = useTable({
-        title: '定时任务调度信息列表',
+        title: '计划任务列表',
         api: taskPage,
         rowKey: 'id',
         columns: getTableColumns(),
@@ -128,9 +129,7 @@
       }
 
       function handleRunOnce(record: Recordable) {
-        runOnceTask(record.id).then(() => {
-          reload();
-        });
+        runOnceTask(record.id);
       }
 
       function handlePause(record: Recordable) {
@@ -160,6 +159,7 @@
         handleResume,
         handleSuccess,
         hasPermission,
+        cronValue,
       };
     },
   });
