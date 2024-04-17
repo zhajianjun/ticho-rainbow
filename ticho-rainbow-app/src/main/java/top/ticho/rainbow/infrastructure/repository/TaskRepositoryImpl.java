@@ -33,15 +33,13 @@ public class TaskRepositoryImpl extends RootServiceImpl<TaskMapper, Task> implem
         LambdaQueryWrapper<Task> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(Objects.nonNull(query.getId()), Task::getId, query.getId());
         wrapper.like(StrUtil.isNotBlank(query.getName()), Task::getName, query.getName());
-        wrapper.like(StrUtil.isNotBlank(query.getExecuteName()), Task::getExecuteName, query.getExecuteName());
+        wrapper.like(StrUtil.isNotBlank(query.getContent()), Task::getContent, query.getContent());
         wrapper.like(StrUtil.isNotBlank(query.getParam()), Task::getParam, query.getParam());
         wrapper.like(StrUtil.isNotBlank(query.getCronExpression()), Task::getCronExpression, query.getCronExpression());
         wrapper.like(StrUtil.isNotBlank(query.getRemark()), Task::getRemark, query.getRemark());
         wrapper.eq(Objects.nonNull(query.getStatus()), Task::getStatus, query.getStatus());
         wrapper.eq(StrUtil.isNotBlank(query.getCreateBy()), Task::getCreateBy, query.getCreateBy());
         wrapper.eq(Objects.nonNull(query.getCreateTime()), Task::getCreateTime, query.getCreateTime());
-        wrapper.eq(StrUtil.isNotBlank(query.getUpdateBy()), Task::getUpdateBy, query.getUpdateBy());
-        wrapper.eq(Objects.nonNull(query.getUpdateTime()), Task::getUpdateTime, query.getUpdateTime());
         return list(wrapper);
         // @formatter:on
     }

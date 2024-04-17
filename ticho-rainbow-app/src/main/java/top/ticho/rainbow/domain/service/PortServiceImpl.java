@@ -27,7 +27,6 @@ import top.ticho.tool.intranet.server.handler.ServerHandler;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -124,12 +123,6 @@ public class PortServiceImpl implements PortService {
             Port dbPortByDomain = portRepository.getByDomainExcludeId(portDTO.getId(), domain);
             Assert.isNull(dbPortByDomain, "域名已存在");
         }
-        if (Objects.equals(portDTO.getForever(), 1)) {
-            portDTO.setExpireAt(null);
-        } else {
-            LocalDateTime expireAt = Optional.ofNullable(portDTO.getExpireAt()).orElseGet(() -> LocalDateTime.now().plusDays(7));
-            portDTO.setExpireAt(expireAt);
-        }
     }
 
     public void savePortInfo(Integer portNum) {
@@ -164,9 +157,8 @@ public class PortServiceImpl implements PortService {
 
     private boolean isEnabled(Port port) {
         boolean enabled = Objects.equals(port.getStatus(), 1);
-        boolean isForeaver = Objects.equals(port.getForever(), 1);
         boolean isNotExpire = Objects.nonNull(port.getExpireAt()) && LocalDateTime.now().isBefore(port.getExpireAt());
-        return enabled && (isForeaver || isNotExpire);
+        return enabled && isNotExpire;
     }
 
     private void fillChannelStatus(PortDTO portDTO) {
@@ -174,10 +166,11 @@ public class PortServiceImpl implements PortService {
             return;
         }
         ClientInfo clientInfo = serverHandler.getClientByAccessKey(portDTO.getAccessKey());
-        boolean clientActived = Optional.ofNullable(clientInfo).map(x-> Objects.nonNull(x.getChannel())).orElse(false);
+        Integer clientChannelStatus = Objects.nonNull(clientInfo) && Objects.nonNull(clientInfo.getChannel()) ? 1 : 0;
         AppHandler appHandler = serverHandler.getAppHandler();
-        Integer channelStatus = clientActived && appHandler.exists(portDTO.getPort()) ? 1 : 0;
-        portDTO.setChannelStatus(channelStatus);
+        Integer channelStatus = appHandler.exists(portDTO.getPort()) ? 1 : 0;
+        portDTO.setClientChannelStatus(clientChannelStatus);
+        portDTO.setAppChannelStatus(channelStatus);
     }
 
 }

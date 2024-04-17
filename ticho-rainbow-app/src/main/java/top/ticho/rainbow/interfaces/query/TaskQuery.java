@@ -29,12 +29,12 @@ public class TaskQuery extends BasePageQuery implements Serializable {
     @ApiModelProperty(value = "任务名称", position = 20)
     private String name;
 
-    /** 执行目标名称 */
-    @ApiModelProperty(value = "执行目标名称", position = 30)
-    private String executeName;
+    /** 任务内容 */
+    @ApiModelProperty(value = "任务内容", position = 30)
+    private String content;
 
     /** 执行参数 */
-    @ApiModelProperty(value = "执行参数", position = 40)
+    @ApiModelProperty(value = "任务参数", position = 40)
     private String param;
 
     /** cron执行表达式 */
@@ -57,14 +57,5 @@ public class TaskQuery extends BasePageQuery implements Serializable {
     @ApiModelProperty(value = "创建时间", position = 100)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
-
-    /** 更新人 */
-    @ApiModelProperty(value = "更新人", position = 110)
-    private String updateBy;
-
-    /** 更新时间 */
-    @ApiModelProperty(value = "更新时间", position = 120)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private LocalDateTime updateTime;
 
 }

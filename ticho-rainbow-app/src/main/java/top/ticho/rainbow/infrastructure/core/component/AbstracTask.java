@@ -9,9 +9,11 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+import top.ticho.rainbow.domain.repository.TaskRepository;
 import top.ticho.tool.trace.common.bean.TraceInfo;
 import top.ticho.tool.trace.common.constant.LogConst;
 import top.ticho.tool.trace.common.prop.TraceProperty;
@@ -37,6 +39,19 @@ public abstract class AbstracTask extends QuartzJobBean {
     @Resource
     private TraceProperty traceProperty;
 
+    @Autowired
+    private TaskRepository taskRepository;
+
+    public abstract void run(JobExecutionContext context);
+
+    public void before(JobDataMap mergedJobDataMap) {
+
+    }
+
+    public void complete(JobDataMap mergedJobDataMap) {
+
+    }
+
     public void executeInternal(JobExecutionContext context) {
         // @formatter:off
         long start = SystemClock.now();
@@ -48,11 +63,16 @@ public abstract class AbstracTask extends QuartzJobBean {
         String jobName = jobDetail.getKey().getName();
         try {
             log.info("定时任务开始，任务: {}-{}, 执行时间：{}", jobName, taskName, runTime);
+            before(mergedJobDataMap);
             run(context);
         } catch (Exception e) {
             log.info("定时任务异常，任务: {}-{}, 执行时间: {}, 任务: {}", jobName, taskName, runTime, e.getMessage(), e);
         } finally {
-            traceHandle(mergedJobDataMap, jobName, taskName, runTime, start);
+            long end = SystemClock.now();
+            long consume = end - start;
+            complete(mergedJobDataMap);
+            log.info("定时任务结束，任务: {}-{}, 耗时{}ms, 执行时间：{}", jobName, taskName, consume, runTime);
+            traceHandle(mergedJobDataMap, start, end, consume);
         }
         // @formatter:on
     }
@@ -60,10 +80,7 @@ public abstract class AbstracTask extends QuartzJobBean {
     /**
      * 链路处理
      */
-    private void traceHandle(JobDataMap mergedJobDataMap, String jobName, String taskName, String runTime, long start) {
-        long end = SystemClock.now();
-        Long consume = end - start;
-        log.info("定时任务结束，任务: {}-{}, 耗时{}ms, 执行时间：{}", jobName, taskName, consume, runTime);
+    private void traceHandle(JobDataMap mergedJobDataMap, long start, long end, long consume) {
         if (!mergedJobDataMap.containsKey(SchedulerTemplate.MDC_INFO)) {
             return;
         }
@@ -114,6 +131,6 @@ public abstract class AbstracTask extends QuartzJobBean {
         TraceUtil.prepare(mdcMap);
     }
 
-    public abstract void run(JobExecutionContext context);
+
 
 }

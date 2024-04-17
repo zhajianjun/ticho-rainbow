@@ -32,10 +32,10 @@ public class Task extends Model<Task> implements Serializable {
     /** 任务名称 */
     private String name;
 
-    /** 执行目标名称 */
-    private String executeName;
+    /** 任务内容 */
+    private String content;
 
-    /** 执行参数 */
+    /** 任务参数 */
     private String param;
 
     /** cron执行表达式 */

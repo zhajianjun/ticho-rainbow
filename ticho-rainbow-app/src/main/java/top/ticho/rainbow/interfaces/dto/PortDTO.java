@@ -60,14 +60,10 @@ public class PortDTO implements Serializable {
     @NotNull(message = "是否开启不能为空")
     private Integer status;
 
-    /** 是否永久;1-是,0-否 */
-    @ApiModelProperty(value = "是否永久;1-是,0-否", position = 70)
-    @NotNull(message = "是否永久不能为空")
-    private Integer forever;
-
     /** 过期时间 */
     @ApiModelProperty(value = "过期时间", position = 80)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @NotNull(message = "过期时间不能为空")
     private LocalDateTime expireAt;
 
     /** 协议类型 */
@@ -75,9 +71,13 @@ public class PortDTO implements Serializable {
     @NotNull(message = "协议类型不能为空")
     private Integer type;
 
+    /** 客户端状态;1-激活,0-未激活 */
+    @ApiModelProperty(value = "客户端通道状态;1-激活,0-未激活", position = 92)
+    private Integer clientChannelStatus = 0;
+
     /** 通道状态;1-激活,0-未激活 */
-    @ApiModelProperty(value = "通道状态;1-激活,0-未激活", position = 95)
-    private Integer channelStatus;
+    @ApiModelProperty(value = "应用通道状态;1-激活,0-未激活", position = 94)
+    private Integer appChannelStatus = 0;
 
     /** 排序 */
     @ApiModelProperty(value = "排序", position = 100)

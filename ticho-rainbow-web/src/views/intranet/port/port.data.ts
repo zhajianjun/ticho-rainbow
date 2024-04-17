@@ -3,6 +3,7 @@ import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
 import { clientAll } from '@/api/intranet/client';
 import { isNull } from '@/utils/is';
+import { formatToDate } from '@/utils/dateUtil';
 import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
 import { isUndefined } from 'lodash-es';
 
@@ -30,21 +31,17 @@ export function getTableColumns(): BasicColumn[] {
       width: 80,
     },
     {
-      title: '是否永久',
-      dataIndex: 'forever',
-      resizable: true,
-      width: 50,
-    },
-    {
       title: '过期时间',
       dataIndex: 'expireAt',
       resizable: true,
       width: 100,
       customRender: ({ record }) => {
-        if (record.forever === 1) {
-          return '无限制';
+        if (record.expireAt === undefined || isNull(record.expireAt)) {
+          return record.expireAt;
         }
-        return record.expireAt;
+        const isEffect = formatToDate(new Date()) < formatToDate(record.expireAt);
+        const color = isEffect ? '#108ee9' : '#f50';
+        return h(Tag, { color: color }, () => record.expireAt);
       },
     },
     {
@@ -70,12 +67,24 @@ export function getTableColumns(): BasicColumn[] {
       width: 50,
     },
     {
-      title: '通道状态',
-      dataIndex: 'channelStatus',
+      title: '客户端通道',
+      dataIndex: 'clientChannelStatus',
       resizable: true,
       width: 50,
       customRender: ({ record }) => {
-        const isActive = ~~record.channelStatus === 1;
+        const isActive = ~~record.clientChannelStatus === 1;
+        const color = isActive ? '#108ee9' : '#f50';
+        const text = isActive ? '已激活' : '未激活';
+        return h(Tag, { color: color }, () => text);
+      },
+    },
+    {
+      title: '应用通道',
+      dataIndex: 'appChannelStatus',
+      resizable: true,
+      width: 50,
+      customRender: ({ record }) => {
+        const isActive = ~~record.appChannelStatus === 1;
         const color = isActive ? '#108ee9' : '#f50';
         const text = isActive ? '已激活' : '未激活';
         return h(Tag, { color: color }, () => text);
@@ -102,10 +111,7 @@ export function getSearchColumns(): FormSchema[] {
       field: `accessKey`,
       label: `客户端信息`,
       component: 'ApiSelect',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
+      colProps: { span: 8 },
       componentProps: {
         placeholder: '请选择客户端信息',
         api: clientAll,
@@ -117,10 +123,7 @@ export function getSearchColumns(): FormSchema[] {
       field: `port`,
       label: `主机端口`,
       component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
+      colProps: { span: 8 },
       componentProps: {
         placeholder: '请输入主机端口',
       },
@@ -129,10 +132,7 @@ export function getSearchColumns(): FormSchema[] {
       field: `endpoint`,
       label: `客户端地址`,
       component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
+      colProps: { span: 8 },
       componentProps: {
         placeholder: '请输入客户端地址',
       },
@@ -141,10 +141,7 @@ export function getSearchColumns(): FormSchema[] {
       field: `status`,
       label: `状态`,
       component: 'Select',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
+      colProps: { span: 8 },
       componentProps: {
         options: getDictByCode(commonStatus),
         placeholder: '请选择状态',
@@ -154,10 +151,7 @@ export function getSearchColumns(): FormSchema[] {
       field: `domain`,
       label: `域名`,
       component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
+      colProps: { span: 8 },
       componentProps: {
         placeholder: '请输入域名',
       },
@@ -166,10 +160,7 @@ export function getSearchColumns(): FormSchema[] {
       field: `type`,
       label: `协议类型`,
       component: 'Select',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
+      colProps: { span: 8 },
       componentProps: {
         options: getDictByCode(protocolType),
         placeholder: '请输入协议类型',
@@ -179,10 +170,7 @@ export function getSearchColumns(): FormSchema[] {
       field: `remark`,
       label: `备注信息`,
       component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
+      colProps: { span: 8 },
       componentProps: {
         placeholder: '请输入备注信息',
       },
@@ -321,27 +309,12 @@ export function getModalFormColumns(): FormSchema[] {
       },
     },
     {
-      field: `forever`,
-      label: `是否永久`,
-      component: 'Switch',
-      defaultValue: 0,
-      componentProps: {
-        checkedChildren: '开启',
-        unCheckedChildren: '关闭',
-        checkedValue: 1,
-        unCheckedValue: 0,
-      },
-    },
-    {
       field: `expireAt`,
       label: `过期时间`,
       component: 'DatePicker',
       componentProps: {
         placeholder: '请输入过期时间',
         showTime: true,
-      },
-      ifShow: ({ values }) => {
-        return values.forever !== 1;
       },
       colProps: {
         span: 24,
@@ -351,9 +324,9 @@ export function getModalFormColumns(): FormSchema[] {
       field: `sort`,
       label: `排序`,
       component: 'InputNumber',
+      defaultValue: 10,
       componentProps: {
         min: 0,
-        defaultValue: 10,
         step: 10,
         placeholder: '请输入排序',
       },
@@ -365,8 +338,8 @@ export function getModalFormColumns(): FormSchema[] {
       field: `remark`,
       label: `备注信息`,
       component: 'InputTextArea',
+      defaultValue: '',
       componentProps: {
-        defaultValue: '',
         placeholder: '请输入备注信息',
         maxlength: 120,
         showCount: true,

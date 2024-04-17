@@ -3,7 +3,6 @@ package top.ticho.rainbow.domain.service;
 import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,9 +24,7 @@ import top.ticho.rainbow.interfaces.query.TaskQuery;
 
 import javax.annotation.PostConstruct;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -60,7 +57,7 @@ public class TaskServiceImpl implements TaskService {
         for (Task task : tasks) {
             String jobId = task.getId().toString();
             if (!jobs.contains(jobId)) {
-                schedulerTemplate.addJob(task.getId().toString(), DEFAULT_JOB_GROUP, task.getExecuteName(), task.getCronExpression(), task.getName(), task.getParam());
+                schedulerTemplate.addJob(task.getId().toString(), DEFAULT_JOB_GROUP, task.getContent(), task.getCronExpression(), task.getName(), task.getParam());
             }
             if (Objects.equals(task.getStatus(), 1)) {
                 schedulerTemplate.resumeJob(jobId, DEFAULT_JOB_GROUP);
@@ -82,7 +79,7 @@ public class TaskServiceImpl implements TaskService {
         task.setId(CloudIdUtil.getId());
         Assert.isTrue(taskRepository.save(task), BizErrCode.FAIL, "保存失败");
         check(task);
-        boolean addedJob = schedulerTemplate.addJob(task.getId().toString(), DEFAULT_JOB_GROUP, task.getExecuteName(), task.getCronExpression(), task.getName(), task.getParam());
+        boolean addedJob = schedulerTemplate.addJob(task.getId().toString(), DEFAULT_JOB_GROUP, task.getContent(), task.getCronExpression(), task.getName(), task.getParam());
         Assert.isTrue(addedJob, BizErrCode.FAIL, "添加任务失败");
         if (Objects.equals(task.getStatus(), 1)) {
             schedulerTemplate.resumeJob(task.getId().toString(), DEFAULT_JOB_GROUP);
@@ -95,7 +92,7 @@ public class TaskServiceImpl implements TaskService {
         boolean present = abstracTasks
             .stream()
             .map(x -> x.getClass().getName())
-            .anyMatch(x -> x.equals(task.getExecuteName()));
+            .anyMatch(x -> x.equals(task.getContent()));
         Assert.isTrue(present, BizErrCode.FAIL, "执行类不存在");
         boolean valid = SchedulerTemplate.isValid(task.getCronExpression());
         Assert.isTrue(valid, BizErrCode.FAIL, "cron表达式不正确");
@@ -128,7 +125,7 @@ public class TaskServiceImpl implements TaskService {
         }
         Task dbTask = taskRepository.getById(task.getId());
         Integer status = dbTask.getStatus();
-        boolean addedJob = schedulerTemplate.addJob(task.getId().toString(), DEFAULT_JOB_GROUP, task.getExecuteName(), task.getCronExpression(), task.getName(), task.getParam());
+        boolean addedJob = schedulerTemplate.addJob(task.getId().toString(), DEFAULT_JOB_GROUP, task.getContent(), task.getCronExpression(), task.getName(), task.getParam());
         Assert.isTrue(addedJob, BizErrCode.FAIL, "添加任务失败");
         if (Objects.equals(status, 1)) {
             schedulerTemplate.resumeJob(task.getId().toString(), DEFAULT_JOB_GROUP);

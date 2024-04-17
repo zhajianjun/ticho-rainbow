@@ -5,6 +5,8 @@ export interface ClientDTO {
   accessKey: string;
   /** 客户端名称 */
   name: string;
+  /** 过期时间 */
+  expireAt: string;
   /** 状态;1-启用,0-停用 */
   status: number;
   /** 通道状态;1-激活,0-未激活 */

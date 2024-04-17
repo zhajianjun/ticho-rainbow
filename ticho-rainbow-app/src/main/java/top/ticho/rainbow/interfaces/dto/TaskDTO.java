@@ -34,13 +34,13 @@ public class TaskDTO implements Serializable {
     @NotBlank(message = "任务名称不能为空")
     private String name;
 
-    /** 执行目标名称 */
-    @ApiModelProperty(value = "执行目标名称", position = 30)
-    @NotBlank(message = "执行目标名称不能为空")
-    private String executeName;
+    /** 任务内容 */
+    @ApiModelProperty(value = "任务内容", position = 30)
+    @NotBlank(message = "任务内容不能为空")
+    private String content;
 
     /** 执行参数 */
-    @ApiModelProperty(value = "执行参数", position = 40)
+    @ApiModelProperty(value = "任务参数", position = 40)
     private String param;
 
     /** cron执行表达式 */

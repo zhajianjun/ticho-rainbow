@@ -37,6 +37,11 @@ public class ClientDTO implements Serializable {
     @NotBlank(message = "客户端名称不能为空")
     private String name;
 
+    /** 过期时间 */
+    @ApiModelProperty(value = "过期时间", position = 35)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime expireAt;
+
     /** 状态;1-启用,0-停用 */
     @ApiModelProperty(value = "状态;1-启用,0-停用", position = 40)
     private Integer status;

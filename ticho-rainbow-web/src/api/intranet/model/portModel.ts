@@ -17,8 +17,10 @@ export interface PortDTO {
   expireAt: string;
   /** 协议类型 */
   type: number;
-  /** 通道状态;1-激活,0-未激活 */
-  channelStatus: number;
+  /** 客户端通道状态;1-激活,0-未激活 */
+  clientChannelStatus: number;
+  /** 应用通道状态;1-激活,0-未激活 */
+  appChannelStatus: number;
   /** 排序 */
   sort: number;
   /** 备注信息 */

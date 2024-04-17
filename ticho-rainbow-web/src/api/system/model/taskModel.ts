@@ -3,9 +3,9 @@ export interface TaskDTO {
   id: number;
   /** 任务名称 */
   name: string;
-  /** 执行目标名称 */
-  executeName: string;
-  /** 执行参数 */
+  /** 任务内容 */
+  content: string;
+  /** 任务参数 */
   param: string;
   /** cron执行表达式 */
   cronExpression: string;
@@ -28,9 +28,9 @@ export interface TaskQuery {
   id: string;
   /** 任务名称 */
   name: string;
-  /** 执行目标名称 */
-  executeName: string;
-  /** 执行参数 */
+  /** 任务内容 */
+  content: string;
+  /** 任务参数 */
   param: string;
   /** cron执行表达式 */
   cronExpression: string;

@@ -2,6 +2,8 @@ import { BasicColumn, FormSchema } from '@/components/Table';
 import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
 import { getDictByCode } from '@/store/modules/dict';
+import { isNull } from '@/utils/is';
+import { formatToDate } from '@/utils/dateUtil';
 
 const commonStatus = 'commonStatus';
 
@@ -31,6 +33,20 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'status',
       resizable: true,
       width: 50,
+    },
+    {
+      title: '过期时间',
+      dataIndex: 'expireAt',
+      resizable: true,
+      width: 100,
+      customRender: ({ record }) => {
+        if (record.expireAt === undefined || isNull(record.expireAt)) {
+          return record.expireAt;
+        }
+        const isEffect = formatToDate(new Date()) < formatToDate(record.expireAt);
+        const color = isEffect ? '#108ee9' : '#f50';
+        return h(Tag, { color: color }, () => record.expireAt);
+      },
     },
     {
       title: '通道状态',
@@ -65,10 +81,7 @@ export function getSearchColumns(): FormSchema[] {
       field: `accessKey`,
       label: `客户端秘钥`,
       component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
+      colProps: { span: 8 },
       componentProps: {
         placeholder: '请输入客户端秘钥',
       },
@@ -77,10 +90,7 @@ export function getSearchColumns(): FormSchema[] {
       field: `name`,
       label: `客户端名称`,
       component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
+      colProps: { span: 8 },
       componentProps: {
         placeholder: '请输入客户端名称',
       },
@@ -89,10 +99,7 @@ export function getSearchColumns(): FormSchema[] {
       field: `status`,
       label: `状态`,
       component: 'Select',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
+      colProps: { span: 8 },
       componentProps: {
         options: getDictByCode(commonStatus),
         placeholder: '请选择状态',
@@ -102,10 +109,7 @@ export function getSearchColumns(): FormSchema[] {
       field: `remark`,
       label: `备注信息`,
       component: 'Input',
-      colProps: {
-        xl: 12,
-        xxl: 4,
-      },
+      colProps: { span: 8 },
       componentProps: {
         placeholder: '请输入备注信息',
       },
@@ -153,6 +157,18 @@ export function getModalFormColumns(): FormSchema[] {
       },
     },
     {
+      field: `expireAt`,
+      label: `过期时间`,
+      component: 'DatePicker',
+      componentProps: {
+        placeholder: '请输入过期时间',
+        showTime: true,
+      },
+      colProps: {
+        span: 24,
+      },
+    },
+    {
       field: `sort`,
       label: `排序`,
       component: 'InputNumber',
@@ -170,8 +186,8 @@ export function getModalFormColumns(): FormSchema[] {
       field: `remark`,
       label: `备注信息`,
       component: 'InputTextArea',
+      defaultValue: '',
       componentProps: {
-        defaultValue: '',
         placeholder: '请输入备注信息',
         maxlength: 120,
         showCount: true,

@@ -125,8 +125,8 @@ public class ClientServiceImpl implements ClientService {
         clientQuery.setStatus(1);
         List<Client> clients = clientRepository.list(clientQuery);
         List<String> accessKeys = clients.stream().map(Client::getAccessKey).collect(Collectors.toList());
-        Predicate<Port> portPredicate = x -> Objects.equals(x.getStatus(), 1) && (Objects.equals(x.getForever(), 1) || LocalDateTime.now().isBefore(x.getExpireAt()));
-        Map<String, List<PortInfo>> protMap = portRepository.listAndGroupByAccessKey(accessKeys, PortAssembler.INSTANCE::entityToInfo, portPredicate);
+        Predicate<Port> filter = x -> Objects.equals(x.getStatus(), 1) && LocalDateTime.now().isBefore(x.getExpireAt());
+        Map<String, List<PortInfo>> protMap = portRepository.listAndGroupByAccessKey(accessKeys, PortAssembler.INSTANCE::entityToInfo, filter);
         return clients
                 .stream()
                 .map(ClientAssembler.INSTANCE::entityToInfo)
@@ -152,24 +152,27 @@ public class ClientServiceImpl implements ClientService {
         if (Objects.isNull(client.getStatus())) {
             return;
         }
-        boolean enabled = Objects.equals(client.getStatus(), 1);
+        boolean enabled = Objects.equals(client.getStatus(), 1) && LocalDateTime.now().isBefore(client.getExpireAt());
         ClientInfo clientInfo = ClientAssembler.INSTANCE.entityToInfo(client);
-        // 数据库不存在，且新增的是开启状态，则加入服务端
-        if (Objects.isNull(dbClient) && enabled) {
-            serverHandler.saveClient(clientInfo);
-        }
-        // 数据库存在时,如果启用状态一致时则不处理
-        if (Objects.equals(client.getStatus(), dbClient.getStatus())) {
+        // 新增时，数据库不存在
+        if (Objects.isNull(dbClient)) {
+            // 新增时是开启状态，则加入服务端
+            if (enabled) {
+                serverHandler.saveClient(clientInfo);
+            }
             return;
         }
+        // 数据库存在
         String accessKey = client.getAccessKey();
         if (enabled) {
+            Predicate<Port> filter = x -> Objects.equals(x.getStatus(), 1) && LocalDateTime.now().isBefore(x.getExpireAt());
+            Map<String, List<PortInfo>> protMap = portRepository.listAndGroupByAccessKey(Collections.singletonList(accessKey), PortAssembler.INSTANCE::entityToInfo, filter);
+            List<PortInfo> portInfos = protMap.getOrDefault(accessKey, Collections.emptyList());
+            Map<Integer, PortInfo> portInfoMap = portInfos
+                .stream()
+                .collect(Collectors.toMap(PortInfo::getPort, Function.identity(), (v1, v2) -> v1, LinkedHashMap::new));
+            clientInfo.setPortMap(portInfoMap);
             serverHandler.saveClient(clientInfo);
-            Map<String, List<PortInfo>> protMap = portRepository.listAndGroupByAccessKey(Collections.singletonList(accessKey), PortAssembler.INSTANCE::entityToInfo, x -> Objects.equals(x.getStatus(), 1));
-            List<PortInfo> portInfos = protMap.get(accessKey);
-            if (CollUtil.isNotEmpty(portInfos)) {
-                portInfos.forEach(serverHandler::createApp);
-            }
         } else {
             serverHandler.deleteClient(accessKey);
         }
