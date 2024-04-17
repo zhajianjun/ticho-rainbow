@@ -31,7 +31,7 @@ export interface OpLogDTO {
   resStatus: number;
   /** 操作人 */
   operateBy: string;
-  /** 操作时间 */
+  /** 创建时间 */
   createTime: string;
   /** 是否异常 */
   isErr: number;
@@ -72,7 +72,7 @@ export interface OpLogQuery {
   resStatus: number;
   /** 操作人 */
   operateBy: string;
-  /** 操作时间 */
+  /** 创建时间 */
   createTime: string;
   /** 是否异常 */
   isErr: number;

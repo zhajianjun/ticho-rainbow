@@ -86,8 +86,8 @@ public class OpLogDTO implements Serializable {
     @ApiModelProperty(value = "操作人", position = 160)
     private String operateBy;
 
-    /** 操作时间 */
-    @ApiModelProperty(value = "操作时间", position = 170)
+    /** 创建时间 */
+    @ApiModelProperty(value = "创建时间", position = 170)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 

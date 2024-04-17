@@ -100,7 +100,7 @@ export function getTableColumns(): BasicColumn[] {
       width: 100,
     },
     {
-      title: '操作时间',
+      title: '创建时间',
       dataIndex: 'createTime',
       resizable: true,
       width: 100,

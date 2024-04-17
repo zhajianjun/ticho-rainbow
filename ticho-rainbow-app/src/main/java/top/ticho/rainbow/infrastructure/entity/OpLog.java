@@ -75,7 +75,7 @@ public class OpLog extends Model<OpLog> implements Serializable {
     /** 操作人 */
     private String operateBy;
 
-    /** 操作时间 */
+    /** 创建时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
