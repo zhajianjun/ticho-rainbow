@@ -81,8 +81,12 @@
       }
 
       function openCronModal() {
+        if (!unref(isUpdate)) {
+          openModal(true, '* * * * * ? *', true);
+          return;
+        }
         let fieldsValue = getFieldsValue();
-        openModal(true, fieldsValue.cronExpression);
+        openModal(true, fieldsValue.cronExpression, true);
       }
 
       return {

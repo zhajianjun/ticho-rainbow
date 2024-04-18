@@ -63,7 +63,7 @@ public class OpLog extends Model<OpLog> implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime endTime;
 
-    /** 请求间隔（毫秒） */
+    /** 请求间隔(毫秒) */
     private Integer consume;
 
     /** 请求IP */

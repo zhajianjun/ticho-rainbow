@@ -23,7 +23,7 @@ export interface OpLogDTO {
   startTime: string;
   /** 请求结束时间 */
   endTime: string;
-  /** 请求间隔（毫秒） */
+  /** 请求间隔(毫秒) */
   consume: number;
   /** 请求IP */
   ip: string;
@@ -64,7 +64,7 @@ export interface OpLogQuery {
   startTime: string;
   /** 请求结束时间 */
   endTime: string;
-  /** 请求间隔（毫秒） */
+  /** 请求间隔(毫秒) */
   consume: number;
   /** 请求IP */
   ip: string;

@@ -70,8 +70,8 @@ public class OpLogDTO implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime endTime;
 
-    /** 请求间隔（毫秒） */
-    @ApiModelProperty(value = "请求间隔（毫秒）", position = 130)
+    /** 请求间隔(毫秒) */
+    @ApiModelProperty(value = "请求间隔(毫秒)", position = 130)
     private Integer consume;
 
     /** 请求IP */

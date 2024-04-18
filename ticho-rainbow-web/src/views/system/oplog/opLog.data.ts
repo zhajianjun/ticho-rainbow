@@ -1,4 +1,12 @@
+// noinspection DuplicatedCode
+
 import { BasicColumn, FormSchema } from '@/components/Table';
+import dayjs from 'dayjs';
+import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
+import { h } from 'vue';
+import { Tag } from 'ant-design-vue';
+
+const yesOrNo = 'yesOrNo';
 
 export function getTableColumns(): BasicColumn[] {
   return [
@@ -32,36 +40,42 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'position',
       resizable: true,
       width: 100,
+      ifShow: false,
     },
     {
       title: '请求参数',
       dataIndex: 'reqBody',
       resizable: true,
       width: 100,
+      ifShow: false,
     },
     {
       title: '请求体',
       dataIndex: 'reqParams',
       resizable: true,
       width: 100,
+      ifShow: false,
     },
     {
       title: '请求头',
       dataIndex: 'reqHeaders',
       resizable: true,
       width: 100,
+      ifShow: false,
     },
     {
       title: '响应体',
       dataIndex: 'resBody',
       resizable: true,
       width: 100,
+      ifShow: false,
     },
     {
       title: '响应头',
       dataIndex: 'resHeaders',
       resizable: true,
       width: 100,
+      ifShow: false,
     },
     {
       title: '请求开始时间',
@@ -76,10 +90,13 @@ export function getTableColumns(): BasicColumn[] {
       width: 100,
     },
     {
-      title: '请求间隔（毫秒）',
+      title: '请求间隔(毫秒)',
       dataIndex: 'consume',
       resizable: true,
       width: 100,
+      customRender: ({ text }) => {
+        return text + 'ms';
+      },
     },
     {
       title: '请求IP',
@@ -92,6 +109,11 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'resStatus',
       resizable: true,
       width: 100,
+      customRender: ({ text }) => {
+        const success = ~~text === 200;
+        const color = success ? 'green' : 'red';
+        return h(Tag, { color: color }, () => text);
+      },
     },
     {
       title: '操作人',
@@ -110,6 +132,11 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'isErr',
       resizable: true,
       width: 100,
+      customRender: ({ text }) => {
+        const isErr = ~~text === 1;
+        const color = isErr ? 'red' : 'green';
+        return h(Tag, { color: color }, () => getDictByCodeAndValue(yesOrNo, text));
+      },
     },
     {
       title: '异常信息',
@@ -216,28 +243,46 @@ export function getSearchColumns(): FormSchema[] {
     {
       field: `startTime`,
       label: `请求开始时间`,
-      component: 'Input',
+      component: 'RangePicker',
       colProps: { span: 8 },
+      defaultValue: [dayjs().startOf('date'), dayjs().endOf('date')],
       componentProps: {
-        placeholder: '请输入请求开始时间',
+        placeholder: ['开始日期', '结束日期'],
+        style: { width: '100%' },
+        showTime: true,
+        format: 'YYYY-MM-DD HH:mm:ss',
       },
     },
     {
       field: `endTime`,
       label: `请求结束时间`,
-      component: 'Input',
+      component: 'RangePicker',
       colProps: { span: 8 },
       componentProps: {
-        placeholder: '请输入请求结束时间',
+        placeholder: ['开始日期', '结束日期'],
+        style: { width: '100%' },
+        showTime: true,
+        format: 'YYYY-MM-DD HH:mm:ss',
       },
     },
     {
-      field: `consume`,
-      label: `请求间隔（毫秒）`,
-      component: 'Input',
-      colProps: { span: 8 },
+      field: `consumeStart`,
+      label: `请求间隔起始`,
+      component: 'InputNumber',
+      colProps: { span: 4 },
       componentProps: {
-        placeholder: '请输入请求间隔（毫秒）',
+        min: 0,
+        addonAfter: 'ms',
+      },
+    },
+    {
+      field: `consumeEnd`,
+      label: `请求间隔结束`,
+      component: 'InputNumber',
+      colProps: { span: 4 },
+      componentProps: {
+        min: 0,
+        addonAfter: 'ms',
       },
     },
     {
@@ -270,10 +315,10 @@ export function getSearchColumns(): FormSchema[] {
     {
       field: `isErr`,
       label: `是否异常`,
-      component: 'Input',
+      component: 'Select',
       colProps: { span: 8 },
       componentProps: {
-        placeholder: '请输入是否异常',
+        options: getDictByCode(yesOrNo),
       },
     },
     {

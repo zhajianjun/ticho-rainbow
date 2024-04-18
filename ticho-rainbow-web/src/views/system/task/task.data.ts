@@ -1,6 +1,5 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
-import dayjs from 'dayjs';
 
 const commonStatus = 'commonStatus';
 
@@ -126,29 +125,6 @@ export function getSearchColumns(): FormSchema[] {
         placeholder: '请选择任务状态',
       },
       colProps: { span: 8 },
-    },
-    {
-      field: `createTime`,
-      label: `创建时间`,
-      component: 'RangePicker',
-      colProps: { span: 8 },
-      defaultValue: [dayjs().startOf('date'), dayjs()],
-      // fieldMapToTime: [['createTime', ['startTime', 'endTime'], 'YYYY-MM-DD HH:mm:ss']],
-      componentProps: {
-        placeholder: ['开始日期', '结束日期'],
-        style: { width: '100%' },
-        inputReadOnly: true,
-        showTime: true,
-        format: 'YYYY-MM-DD HH:mm:ss',
-        presets: [
-          { label: '近半小时', value: [dayjs().add(-0.5, 'hour'), dayjs()] },
-          { label: '近一小时', value: [dayjs().add(-1, 'hour'), dayjs()] },
-          { label: '近一天', value: [dayjs().add(-1, 'day'), dayjs()] },
-          { label: '近一周', value: [dayjs().add(-1, 'week'), dayjs()] },
-          { label: '近一月', value: [dayjs().add(-1, 'month'), dayjs()] },
-          { label: '近一年', value: [dayjs().add(-1, 'year'), dayjs()] },
-        ],
-      },
     },
   ];
 }

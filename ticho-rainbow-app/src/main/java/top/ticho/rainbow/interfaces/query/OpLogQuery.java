@@ -1,13 +1,15 @@
 package top.ticho.rainbow.interfaces.query;
 
-import java.io.Serializable;
-import top.ticho.boot.view.core.BasePageQuery;
-import java.time.LocalDateTime;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import top.ticho.boot.view.core.BasePageQuery;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 日志信息查询条件
@@ -64,16 +66,20 @@ public class OpLogQuery extends BasePageQuery implements Serializable {
     /** 请求开始时间 */
     @ApiModelProperty(value = "请求开始时间", position = 110)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private LocalDateTime startTime;
+    private LocalDateTime[] startTime;
 
     /** 请求结束时间 */
     @ApiModelProperty(value = "请求结束时间", position = 120)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private LocalDateTime endTime;
+    private LocalDateTime[] endTime;
 
-    /** 请求间隔（毫秒） */
-    @ApiModelProperty(value = "请求间隔（毫秒）", position = 130)
-    private Integer consume;
+    /** 请求间隔(毫秒) */
+    @ApiModelProperty(value = "请求间隔开始", position = 130)
+    private Integer consumeStart;
+
+    /** 请求间隔(毫秒) */
+    @ApiModelProperty(value = "请求间隔结束", position = 135)
+    private Integer consumeEnd;
 
     /** 请求IP */
     @ApiModelProperty(value = "请求IP", position = 140)
@@ -90,7 +96,7 @@ public class OpLogQuery extends BasePageQuery implements Serializable {
     /** 创建时间 */
     @ApiModelProperty(value = "创建时间", position = 170)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private LocalDateTime createTime;
+    private List<LocalDateTime> createTime;
 
     /** 是否异常 */
     @ApiModelProperty(value = "是否异常", position = 180)

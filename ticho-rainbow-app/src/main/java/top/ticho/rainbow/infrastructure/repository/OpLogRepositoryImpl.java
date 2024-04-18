@@ -29,24 +29,30 @@ public class OpLogRepositoryImpl extends RootServiceImpl<OpLogMapper, OpLog> imp
         // @formatter:off
         LambdaQueryWrapper<OpLog> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(Objects.nonNull(query.getId()), OpLog::getId, query.getId());
-        wrapper.eq(StrUtil.isNotBlank(query.getName()), OpLog::getName, query.getName());
-        wrapper.eq(StrUtil.isNotBlank(query.getUrl()), OpLog::getUrl, query.getUrl());
-        wrapper.eq(StrUtil.isNotBlank(query.getType()), OpLog::getType, query.getType());
-        wrapper.eq(StrUtil.isNotBlank(query.getPosition()), OpLog::getPosition, query.getPosition());
-        wrapper.eq(StrUtil.isNotBlank(query.getReqBody()), OpLog::getReqBody, query.getReqBody());
-        wrapper.eq(StrUtil.isNotBlank(query.getReqParams()), OpLog::getReqParams, query.getReqParams());
-        wrapper.eq(StrUtil.isNotBlank(query.getReqHeaders()), OpLog::getReqHeaders, query.getReqHeaders());
-        wrapper.eq(StrUtil.isNotBlank(query.getResBody()), OpLog::getResBody, query.getResBody());
-        wrapper.eq(StrUtil.isNotBlank(query.getResHeaders()), OpLog::getResHeaders, query.getResHeaders());
-        wrapper.eq(Objects.nonNull(query.getStartTime()), OpLog::getStartTime, query.getStartTime());
-        wrapper.eq(Objects.nonNull(query.getEndTime()), OpLog::getEndTime, query.getEndTime());
-        wrapper.eq(Objects.nonNull(query.getConsume()), OpLog::getConsume, query.getConsume());
-        wrapper.eq(StrUtil.isNotBlank(query.getIp()), OpLog::getIp, query.getIp());
-        wrapper.eq(Objects.nonNull(query.getResStatus()), OpLog::getResStatus, query.getResStatus());
-        wrapper.eq(StrUtil.isNotBlank(query.getOperateBy()), OpLog::getOperateBy, query.getOperateBy());
-        wrapper.eq(Objects.nonNull(query.getCreateTime()), OpLog::getCreateTime, query.getCreateTime());
+        wrapper.like(StrUtil.isNotBlank(query.getName()), OpLog::getName, query.getName());
+        wrapper.like(StrUtil.isNotBlank(query.getUrl()), OpLog::getUrl, query.getUrl());
+        wrapper.like(StrUtil.isNotBlank(query.getType()), OpLog::getType, query.getType());
+        wrapper.like(StrUtil.isNotBlank(query.getPosition()), OpLog::getPosition, query.getPosition());
+        wrapper.like(StrUtil.isNotBlank(query.getReqBody()), OpLog::getReqBody, query.getReqBody());
+        wrapper.like(StrUtil.isNotBlank(query.getReqParams()), OpLog::getReqParams, query.getReqParams());
+        wrapper.like(StrUtil.isNotBlank(query.getReqHeaders()), OpLog::getReqHeaders, query.getReqHeaders());
+        wrapper.like(StrUtil.isNotBlank(query.getResBody()), OpLog::getResBody, query.getResBody());
+        wrapper.like(StrUtil.isNotBlank(query.getResHeaders()), OpLog::getResHeaders, query.getResHeaders());
+        if (Objects.nonNull(query.getStartTime()) && query.getStartTime().length == 2) {
+            wrapper.ge(OpLog::getStartTime, query.getStartTime()[0]);
+            wrapper.le(OpLog::getStartTime, query.getStartTime()[1]);
+        }
+        if (Objects.nonNull(query.getEndTime()) && query.getEndTime().length == 2) {
+            wrapper.ge(OpLog::getEndTime, query.getEndTime()[0]);
+            wrapper.le(OpLog::getEndTime, query.getEndTime()[1]);
+        }
+        wrapper.ge(Objects.nonNull(query.getConsumeStart()), OpLog::getConsume, query.getConsumeStart());
+        wrapper.le(Objects.nonNull(query.getConsumeEnd()), OpLog::getConsume, query.getConsumeEnd());
+        wrapper.like(StrUtil.isNotBlank(query.getIp()), OpLog::getIp, query.getIp());
+        wrapper.like(Objects.nonNull(query.getResStatus()), OpLog::getResStatus, query.getResStatus());
+        wrapper.like(StrUtil.isNotBlank(query.getOperateBy()), OpLog::getOperateBy, query.getOperateBy());
         wrapper.eq(Objects.nonNull(query.getIsErr()), OpLog::getIsErr, query.getIsErr());
-        wrapper.eq(StrUtil.isNotBlank(query.getErrMessage()), OpLog::getErrMessage, query.getErrMessage());
+        wrapper.like(StrUtil.isNotBlank(query.getErrMessage()), OpLog::getErrMessage, query.getErrMessage());
         wrapper.orderByDesc(OpLog::getCreateTime);
         return list(wrapper);
         // @formatter:on
