@@ -133,13 +133,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void runOnce(Long id) {
+    public void runOnce(Long id, String param) {
         Assert.isNotNull(id, "编号不能为空");
         Task task = taskRepository.getById(id);
         Assert.isNotNull(task, BizErrCode.FAIL, "任务不存在");
         boolean exists = schedulerTemplate.checkExists(task.getId().toString(), DEFAULT_JOB_GROUP);
         Assert.isTrue(exists, BizErrCode.FAIL, "任务不存在");
-        boolean runJob = schedulerTemplate.runOnce(task.getId().toString(), DEFAULT_JOB_GROUP);
+        boolean runJob = schedulerTemplate.runOnce(task.getId().toString(), DEFAULT_JOB_GROUP, param);
         Assert.isTrue(runJob, BizErrCode.FAIL, "立即执行任务失败");
     }
 

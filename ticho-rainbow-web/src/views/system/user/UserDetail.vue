@@ -6,7 +6,7 @@
     @back="goBack"
   >
     <template #extra>
-      <a-button type="primary" danger> 禁用账号 </a-button>
+      <a-button type="primary" danger> 锁定账号 </a-button>
       <a-button type="primary"> 修改密码 </a-button>
     </template>
     <template #footer>
@@ -53,7 +53,7 @@
       // 页面左侧点击返回链接时的操作
       function goBack() {
         // 本例的效果时点击返回始终跳转到账号列表页，实际应用时可返回上一页
-        go('/intranet/user');
+        go('/system/user');
       }
       return { userId, currentKey, goBack };
     },

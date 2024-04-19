@@ -70,8 +70,8 @@ public class TaskController {
     @ApiOperation(value = "执行一次定时任务调度")
     @ApiOperationSupport(order = 40)
     @GetMapping("runOnce")
-    public Result<Void> runOnce(Long id) {
-        taskService.runOnce(id);
+    public Result<Void> runOnce(Long id, String param) {
+        taskService.runOnce(id, param);
         return Result.ok();
     }
 

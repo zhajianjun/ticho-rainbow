@@ -39,10 +39,6 @@ public class OpLogQuery extends BasePageQuery implements Serializable {
     @ApiModelProperty(value = "请求类型", position = 40)
     private String type;
 
-    /** 请求方法 */
-    @ApiModelProperty(value = "请求方法", position = 50)
-    private String position;
-
     /** 请求参数 */
     @ApiModelProperty(value = "请求参数", position = 60)
     private String reqBody;
@@ -73,13 +69,16 @@ public class OpLogQuery extends BasePageQuery implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime[] endTime;
 
-    /** 请求间隔(毫秒) */
+    /** 请求间隔开始 */
     @ApiModelProperty(value = "请求间隔开始", position = 130)
     private Integer consumeStart;
 
-    /** 请求间隔(毫秒) */
+    /** 请求间隔结束 */
     @ApiModelProperty(value = "请求间隔结束", position = 135)
     private Integer consumeEnd;
+
+    @ApiModelProperty(value = "链路id", position = 136)
+    private String traceId;
 
     /** 请求IP */
     @ApiModelProperty(value = "请求IP", position = 140)

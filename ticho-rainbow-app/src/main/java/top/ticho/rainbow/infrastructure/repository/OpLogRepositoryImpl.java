@@ -32,7 +32,6 @@ public class OpLogRepositoryImpl extends RootServiceImpl<OpLogMapper, OpLog> imp
         wrapper.like(StrUtil.isNotBlank(query.getName()), OpLog::getName, query.getName());
         wrapper.like(StrUtil.isNotBlank(query.getUrl()), OpLog::getUrl, query.getUrl());
         wrapper.like(StrUtil.isNotBlank(query.getType()), OpLog::getType, query.getType());
-        wrapper.like(StrUtil.isNotBlank(query.getPosition()), OpLog::getPosition, query.getPosition());
         wrapper.like(StrUtil.isNotBlank(query.getReqBody()), OpLog::getReqBody, query.getReqBody());
         wrapper.like(StrUtil.isNotBlank(query.getReqParams()), OpLog::getReqParams, query.getReqParams());
         wrapper.like(StrUtil.isNotBlank(query.getReqHeaders()), OpLog::getReqHeaders, query.getReqHeaders());
@@ -48,6 +47,7 @@ public class OpLogRepositoryImpl extends RootServiceImpl<OpLogMapper, OpLog> imp
         }
         wrapper.ge(Objects.nonNull(query.getConsumeStart()), OpLog::getConsume, query.getConsumeStart());
         wrapper.le(Objects.nonNull(query.getConsumeEnd()), OpLog::getConsume, query.getConsumeEnd());
+        wrapper.eq(StrUtil.isNotBlank(query.getTraceId()), OpLog::getTraceId, query.getTraceId());
         wrapper.like(StrUtil.isNotBlank(query.getIp()), OpLog::getIp, query.getIp());
         wrapper.like(Objects.nonNull(query.getResStatus()), OpLog::getResStatus, query.getResStatus());
         wrapper.like(StrUtil.isNotBlank(query.getOperateBy()), OpLog::getOperateBy, query.getOperateBy());

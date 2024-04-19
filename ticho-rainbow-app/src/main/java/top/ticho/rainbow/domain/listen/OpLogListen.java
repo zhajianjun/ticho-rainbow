@@ -9,14 +9,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
+import top.ticho.boot.json.util.JsonUtil;
 import top.ticho.boot.log.event.WebLogEvent;
 import top.ticho.boot.view.log.HttpLog;
 import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.rainbow.domain.repository.OpLogRepository;
 import top.ticho.rainbow.infrastructure.entity.OpLog;
 import top.ticho.rainbow.interfaces.assembler.OpLogAssembler;
+import top.ticho.tool.trace.common.constant.LogConst;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -42,6 +45,14 @@ public class OpLogListen {
         if (Objects.isNull(entity)) {
             return;
         }
+        boolean anyMatch = ignorePaths.stream().anyMatch(x -> antPathMatcher.match(x, httpLog.getUrl()));
+        if (anyMatch) {
+            return;
+        }
+        // 不统计非登录用户的操作日志
+        if (Objects.isNull(httpLog.getUsername())) {
+            return;
+        }
         Long start = httpLog.getStart();
         Long end = httpLog.getEnd();
         if (Objects.nonNull(start)) {
@@ -55,15 +66,12 @@ public class OpLogListen {
         entity.setIsErr(isError);
         entity.setResStatus(status);
         entity.setOperateBy(httpLog.getUsername());
-        boolean anyMatch = ignorePaths
-            .stream()
-            .anyMatch(x -> antPathMatcher.match(x, httpLog.getUrl()));
-        if (anyMatch) {
-            return;
-        }
         if (StrUtil.isBlank(entity.getResBody())) {
             entity.setResBody(null);
         }
+        Map<String, String> mdcMap = httpLog.getMdcMap();
+        entity.setTraceId(mdcMap.get(LogConst.TRACE_ID_KEY));
+        entity.setMdc(JsonUtil.toJsonString(mdcMap));
         entity.setId(CloudIdUtil.getId());
         opLogRepository.save(entity);
     }

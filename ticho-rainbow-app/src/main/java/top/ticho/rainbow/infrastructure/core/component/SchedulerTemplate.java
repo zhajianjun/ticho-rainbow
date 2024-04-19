@@ -149,6 +149,28 @@ public class SchedulerTemplate {
     }
 
     /**
+     * 执行一次任务
+     *
+     * @param jobName  任务名称
+     * @param jobGroup 任务组
+     * @return boolean
+     */
+    public boolean runOnce(String jobName, String jobGroup, String schedulerParam) {
+        JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
+        try {
+            Map<String, String> mdcMap = MDC.getCopyOfContextMap();
+            JobDataMap jobDataMap = new JobDataMap();
+            jobDataMap.put(MDC_INFO, mdcMap);
+            jobDataMap.put(SCHEDULER_PARAM, schedulerParam);
+            scheduler.triggerJob(jobKey, jobDataMap);
+            return true;
+        } catch (SchedulerException e) {
+            log.error("运行一次定时任务失败", e);
+            return false;
+        }
+    }
+
+    /**
      * 重启定时任务
      *
      * @param triggerName    触发器名称

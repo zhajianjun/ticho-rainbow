@@ -38,9 +38,10 @@ public interface TaskService {
     /**
      * 执行一次定时任务调度
      *
-     * @param id 主键
+     * @param id    主键
+     * @param param 任务参数
      */
-    void runOnce(Long id);
+    void runOnce(Long id, String param);
 
     /**
      * 暂停定时任务调度

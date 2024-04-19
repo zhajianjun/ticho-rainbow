@@ -5,10 +5,14 @@ import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInt
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import top.ticho.rainbow.infrastructure.core.interceptor.CustomTraceInterceptor;
 import top.ticho.tool.intranet.prop.ServerProperty;
 import top.ticho.tool.intranet.server.handler.ServerHandler;
+
+import javax.annotation.Resource;
 
 /**
  * 通用配置
@@ -18,10 +22,18 @@ import top.ticho.tool.intranet.server.handler.ServerHandler;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
+    @Resource
+    private CustomTraceInterceptor customTraceInterceptor;
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         // 参数1请求名称、参数2视图名称
         registry.addViewController("/").setViewName("/health");
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(customTraceInterceptor).order(customTraceInterceptor.getOrder());
     }
 
     @Bean

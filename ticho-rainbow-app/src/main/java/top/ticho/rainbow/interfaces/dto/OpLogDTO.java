@@ -1,12 +1,13 @@
 package top.ticho.rainbow.interfaces.dto;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 日志信息DTO
@@ -73,6 +74,14 @@ public class OpLogDTO implements Serializable {
     /** 请求间隔(毫秒) */
     @ApiModelProperty(value = "请求间隔(毫秒)", position = 130)
     private Integer consume;
+
+    /** mdc信息 */
+    @ApiModelProperty(value = "mdc信息", position = 134)
+    private String mdc;
+
+    /** 链路id */
+    @ApiModelProperty(value = "链路id", position = 136)
+    private String traceId;
 
     /** 请求IP */
     @ApiModelProperty(value = "请求IP", position = 140)

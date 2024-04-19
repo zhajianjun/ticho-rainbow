@@ -33,7 +33,7 @@ export function getTableColumns(): BasicColumn[] {
       title: '请求类型',
       dataIndex: 'type',
       resizable: true,
-      width: 100,
+      width: 40,
     },
     {
       title: '请求方法',
@@ -78,6 +78,12 @@ export function getTableColumns(): BasicColumn[] {
       ifShow: false,
     },
     {
+      title: '链路ID',
+      dataIndex: 'traceId',
+      resizable: true,
+      width: 100,
+    },
+    {
       title: '请求开始时间',
       dataIndex: 'startTime',
       resizable: true,
@@ -90,10 +96,10 @@ export function getTableColumns(): BasicColumn[] {
       width: 100,
     },
     {
-      title: '请求间隔(毫秒)',
+      title: '请求间隔',
       dataIndex: 'consume',
       resizable: true,
-      width: 100,
+      width: 40,
       customRender: ({ text }) => {
         return text + 'ms';
       },
@@ -108,7 +114,7 @@ export function getTableColumns(): BasicColumn[] {
       title: '响应状态',
       dataIndex: 'resStatus',
       resizable: true,
-      width: 100,
+      width: 40,
       customRender: ({ text }) => {
         const success = ~~text === 200;
         const color = success ? 'green' : 'red';
@@ -119,13 +125,7 @@ export function getTableColumns(): BasicColumn[] {
       title: '操作人',
       dataIndex: 'operateBy',
       resizable: true,
-      width: 100,
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      resizable: true,
-      width: 100,
+      width: 40,
     },
     {
       title: '是否异常',
@@ -137,12 +137,6 @@ export function getTableColumns(): BasicColumn[] {
         const color = isErr ? 'red' : 'green';
         return h(Tag, { color: color }, () => getDictByCodeAndValue(yesOrNo, text));
       },
-    },
-    {
-      title: '异常信息',
-      dataIndex: 'errMessage',
-      resizable: true,
-      width: 100,
     },
   ];
 }
@@ -187,12 +181,12 @@ export function getSearchColumns(): FormSchema[] {
       },
     },
     {
-      field: `position`,
-      label: `请求方法`,
+      field: `traceId`,
+      label: `链路ID`,
       component: 'Input',
       colProps: { span: 8 },
       componentProps: {
-        placeholder: '请输入请求方法',
+        placeholder: '请输入链路ID',
       },
     },
     {
