@@ -41,10 +41,10 @@ public class OpLog extends Model<OpLog> implements Serializable {
     /** 请求方法 */
     private String position;
 
-    /** 请求参数 */
+    /** 请求体 */
     private String reqBody;
 
-    /** 请求体 */
+    /** 请求参数 */
     private String reqParams;
 
     /** 请求头 */

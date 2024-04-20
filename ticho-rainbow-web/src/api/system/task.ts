@@ -26,9 +26,11 @@ export function taskPage(params?: TaskQuery) {
   return defHttp.get<TaskDTO[]>({ url: Api.TaskPage, params }, { errorMessageMode: 'none' });
 }
 
-export function runOnceTask(id: string) {
-  const params = { id: id };
-  return defHttp.get<any>({ url: Api.RunOnceTask, params }, { errorMessageMode: 'message', successMessageMode: 'message' });
+export function runOnceTask(params) {
+  return defHttp.get<any>(
+    { url: Api.RunOnceTask, params },
+    { errorMessageMode: 'message', successMessageMode: 'message' },
+  );
 }
 
 export function pauseTask(id: string) {

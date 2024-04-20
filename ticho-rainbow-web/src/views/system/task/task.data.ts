@@ -218,3 +218,34 @@ export function getModalFormColumns(): FormSchema[] {
     },
   ];
 }
+
+export function getRunOnceModalFormColumns(): FormSchema[] {
+  return [
+    {
+      field: `id`,
+      label: `任务ID`,
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入任务ID',
+      },
+      ifShow: false,
+      colProps: {
+        span: 24,
+      },
+    },
+    {
+      field: `param`,
+      label: `任务参数`,
+      component: 'InputTextArea',
+      componentProps: {
+        placeholder: '请输入任务参数',
+        maxlength: 120,
+        showCount: true,
+        rows: 4,
+      },
+      colProps: {
+        span: 24,
+      },
+    },
+  ];
+}

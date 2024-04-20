@@ -79,7 +79,7 @@ spring:
           quartz:
             scheduler:
               # 调度器实例名称
-              instanceName: TichoQuartzScheduler
+              instanceName: RainbowTask
             # 线程池配置
             threadPool:
               class: org.quartz.simpl.SimpleThreadPool

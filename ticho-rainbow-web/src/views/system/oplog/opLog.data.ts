@@ -5,8 +5,23 @@ import dayjs from 'dayjs';
 import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
 import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
+import { DescItem } from '@/components/Description';
+import { JsonPreview } from '@/components/CodeEditor';
+import { isNull } from '@/utils/is';
 
 const yesOrNo = 'yesOrNo';
+
+const httpType = {
+  GET: '#49CC90',
+  POST: '#61AFFE',
+  PUT: '#FCA130',
+  DELETE: '#EF3D3D',
+  HEAD: '#800080',
+  OPTIONS: '#FFA500',
+  PATCH: '#00FFFF',
+  TRACE: '#FFC0CB',
+  CONNECT: '#A52A2A',
+};
 
 export function getTableColumns(): BasicColumn[] {
   return [
@@ -18,14 +33,8 @@ export function getTableColumns(): BasicColumn[] {
       ifShow: false,
     },
     {
-      title: '名称',
+      title: '接口名称',
       dataIndex: 'name',
-      resizable: true,
-      width: 100,
-    },
-    {
-      title: '请求地址',
-      dataIndex: 'url',
       resizable: true,
       width: 100,
     },
@@ -34,6 +43,16 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'type',
       resizable: true,
       width: 40,
+      customRender: ({ text }) => {
+        const color = httpType[text];
+        return h(Tag, { color: color }, () => text);
+      },
+    },
+    {
+      title: '接口地址',
+      dataIndex: 'url',
+      resizable: true,
+      width: 100,
     },
     {
       title: '请求方法',
@@ -43,14 +62,14 @@ export function getTableColumns(): BasicColumn[] {
       ifShow: false,
     },
     {
-      title: '请求参数',
+      title: '请求体',
       dataIndex: 'reqBody',
       resizable: true,
       width: 100,
       ifShow: false,
     },
     {
-      title: '请求体',
+      title: '请求参数',
       dataIndex: 'reqParams',
       resizable: true,
       width: 100,
@@ -174,10 +193,12 @@ export function getSearchColumns(): FormSchema[] {
     {
       field: `type`,
       label: `请求类型`,
-      component: 'Input',
+      component: 'Select',
       colProps: { span: 8 },
       componentProps: {
-        placeholder: '请输入请求类型',
+        options: Object.keys(httpType).map((key) => {
+          return { label: key, value: key };
+        }),
       },
     },
     {
@@ -191,7 +212,7 @@ export function getSearchColumns(): FormSchema[] {
     },
     {
       field: `reqBody`,
-      label: `请求参数`,
+      label: `请求体`,
       component: 'Input',
       colProps: { span: 8 },
       componentProps: {
@@ -200,7 +221,7 @@ export function getSearchColumns(): FormSchema[] {
     },
     {
       field: `reqParams`,
-      label: `请求体`,
+      label: `请求参数`,
       component: 'Input',
       colProps: { span: 8 },
       componentProps: {
@@ -323,6 +344,168 @@ export function getSearchColumns(): FormSchema[] {
       componentProps: {
         placeholder: '请输入异常信息',
       },
+    },
+  ];
+}
+
+export function getDescColumns(): DescItem[] {
+  return [
+    {
+      label: '接口名称',
+      field: 'name',
+      labelMinWidth: 80,
+      span: 3,
+    },
+    {
+      label: '接口地址',
+      field: 'url',
+      labelMinWidth: 80,
+      render: (data, values) => {
+        const color = httpType[values.type];
+        return h('span', [h(Tag, { color: color }, () => values.type), h('span', '  ' + data)]);
+      },
+      span: 3,
+    },
+    {
+      label: '请求方法',
+      field: 'position',
+      labelMinWidth: 80,
+      span: 3,
+    },
+    {
+      label: '开始时间',
+      field: 'startTime',
+      labelMinWidth: 80,
+      span: 3,
+    },
+    {
+      label: '结束时间',
+      field: 'endTime',
+      labelMinWidth: 80,
+      span: 3,
+    },
+    {
+      label: '时间间隔',
+      field: 'consume',
+      labelMinWidth: 80,
+      span: 3,
+      render: (data) => {
+        return data + 'ms';
+      },
+    },
+    {
+      label: '链路id',
+      field: 'traceId',
+      labelMinWidth: 80,
+      span: 3,
+    },
+    {
+      label: '请求IP',
+      field: 'ip',
+      labelMinWidth: 80,
+      span: 3,
+    },
+    {
+      label: '响应状态',
+      field: 'resStatus',
+      labelMinWidth: 80,
+      span: 3,
+      render: (data) => {
+        const success = ~~data === 200;
+        const color = success ? 'green' : 'red';
+        return h(Tag, { color: color }, () => data);
+      },
+    },
+    {
+      label: '请求体',
+      field: 'reqBody',
+      labelMinWidth: 80,
+      span: 3,
+      render: (data) => {
+        if (isNull(data) || data === '') {
+          return h('span', data);
+        }
+        return h(JsonPreview, {
+          data: JSON.parse(data),
+        });
+      },
+    },
+    {
+      label: '请求参数',
+      labelMinWidth: 80,
+      field: 'reqParams',
+      span: 3,
+      render: (data) => {
+        if (isNull(data) || data === '') {
+          return h('span', data);
+        }
+        return h(JsonPreview, {
+          data: JSON.parse(data),
+        });
+      },
+    },
+    {
+      label: '请求头',
+      labelMinWidth: 80,
+      field: 'reqHeaders',
+      span: 3,
+      render: (data) => {
+        if (isNull(data) || data === '') {
+          return h('span', data);
+        }
+        return h(JsonPreview, {
+          data: JSON.parse(data),
+          deep: 0,
+        });
+      },
+    },
+    {
+      label: '响应体',
+      field: 'resBody',
+      labelMinWidth: 80,
+      span: 3,
+      render: (data) => {
+        if (isNull(data) || data === '') {
+          return h('span', data);
+        }
+        return h(JsonPreview, {
+          data: JSON.parse(data),
+          deep: 0,
+        });
+      },
+    },
+    {
+      label: '响应头',
+      field: 'resHeaders',
+      labelMinWidth: 80,
+      span: 3,
+      render: (data) => {
+        if (isNull(data) || data === '') {
+          return h('span', data);
+        }
+        return h(JsonPreview, {
+          data: JSON.parse(data),
+          deep: 0,
+        });
+      },
+    },
+    {
+      label: '操作人',
+      field: 'operateBy',
+      labelMinWidth: 80,
+      span: 3,
+    },
+    {
+      label: '创建时间',
+      labelMinWidth: 80,
+      field: 'createTime',
+      span: 3,
+    },
+    {
+      label: '异常信息',
+      field: 'errMessage',
+      labelMinWidth: 80,
+      span: 3,
     },
   ];
 }

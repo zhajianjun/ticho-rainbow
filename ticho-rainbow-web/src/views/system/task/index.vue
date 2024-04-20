@@ -9,7 +9,7 @@
           :actions="[
             {
               icon: 'clarity:note-edit-line',
-              onClick: handleEdit.bind(null, record),
+              onClick: openTaskModal.bind(null, record),
               tooltip: '修改',
               auth: 'TaskEdit',
             },
@@ -27,10 +27,7 @@
           :dropDownActions="[
             {
               label: '执行一次',
-              popConfirm: {
-                title: '是否执行一次？',
-                confirm: handleRunOnce.bind(null, record),
-              },
+              onClick: openRunOnceTaskModal.bind(null, record),
               auth: 'TaskRunOnce',
             },
             {
@@ -56,6 +53,7 @@
       </template>
     </BasicTable>
     <TaskModal @register="registerModal" @success="handleSuccess" />
+    <TaskRunOnce @register="registerRunOnceModal" />
   </div>
 </template>
 <script lang="ts">
@@ -63,18 +61,20 @@
   import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { useModal } from '@/components/Modal';
   import TaskModal from './TaskModal.vue';
+  import TaskRunOnce from './TaskRunOnce.vue';
   import { getTableColumns, getSearchColumns } from './task.data';
-  import { taskPage, delTask, runOnceTask, pauseTask, resumeTask } from '@/api/system/task';
+  import { taskPage, delTask, pauseTask, resumeTask } from '@/api/system/task';
   import { usePermission } from '@/hooks/web/usePermission';
 
   export default defineComponent({
     name: 'Task',
-    components: { BasicTable, TaskModal, TableAction },
+    components: { BasicTable, TaskModal, TableAction, TaskRunOnce },
     setup() {
       const cronValue = ref(null);
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('TaskSelect');
       const [registerModal, { openModal }] = useModal();
+      const [registerRunOnceModal, { openModal: openRunOnceModal }] = useModal();
       const [registerTable, { reload }] = useTable({
         title: '计划任务列表',
         api: taskPage,
@@ -115,7 +115,7 @@
         });
       }
 
-      function handleEdit(record: Recordable) {
+      function openTaskModal(record: Recordable) {
         openModal(true, {
           record,
           isUpdate: true,
@@ -126,10 +126,6 @@
         delTask(record.id).then(() => {
           reload();
         });
-      }
-
-      function handleRunOnce(record: Recordable) {
-        runOnceTask(record.id);
       }
 
       function handlePause(record: Recordable) {
@@ -148,18 +144,23 @@
         reload();
       }
 
+      function openRunOnceTaskModal(record: Recordable) {
+        openRunOnceModal(true, record, true);
+      }
+
       return {
         registerTable,
         registerModal,
         handleCreate,
-        handleEdit,
+        openTaskModal,
         handleDelete,
-        handleRunOnce,
         handlePause,
         handleResume,
         handleSuccess,
         hasPermission,
         cronValue,
+        registerRunOnceModal,
+        openRunOnceTaskModal,
       };
     },
   });

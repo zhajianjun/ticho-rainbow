@@ -41,10 +41,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Slf4j
 @Component
-public class SchedulerTemplate {
-    public static final String SCHEDULER_PARAM = "SCHEDULER_PARAM";
+public class TaskTemplate {
+    public static final String TASK_PARAM = "TASK_PARAM";
     public static final String TASK_NAME = "TASK_NAME";
-    public static final String MDC_INFO = "MDC_INFO";
+    public static final String TASK_MDC_INFO = "TASK_MDC_INFO";
 
     private Scheduler scheduler;
 
@@ -63,7 +63,7 @@ public class SchedulerTemplate {
     public boolean addJob(String jobName, String jobGroup, String jobClass, String cronExpression, String taskName, String param) {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put(TASK_NAME, taskName);
-        paramMap.put(SCHEDULER_PARAM, param);
+        paramMap.put(TASK_PARAM, param);
         return addJob(jobName, jobGroup, jobName, jobGroup, jobClass, cronExpression, paramMap);
     }
 
@@ -139,7 +139,7 @@ public class SchedulerTemplate {
         try {
             Map<String, String> mdcMap = MDC.getCopyOfContextMap();
             JobDataMap jobDataMap = new JobDataMap();
-            jobDataMap.put(MDC_INFO, mdcMap);
+            jobDataMap.put(TASK_MDC_INFO, mdcMap);
             scheduler.triggerJob(jobKey, jobDataMap);
             return true;
         } catch (SchedulerException e) {
@@ -160,8 +160,8 @@ public class SchedulerTemplate {
         try {
             Map<String, String> mdcMap = MDC.getCopyOfContextMap();
             JobDataMap jobDataMap = new JobDataMap();
-            jobDataMap.put(MDC_INFO, mdcMap);
-            jobDataMap.put(SCHEDULER_PARAM, schedulerParam);
+            jobDataMap.put(TASK_MDC_INFO, mdcMap);
+            jobDataMap.put(TASK_PARAM, schedulerParam);
             scheduler.triggerJob(jobKey, jobDataMap);
             return true;
         } catch (SchedulerException e) {

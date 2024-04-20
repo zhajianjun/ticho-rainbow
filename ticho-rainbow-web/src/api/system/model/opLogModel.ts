@@ -9,9 +9,9 @@ export interface OpLogDTO {
   type: string;
   /** 请求方法 */
   position: string;
-  /** 请求参数 */
-  reqBody: string;
   /** 请求体 */
+  reqBody: string;
+  /** 请求参数 */
   reqParams: string;
   /** 请求头 */
   reqHeaders: string;
@@ -52,9 +52,9 @@ export interface OpLogQuery {
   url: string;
   /** 请求类型 */
   type: string;
-  /** 请求参数 */
-  reqBody: string;
   /** 请求体 */
+  reqBody: string;
+  /** 请求参数 */
   reqParams: string;
   /** 请求头 */
   reqHeaders: string;

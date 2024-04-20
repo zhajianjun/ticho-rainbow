@@ -94,7 +94,7 @@ export function getSearchColumns(): FormSchema[] {
       },
       componentProps: {
         options: getDictByCode(yesOrNo),
-        placeholder: '请输入是否系统字典',
+        placeholder: '请选择是否系统字典',
       },
     },
     {

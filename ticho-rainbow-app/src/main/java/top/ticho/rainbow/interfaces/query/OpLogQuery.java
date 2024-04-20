@@ -39,12 +39,12 @@ public class OpLogQuery extends BasePageQuery implements Serializable {
     @ApiModelProperty(value = "请求类型", position = 40)
     private String type;
 
-    /** 请求参数 */
-    @ApiModelProperty(value = "请求参数", position = 60)
+    /** 请求体 */
+    @ApiModelProperty(value = "请求体", position = 60)
     private String reqBody;
 
-    /** 请求体 */
-    @ApiModelProperty(value = "请求体", position = 70)
+    /** 请求参数 */
+    @ApiModelProperty(value = "请求参数", position = 70)
     private String reqParams;
 
     /** 请求头 */

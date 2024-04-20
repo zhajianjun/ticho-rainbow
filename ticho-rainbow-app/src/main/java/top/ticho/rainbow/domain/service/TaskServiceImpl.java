@@ -16,7 +16,7 @@ import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.TaskService;
 import top.ticho.rainbow.domain.repository.TaskRepository;
 import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
-import top.ticho.rainbow.infrastructure.core.component.SchedulerTemplate;
+import top.ticho.rainbow.infrastructure.core.component.TaskTemplate;
 import top.ticho.rainbow.infrastructure.entity.Task;
 import top.ticho.rainbow.interfaces.assembler.TaskAssembler;
 import top.ticho.rainbow.interfaces.dto.TaskDTO;
@@ -46,28 +46,28 @@ public class TaskServiceImpl implements TaskService {
     private List<AbstracTask> abstracTasks;
 
     @Autowired
-    private SchedulerTemplate schedulerTemplate;
+    private TaskTemplate taskTemplate;
 
     // @formatter:off
 
     @PostConstruct
     public void init() {
         List<Task> tasks = taskRepository.list();
-        List<String> jobs = schedulerTemplate.listJobs();
+        List<String> jobs = taskTemplate.listJobs();
         for (Task task : tasks) {
             String jobId = task.getId().toString();
             if (!jobs.contains(jobId)) {
-                schedulerTemplate.addJob(task.getId().toString(), DEFAULT_JOB_GROUP, task.getContent(), task.getCronExpression(), task.getName(), task.getParam());
+                taskTemplate.addJob(task.getId().toString(), DEFAULT_JOB_GROUP, task.getContent(), task.getCronExpression(), task.getName(), task.getParam());
             }
             if (Objects.equals(task.getStatus(), 1)) {
-                schedulerTemplate.resumeJob(jobId, DEFAULT_JOB_GROUP);
+                taskTemplate.resumeJob(jobId, DEFAULT_JOB_GROUP);
             } else {
-                schedulerTemplate.pauseJob(jobId, DEFAULT_JOB_GROUP);
+                taskTemplate.pauseJob(jobId, DEFAULT_JOB_GROUP);
             }
             jobs.remove(jobId);
         }
         if (!jobs.isEmpty()) {
-            jobs.forEach(jobId -> schedulerTemplate.deleteJob(jobId, DEFAULT_JOB_GROUP));
+            jobs.forEach(jobId -> taskTemplate.deleteJob(jobId, DEFAULT_JOB_GROUP));
         }
     }
 
@@ -79,12 +79,12 @@ public class TaskServiceImpl implements TaskService {
         task.setId(CloudIdUtil.getId());
         Assert.isTrue(taskRepository.save(task), BizErrCode.FAIL, "保存失败");
         check(task);
-        boolean addedJob = schedulerTemplate.addJob(task.getId().toString(), DEFAULT_JOB_GROUP, task.getContent(), task.getCronExpression(), task.getName(), task.getParam());
+        boolean addedJob = taskTemplate.addJob(task.getId().toString(), DEFAULT_JOB_GROUP, task.getContent(), task.getCronExpression(), task.getName(), task.getParam());
         Assert.isTrue(addedJob, BizErrCode.FAIL, "添加任务失败");
         if (Objects.equals(task.getStatus(), 1)) {
-            schedulerTemplate.resumeJob(task.getId().toString(), DEFAULT_JOB_GROUP);
+            taskTemplate.resumeJob(task.getId().toString(), DEFAULT_JOB_GROUP);
         } else {
-            schedulerTemplate.pauseJob(task.getId().toString(), DEFAULT_JOB_GROUP);
+            taskTemplate.pauseJob(task.getId().toString(), DEFAULT_JOB_GROUP);
         }
     }
 
@@ -94,7 +94,7 @@ public class TaskServiceImpl implements TaskService {
             .map(x -> x.getClass().getName())
             .anyMatch(x -> x.equals(task.getContent()));
         Assert.isTrue(present, BizErrCode.FAIL, "执行类不存在");
-        boolean valid = SchedulerTemplate.isValid(task.getCronExpression());
+        boolean valid = TaskTemplate.isValid(task.getCronExpression());
         Assert.isTrue(valid, BizErrCode.FAIL, "cron表达式不正确");
         String param = task.getParam();
         if (StrUtil.isNotBlank(param)) {
@@ -107,7 +107,7 @@ public class TaskServiceImpl implements TaskService {
     public void remove(Long id) {
         Assert.isNotNull(id, "编号不能为空");
         Assert.isTrue(taskRepository.removeById(id), BizErrCode.FAIL, "删除失败");
-        boolean deleteJob = schedulerTemplate.deleteJob(id.toString(), DEFAULT_JOB_GROUP);
+        boolean deleteJob = taskTemplate.deleteJob(id.toString(), DEFAULT_JOB_GROUP);
         Assert.isTrue(deleteJob, BizErrCode.FAIL, "删除任务失败");
     }
 
@@ -118,17 +118,17 @@ public class TaskServiceImpl implements TaskService {
         Task task = TaskAssembler.INSTANCE.dtoToEntity(taskDTO);
         check(task);
         Assert.isTrue(taskRepository.updateById(task), BizErrCode.FAIL, "修改失败");
-        boolean exists = schedulerTemplate.checkExists(task.getId().toString(), DEFAULT_JOB_GROUP);
+        boolean exists = taskTemplate.checkExists(task.getId().toString(), DEFAULT_JOB_GROUP);
         if (exists) {
-            boolean deleteJob = schedulerTemplate.deleteJob(task.getId().toString(), DEFAULT_JOB_GROUP);
+            boolean deleteJob = taskTemplate.deleteJob(task.getId().toString(), DEFAULT_JOB_GROUP);
             Assert.isTrue(deleteJob, BizErrCode.FAIL, "删除任务失败");
         }
         Task dbTask = taskRepository.getById(task.getId());
         Integer status = dbTask.getStatus();
-        boolean addedJob = schedulerTemplate.addJob(task.getId().toString(), DEFAULT_JOB_GROUP, task.getContent(), task.getCronExpression(), task.getName(), task.getParam());
+        boolean addedJob = taskTemplate.addJob(task.getId().toString(), DEFAULT_JOB_GROUP, task.getContent(), task.getCronExpression(), task.getName(), task.getParam());
         Assert.isTrue(addedJob, BizErrCode.FAIL, "添加任务失败");
         if (Objects.equals(status, 1)) {
-            schedulerTemplate.resumeJob(task.getId().toString(), DEFAULT_JOB_GROUP);
+            taskTemplate.resumeJob(task.getId().toString(), DEFAULT_JOB_GROUP);
         }
     }
 
@@ -137,9 +137,9 @@ public class TaskServiceImpl implements TaskService {
         Assert.isNotNull(id, "编号不能为空");
         Task task = taskRepository.getById(id);
         Assert.isNotNull(task, BizErrCode.FAIL, "任务不存在");
-        boolean exists = schedulerTemplate.checkExists(task.getId().toString(), DEFAULT_JOB_GROUP);
+        boolean exists = taskTemplate.checkExists(task.getId().toString(), DEFAULT_JOB_GROUP);
         Assert.isTrue(exists, BizErrCode.FAIL, "任务不存在");
-        boolean runJob = schedulerTemplate.runOnce(task.getId().toString(), DEFAULT_JOB_GROUP, param);
+        boolean runJob = taskTemplate.runOnce(task.getId().toString(), DEFAULT_JOB_GROUP, param);
         Assert.isTrue(runJob, BizErrCode.FAIL, "立即执行任务失败");
     }
 
@@ -150,11 +150,11 @@ public class TaskServiceImpl implements TaskService {
         Assert.isNotNull(task, BizErrCode.FAIL, "任务不存在");
         Integer status = task.getStatus();
         Assert.isTrue(Objects.equals(status, 1), BizErrCode.FAIL, "任务未启动");
-        boolean exists = schedulerTemplate.checkExists(id.toString(), DEFAULT_JOB_GROUP);
+        boolean exists = taskTemplate.checkExists(id.toString(), DEFAULT_JOB_GROUP);
         boolean updated = taskRepository.updateStatusBatch(Collections.singletonList(id), 0);
         Assert.isTrue(updated, BizErrCode.FAIL, "暂停任务失败");
         Assert.isTrue(exists, BizErrCode.FAIL, "任务不存在");
-        boolean pauseJob = schedulerTemplate.pauseJob(id.toString(), DEFAULT_JOB_GROUP);
+        boolean pauseJob = taskTemplate.pauseJob(id.toString(), DEFAULT_JOB_GROUP);
         Assert.isTrue(pauseJob, BizErrCode.FAIL, "暂停任务失败");
     }
 
@@ -167,9 +167,9 @@ public class TaskServiceImpl implements TaskService {
         Assert.isTrue(Objects.equals(status, 0), BizErrCode.FAIL, "任务已启动");
         boolean updated = taskRepository.updateStatusBatch(Collections.singletonList(id), 1);
         Assert.isTrue(updated, BizErrCode.FAIL, "恢复任务失败");
-        boolean exists = schedulerTemplate.checkExists(id.toString(), DEFAULT_JOB_GROUP);
+        boolean exists = taskTemplate.checkExists(id.toString(), DEFAULT_JOB_GROUP);
         Assert.isTrue(exists, BizErrCode.FAIL, "任务不存在");
-        boolean resumeJob = schedulerTemplate.resumeJob(id.toString(), DEFAULT_JOB_GROUP);
+        boolean resumeJob = taskTemplate.resumeJob(id.toString(), DEFAULT_JOB_GROUP);
         Assert.isTrue(resumeJob, BizErrCode.FAIL, "恢复任务失败");
     }
 
@@ -177,8 +177,8 @@ public class TaskServiceImpl implements TaskService {
     public List<String> getRecentCronTime(String cronExpression, Integer num) {
         num = Optional.ofNullable(num).orElse(10);
         Assert.isTrue(num > 0, BizErrCode.FAIL, "查询数量必须大于0");
-        Assert.isTrue(SchedulerTemplate.isValid(cronExpression), BizErrCode.FAIL, "cron表达式不合法");
-        return SchedulerTemplate.getRecentCronTime(cronExpression, num);
+        Assert.isTrue(TaskTemplate.isValid(cronExpression), BizErrCode.FAIL, "cron表达式不合法");
+        return TaskTemplate.getRecentCronTime(cronExpression, num);
     }
 
     @Override

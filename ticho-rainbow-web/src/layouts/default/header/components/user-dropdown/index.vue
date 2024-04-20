@@ -107,7 +107,7 @@
   }
 
   function openProfile() {
-    go('/dashboard/profile');
+    go('/user/profile');
   }
 
   function handleMenuClick(e: MenuInfo) {

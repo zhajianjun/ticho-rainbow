@@ -5,8 +5,8 @@
         <TableAction
           :actions="[
             {
-              icon: 'ant-design:delete-outlined',
-              color: 'error',
+              icon: 'clarity:info-standard-line',
+              color: 'success',
               onClick: handleDetail.bind(null, record),
               tooltip: '查看详情',
               ifShow: hasPermission('OpLogDetail'),
@@ -15,6 +15,7 @@
         />
       </template>
     </BasicTable>
+    <LogDetailModal @register="registerModal" />
   </div>
 </template>
 <script lang="ts">
@@ -23,10 +24,12 @@
   import { getTableColumns, getSearchColumns } from './opLog.data';
   import { opLogPage } from '@/api/system/opLog';
   import { usePermission } from '@/hooks/web/usePermission';
+  import LogDetailModal from './LogDetailModal.vue';
+  import { useModal } from '@/components/Modal';
 
   export default defineComponent({
     name: 'OpLog',
-    components: { BasicTable, TableAction },
+    components: { BasicTable, TableAction, LogDetailModal },
     setup() {
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('OpLogSelect');
@@ -66,18 +69,21 @@
       });
 
       function handleDetail(record: Recordable) {
-        console.log(record);
+        openModal(true, record, true);
       }
 
       function handleSuccess() {
         reload();
       }
 
+      const [registerModal, { openModal }] = useModal();
+
       return {
         registerTable,
         handleDetail,
         handleSuccess,
         hasPermission,
+        registerModal,
       };
     },
   });

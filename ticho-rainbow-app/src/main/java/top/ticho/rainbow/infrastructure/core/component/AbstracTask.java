@@ -39,40 +39,39 @@ public abstract class AbstracTask extends QuartzJobBean {
     @Resource
     private TraceProperty traceProperty;
 
-    @Autowired
-    private TaskRepository taskRepository;
-
     public abstract void run(JobExecutionContext context);
 
-    public void before(JobDataMap mergedJobDataMap) {
+    public void before(JobDataMap jobDataMap) {
 
     }
 
-    public void complete(JobDataMap mergedJobDataMap) {
+    public void complete(JobDataMap jobDataMap) {
 
     }
 
     public void executeInternal(JobExecutionContext context) {
         // @formatter:off
         long start = SystemClock.now();
-        JobDataMap mergedJobDataMap = context.getMergedJobDataMap();
-        mdcHandle(mergedJobDataMap);
-        String taskName = mergedJobDataMap.getString(SchedulerTemplate.TASK_NAME);
+        JobDataMap jobDataMap = context.getMergedJobDataMap();
+        mdcHandle(jobDataMap);
+        String taskName = jobDataMap.getString(TaskTemplate.TASK_NAME);
+        String taskParam = jobDataMap.getString(TaskTemplate.TASK_PARAM);
         String runTime = DateUtil.format(context.getScheduledFireTime(), DatePattern.NORM_DATETIME_FORMAT);
         JobDetail jobDetail = context.getJobDetail();
         String jobName = jobDetail.getKey().getName();
+        String jobClassName = jobDetail.getJobClass().getName();
         try {
-            log.info("定时任务开始，任务: {}-{}, 执行时间：{}", jobName, taskName, runTime);
-            before(mergedJobDataMap);
+            log.info("定时任务开始, 任务ID:{}, 任务名称:{}, 任务时间:{}, 任务类:{}, 任务参数:{}", jobName, taskName, runTime, jobClassName, taskParam);
+            before(jobDataMap);
             run(context);
         } catch (Exception e) {
-            log.info("定时任务异常，任务: {}-{}, 执行时间: {}, 任务: {}", jobName, taskName, runTime, e.getMessage(), e);
+            log.error("定时任务异常, 任务ID:{}, 任务名称:{}, 任务时间:{}, 任务类:{}, 异常信息:{}", jobName, taskName, runTime, jobClassName, e.getMessage(), e);
         } finally {
             long end = SystemClock.now();
             long consume = end - start;
-            complete(mergedJobDataMap);
-            log.info("定时任务结束，任务: {}-{}, 耗时{}ms, 执行时间：{}", jobName, taskName, consume, runTime);
-            traceHandle(mergedJobDataMap, start, end, consume);
+            complete(jobDataMap);
+            log.info("定时任务结束, 任务ID:{}, 任务名称:{}, 耗时{}ms, 任务时间:{}, 任务类:{}", jobName, taskName, consume, runTime, jobClassName);
+            traceHandle(jobDataMap, start, end, consume);
         }
         // @formatter:on
     }
@@ -81,7 +80,7 @@ public abstract class AbstracTask extends QuartzJobBean {
      * 链路处理
      */
     private void traceHandle(JobDataMap mergedJobDataMap, long start, long end, long consume) {
-        if (!mergedJobDataMap.containsKey(SchedulerTemplate.MDC_INFO)) {
+        if (!mergedJobDataMap.containsKey(TaskTemplate.TASK_MDC_INFO)) {
             return;
         }
         TraceInfo traceInfo = TraceInfo.builder()
@@ -113,8 +112,8 @@ public abstract class AbstracTask extends QuartzJobBean {
     @SuppressWarnings("unchecked")
     private void mdcHandle(JobDataMap mergedJobDataMap) {
         Map<String, String> mdcMap;
-        if (mergedJobDataMap.containsKey(SchedulerTemplate.MDC_INFO)) {
-            Object mdcInfo = mergedJobDataMap.get(SchedulerTemplate.MDC_INFO);
+        if (mergedJobDataMap.containsKey(TaskTemplate.TASK_MDC_INFO)) {
+            Object mdcInfo = mergedJobDataMap.get(TaskTemplate.TASK_MDC_INFO);
             mdcMap = (Map<String, String>) mdcInfo;
         } else {
             mdcMap = new HashMap<>();
