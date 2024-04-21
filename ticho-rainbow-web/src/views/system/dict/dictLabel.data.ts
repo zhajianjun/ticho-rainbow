@@ -1,5 +1,7 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
+import { h } from 'vue';
+import { Tag } from 'ant-design-vue';
 
 const commonStatus = 'commonStatus';
 
@@ -42,8 +44,10 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'status',
       resizable: true,
       width: 50,
-      customRender({ text }) {
-        return getDictByCodeAndValue(commonStatus, text);
+      customRender: ({ text }) => {
+        const isNormal = ~~text === 1;
+        const color = isNormal ? 'green' : 'red';
+        return h(Tag, { color: color }, () => getDictByCodeAndValue(commonStatus, text));
       },
     },
     {

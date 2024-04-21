@@ -1,7 +1,10 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
+import { h } from 'vue';
+import { Tag } from 'ant-design-vue';
 
 const commonStatus = 'commonStatus';
+const planTask = 'planTask';
 
 export function getTableColumns(): BasicColumn[] {
   return [
@@ -19,10 +22,13 @@ export function getTableColumns(): BasicColumn[] {
       width: 100,
     },
     {
-      title: '任务内容',
+      title: '任务类型',
       dataIndex: 'content',
       resizable: true,
       width: 100,
+      customRender: ({ text }) => {
+        return h(Tag, { color: 'green' }, () => getDictByCodeAndValue(planTask, text));
+      },
     },
     {
       title: '任务参数',
@@ -47,8 +53,10 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'status',
       resizable: true,
       width: 100,
-      customRender({ text }) {
-        return getDictByCodeAndValue(commonStatus, text);
+      customRender: ({ text }) => {
+        const isNormal = ~~text === 1;
+        const color = isNormal ? 'green' : 'red';
+        return h(Tag, { color: color }, () => getDictByCodeAndValue(commonStatus, text));
       },
     },
     {
@@ -91,11 +99,12 @@ export function getSearchColumns(): FormSchema[] {
     },
     {
       field: `content`,
-      label: `任务内容`,
-      component: 'Input',
+      label: `任务类型`,
+      component: 'Select',
       colProps: { span: 8 },
       componentProps: {
-        placeholder: '请输入任务内容',
+        placeholder: '请选择任务类型',
+        options: getDictByCode(planTask, false),
       },
     },
     {
@@ -156,10 +165,11 @@ export function getModalFormColumns(): FormSchema[] {
     },
     {
       field: `content`,
-      label: `任务内容`,
-      component: 'Input',
+      label: `任务类型`,
+      component: 'Select',
       componentProps: {
-        placeholder: '请输入任务内容',
+        placeholder: '请选择任务类型',
+        options: getDictByCode(planTask, false),
       },
       colProps: {
         span: 24,

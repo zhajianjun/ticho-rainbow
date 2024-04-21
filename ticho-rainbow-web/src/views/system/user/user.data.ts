@@ -1,6 +1,8 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { listRoles } from '@/api/system/role';
 import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
+import { h } from 'vue';
+import { Tag } from 'ant-design-vue';
 
 const userStatus = 'userStatus';
 
@@ -24,8 +26,10 @@ export const columns: BasicColumn[] = [
     title: '状态',
     dataIndex: 'status',
     width: 80,
-    customRender({ text }) {
-      return getDictByCodeAndValue(userStatus, text);
+    customRender: ({ text }) => {
+      const isNormal = ~~text === 1;
+      const color = isNormal ? 'green' : 'red';
+      return h(Tag, { color: color }, () => getDictByCodeAndValue(userStatus, text));
     },
   },
   {

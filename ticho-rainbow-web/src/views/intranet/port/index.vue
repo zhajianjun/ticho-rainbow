@@ -7,8 +7,8 @@
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'status'">
           <Switch
-            checked-children="开启"
-            un-checked-children="禁用"
+            :checked-children="getDictByCodeAndValue('commonStatus', 1)"
+            :un-checked-children="getDictByCodeAndValue('commonStatus', 0)"
             :checked="record.status === 1"
             :loading="record.pendingStatus"
             @change="handleStatusSwitchChange(record)"
@@ -67,6 +67,7 @@
   import { useMessage } from '@/hooks/web/useMessage';
   import { PortDTO } from '@/api/intranet/model/portModel';
   import { usePermission } from '@/hooks/web/usePermission';
+  import { getDictByCodeAndValue } from '@/store/modules/dict';
 
   export default defineComponent({
     name: 'Port',
@@ -200,5 +201,6 @@
         hasPermission,
       };
     },
+    methods: { getDictByCodeAndValue },
   });
 </script>
