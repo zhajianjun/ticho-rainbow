@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import top.ticho.boot.log.interceptor.WebLogInterceptor;
@@ -34,6 +35,18 @@ public class CustomResponseHandle {
         if (Objects.nonNull(httpLog)) {
             httpLog.setErrMessage(ex.getMessage());
         }
+    }
+
+    /**
+     * 权限不足处理
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public Result<String> accessDeniedException(AccessDeniedException ex, HttpServletResponse res) {
+        prefix(ex);
+        Result<String> result = Result.of(HttpErrCode.ACCESS_DENIED);
+        res.setStatus(result.getCode());
+        log.error("catch error\t{}", ex.getMessage(), ex);
+        return result;
     }
 
     /**
