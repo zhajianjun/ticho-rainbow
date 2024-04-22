@@ -53,6 +53,7 @@ public class ClientServiceImpl implements ClientService {
     private ServerHandler serverHandler;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void save(ClientDTO clientDTO) {
         ValidUtil.valid(clientDTO);
         Client client = ClientAssembler.INSTANCE.dtoToEntity(clientDTO);
@@ -75,12 +76,16 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateById(ClientDTO clientDTO) {
         Client dbClient = clientRepository.getById(clientDTO.getId());
         Assert.isNotNull(dbClient, "修改失败，数据不存在");
         Client client = ClientAssembler.INSTANCE.dtoToEntity(clientDTO);
         Assert.isTrue(clientRepository.updateById(client), "修改失败");
         client.setAccessKey(dbClient.getAccessKey());
+        if (client.getExpireAt() == null) {
+            client.setExpireAt(dbClient.getExpireAt());
+        }
         saveClientInfo(client, dbClient);
     }
 
