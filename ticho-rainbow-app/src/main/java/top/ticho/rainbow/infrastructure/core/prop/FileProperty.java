@@ -12,7 +12,7 @@ import java.io.File;
  * @date 2024-04-22 10:33
  */
 @Data
-@ConfigurationProperties(prefix = "ticho.file")
+@ConfigurationProperties(prefix = "rainbow.file")
 @Component
 public class FileProperty {
 
@@ -25,8 +25,8 @@ public class FileProperty {
     /** 文件大小限制，默认20MB */
     private DataSize maxFileSize = DataSize.ofMegabytes(20L);
 
-    /** 分段上传大小，最小5MB,最大5GB */
-    private Long partSize = 5 * 1024 * 1024L;
+    /** 分段上传大小限制 */
+    private DataSize maxPartSize = DataSize.ofMegabytes(5L);
 
 
     /**
@@ -41,6 +41,10 @@ public class FileProperty {
      */
     public String getPrivatePath() {
         return this.rootPath + File.separator + "data" + File.separator + "private" + File.separator;
+    }
+
+    public String getTmpPath() {
+        return this.rootPath + File.separator + "data" + File.separator + "tmp" + File.separator;
     }
 
 }

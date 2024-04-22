@@ -58,12 +58,6 @@ ticho:
         socketFactoryClass: javax.net.ssl.SSLSocketFactory
         # 表示开启 DEBUG 模式，这样，邮件发送过程的日志会在控制台打印出来，方便排查错误
         debug: false
-  minio:
-    enable: true
-    endpoint: ENC(weaZbjnQyCVqBa/5QPh8jYkXFS158qR2hygRMAEXNnRXCkmVnuB+Kw==)
-    access-key: ENC(vdv33gwg0YDyLBADSkNwhw==)
-    secret-key: ENC(iQiXG1+PnQrwTC+DrXMekl97Fivqiq6y)
-    default-bucket: rainbow
 spring:
   quartz:
       # 任务存储类型
@@ -88,3 +82,8 @@ spring:
               threadCount: 10
               threadPriority: 5
               threadsInheritContextClassLoaderOfInitializingThread: true
+rainbow:
+  file:
+    domain:
+    max-file-size: 20MB
+    max-part-size: 10MB

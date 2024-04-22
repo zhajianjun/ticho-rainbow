@@ -187,7 +187,7 @@ public class FileServiceImpl implements FileService {
         Assert.isTrue(index + 1 <= chunkFileDTO.getChunkCount(), "索引超出分片数量大小");
         Assert.isTrue(!indexs.contains(index), "分片文件已上传");
         String rootPath = fileProperty.getPrivatePath();
-        String chunkFilePath = FileUtil.getPrefix(chunkDTO.getPath()) + "/" + index;
+        String chunkFilePath = FileUtil.getPrefix(chunkDTO.getPath()) + File.separator + index;
         String absolutePath = rootPath + chunkFilePath;
         try {
             FileUtil.writeBytes(file.getBytes(), absolutePath);
@@ -216,17 +216,14 @@ public class FileServiceImpl implements FileService {
         boolean complete = Boolean.TRUE.equals(chunkDTO.getComplete());
         Assert.isTrue(complete, "分片文件未全部上传");
         String rootPath = fileProperty.getPrivatePath();
-        String chunkFileDirPath = rootPath + FileUtil.getPrefix(chunkDTO.getPath()) + "/";
+        String chunkFileDirPath = rootPath + FileUtil.getPrefix(chunkDTO.getPath()) + File.separator;
         String filePath = rootPath + chunkDTO.getPath();
-        File folder = new File(chunkFileDirPath);
-        File[] files = folder.listFiles();
-        Assert.isNotEmpty(files, "文件合并失败, 分片文件不存在");
         try {
             RandomAccessFile mergedFile = new RandomAccessFile(filePath, "rw");
             // 缓冲区大小
             byte[] bytes = new byte[1024];
-            for (File file : files) {
-                RandomAccessFile partFile = new RandomAccessFile(file, "r");
+            for (int i = 0; i < indexs.size(); i++) {
+                RandomAccessFile partFile = new RandomAccessFile(chunkFileDirPath + i, "r");
                 int len;
                 while ((len = partFile.read(bytes)) != -1) {
                     mergedFile.write(bytes, 0, len);
@@ -239,6 +236,7 @@ public class FileServiceImpl implements FileService {
         } finally{
             // 清除缓存
             cacheTemplate.evict(CacheConst.UPLOAD_CHUNK, md5);
+            FileUtil.moveContent(new File(chunkFileDirPath), new File(fileProperty.getTmpPath()), true);
         }
         // @formatter:on
     }
