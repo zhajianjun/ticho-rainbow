@@ -18,37 +18,6 @@ import java.util.List;
 public interface FileService {
 
     /**
-     * 文件桶是否存在
-     *
-     * @param bucketName 文件桶名称
-     * @return true-存在 false-不存在
-     */
-    boolean bucketExists(String bucketName);
-
-    /**
-     * 创建文件桶
-     *
-     * @param bucketName 文件桶名称
-     */
-    void createBucket(String bucketName);
-
-    /**
-     * 删除文件桶
-     *
-     * @param bucketName 文件桶名称
-     * @param delAllFile 是否删除所有文件
-     */
-    void removeBucket(String bucketName, boolean delAllFile);
-
-    /**
-     * 获取所有的文件桶
-     *
-     * @return List<BucketInfoDTO>
-     */
-    List<BucketInfoDTO> listBuckets();
-
-
-    /**
      * 文件上传
      *
      * @param fileInfoReqDTO 文件上传信息

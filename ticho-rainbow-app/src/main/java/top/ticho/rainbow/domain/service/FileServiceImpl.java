@@ -3,20 +3,17 @@ package top.ticho.rainbow.domain.service;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
-import io.minio.GetObjectResponse;
-import io.minio.messages.Bucket;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Headers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
-import top.ticho.boot.minio.component.MinioTemplate;
-import top.ticho.boot.minio.prop.MinioProperty;
 import top.ticho.boot.view.enums.BizErrCode;
+import top.ticho.boot.view.enums.HttpErrCode;
 import top.ticho.boot.view.exception.BizException;
 import top.ticho.boot.view.util.Assert;
 import top.ticho.boot.web.util.CloudIdUtil;
@@ -25,24 +22,27 @@ import top.ticho.rainbow.application.service.FileService;
 import top.ticho.rainbow.infrastructure.core.component.CacheTemplate;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.enums.MioErrCode;
-import top.ticho.rainbow.interfaces.dto.BucketInfoDTO;
+import top.ticho.rainbow.infrastructure.core.prop.FileProperty;
+import top.ticho.rainbow.infrastructure.core.util.CommonUtil;
 import top.ticho.rainbow.interfaces.dto.ChunkDTO;
 import top.ticho.rainbow.interfaces.dto.ChunkFileDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoReqDTO;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+
 
 /**
  * 文件 服务接口实现
@@ -53,16 +53,10 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class FileServiceImpl implements FileService {
-    public static final String X_AMZ_META_PREFIX = "x-amz-meta-";
-    public static final String FILENAME_KEY = "fileName";
-    public static final String REMARK_KEY = "remark";
     public static final String STORAGE_ID_NOT_BLANK = "资源id不能为空";
 
     @Resource
-    private MinioProperty minioProperty;
-
-    @Resource
-    private MinioTemplate minioTemplate;
+    private FileProperty fileProperty;
 
     @Resource
     private HttpServletResponse response;
@@ -70,97 +64,57 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private CacheTemplate cacheTemplate;
 
-    @PostConstruct
-    public void init() {
-        String defaultBucket = minioProperty.getDefaultBucket();
-        String chunkBucket = minioProperty.getChunkBucket();
-        if (StrUtil.isNotBlank(defaultBucket)) {
-            boolean bucketExists = bucketExists(defaultBucket);
-            if (!bucketExists) {
-                minioTemplate.createBucket(defaultBucket);
-            }
-        }
-        if (StrUtil.isNotBlank(chunkBucket)) {
-            boolean bucketExists = bucketExists(chunkBucket);
-            if (!bucketExists) {
-                minioTemplate.createBucket(chunkBucket);
-            }
-        }
-    }
+    private final Map<Long, Map<String, Object>> fileMap = new LinkedHashMap<>();
 
-    @Override
-    public boolean bucketExists(String bucketName) {
-        if (StrUtil.isBlank(bucketName)) {
-            return false;
-        }
-        return minioTemplate.bucketExists(bucketName);
-    }
-
-    @Override
-    public void createBucket(String bucketName) {
-        Assert.isTrue(!minioTemplate.bucketExists(bucketName), MioErrCode.BUCKET_IS_ALREAD_EXISITS);
-        minioTemplate.createBucket(bucketName);
-    }
-
-    @Override
-    public void removeBucket(String bucketName, boolean delAllFile) {
-        Assert.isTrue(bucketExists(bucketName), MioErrCode.BUCKET_IS_ALREAD_EXISITS);
-        // 获取当前桶内所有文件
-        List<String> allObjects = minioTemplate.listObjectNames(bucketName, "", false);
-        if (!delAllFile) {
-            Assert.isTrue(allObjects.isEmpty(), MioErrCode.BUCKET_IS_NOT_EMPTY);
-        }
-        minioTemplate.removeObjects(bucketName, allObjects);
-    }
-
-    @Override
-    public List<BucketInfoDTO> listBuckets() {
-        return minioTemplate.listBuckets().stream().map(this::getBucketInfoDTO).collect(Collectors.toList());
-    }
-
-    private BucketInfoDTO getBucketInfoDTO(Bucket bucketName) {
-        if (bucketName == null) {
-            return null;
-        }
-        BucketInfoDTO bucketDto = new BucketInfoDTO();
-        bucketDto.setBucket(bucketName.name());
-        bucketDto.setCreationDate(bucketName.creationDate());
-        return bucketDto;
-    }
 
     @Override
     public FileInfoDTO upload(FileInfoReqDTO fileInfoReqDTO) {
-        // @formatter:off
-        String bucketName = minioProperty.getDefaultBucket();
-        String fileName = fileInfoReqDTO.getFileName();
+        // @formatter:of
         String remark = fileInfoReqDTO.getRemark();
+        Integer type = fileInfoReqDTO.getType();
         MultipartFile file = fileInfoReqDTO.getFile();
-        String originalFilename = file.getOriginalFilename();
-        DataSize fileSize = minioProperty.getMaxFileSize();
+        String fileName = file.getOriginalFilename();
+        DataSize fileSize = fileProperty.getMaxFileSize();
         Assert.isTrue(file.getSize() <= fileSize.toBytes(), MioErrCode.FILE_SIZE_TO_LARGER, "文件大小不能超出" + fileSize.toMegabytes() + "MB");
         // 后缀名 .png
-        String extName = StrUtil.DOT + FileNameUtil.extName(originalFilename);
-        String objectName = CloudIdUtil.getId() + extName;
-        if (StrUtil.isNotBlank(fileName)) {
-            Assert.isTrue(fileName.endsWith(extName), "文件名与上传的文件后缀格式不统一！");
+        String extName = FileNameUtil.extName(fileName);
+        // 主文件名 test.png -> test
+        String mainName = FileNameUtil.mainName(fileName);
+        Long id = CloudIdUtil.getId();
+        String prefixPath;
+        String realFileName = mainName + StrUtil.DASHED + CommonUtil.fastShortUUID() + StrUtil.DOT + extName;
+        String path = realFileName;
+        Map<String, Object> fileInfo = new HashMap<>();
+        // 文件存储
+        if (Objects.equals(type, 1)) {
+            prefixPath = fileProperty.getPublicPath();
         } else {
-            fileName = originalFilename;
+            prefixPath = fileProperty.getPrivatePath();
         }
-        // 构建自定义 header
-        Map<String, String> userMetadata = new HashMap<>(1);
-        userMetadata.put(FILENAME_KEY, fileName);
-
-        if (StrUtil.isNotBlank(remark)) {
-            userMetadata.put(REMARK_KEY, remark);
+        String absolutePath = prefixPath + realFileName;
+        try {
+            FileUtil.writeBytes(file.getBytes(), absolutePath);
+        } catch (IOException e) {
+            throw new BizException(HttpErrCode.FAIL, "文件上传失败");
         }
-        minioTemplate.putObject(bucketName, objectName, userMetadata, file);
+        fileInfo.put("id", id);
+        fileInfo.put("type", type);
+        fileInfo.put("fileName", fileName);
+        fileInfo.put("path", path);
+        fileInfo.put("size", file.getSize());
+        fileInfo.put("ext", extName);
+        fileInfo.put("contentType", file.getContentType());
+        fileInfo.put("remark", remark);
+        fileMap.put(id, fileInfo);
         FileInfoDTO fileInfoDTO = new FileInfoDTO();
-        fileInfoDTO.setStorageId(objectName);
+        fileInfoDTO.setId(id);
         fileInfoDTO.setFileName(fileName);
+        fileInfoDTO.setType(type);
         fileInfoDTO.setContentType(file.getContentType());
-        fileInfoDTO.setSize(file.getSize() + "B");
+        fileInfoDTO.setSize(file.getSize());
         fileInfoDTO.setRemark(remark);
-        fileInfoDTO.setBucket(bucketName);
+        fileInfoDTO.setPath(realFileName);
+        log.info("文件上传成功，{}", fileInfo);
         return fileInfoDTO;
         // @formatter:on
     }
@@ -168,8 +122,12 @@ public class FileServiceImpl implements FileService {
     @Override
     public void delete(String storageId) {
         Assert.isNotBlank(storageId, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
-        String bucketName = minioProperty.getDefaultBucket();
-        minioTemplate.removeObject(bucketName, storageId);
+        long id = NumberUtil.parseLong(storageId);
+        Map<String, Object> map = fileMap.get(id);
+        FileInfoDTO fileInfoDto = getFileInfoDto(map);
+        String absolutePath = getAbsolutePath(fileInfoDto);
+        FileUtil.del(absolutePath);
+        fileMap.remove(id);
     }
 
 
@@ -177,19 +135,18 @@ public class FileServiceImpl implements FileService {
     public void download(String storageId) {
         // @formatter:off
         Assert.isNotBlank(storageId, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
-        String bucketName = minioProperty.getDefaultBucket();
-        GetObjectResponse in = minioTemplate.getObject(bucketName, storageId);
-        Headers headers = in.headers();
-        FileInfoDTO fileInfoDto = getFileInfoDto(headers);
+        Map<String, Object> in = fileMap.get(NumberUtil.parseLong(storageId));
+        FileInfoDTO fileInfoDto = getFileInfoDto(in);
         try (OutputStream outputStream = response.getOutputStream()) {
             response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
             response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLUtil.encodeAll(fileInfoDto.getFileName()));
             response.setContentType(fileInfoDto.getContentType());
             response.setHeader(HttpHeaders.PRAGMA, "no-cache");
             response.setHeader(HttpHeaders.CACHE_CONTROL, "no-cache");
-            response.setHeader(HttpHeaders.CONTENT_LENGTH, headers.get(HttpHeaders.CONTENT_LENGTH));
+            response.setHeader(HttpHeaders.CONTENT_LENGTH, fileInfoDto.getSize() + "");
             response.setDateHeader(HttpHeaders.EXPIRES, 0);
-            IoUtil.copy(in, outputStream, 1024);
+            String absolutePath = getAbsolutePath(fileInfoDto);
+            IoUtil.write(outputStream, true, FileUtil.readBytes(absolutePath));
         } catch (Exception e) {
             log.error("文件下载失败，{}", e.getMessage(), e);
             throw new BizException(MioErrCode.DOWNLOAD_ERROR);
@@ -203,35 +160,40 @@ public class FileServiceImpl implements FileService {
         if (expires != null) {
             Assert.isTrue(expires <= TimeUnit.DAYS.toSeconds(7), BizErrCode.PARAM_ERROR, "过期时间最长为7天");
         }
-        return minioTemplate.getObjectUrl(minioProperty.getDefaultBucket(), storageId, expires);
+        return null;
     }
 
     @Override
     public ChunkDTO uploadChunk(ChunkFileDTO chunkFileDTO) {
         ValidUtil.valid(chunkFileDTO);
         String md5 = chunkFileDTO.getMd5();
-        String fileName = chunkFileDTO.getFileName();
         MultipartFile file = chunkFileDTO.getFile();
         Integer index = chunkFileDTO.getIndex();
         ChunkDTO chunkDTO = cacheTemplate.get(CacheConst.UPLOAD_CHUNK, md5, ChunkDTO.class);
+        String fileName = chunkFileDTO.getFileName();
         if (Objects.isNull(chunkDTO)) {
-            // 后缀名 .png
-            String extName = StrUtil.DOT + FileNameUtil.extName(fileName);
-            String objectName = CloudIdUtil.getId() + extName;
+            String extName = FileNameUtil.extName(fileName);
+            String mainName = FileNameUtil.mainName(fileName);
+            String realFileName = mainName + StrUtil.DASHED + CommonUtil.fastShortUUID() + StrUtil.DOT + extName;
             chunkDTO = new ChunkDTO();
             chunkDTO.setMd5(md5);
             chunkDTO.setChunkCount(chunkFileDTO.getChunkCount());
             chunkDTO.setFileName(fileName);
-            chunkDTO.setObjectName(objectName);
+            chunkDTO.setPath(realFileName);
             chunkDTO.setExtName(extName);
             chunkDTO.setIndexs(new ConcurrentSkipListSet<>());
         }
         ConcurrentSkipListSet<Integer> indexs = chunkDTO.getIndexs();
         Assert.isTrue(index + 1 <= chunkFileDTO.getChunkCount(), "索引超出分片数量大小");
         Assert.isTrue(!indexs.contains(index), "分片文件已上传");
-        String chunkBucket = minioProperty.getChunkBucket();
-        String chunkObjectName = FileUtil.getPrefix(chunkDTO.getObjectName()) + "/" + index;
-        minioTemplate.putObject(chunkBucket, chunkObjectName, null, file);
+        String rootPath = fileProperty.getPrivatePath();
+        String chunkFilePath = FileUtil.getPrefix(chunkDTO.getPath()) + "/" + index;
+        String absolutePath = rootPath + chunkFilePath;
+        try {
+            FileUtil.writeBytes(file.getBytes(), absolutePath);
+        } catch (IOException e) {
+            throw new BizException(HttpErrCode.FAIL, "文件上传失败");
+        }
         log.info("{}分片文件{}，md5={}，index={}上传成功", fileName, file.getOriginalFilename(), md5, index);
         indexs.add(index);
         // 分片上传数量
@@ -253,49 +215,66 @@ public class FileServiceImpl implements FileService {
         // 分片上传是否完成
         boolean complete = Boolean.TRUE.equals(chunkDTO.getComplete());
         Assert.isTrue(complete, "分片文件未全部上传");
-        String chunkBucket = minioProperty.getChunkBucket();
-        String defaultBucket = minioProperty.getDefaultBucket();
-        String objectName = chunkDTO.getObjectName();
-        String fileName = chunkDTO.getFileName();
-        String mimeType = FileUtil.getMimeType(fileName);
-        String objectNamePrefix = FileNameUtil.getPrefix(objectName);
-        // 构建自定义 header
-        Map<String, String> userMetadata = new HashMap<>(1);
-        userMetadata.put(FILENAME_KEY, fileName);
-        List<String> chunkNames = indexs
-            .stream()
-            .sorted()
-            .map(x -> objectNamePrefix + "/" + x)
-            .collect(Collectors.toList());
-        minioTemplate.composeObject(chunkBucket, defaultBucket, chunkNames, objectName, mimeType, userMetadata, true);
-        // 清除缓存
-        cacheTemplate.evict(CacheConst.UPLOAD_CHUNK, md5);
+        String rootPath = fileProperty.getPrivatePath();
+        String chunkFileDirPath = rootPath + FileUtil.getPrefix(chunkDTO.getPath()) + "/";
+        String filePath = rootPath + chunkDTO.getPath();
+        File folder = new File(chunkFileDirPath);
+        File[] files = folder.listFiles();
+        Assert.isNotEmpty(files, "文件合并失败, 分片文件不存在");
+        try {
+            RandomAccessFile mergedFile = new RandomAccessFile(filePath, "rw");
+            // 缓冲区大小
+            byte[] bytes = new byte[1024];
+            for (File file : files) {
+                RandomAccessFile partFile = new RandomAccessFile(file, "r");
+                int len;
+                while ((len = partFile.read(bytes)) != -1) {
+                    mergedFile.write(bytes, 0, len);
+                }
+                partFile.close();
+            }
+            mergedFile.close();
+        } catch (IOException e) {
+            throw new BizException(HttpErrCode.FAIL, "文件合并失败");
+        } finally{
+            // 清除缓存
+            cacheTemplate.evict(CacheConst.UPLOAD_CHUNK, md5);
+        }
         // @formatter:on
     }
 
     /**
      * 从header中获取用户上传的自定义信息
      *
-     * @param headers headers
+     * @param map headers
      * @return 自定义headers信息
      */
-    private FileInfoDTO getFileInfoDto(Headers headers) {
-        FileInfoDTO fileInfoDTO = new FileInfoDTO();
-        for (String key : headers.names()) {
-            if (!key.startsWith(X_AMZ_META_PREFIX)) {
-                continue;
-            }
-            String substring = key.substring(X_AMZ_META_PREFIX.length());
-            if (substring.equalsIgnoreCase(FILENAME_KEY)) {
-                fileInfoDTO.setFileName(headers.get(key));
-            }
-            if (substring.equalsIgnoreCase(REMARK_KEY)) {
-                fileInfoDTO.setRemark(headers.get(key));
-            }
+    private FileInfoDTO getFileInfoDto(Map<String, Object> map) {
+        if (Objects.isNull(map)) {
+            return null;
         }
-        long size = Optional.ofNullable(headers.get(HttpHeaders.CONTENT_LENGTH)).map(Long::valueOf).orElse(0L);
-        fileInfoDTO.setSize(size + "B");
-        fileInfoDTO.setContentType(headers.get(HttpHeaders.CONTENT_TYPE));
+        FileInfoDTO fileInfoDTO = new FileInfoDTO();
+        fileInfoDTO.setFileName((String) map.get("fileName"));
+        fileInfoDTO.setType(NumberUtil.parseInt(map.get("type").toString(), 2));
+        fileInfoDTO.setPath((String) map.get("path"));
+        fileInfoDTO.setRemark((String) map.get("remark"));
+        long size = Optional.ofNullable(map.get("size")).map(Object::toString).map(Long::valueOf).orElse(0L);
+        fileInfoDTO.setSize(size);
+        fileInfoDTO.setContentType((String) map.get("contentType"));
         return fileInfoDTO;
     }
+
+    public String getAbsolutePath(FileInfoDTO fileInfoDto) {
+        Integer type = fileInfoDto.getType();
+        String path = fileInfoDto.getPath();
+        String prefixPath;
+        // 文件存储
+        if (Objects.equals(type, 1)) {
+            prefixPath = fileProperty.getPublicPath();
+        } else {
+            prefixPath = fileProperty.getPrivatePath();
+        }
+        return prefixPath + path;
+    }
+
 }

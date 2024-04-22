@@ -34,8 +34,11 @@ public class ChunkDTO {
     @ApiModelProperty(value = "minio文件名", position = 40)
     private String objectName;
 
-    @ApiModelProperty(value = "文件后缀名，如：.png", position = 50)
+    @ApiModelProperty(value = "文件后缀名，如：png", position = 50)
     private String extName;
+
+    @ApiModelProperty(value = "路径", position = 50)
+    private String path;
 
     @ApiModelProperty(value = "已经上传的分片索引", position = 60, hidden = true)
     @JsonIgnore

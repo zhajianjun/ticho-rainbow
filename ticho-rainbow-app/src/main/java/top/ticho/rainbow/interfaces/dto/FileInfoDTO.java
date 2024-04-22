@@ -19,20 +19,23 @@ public class FileInfoDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "资源id", required = true, position = 10)
-    private String storageId;
+    private Long id;
 
     @ApiModelProperty(value = "文件名", position = 20)
     private String fileName;
+
+    @ApiModelProperty(value = "文件名", position = 20)
+    private Integer type;
 
     @ApiModelProperty(value = "文件类型", position = 30)
     private String contentType;
 
     @ApiModelProperty(value = "文件大小。", position = 30)
-    private String size;
+    private Long size;
 
     @ApiModelProperty(value = "备注", position = 40)
     private String remark;
 
-    @ApiModelProperty(value = "存储桶名称", example = "default", position = 50)
-    private String bucket;
+    @ApiModelProperty(value = "相对路径", position = 50)
+    private String path;
 }

@@ -25,11 +25,10 @@ public class FileInfoReqDTO {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private MultipartFile file;
 
-    @ApiModelProperty(value = "文件名，如果没有则默认使用MultipartFile中的文件名", required = true, position = 30)
-    @Size(max = 20, message = "文件名过长，1-20字符以内！")
-    private String fileName;
+    @ApiModelProperty(value = "1-公共,2-私有", required = true, position = 20)
+    private Integer type = 2;
 
-    @ApiModelProperty(value = "备注", required = true, position = 40)
+    @ApiModelProperty(value = "备注", required = true, position = 30)
     @Size(max = 50, message = "备注过长，1-50字符以内！")
     private String remark;
 

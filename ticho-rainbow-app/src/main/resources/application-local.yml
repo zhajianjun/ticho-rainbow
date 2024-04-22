@@ -18,6 +18,8 @@ ticho:
       - /swagger-resources/**
       - /webjars/**
       - /v2/api-docs
+      - /favicon.ico
+      - /static/data/public/**
   cors:
     enable: true
   intranet:
