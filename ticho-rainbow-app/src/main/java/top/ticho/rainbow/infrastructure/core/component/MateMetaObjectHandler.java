@@ -27,7 +27,7 @@ public class MateMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        //// 针对非主键的字段,只有该表注解了fill 并且 字段名和字段属性 能匹配到才会进行填充(就算有值，也会被覆盖)
+        // 针对非主键的字段,只有该表注解了fill 并且 字段名和字段属性 能匹配到才会进行填充(就算有值，也会被覆盖)
         this.setFieldValByName("updateBy", BaseUserUtil.getCurrentUsername(), metaObject);
         this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
     }

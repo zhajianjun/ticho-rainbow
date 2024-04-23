@@ -35,3 +35,4 @@ build/
 /.mvn/wrapper/
 logs/
 /conf
+/data/

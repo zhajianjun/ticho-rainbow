@@ -22,7 +22,7 @@ ticho:
       - /webjars/**
       - /v2/api-docs
       - /favicon.ico
-      - /static/data/public/**
+      - ${rainbow.file.mvc-resource-path}
   cors:
     enable: true
   intranet:
@@ -88,5 +88,6 @@ spring:
 rainbow:
   file:
     domain:
+    mvc-resource-path: /static/data/public/**
     max-file-size: 20MB
     max-part-size: 10MB

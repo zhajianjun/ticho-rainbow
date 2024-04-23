@@ -3,31 +3,37 @@ package top.ticho.rainbow.domain.service;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
-import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
+import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.enums.BizErrCode;
 import top.ticho.boot.view.enums.HttpErrCode;
 import top.ticho.boot.view.exception.BizException;
 import top.ticho.boot.view.util.Assert;
 import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.boot.web.util.valid.ValidUtil;
-import top.ticho.rainbow.application.service.FileService;
+import top.ticho.rainbow.application.service.FileInfoService;
+import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.infrastructure.core.component.CacheTemplate;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
-import top.ticho.rainbow.infrastructure.core.enums.MioErrCode;
+import top.ticho.rainbow.infrastructure.core.enums.FileErrCode;
 import top.ticho.rainbow.infrastructure.core.prop.FileProperty;
 import top.ticho.rainbow.infrastructure.core.util.CommonUtil;
+import top.ticho.rainbow.infrastructure.entity.FileInfo;
+import top.ticho.rainbow.interfaces.assembler.FileInfoAssembler;
 import top.ticho.rainbow.interfaces.dto.ChunkDTO;
 import top.ticho.rainbow.interfaces.dto.ChunkFileDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoReqDTO;
+import top.ticho.rainbow.interfaces.query.FileInfoQuery;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -35,13 +41,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 
 /**
@@ -52,7 +57,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 @Slf4j
-public class FileServiceImpl implements FileService {
+public class FileInfoServiceImpl implements FileInfoService {
     public static final String STORAGE_ID_NOT_BLANK = "资源id不能为空";
 
     @Resource
@@ -64,99 +69,108 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private CacheTemplate cacheTemplate;
 
-    private final Map<Long, Map<String, Object>> fileMap = new LinkedHashMap<>();
-
+    @Autowired
+    private FileInfoRepository fileInfoRepository;
 
     @Override
     public FileInfoDTO upload(FileInfoReqDTO fileInfoReqDTO) {
-        // @formatter:of
         String remark = fileInfoReqDTO.getRemark();
         Integer type = fileInfoReqDTO.getType();
+        String relativePath = Optional.ofNullable(fileInfoReqDTO.getRelativePath())
+            // 去除两边的斜杠
+            .map(x-> StrUtil.strip(x, "/"))
+            .map(x-> StrUtil.replace(x, "/", File.separator))
+            .orElse(StrUtil.EMPTY);
         MultipartFile file = fileInfoReqDTO.getFile();
-        String fileName = file.getOriginalFilename();
+        // 原始文件名称，logo.svg
+        String originalFilename = file.getOriginalFilename();
         DataSize fileSize = fileProperty.getMaxFileSize();
-        Assert.isTrue(file.getSize() <= fileSize.toBytes(), MioErrCode.FILE_SIZE_TO_LARGER, "文件大小不能超出" + fileSize.toMegabytes() + "MB");
-        // 后缀名 .png
-        String extName = FileNameUtil.extName(fileName);
-        // 主文件名 test.png -> test
-        String mainName = FileNameUtil.mainName(fileName);
+        Assert.isTrue(file.getSize() <= fileSize.toBytes(), FileErrCode.FILE_SIZE_TO_LARGER, "文件大小不能超出" + fileSize.toMegabytes() + "MB");
+        // 主文件名 logo.svg -> logo
+        String mainName = FileNameUtil.mainName(originalFilename);
+        // 后缀名 svg
+        String extName = FileNameUtil.extName(originalFilename);
         Long id = CloudIdUtil.getId();
         String prefixPath;
-        String realFileName = mainName + StrUtil.DASHED + CommonUtil.fastShortUUID() + StrUtil.DOT + extName;
-        String path = realFileName;
-        Map<String, Object> fileInfo = new HashMap<>();
+        // 存储文件名 logo.svg -> logo-wKpdqhmC.svg
+        String fileName = mainName + StrUtil.DASHED + CommonUtil.fastShortUUID() + StrUtil.DOT + extName;
+        // 相对全路径
+        String relativeFullPath = relativePath + File.separator + fileName;
         // 文件存储
         if (Objects.equals(type, 1)) {
             prefixPath = fileProperty.getPublicPath();
         } else {
             prefixPath = fileProperty.getPrivatePath();
         }
-        String absolutePath = prefixPath + realFileName;
+        String absolutePath = prefixPath + relativeFullPath;
         try {
             FileUtil.writeBytes(file.getBytes(), absolutePath);
         } catch (IOException e) {
             throw new BizException(HttpErrCode.FAIL, "文件上传失败");
         }
-        fileInfo.put("id", id);
-        fileInfo.put("type", type);
-        fileInfo.put("fileName", fileName);
-        fileInfo.put("path", path);
-        fileInfo.put("size", file.getSize());
-        fileInfo.put("ext", extName);
-        fileInfo.put("contentType", file.getContentType());
-        fileInfo.put("remark", remark);
-        fileMap.put(id, fileInfo);
-        FileInfoDTO fileInfoDTO = new FileInfoDTO();
-        fileInfoDTO.setId(id);
-        fileInfoDTO.setFileName(fileName);
-        fileInfoDTO.setType(type);
-        fileInfoDTO.setContentType(file.getContentType());
-        fileInfoDTO.setSize(file.getSize());
-        fileInfoDTO.setRemark(remark);
-        fileInfoDTO.setPath(realFileName);
-        log.info("文件上传成功，{}", fileInfo);
-        return fileInfoDTO;
-        // @formatter:on
+        FileInfo fileInfo = new FileInfo();
+        fileInfo.setId(id);
+        fileInfo.setType(type);
+        fileInfo.setFileName(fileName);
+        fileInfo.setOriginalFilename(originalFilename);
+        fileInfo.setPath(relativeFullPath);
+        fileInfo.setSize(file.getSize());
+        fileInfo.setExt(extName);
+        fileInfo.setContentType(file.getContentType());
+        fileInfo.setRemark(remark);
+        fileInfoRepository.save(fileInfo);
+        return FileInfoAssembler.INSTANCE.entityToDto(fileInfo);
     }
 
     @Override
-    public void delete(String storageId) {
-        Assert.isNotBlank(storageId, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
-        long id = NumberUtil.parseLong(storageId);
-        Map<String, Object> map = fileMap.get(id);
-        FileInfoDTO fileInfoDto = getFileInfoDto(map);
-        String absolutePath = getAbsolutePath(fileInfoDto);
-        FileUtil.del(absolutePath);
-        fileMap.remove(id);
+    public void update(FileInfoDTO fileInfoDTO) {
+        FileInfo fileInfo = FileInfoAssembler.INSTANCE.dtoToEntity(fileInfoDTO);
+        Assert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST, "文件不存在");
+        Assert.isTrue(fileInfoRepository.updateById(fileInfo), BizErrCode.FAIL, "修改失败");
+    }
+
+    @Override
+    public void delete(Long id) {
+        Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
+        FileInfo fileInfo = fileInfoRepository.getById(id);
+        Assert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST, "文件不存在");
+        String absolutePath = getAbsolutePath(fileInfo);
+        File file = new File(absolutePath);
+        if (FileUtil.exist(file)) {
+            FileUtil.del(file);
+        }
+        fileInfoRepository.removeById(id);
     }
 
 
     @Override
-    public void download(String storageId) {
+    public void download(Long id) {
         // @formatter:off
-        Assert.isNotBlank(storageId, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
-        Map<String, Object> in = fileMap.get(NumberUtil.parseLong(storageId));
-        FileInfoDTO fileInfoDto = getFileInfoDto(in);
+        Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
+        FileInfo fileInfo = fileInfoRepository.getById(id);
+        Assert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST, "文件不存在");
+        String absolutePath = getAbsolutePath(fileInfo);
+        File file = new File(absolutePath);
+        Assert.isTrue(FileUtil.exist(file), FileErrCode.FILE_NOT_EXIST, "文件不存在");
         try (OutputStream outputStream = response.getOutputStream()) {
             response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
-            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLUtil.encodeAll(fileInfoDto.getFileName()));
-            response.setContentType(fileInfoDto.getContentType());
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLUtil.encodeAll(fileInfo.getOriginalFilename()));
+            response.setContentType(fileInfo.getContentType());
             response.setHeader(HttpHeaders.PRAGMA, "no-cache");
             response.setHeader(HttpHeaders.CACHE_CONTROL, "no-cache");
-            response.setHeader(HttpHeaders.CONTENT_LENGTH, fileInfoDto.getSize() + "");
+            response.setHeader(HttpHeaders.CONTENT_LENGTH, fileInfo.getSize() + "");
             response.setDateHeader(HttpHeaders.EXPIRES, 0);
-            String absolutePath = getAbsolutePath(fileInfoDto);
-            IoUtil.write(outputStream, true, FileUtil.readBytes(absolutePath));
+            IoUtil.write(outputStream, true, FileUtil.readBytes(file));
         } catch (Exception e) {
             log.error("文件下载失败，{}", e.getMessage(), e);
-            throw new BizException(MioErrCode.DOWNLOAD_ERROR);
+            throw new BizException(FileErrCode.DOWNLOAD_ERROR);
         }
         // @formatter:on
     }
 
     @Override
-    public String getUrl(String storageId, Integer expires) {
-        Assert.isNotBlank(storageId, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
+    public String getUrl(Long id, Integer expires) {
+        Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
         if (expires != null) {
             Assert.isTrue(expires <= TimeUnit.DAYS.toSeconds(7), BizErrCode.PARAM_ERROR, "过期时间最长为7天");
         }
@@ -241,30 +255,21 @@ public class FileServiceImpl implements FileService {
         // @formatter:on
     }
 
-    /**
-     * 从header中获取用户上传的自定义信息
-     *
-     * @param map headers
-     * @return 自定义headers信息
-     */
-    private FileInfoDTO getFileInfoDto(Map<String, Object> map) {
-        if (Objects.isNull(map)) {
-            return null;
-        }
-        FileInfoDTO fileInfoDTO = new FileInfoDTO();
-        fileInfoDTO.setFileName((String) map.get("fileName"));
-        fileInfoDTO.setType(NumberUtil.parseInt(map.get("type").toString(), 2));
-        fileInfoDTO.setPath((String) map.get("path"));
-        fileInfoDTO.setRemark((String) map.get("remark"));
-        long size = Optional.ofNullable(map.get("size")).map(Object::toString).map(Long::valueOf).orElse(0L);
-        fileInfoDTO.setSize(size);
-        fileInfoDTO.setContentType((String) map.get("contentType"));
-        return fileInfoDTO;
+    @Override
+    public PageResult<FileInfoDTO> page(FileInfoQuery query) {
+        query.checkPage();
+        Page<FileInfo> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
+        fileInfoRepository.list(query);
+        List<FileInfoDTO> fileInfoDTOs = page.getResult()
+            .stream()
+            .map(FileInfoAssembler.INSTANCE::entityToDto)
+            .collect(Collectors.toList());
+        return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), fileInfoDTOs);
     }
 
-    public String getAbsolutePath(FileInfoDTO fileInfoDto) {
-        Integer type = fileInfoDto.getType();
-        String path = fileInfoDto.getPath();
+    public String getAbsolutePath(FileInfo fileInfo) {
+        Integer type = fileInfo.getType();
+        String path = fileInfo.getPath();
         String prefixPath;
         // 文件存储
         if (Objects.equals(type, 1)) {

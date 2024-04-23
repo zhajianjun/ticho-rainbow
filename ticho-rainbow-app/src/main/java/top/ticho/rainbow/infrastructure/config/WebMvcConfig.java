@@ -41,10 +41,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        String mvcResourcePath = fileProperty.getMvcResourcePath();
         String publicAbsolutePath = fileProperty.getPublicPath();
         log.info("静态文件路径: {}", publicAbsolutePath);
-        registry.addResourceHandler("/static/data/public/**")
-                .addResourceLocations(StrUtil.format("file:{}", StrUtil.format("file:{}", publicAbsolutePath)));
+        registry.addResourceHandler(mvcResourcePath)
+                .addResourceLocations(StrUtil.format("file:{}", publicAbsolutePath));
 	}
 
     @Override
