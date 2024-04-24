@@ -2,6 +2,7 @@ package top.ticho.rainbow.infrastructure.repository;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,8 @@ import top.ticho.rainbow.infrastructure.entity.FileInfo;
 import top.ticho.rainbow.infrastructure.mapper.FileInfoMapper;
 import top.ticho.rainbow.interfaces.query.FileInfoQuery;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,6 +53,36 @@ public class FileInfoRepositoryImpl extends RootServiceImpl<FileInfoMapper, File
         }
         return list(wrapper);
         // @formatter:on
+    }
+
+    @Override
+    public FileInfo getByChunkId(String chunkId) {
+        LambdaQueryWrapper<FileInfo> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(FileInfo::getChunkId, chunkId);
+        wrapper.eq(FileInfo::getStatus, 3);
+        wrapper.last(StrUtil.format("limit {}", 1));
+        return getOne(wrapper);
+    }
+
+    @Override
+    public List<FileInfo> listChunkFile(LocalDateTime before, Integer size) {
+        if (Objects.isNull(before)) {
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<FileInfo> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(FileInfo::getStatus, 3);
+        wrapper.le(FileInfo::getCreateTime, before);
+        wrapper.orderByAsc(FileInfo::getCreateTime);
+        wrapper.last(StrUtil.format("limit {}", size));
+        return list(wrapper);
+    }
+
+    @Override
+    public boolean removeChunkFile(Long id) {
+        LambdaUpdateWrapper<FileInfo> wrapper = Wrappers.lambdaUpdate();
+        wrapper.eq(FileInfo::getId, id);
+        wrapper.eq(FileInfo::getStatus, 3);
+        return remove(wrapper);
     }
 
 }

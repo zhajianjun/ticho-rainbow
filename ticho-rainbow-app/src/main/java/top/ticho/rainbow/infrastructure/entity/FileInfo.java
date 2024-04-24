@@ -1,17 +1,18 @@
 package top.ticho.rainbow.infrastructure.entity;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 文件信息
@@ -29,10 +30,10 @@ public class FileInfo extends Model<FileInfo> implements Serializable {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
-    /** 存储类型 */
+    /** 存储类型;1-公共,2-私有 */
     private Integer type;
 
-    /** 文件名称 */
+    /** 文件名 */
     private String fileName;
 
     /** 文件扩展名 */
@@ -52,6 +53,12 @@ public class FileInfo extends Model<FileInfo> implements Serializable {
 
     /** 文件元数据 */
     private String metadata;
+
+    /** 分片id */
+    private String chunkId;
+
+    /** md5 */
+    private String md5;
 
     /** 状态;1-正常,2-停用,3-分片上传,99-作废 */
     private Integer status;

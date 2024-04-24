@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -28,6 +29,10 @@ public class CacheTemplate {
         return Optional.ofNullable(cacheManager.getCache(name));
     }
 
+    public boolean contain(String name, Object key) {
+        return getOptCache(name).map(x -> x.get(key)).map(Cache.ValueWrapper::get).isPresent();
+    }
+
     public <T> T get(String name, Object key, Class<T> type) {
         return getOptCache(name).map(x -> x.get(key, type)).orElse(null);
     }
@@ -46,6 +51,14 @@ public class CacheTemplate {
 
     public void clear(String name) {
         getOptCache(name).ifPresent(Cache::clear);
+    }
+
+    public long size(String name) {
+        return getOptCache(name)
+            .map(x-> (CaffeineCache) x)
+            .map(CaffeineCache::getNativeCache)
+            .map(com.github.benmanes.caffeine.cache.Cache::estimatedSize)
+            .orElse(0L);
     }
 
 }

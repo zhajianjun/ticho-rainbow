@@ -1,9 +1,9 @@
 export interface FileInfoDTO {
   /** 主键编号 */
   id: number;
-  /** 存储类型 */
+  /** 存储类型;1-公共,2-私有 */
   type: number;
-  /** 文件名称 */
+  /** 文件名 */
   fileName: string;
   /** 文件扩展名 */
   ext: string;
@@ -38,9 +38,9 @@ export interface FileInfoDTO {
 export interface FileInfoQuery {
   /** 主键编号 */
   id: string;
-  /** 存储类型 */
+  /** 存储类型;1-公共,2-私有 */
   type: number;
-  /** 文件名称 */
+  /** 文件名 */
   fileName: string;
   /** 文件扩展名 */
   ext: string;

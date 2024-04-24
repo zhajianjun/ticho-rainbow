@@ -3,6 +3,7 @@ package top.ticho.rainbow.domain.service;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import com.github.pagehelper.Page;
@@ -22,6 +23,7 @@ import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.FileInfoService;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
+import top.ticho.rainbow.infrastructure.config.CacheConfig;
 import top.ticho.rainbow.infrastructure.core.component.CacheTemplate;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.enums.FileErrCode;
@@ -41,11 +43,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 
@@ -76,13 +80,8 @@ public class FileInfoServiceImpl implements FileInfoService {
     public FileInfoDTO upload(FileInfoReqDTO fileInfoReqDTO) {
         String remark = fileInfoReqDTO.getRemark();
         Integer type = fileInfoReqDTO.getType();
-        String relativePath = Optional.ofNullable(fileInfoReqDTO.getRelativePath())
-            // 去除两边的斜杠
-            .map(x-> StrUtil.strip(x, "/"))
-            .map(x-> StrUtil.replace(x, "/", File.separator))
-            .orElse(StrUtil.EMPTY);
         MultipartFile file = fileInfoReqDTO.getFile();
-        // 原始文件名称，logo.svg
+        // 原始文件名，logo.svg
         String originalFilename = file.getOriginalFilename();
         DataSize fileSize = fileProperty.getMaxFileSize();
         Assert.isTrue(file.getSize() <= fileSize.toBytes(), FileErrCode.FILE_SIZE_TO_LARGER, "文件大小不能超出" + fileSize.toMegabytes() + "MB");
@@ -90,34 +89,33 @@ public class FileInfoServiceImpl implements FileInfoService {
         String mainName = FileNameUtil.mainName(originalFilename);
         // 后缀名 svg
         String extName = FileNameUtil.extName(originalFilename);
-        Long id = CloudIdUtil.getId();
-        String prefixPath;
         // 存储文件名 logo.svg -> logo-wKpdqhmC.svg
         String fileName = mainName + StrUtil.DASHED + CommonUtil.fastShortUUID() + StrUtil.DOT + extName;
-        // 相对全路径
-        String relativeFullPath = relativePath + File.separator + fileName;
+        // 相对路径
+        String relativePath = Optional.ofNullable(fileInfoReqDTO.getRelativePath())
+            .filter(StrUtil::isNotBlank)
+            // 去除两边的斜杠
+            .map(x-> StrUtil.strip(x, "/"))
+            .map(s -> s + File.separator + fileName)
+            .orElse(fileName);
+        FileInfo fileInfo = new FileInfo();
+        fileInfo.setId(CloudIdUtil.getId());
+        fileInfo.setType(type);
+        fileInfo.setFileName(fileName);
+        fileInfo.setOriginalFilename(originalFilename);
+        fileInfo.setPath(relativePath);
+        fileInfo.setSize(file.getSize());
+        fileInfo.setExt(extName);
+        fileInfo.setContentType(file.getContentType());
+        fileInfo.setRemark(remark);
+        fileInfo.setStatus(1);
         // 文件存储
-        if (Objects.equals(type, 1)) {
-            prefixPath = fileProperty.getPublicPath();
-        } else {
-            prefixPath = fileProperty.getPrivatePath();
-        }
-        String absolutePath = prefixPath + relativeFullPath;
+        String absolutePath = getAbsolutePath(fileInfo);
         try {
             FileUtil.writeBytes(file.getBytes(), absolutePath);
         } catch (IOException e) {
             throw new BizException(HttpErrCode.FAIL, "文件上传失败");
         }
-        FileInfo fileInfo = new FileInfo();
-        fileInfo.setId(id);
-        fileInfo.setType(type);
-        fileInfo.setFileName(fileName);
-        fileInfo.setOriginalFilename(originalFilename);
-        fileInfo.setPath(relativeFullPath);
-        fileInfo.setSize(file.getSize());
-        fileInfo.setExt(extName);
-        fileInfo.setContentType(file.getContentType());
-        fileInfo.setRemark(remark);
         fileInfoRepository.save(fileInfo);
         return FileInfoAssembler.INSTANCE.entityToDto(fileInfo);
     }
@@ -180,58 +178,139 @@ public class FileInfoServiceImpl implements FileInfoService {
     @Override
     public ChunkDTO uploadChunk(ChunkFileDTO chunkFileDTO) {
         ValidUtil.valid(chunkFileDTO);
-        String md5 = chunkFileDTO.getMd5();
+        String chunkId = chunkFileDTO.getChunkId();
         MultipartFile file = chunkFileDTO.getFile();
+        DataSize fileSize = fileProperty.getMaxFileSize();
+        Assert.isTrue(file.getSize() <= fileSize.toBytes(), FileErrCode.FILE_SIZE_TO_LARGER, "文件大小不能超出" + fileSize.toMegabytes() + "MB");
+        // 相对路径
+        Optional<String> relativePathOpt = Optional.ofNullable(chunkFileDTO.getRelativePath())
+            .filter(StrUtil::isNotBlank)
+            // 去除两边的斜杠
+            .map(x-> StrUtil.strip(x, "/"));
         Integer index = chunkFileDTO.getIndex();
-        ChunkDTO chunkDTO = cacheTemplate.get(CacheConst.UPLOAD_CHUNK, md5, ChunkDTO.class);
-        String fileName = chunkFileDTO.getFileName();
-        if (Objects.isNull(chunkDTO)) {
-            String extName = FileNameUtil.extName(fileName);
-            String mainName = FileNameUtil.mainName(fileName);
-            String realFileName = mainName + StrUtil.DASHED + CommonUtil.fastShortUUID() + StrUtil.DOT + extName;
-            chunkDTO = new ChunkDTO();
-            chunkDTO.setMd5(md5);
+        ChunkDTO chunkDTO;
+        boolean isFirst;
+        // 加锁的意义是，防止并发上传同一个文件，导致md5缓存被覆盖
+        synchronized (chunkId) {
+            chunkDTO = cacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkDTO.class);
+            isFirst = Objects.isNull(chunkDTO);
+            if (isFirst) {
+                long size = cacheTemplate.size(CacheConst.UPLOAD_CHUNK);
+                Assert.isTrue(size + 1 > CacheConfig.CacheEnum.UPLOAD_CHUNK.getMaxSize(), BizErrCode.PARAM_ERROR, "分片文件上传数量超过限制");
+                FileInfo dbFileInfo = fileInfoRepository.getByChunkId(chunkId);
+                chunkDTO = new ChunkDTO();
+                if (dbFileInfo != null) {
+                    isFirst = false;
+                    // TODO
+                    String chunkDirPath = "";
+                    chunkDTO.setChunkId(chunkId);
+                    chunkDTO.setMd5(chunkFileDTO.getMd5());
+                    chunkDTO.setId(dbFileInfo.getId());
+                    // chunkDTO.setChunkCount(dbFileInfo.get);
+                    chunkDTO.setFileName(dbFileInfo.getFileName());
+                    chunkDTO.setOriginalFilename(dbFileInfo.getOriginalFilename());
+                    chunkDTO.setRelativeFullPath(dbFileInfo.getPath());
+                    chunkDTO.setChunkDirPath(chunkDirPath);
+                    chunkDTO.setExtName(dbFileInfo.getExt());
+                    chunkDTO.setIndexs(new ConcurrentSkipListSet<>());
+                    ConcurrentSkipListSet<Integer> indexs = chunkDTO.getIndexs();
+                    String absolutePath = getAbsolutePath(chunkDTO.getType(), chunkDTO.getChunkDirPath());
+                    File chunkDirFile = new File(absolutePath);
+                    String[] list = chunkDirFile.list();
+                    if (ArrayUtil.isNotEmpty(list)) {
+                        for (String s : list) {
+                            if (StrUtil.isNumeric(s)) {
+                                int i = Integer.parseInt(s);
+                                indexs.add(i);
+                            }
+                        }
+                    }
+
+                }
+                cacheTemplate.put(CacheConst.UPLOAD_CHUNK, chunkId, chunkDTO);
+            }
+        }
+        // 原文件名 logo.svg
+        String originalFilename = chunkFileDTO.getFileName();
+        if (isFirst) {
+            Long id = CloudIdUtil.getId();
+            // 后缀 svg
+            String extName = FileNameUtil.extName(originalFilename);
+            // 原主文件名 logo
+            String originalMainName = FileNameUtil.mainName(originalFilename);
+            // 主文件名 logo-wKpdqhmC
+            String mainName = originalMainName + StrUtil.DASHED + CommonUtil.fastShortUUID();
+            // 文件名 logo-wKpdqhmC.svg
+            String fileName = mainName + StrUtil.DOT + extName;
+            // 分片文件夹路径
+            String chunkDirPath;
+            // 相对路径
+            String relativeFullPath;
+            if (relativePathOpt.isPresent()) {
+                String relativePath = relativePathOpt.get() + File.separator;
+                chunkDirPath = relativePath + mainName + File.separator;
+                relativeFullPath = relativePath + fileName;
+            } else {
+                // 分片文件夹路径
+                chunkDirPath = mainName + File.separator;
+                relativeFullPath = fileName;
+            }
+            chunkDTO.setChunkId(chunkId);
+            chunkDTO.setMd5(chunkFileDTO.getMd5());
+            chunkDTO.setId(id);
             chunkDTO.setChunkCount(chunkFileDTO.getChunkCount());
             chunkDTO.setFileName(fileName);
-            chunkDTO.setPath(realFileName);
+            chunkDTO.setOriginalFilename(originalFilename);
+            chunkDTO.setRelativeFullPath(relativeFullPath);
+            chunkDTO.setChunkDirPath(chunkDirPath);
             chunkDTO.setExtName(extName);
             chunkDTO.setIndexs(new ConcurrentSkipListSet<>());
+            FileInfo fileInfo = new FileInfo();
+            fileInfo.setId(id);
+            fileInfo.setMd5(chunkFileDTO.getMd5());
+            fileInfo.setChunkId(chunkId);
+            fileInfo.setType(chunkFileDTO.getType());
+            fileInfo.setFileName(fileName);
+            fileInfo.setOriginalFilename(originalFilename);
+            fileInfo.setPath(relativeFullPath);
+            fileInfo.setExt(extName);
+            fileInfo.setContentType(FileUtil.getMimeType(originalFilename));
+            fileInfo.setStatus(3);
+            fileInfoRepository.save(fileInfo);
         }
         ConcurrentSkipListSet<Integer> indexs = chunkDTO.getIndexs();
+        AtomicReference<LocalDateTime> recentUpdateTime = chunkDTO.getRecentUpdateTime();
+        recentUpdateTime.set(LocalDateTime.now());
         Assert.isTrue(index + 1 <= chunkFileDTO.getChunkCount(), "索引超出分片数量大小");
         Assert.isTrue(!indexs.contains(index), "分片文件已上传");
-        String rootPath = fileProperty.getPrivatePath();
-        String chunkFilePath = FileUtil.getPrefix(chunkDTO.getPath()) + File.separator + index;
-        String absolutePath = rootPath + chunkFilePath;
+        String chunkFilePath = getAbsolutePath(chunkDTO.getType(), chunkDTO.getChunkDirPath()) + index;
         try {
-            FileUtil.writeBytes(file.getBytes(), absolutePath);
+            FileUtil.writeBytes(file.getBytes(), chunkFilePath);
         } catch (IOException e) {
             throw new BizException(HttpErrCode.FAIL, "文件上传失败");
         }
-        log.info("{}分片文件{}，md5={}，index={}上传成功", fileName, file.getOriginalFilename(), md5, index);
+        log.info("{}分片文件{}，分片id={}，index={}上传成功", originalFilename, file.getOriginalFilename(), chunkId, index);
         indexs.add(index);
         // 分片上传数量
         int chunkUploadCount = Long.valueOf(indexs.stream().distinct().count()).intValue();
         // 分片上传是否完成
         boolean complete = Objects.equals(chunkUploadCount, chunkDTO.getChunkCount());
         chunkDTO.setComplete(complete);
-        cacheTemplate.put(CacheConst.UPLOAD_CHUNK, md5, chunkDTO);
         return chunkDTO;
     }
 
     @Override
-    public void composeChunk(String md5) {
+    public void composeChunk(String chunkId) {
         // @formatter:off
-        Assert.isNotBlank(md5, "md5不能为空");
-        ChunkDTO chunkDTO = cacheTemplate.get(CacheConst.UPLOAD_CHUNK, md5, ChunkDTO.class);
+        Assert.isNotBlank(chunkId, "分片id不能为空");
+        ChunkDTO chunkDTO = cacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkDTO.class);
         Assert.isNotNull(chunkDTO, "分片文件不存在");
         ConcurrentSkipListSet<Integer> indexs = Optional.ofNullable(chunkDTO.getIndexs()).orElseGet(ConcurrentSkipListSet::new);
         // 分片上传是否完成
         boolean complete = Boolean.TRUE.equals(chunkDTO.getComplete());
         Assert.isTrue(complete, "分片文件未全部上传");
-        String rootPath = fileProperty.getPrivatePath();
-        String chunkFileDirPath = rootPath + FileUtil.getPrefix(chunkDTO.getPath()) + File.separator;
-        String filePath = rootPath + chunkDTO.getPath();
+        String chunkFileDirPath = getAbsolutePath(chunkDTO.getType(), chunkDTO.getChunkDirPath());
+        String filePath = getAbsolutePath(chunkDTO.getType(), chunkDTO.getRelativeFullPath());
         try {
             RandomAccessFile mergedFile = new RandomAccessFile(filePath, "rw");
             // 缓冲区大小
@@ -244,13 +323,26 @@ public class FileInfoServiceImpl implements FileInfoService {
                 }
                 partFile.close();
             }
+            long fileSize = mergedFile.length();
             mergedFile.close();
+            FileInfo fileInfo = new FileInfo();
+            fileInfo.setId(chunkDTO.getId());
+            fileInfo.setSize(fileSize);
+            fileInfo.setStatus(1);
+            fileInfoRepository.updateById(fileInfo);
         } catch (IOException e) {
             throw new BizException(HttpErrCode.FAIL, "文件合并失败");
         } finally{
             // 清除缓存
-            cacheTemplate.evict(CacheConst.UPLOAD_CHUNK, md5);
-            FileUtil.moveContent(new File(chunkFileDirPath), new File(fileProperty.getTmpPath()), true);
+            cacheTemplate.evict(CacheConst.UPLOAD_CHUNK, chunkId);
+            String tmpPath = fileProperty.getTmpPath() + File.separator + chunkDTO.getChunkDirPath();
+            File source = new File(chunkFileDirPath);
+            if (source.exists()) {
+                File target = new File(tmpPath);
+                FileUtil.mkdir(target);
+                FileUtil.moveContent(source, target, true);
+                FileUtil.del(source);
+            }
         }
         // @formatter:on
     }
@@ -267,9 +359,14 @@ public class FileInfoServiceImpl implements FileInfoService {
         return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), fileInfoDTOs);
     }
 
-    public String getAbsolutePath(FileInfo fileInfo) {
-        Integer type = fileInfo.getType();
-        String path = fileInfo.getPath();
+    /**
+     * 获取绝对路径
+     *
+     * @param type 存储类型
+     * @param path 文件相对路径
+     * @return {@link String}
+     */
+    public String getAbsolutePath(Integer type, String path) {
         String prefixPath;
         // 文件存储
         if (Objects.equals(type, 1)) {
@@ -278,6 +375,13 @@ public class FileInfoServiceImpl implements FileInfoService {
             prefixPath = fileProperty.getPrivatePath();
         }
         return prefixPath + path;
+    }
+
+    /**
+     * 获取绝对路径
+     */
+    public String getAbsolutePath(FileInfo fileInfo) {
+        return getAbsolutePath(fileInfo.getType(), fileInfo.getPath());
     }
 
 }

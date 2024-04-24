@@ -28,12 +28,12 @@ public class FileInfoDTO implements Serializable {
     @NotNull(message = "编号不能为空", groups = {ValidGroup.Upd.class})
     private Long id;
 
-    /** 存储类型 */
+    /** 存储类型;1-公共,2-私有 */
     @ApiModelProperty(value = "存储类型", position = 20)
     private Integer type;
 
-    /** 文件名称 */
-    @ApiModelProperty(value = "文件名称", position = 30)
+    /** 文件名 */
+    @ApiModelProperty(value = "文件名", position = 30)
     private String fileName;
 
     /** 文件扩展名 */

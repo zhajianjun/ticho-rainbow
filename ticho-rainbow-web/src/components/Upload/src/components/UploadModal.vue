@@ -189,6 +189,12 @@
       const { data } = ret;
       item.status = UploadResultStatus.SUCCESS;
       item.response = data;
+      if (~~data.code !== 0) {
+        return {
+          success: false,
+          error: data.msg,
+        };
+      }
       return {
         success: true,
         error: null,

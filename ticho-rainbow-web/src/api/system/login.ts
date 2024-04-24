@@ -8,7 +8,7 @@ import {
 import { ContentTypeEnum } from '@/enums/httpEnum';
 import { LoginRequest, Oauth2AccessToken } from '@/api/system/model/loginModel';
 
-import { ErrorMessageMode } from '#/axios';
+import { ErrorMessageMode, RetryRequest } from '#/axios';
 
 enum Api {
   Login = '/oauth/token',
@@ -28,7 +28,12 @@ export function getImgCode(imgKey: string, mode: ErrorMessageMode = 'modal') {
       responseType: 'blob',
       params,
     },
-    { isTransformResponse: false, withToken: false, errorMessageMode: mode },
+    {
+      isTransformResponse: false,
+      withToken: false,
+      errorMessageMode: mode,
+      retryRequest: { isOpenRetry: false } as RetryRequest,
+    },
   );
 }
 

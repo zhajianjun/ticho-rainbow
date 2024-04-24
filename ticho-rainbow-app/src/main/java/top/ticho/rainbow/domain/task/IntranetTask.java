@@ -17,7 +17,7 @@ import java.util.List;
  * @date 2024-04-03 15:16
  */
 @Component
-public class IntranetTask extends AbstracTask {
+public class IntranetTask extends AbstracTask<String> {
 
     @Autowired
     private ClientService clientService;

@@ -108,10 +108,10 @@ public class FileInfoController {
     @PreAuthorize("@perm.hasPerms('storage:file:composeChunk')")
     @ApiOperation(value = "分片文件合并")
     @ApiOperationSupport(order = 60)
-    @ApiImplicitParam(value = "md5", name = "md5", required = true)
+    @ApiImplicitParam(value = "分片id", name = "chunkId", required = true)
     @GetMapping("composeChunk")
-    public Result<Void> composeChunk(String md5) {
-        fileInfoService.composeChunk(md5);
+    public Result<Void> composeChunk(String chunkId) {
+        fileInfoService.composeChunk(chunkId);
         return Result.ok();
     }
 

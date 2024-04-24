@@ -8,7 +8,6 @@
           @change="handleChange"
           :api="chunkUpload"
           class="my-5"
-          :accept="['*']"
         />
       </template>
       <template #action="{ record }">
@@ -43,13 +42,18 @@
   import { useModal } from '@/components/Modal';
   import FileInfoModal from './FileInfoModal.vue';
   import { getTableColumns, getSearchColumns } from './fileInfo.data';
-  import { fileInfoPage, delFileInfo } from '@/api/system/fileInfo';
+  import {
+    fileInfoPage,
+    delFileInfo,
+    composeChunk,
+    upload,
+    uploadChunk,
+  } from '@/api/system/fileInfo';
   import { usePermission } from '@/hooks/web/usePermission';
   import { BasicUpload } from '@/components/Upload';
   import { useMessage } from '@/hooks/web/useMessage';
   import { UploadFileParams } from '#/axios';
   import { AxiosProgressEvent } from 'axios';
-  import { composeChunk, upload, uploadChunk } from '@/api/system/upload';
   import { ChunkFileDTO } from '@/api/system/model/uploadModel';
   import SparkMD5 from 'spark-md5';
 
@@ -122,7 +126,7 @@
         const file = params.file;
         console.log(file);
         // 30MB
-        const chunkSize = 50 * 1024 * 1024;
+        const chunkSize = 20 * 1024 * 1024;
         const fileSize = file.size;
         if (fileSize <= chunkSize) {
           return upload(params, onUploadProgress).then((res) => {

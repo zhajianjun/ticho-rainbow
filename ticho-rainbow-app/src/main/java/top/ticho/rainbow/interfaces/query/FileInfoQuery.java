@@ -25,12 +25,12 @@ public class FileInfoQuery extends BasePageQuery implements Serializable {
     @ApiModelProperty(value = "主键编号", position = 10)
     private Long id;
 
-    /** 存储类型 */
-    @ApiModelProperty(value = "存储类型", position = 20)
+    /** 存储类型;1-公共,2-私有 */
+    @ApiModelProperty(value = "存储类型;1-公共,2-私有", position = 20)
     private Integer type;
 
-    /** 文件名称 */
-    @ApiModelProperty(value = "文件名称", position = 30)
+    /** 文件名 */
+    @ApiModelProperty(value = "文件名", position = 30)
     private String fileName;
 
     /** 文件扩展名 */

@@ -16,7 +16,10 @@ enum Api {
 
 export function delFileInfo(id: string) {
   const params = { id: id };
-  return defHttp.delete<any>({ url: Api.FileInfo, params }, { errorMessageMode: 'message' });
+  return defHttp.delete<any>(
+    { url: Api.FileInfo, params },
+    { errorMessageMode: 'message', joinParamsToUrl: true },
+  );
 }
 
 export function modifyFileInfo(params: FileInfoDTO) {

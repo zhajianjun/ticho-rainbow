@@ -9,10 +9,11 @@ export function saveDictLabel(params: DictLabelDTO) {
   return defHttp.post<any>({ url: Api.DictLabel, params }, { errorMessageMode: 'message' });
 }
 
-export function delDictLabel(params: string) {
+export function delDictLabel(id: string) {
+  const params = { id: id };
   return defHttp.delete<any>(
     { url: Api.DictLabel + '?id=', params },
-    { errorMessageMode: 'message' },
+    { errorMessageMode: 'message', joinParamsToUrl: true },
   );
 }
 

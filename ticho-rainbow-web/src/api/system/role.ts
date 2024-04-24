@@ -27,8 +27,12 @@ export function saveRole(params: any) {
   return defHttp.post<any>({ url: Api.Role, params }, { errorMessageMode: 'message' });
 }
 
-export function delRole(params: string) {
-  return defHttp.delete<any>({ url: Api.Role + '?id=', params }, { errorMessageMode: 'message' });
+export function delRole(id: string) {
+  const params = { id: id };
+  return defHttp.delete<any>(
+    { url: Api.Role, params },
+    { errorMessageMode: 'message', joinParamsToUrl: true },
+  );
 }
 
 export function modifyRole(params: any) {

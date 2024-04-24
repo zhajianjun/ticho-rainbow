@@ -24,10 +24,11 @@ export function saveUser(params: UserDTO) {
   return defHttp.post<any>({ url: Api.UserInfo, params }, { errorMessageMode: 'message' });
 }
 
-export function delUser(params: string) {
+export function delUser(id: string) {
+  const params = { id: id };
   return defHttp.delete<any>(
-    { url: Api.UserInfo + '?id=', params },
-    { errorMessageMode: 'message' },
+    { url: Api.UserInfo, params },
+    { errorMessageMode: 'message', joinParamsToUrl: true },
   );
 }
 

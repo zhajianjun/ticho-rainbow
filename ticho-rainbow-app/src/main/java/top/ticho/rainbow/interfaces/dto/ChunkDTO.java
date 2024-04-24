@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 分片信息
@@ -18,33 +17,47 @@ import java.util.concurrent.ConcurrentSkipListSet;
 @Data
 public class ChunkDTO {
 
-    @NotNull(message = "md5不能空")
-    @ApiModelProperty(value = "md5", required = true, position = 10)
+    @ApiModelProperty(value = "分片id", position = 10)
+    private String chunkId;
+
+    @ApiModelProperty(value = "md5", position = 20)
     private String md5;
 
-    @Size(max = 20, message = "文件名过长，1-20字符以内！")
-    @ApiModelProperty(value = "文件名，如果没有则默认使用MultipartFile中的文件名", required = true, position = 20)
+    @ApiModelProperty(value = "id", position = 30)
+    private Long id;
+
+    @ApiModelProperty(value = "原始文件名", position = 40)
+    private String originalFilename;
+
+    @ApiModelProperty(value = "文件名", position = 50)
     private String fileName;
 
-    @NotNull(message = "分片数量不能为空")
-    @Min(value = 1, message = "分片数量最小为1")
-    @ApiModelProperty(value = "分片数量", required = true, position = 30)
+    @ApiModelProperty(value = "存储类型;1-公共,2-私有", position = 60)
+    private Integer type;
+
+    @ApiModelProperty(value = "分片数量", position = 70)
     private Integer chunkCount;
 
-    @ApiModelProperty(value = "minio文件名", position = 40)
-    private String objectName;
-
-    @ApiModelProperty(value = "文件后缀名，如：png", position = 50)
+    @ApiModelProperty(value = "文件后缀名，如：png", position = 80)
     private String extName;
 
-    @ApiModelProperty(value = "路径", position = 50)
-    private String path;
+    @ApiModelProperty(value = "分片上传是否完成", position = 90)
+    private Boolean complete;
 
-    @ApiModelProperty(value = "已经上传的分片索引", position = 60, hidden = true)
+    @ApiModelProperty(value = "分片文件夹路径", position = 100, hidden = true)
+    @JsonIgnore
+    private String chunkDirPath;
+
+    @ApiModelProperty(value = "文件相对全路径", position = 110, hidden = true)
+    @JsonIgnore
+    private String relativeFullPath;
+
+    @ApiModelProperty(value = "已经上传的分片索引", position = 120, hidden = true)
     @JsonIgnore
     private ConcurrentSkipListSet<Integer> indexs;
 
-    @ApiModelProperty(value = "分片上传是否完成", position = 70)
-    private Boolean complete;
+    @ApiModelProperty(value = "最近更新时间", position = 130, hidden = true)
+    @JsonIgnore
+    private AtomicReference<LocalDateTime> recentUpdateTime;
 
 }

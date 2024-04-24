@@ -63,9 +63,9 @@ public interface FileInfoService {
     /**
      * 分片文件合并
      *
-     * @param md5 文件md5
+     * @param chunkId 分片id
      */
-    void composeChunk(String md5);
+    void composeChunk(String chunkId);
 
     /**
      * 分页查询文件信息列表

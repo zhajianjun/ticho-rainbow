@@ -18,6 +18,10 @@ import javax.validation.constraints.Size;
 @Data
 public class ChunkFileDTO {
 
+    @NotNull(message = "分片id不能空")
+    @ApiModelProperty(value = "分片id", required = true, position = 10)
+    private String chunkId;
+
     @NotNull(message = "md5不能空")
     @ApiModelProperty(value = "md5", required = true, position = 10)
     private String md5;
@@ -36,8 +40,14 @@ public class ChunkFileDTO {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private MultipartFile file;
 
+    @ApiModelProperty(value = "存储类型;1-公共,2-私有", required = true, position = 50)
+    private Integer type = 2;
+
+    @ApiModelProperty(value = "相对位置，不包含文件名", required = true, position = 60)
+    private String relativePath;
+
     @NotNull(message = "分片索引不能为空")
-    @ApiModelProperty(value = "分片索引", required = true, position = 50)
+    @ApiModelProperty(value = "分片索引", required = true, position = 70)
     private Integer index;
 
 }

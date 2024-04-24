@@ -3,17 +3,17 @@ package top.ticho.rainbow.infrastructure.core.component;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.SystemClock;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.quartz.QuartzJobBean;
-import top.ticho.rainbow.domain.repository.TaskRepository;
+import top.ticho.boot.json.util.JsonUtil;
 import top.ticho.tool.trace.common.bean.TraceInfo;
 import top.ticho.tool.trace.common.constant.LogConst;
 import top.ticho.tool.trace.common.prop.TraceProperty;
@@ -31,7 +31,7 @@ import java.util.Map;
  * @date 2024-03-23 22:04
  */
 @Slf4j
-public abstract class AbstracTask extends QuartzJobBean {
+public abstract class AbstracTask<T> extends QuartzJobBean {
 
     @Resource
     private Environment environment;
@@ -41,12 +41,21 @@ public abstract class AbstracTask extends QuartzJobBean {
 
     public abstract void run(JobExecutionContext context);
 
-    public void before(JobDataMap jobDataMap) {
+    public void before(JobExecutionContext context) {
 
     }
 
-    public void complete(JobDataMap jobDataMap) {
+    public void complete(JobExecutionContext context) {
 
+    }
+
+    public T getTaskParam(JobExecutionContext context, Class<T> claz) {
+        JobDataMap jobDataMap = context.getMergedJobDataMap();
+        String taskParam = jobDataMap.getString(TaskTemplate.TASK_PARAM);
+        if (StrUtil.isBlank(taskParam)) {
+            return null;
+        }
+        return JsonUtil.toJavaObject(taskParam, claz);
     }
 
     public void executeInternal(JobExecutionContext context) {
@@ -62,14 +71,14 @@ public abstract class AbstracTask extends QuartzJobBean {
         String jobClassName = jobDetail.getJobClass().getName();
         try {
             log.info("定时任务开始, 任务ID:{}, 任务名称:{}, 任务时间:{}, 任务类:{}, 任务参数:{}", jobName, taskName, runTime, jobClassName, taskParam);
-            before(jobDataMap);
+            before(context);
             run(context);
         } catch (Exception e) {
             log.error("定时任务异常, 任务ID:{}, 任务名称:{}, 任务时间:{}, 任务类:{}, 异常信息:{}", jobName, taskName, runTime, jobClassName, e.getMessage(), e);
         } finally {
             long end = SystemClock.now();
             long consume = end - start;
-            complete(jobDataMap);
+            complete(context);
             log.info("定时任务结束, 任务ID:{}, 任务名称:{}, 耗时{}ms, 任务时间:{}, 任务类:{}", jobName, taskName, consume, runTime, jobClassName);
             traceHandle(jobDataMap, start, end, consume);
         }

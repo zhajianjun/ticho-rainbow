@@ -13,8 +13,12 @@ export function saveDict(params: DictDTO) {
   return defHttp.post<any>({ url: Api.Dict, params }, { errorMessageMode: 'message' });
 }
 
-export function delDict(params: string) {
-  return defHttp.delete<any>({ url: Api.Dict + '?id=', params }, { errorMessageMode: 'message' });
+export function delDict(id: string) {
+  const params = { id: id };
+  return defHttp.delete<any>(
+    { url: Api.Dict, params },
+    { errorMessageMode: 'message', joinParamsToUrl: true },
+  );
 }
 
 export function modifyDict(params: DictDTO) {

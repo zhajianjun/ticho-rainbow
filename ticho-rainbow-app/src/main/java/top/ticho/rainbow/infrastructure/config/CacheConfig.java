@@ -42,17 +42,27 @@ public class CacheConfig {
         USER_INFO(CacheConst.USER_INFO, 1800, 10000),
         USER_ROLE_INFO(CacheConst.USER_ROLE_INFO, 1800, 10000),
         ROLE_MENU_INFO(CacheConst.ROLE_MENU_INFO, 1800, 10000),
-        UPLOAD_CHUNK(CacheConst.UPLOAD_CHUNK, 600, 10000),
+        UPLOAD_CHUNK(CacheConst.UPLOAD_CHUNK, 2, 1800, 10000),
         ;
 
         CacheEnum(String key, int ttl, int maxSize) {
             this.key = key;
+            this.expireStrategy = 1;
+            this.maxSize = maxSize;
+            this.ttl = ttl;
+        }
+
+        CacheEnum(String key, int expireStrategy, int ttl, int maxSize) {
+            this.key = key;
+            this.expireStrategy = expireStrategy;
             this.maxSize = maxSize;
             this.ttl = ttl;
         }
 
         /** key */
         private final String key;
+        /** 过期策略;1-write,2-access */
+        private final Integer expireStrategy;
         /** 过期时间（秒） */
         private final int ttl;
         /** 最大數量 */
@@ -66,12 +76,16 @@ public class CacheConfig {
         // @formatter:off
         List<CaffeineCache> caches = new ArrayList<>();
         for(CacheEnum c : CacheEnum.values()){
-            Cache<Object, Object> build = Caffeine.newBuilder()
+            Caffeine<Object,Object> builder = Caffeine.newBuilder()
                 .recordStats()
-                .expireAfterWrite(c.getTtl(), TimeUnit.SECONDS)
                 .maximumSize(c.getMaxSize())
-                .removalListener(new DefaultRemovalListener(c.getKey()))
-                .build();
+                .removalListener(new DefaultRemovalListener(c.getKey()));
+            if (c.getExpireStrategy() == 2) {
+                builder.expireAfterAccess(c.getTtl(), TimeUnit.SECONDS);
+            } else {
+                builder.expireAfterWrite(c.getTtl(), TimeUnit.SECONDS);
+            }
+            Cache<Object, Object> build = builder.build();
             CaffeineCache caffeineCache = new CaffeineCache(c.getKey(), build);
             caches.add(caffeineCache);
         }

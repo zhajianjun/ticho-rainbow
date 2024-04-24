@@ -15,7 +15,10 @@ export function saveTask(params: TaskDTO) {
 
 export function delTask(id: string) {
   const params = { id: id };
-  return defHttp.delete<any>({ url: Api.Task, params }, { errorMessageMode: 'message' });
+  return defHttp.delete<any>(
+    { url: `${Api.Task}`, params },
+    { errorMessageMode: 'message', joinParamsToUrl: true },
+  );
 }
 
 export function modifyTask(params: TaskDTO) {

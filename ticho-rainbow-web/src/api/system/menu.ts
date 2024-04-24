@@ -15,8 +15,12 @@ export function saveMenu(params: any) {
   return defHttp.post<any>({ url: Api.Menu, params }, { errorMessageMode: 'message' });
 }
 
-export function delMenu(params: string) {
-  return defHttp.delete<any>({ url: Api.Menu + '?id=', params }, { errorMessageMode: 'message' });
+export function delMenu(id: string) {
+  const params = { id: id };
+  return defHttp.delete<any>(
+    { url: Api.Menu, params },
+    { errorMessageMode: 'message', joinParamsToUrl: true },
+  );
 }
 
 export function modifyMenu(params: any) {

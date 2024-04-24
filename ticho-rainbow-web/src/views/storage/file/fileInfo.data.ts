@@ -127,11 +127,11 @@ export function getSearchColumns(): FormSchema[] {
     },
     {
       field: `fileName`,
-      label: `文件名称`,
+      label: `文件名`,
       component: 'Input',
       colProps: { span: 8 },
       componentProps: {
-        placeholder: '请输入文件名称',
+        placeholder: '请输入文件名',
       },
     },
     {
@@ -254,10 +254,10 @@ export function getModalFormColumns(): FormSchema[] {
     },
     {
       field: `fileName`,
-      label: `文件名称`,
+      label: `文件名`,
       component: 'Input',
       componentProps: {
-        placeholder: '请输入文件名称',
+        placeholder: '请输入文件名',
       },
       colProps: {
         span: 24,
