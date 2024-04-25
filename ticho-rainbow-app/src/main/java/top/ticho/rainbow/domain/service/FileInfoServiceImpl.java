@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
+import top.ticho.boot.json.util.JsonUtil;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.enums.BizErrCode;
 import top.ticho.boot.view.enums.HttpErrCode;
@@ -33,6 +34,7 @@ import top.ticho.rainbow.infrastructure.entity.FileInfo;
 import top.ticho.rainbow.interfaces.assembler.FileInfoAssembler;
 import top.ticho.rainbow.interfaces.dto.ChunkDTO;
 import top.ticho.rainbow.interfaces.dto.ChunkFileDTO;
+import top.ticho.rainbow.interfaces.dto.ChunkMetadataDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoReqDTO;
 import top.ticho.rainbow.interfaces.query.FileInfoQuery;
@@ -43,13 +45,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 
@@ -130,13 +131,17 @@ public class FileInfoServiceImpl implements FileInfoService {
     @Override
     public void delete(Long id) {
         Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
-        FileInfo fileInfo = fileInfoRepository.getById(id);
-        Assert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST, "文件不存在");
-        String absolutePath = getAbsolutePath(fileInfo);
-        File file = new File(absolutePath);
-        if (FileUtil.exist(file)) {
-            FileUtil.del(file);
+        FileInfo dbFileInfo = fileInfoRepository.getById(id);
+        Assert.isNotNull(dbFileInfo, FileErrCode.FILE_NOT_EXIST, "文件信息不存在");
+        Integer type = dbFileInfo.getType();
+        String absolutePath;
+        if (Objects.equals(type, 3)) {
+            ChunkMetadataDTO metadata = JsonUtil.toJavaObject(dbFileInfo.getChunkMetadata(), ChunkMetadataDTO.class);
+            absolutePath = getAbsolutePath(dbFileInfo.getType(), metadata.getChunkDirPath());
+        } else {
+            absolutePath = getAbsolutePath(dbFileInfo);
         }
+        moveToTmp(absolutePath);
         fileInfoRepository.removeById(id);
     }
 
@@ -178,124 +183,145 @@ public class FileInfoServiceImpl implements FileInfoService {
     @Override
     public ChunkDTO uploadChunk(ChunkFileDTO chunkFileDTO) {
         ValidUtil.valid(chunkFileDTO);
-        String chunkId = chunkFileDTO.getChunkId();
         MultipartFile file = chunkFileDTO.getFile();
         DataSize fileSize = fileProperty.getMaxFileSize();
+        Integer index = chunkFileDTO.getIndex();
         Assert.isTrue(file.getSize() <= fileSize.toBytes(), FileErrCode.FILE_SIZE_TO_LARGER, "文件大小不能超出" + fileSize.toMegabytes() + "MB");
-        // 相对路径
-        Optional<String> relativePathOpt = Optional.ofNullable(chunkFileDTO.getRelativePath())
+        // 相对路径处理
+        String relativePath = Optional.ofNullable(chunkFileDTO.getRelativePath())
             .filter(StrUtil::isNotBlank)
             // 去除两边的斜杠
-            .map(x-> StrUtil.strip(x, "/"));
-        Integer index = chunkFileDTO.getIndex();
-        ChunkDTO chunkDTO;
-        boolean isFirst;
-        // 加锁的意义是，防止并发上传同一个文件，导致md5缓存被覆盖
-        synchronized (chunkId) {
-            chunkDTO = cacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkDTO.class);
-            isFirst = Objects.isNull(chunkDTO);
-            if (isFirst) {
-                long size = cacheTemplate.size(CacheConst.UPLOAD_CHUNK);
-                Assert.isTrue(size + 1 > CacheConfig.CacheEnum.UPLOAD_CHUNK.getMaxSize(), BizErrCode.PARAM_ERROR, "分片文件上传数量超过限制");
-                FileInfo dbFileInfo = fileInfoRepository.getByChunkId(chunkId);
-                chunkDTO = new ChunkDTO();
-                if (dbFileInfo != null) {
-                    isFirst = false;
-                    // TODO
-                    String chunkDirPath = "";
-                    chunkDTO.setChunkId(chunkId);
-                    chunkDTO.setMd5(chunkFileDTO.getMd5());
-                    chunkDTO.setId(dbFileInfo.getId());
-                    // chunkDTO.setChunkCount(dbFileInfo.get);
-                    chunkDTO.setFileName(dbFileInfo.getFileName());
-                    chunkDTO.setOriginalFilename(dbFileInfo.getOriginalFilename());
-                    chunkDTO.setRelativeFullPath(dbFileInfo.getPath());
-                    chunkDTO.setChunkDirPath(chunkDirPath);
-                    chunkDTO.setExtName(dbFileInfo.getExt());
-                    chunkDTO.setIndexs(new ConcurrentSkipListSet<>());
-                    ConcurrentSkipListSet<Integer> indexs = chunkDTO.getIndexs();
-                    String absolutePath = getAbsolutePath(chunkDTO.getType(), chunkDTO.getChunkDirPath());
-                    File chunkDirFile = new File(absolutePath);
-                    String[] list = chunkDirFile.list();
-                    if (ArrayUtil.isNotEmpty(list)) {
-                        for (String s : list) {
-                            if (StrUtil.isNumeric(s)) {
-                                int i = Integer.parseInt(s);
-                                indexs.add(i);
-                            }
-                        }
-                    }
-
-                }
-                cacheTemplate.put(CacheConst.UPLOAD_CHUNK, chunkId, chunkDTO);
-            }
-        }
-        // 原文件名 logo.svg
-        String originalFilename = chunkFileDTO.getFileName();
-        if (isFirst) {
-            Long id = CloudIdUtil.getId();
-            // 后缀 svg
-            String extName = FileNameUtil.extName(originalFilename);
-            // 原主文件名 logo
-            String originalMainName = FileNameUtil.mainName(originalFilename);
-            // 主文件名 logo-wKpdqhmC
-            String mainName = originalMainName + StrUtil.DASHED + CommonUtil.fastShortUUID();
-            // 文件名 logo-wKpdqhmC.svg
-            String fileName = mainName + StrUtil.DOT + extName;
-            // 分片文件夹路径
-            String chunkDirPath;
-            // 相对路径
-            String relativeFullPath;
-            if (relativePathOpt.isPresent()) {
-                String relativePath = relativePathOpt.get() + File.separator;
-                chunkDirPath = relativePath + mainName + File.separator;
-                relativeFullPath = relativePath + fileName;
-            } else {
-                // 分片文件夹路径
-                chunkDirPath = mainName + File.separator;
-                relativeFullPath = fileName;
-            }
-            chunkDTO.setChunkId(chunkId);
-            chunkDTO.setMd5(chunkFileDTO.getMd5());
-            chunkDTO.setId(id);
-            chunkDTO.setChunkCount(chunkFileDTO.getChunkCount());
-            chunkDTO.setFileName(fileName);
-            chunkDTO.setOriginalFilename(originalFilename);
-            chunkDTO.setRelativeFullPath(relativeFullPath);
-            chunkDTO.setChunkDirPath(chunkDirPath);
-            chunkDTO.setExtName(extName);
-            chunkDTO.setIndexs(new ConcurrentSkipListSet<>());
-            FileInfo fileInfo = new FileInfo();
-            fileInfo.setId(id);
-            fileInfo.setMd5(chunkFileDTO.getMd5());
-            fileInfo.setChunkId(chunkId);
-            fileInfo.setType(chunkFileDTO.getType());
-            fileInfo.setFileName(fileName);
-            fileInfo.setOriginalFilename(originalFilename);
-            fileInfo.setPath(relativeFullPath);
-            fileInfo.setExt(extName);
-            fileInfo.setContentType(FileUtil.getMimeType(originalFilename));
-            fileInfo.setStatus(3);
-            fileInfoRepository.save(fileInfo);
-        }
+            .map(x-> StrUtil.strip(x, "/"))
+            .orElse(null);
+        chunkFileDTO.setRelativePath(relativePath);
+        // 判断是否是第一个分片文件,并进行缓存操作
+        boolean isFirst = isFirstChunkForSafe(chunkFileDTO);
+        // 处理并获取缓存数据
+        ChunkDTO chunkDTO = chunkFileConvertDto(isFirst, chunkFileDTO);
         ConcurrentSkipListSet<Integer> indexs = chunkDTO.getIndexs();
-        AtomicReference<LocalDateTime> recentUpdateTime = chunkDTO.getRecentUpdateTime();
-        recentUpdateTime.set(LocalDateTime.now());
+        AtomicInteger uploadedChunkCount = chunkDTO.getUploadedChunkCount();
         Assert.isTrue(index + 1 <= chunkFileDTO.getChunkCount(), "索引超出分片数量大小");
         Assert.isTrue(!indexs.contains(index), "分片文件已上传");
         String chunkFilePath = getAbsolutePath(chunkDTO.getType(), chunkDTO.getChunkDirPath()) + index;
         try {
-            FileUtil.writeBytes(file.getBytes(), chunkFilePath);
+            File chunkFile = new File(chunkFilePath);
+            if (!chunkFile.exists()) {
+               FileUtil.writeBytes(file.getBytes(), chunkFile);
+            }
         } catch (IOException e) {
             throw new BizException(HttpErrCode.FAIL, "文件上传失败");
         }
-        log.info("{}分片文件{}，分片id={}，index={}上传成功", originalFilename, file.getOriginalFilename(), chunkId, index);
+        log.info("{}分片文件{}，分片id={}，index={}上传成功", chunkFileDTO.getFileName(), file.getOriginalFilename(), chunkFileDTO.getChunkId(), index);
         indexs.add(index);
         // 分片上传数量
-        int chunkUploadCount = Long.valueOf(indexs.stream().distinct().count()).intValue();
+        int chunkUploadCount = uploadedChunkCount.incrementAndGet();
         // 分片上传是否完成
         boolean complete = Objects.equals(chunkUploadCount, chunkDTO.getChunkCount());
         chunkDTO.setComplete(complete);
+        return chunkDTO;
+    }
+
+    /**
+     * 判断是否是第一个分片文件(同步锁处理)
+     */
+    private boolean isFirstChunkForSafe(ChunkFileDTO chunkFileDTO) {
+        boolean isFirst;
+        String chunkId = chunkFileDTO.getChunkId();
+        // 加锁的意义是，防止并发上传同一个文件，导致md5缓存被覆盖
+        synchronized (chunkId) {
+            ChunkDTO chunkDTO = cacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkDTO.class);
+            isFirst = Objects.isNull(chunkDTO);
+            // 缓存存在则返回false
+            if (!isFirst) {
+                return false;
+            }
+            // 上传队列大小限制
+            long size = cacheTemplate.size(CacheConst.UPLOAD_CHUNK);
+            Assert.isTrue(size + 1 <= CacheConfig.CacheEnum.UPLOAD_CHUNK.getMaxSize(), BizErrCode.PARAM_ERROR, "分片文件上传数量超过限制");
+            FileInfo dbFileInfo = fileInfoRepository.getByChunkId(chunkId);
+            chunkDTO = new ChunkDTO();
+            cacheTemplate.put(CacheConst.UPLOAD_CHUNK, chunkId, chunkDTO);
+            if (Objects.isNull(dbFileInfo)) {
+                return true;
+            }
+            // 如果数据库存在则进行断点续传
+            ChunkMetadataDTO metadata = JsonUtil.toJavaObject(dbFileInfo.getChunkMetadata(), ChunkMetadataDTO.class);
+            chunkDTO.setChunkId(chunkId);
+            chunkDTO.setMd5(dbFileInfo.getMd5());
+            chunkDTO.setId(dbFileInfo.getId());
+            chunkDTO.setChunkCount(metadata.getChunkCount());
+            chunkDTO.setFileName(dbFileInfo.getFileName());
+            chunkDTO.setOriginalFilename(dbFileInfo.getOriginalFilename());
+            chunkDTO.setRelativeFullPath(dbFileInfo.getPath());
+            chunkDTO.setChunkDirPath(metadata.getChunkDirPath());
+            chunkDTO.setExtName(dbFileInfo.getExt());
+            chunkDTO.setUploadedChunkCount(new AtomicInteger(0));
+            chunkDTO.setIndexs(new ConcurrentSkipListSet<>());
+            String absolutePath = getAbsolutePath(chunkDTO.getType(), chunkDTO.getChunkDirPath());
+            File chunkDirFile = new File(absolutePath);
+            if (!chunkDirFile.exists()) {
+                return false;
+            }
+            String[] list = chunkDirFile.list();
+            if (ArrayUtil.isEmpty(list)) {
+                return false;
+            }
+            ConcurrentSkipListSet<Integer> indexs = chunkDTO.getIndexs();
+            AtomicInteger uploadedChunkCount = chunkDTO.getUploadedChunkCount();
+            for (String s : list) {
+                uploadedChunkCount.incrementAndGet();
+                indexs.add(Integer.valueOf(s));
+            }
+        }
+        return false;
+    }
+
+    private ChunkDTO chunkFileConvertDto(boolean isFirst, ChunkFileDTO chunkFileDTO) {
+        ChunkDTO chunkDTO = cacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkFileDTO.getChunkId(), ChunkDTO.class);
+        if (!isFirst) {
+            return chunkDTO;
+        }
+        // 原文件名 logo.svg
+        String originalFilename = chunkFileDTO.getFileName();
+        // 后缀 svg
+        String extName = FileNameUtil.extName(originalFilename);
+        // 原主文件名 logo
+        String originalMainName = FileNameUtil.mainName(originalFilename);
+        // 主文件名 logo-wKpdqhmC
+        String mainName = originalMainName + StrUtil.DASHED + CommonUtil.fastShortUUID();
+        // 文件名 logo-wKpdqhmC.svg
+        String fileName = mainName + StrUtil.DOT + extName;
+        // 分片文件夹路径
+        String chunkDirPath;
+        // 相对路径
+        String relativeFullPath;
+        if (Objects.nonNull(chunkFileDTO.getRelativePath())) {
+            String relativePath = chunkFileDTO.getRelativePath() + File.separator;
+            chunkDirPath = relativePath + mainName + File.separator;
+            relativeFullPath = relativePath + fileName;
+        } else {
+            // 分片文件夹路径
+            chunkDirPath = mainName + File.separator;
+            relativeFullPath = fileName;
+        }
+        chunkDTO.setChunkId(chunkFileDTO.getChunkId());
+        chunkDTO.setMd5(chunkFileDTO.getMd5());
+        chunkDTO.setType(chunkFileDTO.getType());
+        chunkDTO.setId(CloudIdUtil.getId());
+        chunkDTO.setChunkCount(chunkFileDTO.getChunkCount());
+        chunkDTO.setFileName(fileName);
+        chunkDTO.setOriginalFilename(FileUtil.getMimeType(fileName));
+        chunkDTO.setContentType(chunkFileDTO.getFileName());
+        chunkDTO.setRelativeFullPath(relativeFullPath);
+        chunkDTO.setChunkDirPath(chunkDirPath);
+        chunkDTO.setExtName(extName);
+        chunkDTO.setIndexs(new ConcurrentSkipListSet<>());
+        chunkDTO.setUploadedChunkCount(new AtomicInteger(0));
+        ChunkMetadataDTO chunkMetadataDTO = FileInfoAssembler.INSTANCE.chunkToMetadata(chunkDTO);
+        FileInfo fileInfo = FileInfoAssembler.INSTANCE.chunkToEntity(chunkDTO);
+        fileInfo.setMetadata(JsonUtil.toJsonString(chunkMetadataDTO));
+        fileInfo.setStatus(3);
+        fileInfoRepository.save(fileInfo);
         return chunkDTO;
     }
 
@@ -306,6 +332,11 @@ public class FileInfoServiceImpl implements FileInfoService {
         ChunkDTO chunkDTO = cacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkDTO.class);
         Assert.isNotNull(chunkDTO, "分片文件不存在");
         ConcurrentSkipListSet<Integer> indexs = Optional.ofNullable(chunkDTO.getIndexs()).orElseGet(ConcurrentSkipListSet::new);
+        AtomicInteger uploadedChunkCountAto = chunkDTO.getUploadedChunkCount();
+        Integer chunkCount = chunkDTO.getChunkCount();
+        int size = indexs.size();
+        int uploadedChunkCount = uploadedChunkCountAto.get();
+        Assert.isTrue(size == uploadedChunkCount && size == chunkCount , "分片文件上传数量与分片数量不一致");
         // 分片上传是否完成
         boolean complete = Boolean.TRUE.equals(chunkDTO.getComplete());
         Assert.isTrue(complete, "分片文件未全部上传");
@@ -315,7 +346,7 @@ public class FileInfoServiceImpl implements FileInfoService {
             RandomAccessFile mergedFile = new RandomAccessFile(filePath, "rw");
             // 缓冲区大小
             byte[] bytes = new byte[1024];
-            for (int i = 0; i < indexs.size(); i++) {
+            for (int i = 0; i < size; i++) {
                 RandomAccessFile partFile = new RandomAccessFile(chunkFileDirPath + i, "r");
                 int len;
                 while ((len = partFile.read(bytes)) != -1) {
@@ -336,15 +367,24 @@ public class FileInfoServiceImpl implements FileInfoService {
             // 清除缓存
             cacheTemplate.evict(CacheConst.UPLOAD_CHUNK, chunkId);
             String tmpPath = fileProperty.getTmpPath() + File.separator + chunkDTO.getChunkDirPath();
-            File source = new File(chunkFileDirPath);
-            if (source.exists()) {
-                File target = new File(tmpPath);
-                FileUtil.mkdir(target);
-                FileUtil.moveContent(source, target, true);
-                FileUtil.del(source);
-            }
+            moveToTmp(tmpPath);
         }
         // @formatter:on
+    }
+
+    public void moveToTmp(String abstractPath) {
+        File source = new File(abstractPath);
+        if (!source.exists()) {
+            return;
+        }
+        String tmpAbstractPath = fileProperty.getTmpPath() + File.separator + abstractPath;
+        File target = new File(tmpAbstractPath);
+        FileUtil.mkdir(target);
+        FileUtil.moveContent(source, target, true);
+        // 如果是文件夹
+        if (source.isDirectory()) {
+            FileUtil.del(source);
+        }
     }
 
     @Override

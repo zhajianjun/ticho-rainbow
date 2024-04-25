@@ -49,8 +49,8 @@
   </BasicModal>
 </template>
 <script lang="ts" setup>
-  import { computed, PropType, ref, toRefs, unref } from 'vue';
-  import { Alert, Upload } from 'ant-design-vue';
+  import { ref, toRefs, unref, computed, PropType } from 'vue';
+  import { Upload, Alert } from 'ant-design-vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   // hooks
   import { useUploadType } from '../hooks/useUpload';
@@ -58,7 +58,7 @@
   //   types
   import { FileItem, UploadResultStatus } from '../types/typing';
   import { basicProps } from '../props';
-  import { createActionColumn, createTableColumns } from './data';
+  import { createTableColumns, createActionColumn } from './data';
   // utils
   import { checkImgType, getBase64WithFile } from '../helper';
   import { buildUUID } from '@/utils/uuid';
@@ -66,6 +66,7 @@
   import { warn } from '@/utils/log';
   import FileList from './FileList.vue';
   import { useI18n } from '@/hooks/web/useI18n';
+  import { get } from 'lodash-es';
 
   const props = defineProps({
     ...basicProps,
@@ -163,6 +164,9 @@
   function handleRemove(record: FileItem) {
     const index = fileListRef.value.findIndex((item) => item.uuid === record.uuid);
     index !== -1 && fileListRef.value.splice(index, 1);
+    isUploadingRef.value = fileListRef.value.some(
+      (item) => item.status === UploadResultStatus.UPLOADING,
+    );
     emit('delete', record);
   }
 
@@ -183,16 +187,19 @@
           filename: props.filename,
         },
         function onUploadProgress(progressEvent: ProgressEvent) {
-          item.percent = ((progressEvent.loaded / progressEvent.total) * 100) | 0;
+          const complete = ((progressEvent.loaded / progressEvent.total) * 100) | 0;
+          item.percent = complete;
         },
       );
       const { data } = ret;
       item.status = UploadResultStatus.SUCCESS;
       item.response = data;
-      if (~~data.code !== 0) {
-        return {
-          success: false,
-          error: data.msg,
+      if (props.resultField) {
+        // 适配预览组件而进行封装
+        item.response = {
+          code: 0,
+          message: 'upload Success!',
+          url: get(ret, props.resultField),
         };
       }
       return {
@@ -212,7 +219,7 @@
   // 点击开始上传
   async function handleStartUpload() {
     const { maxNumber } = props;
-    if ((fileListRef.value.length + props.previewFileList?.length ?? 0) > maxNumber) {
+    if (fileListRef.value.length + props.previewFileList.length > maxNumber) {
       return createMessage.warning(t('component.upload.maxNumber', [maxNumber]));
     }
     try {
@@ -246,6 +253,7 @@
       return createMessage.warning(t('component.upload.saveWarn'));
     }
     const fileList: string[] = [];
+
     for (const item of fileListRef.value) {
       const { status, response } = item;
       if (status === UploadResultStatus.SUCCESS && response) {

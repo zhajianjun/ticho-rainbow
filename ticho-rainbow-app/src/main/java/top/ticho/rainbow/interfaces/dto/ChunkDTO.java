@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -38,26 +39,28 @@ public class ChunkDTO {
     @ApiModelProperty(value = "分片数量", position = 70)
     private Integer chunkCount;
 
-    @ApiModelProperty(value = "文件后缀名，如：png", position = 80)
+    @ApiModelProperty(value = "已经上传的分片数量", position = 80)
+    private AtomicInteger uploadedChunkCount;
+
+    @ApiModelProperty(value = "文件后缀名，如：png", position = 90)
     private String extName;
 
-    @ApiModelProperty(value = "分片上传是否完成", position = 90)
+    @ApiModelProperty(value = "MIME类型", position = 100)
+    private String contentType;
+
+    @ApiModelProperty(value = "分片上传是否完成", position = 110)
     private Boolean complete;
 
-    @ApiModelProperty(value = "分片文件夹路径", position = 100, hidden = true)
+    @ApiModelProperty(value = "分片文件夹路径", position = 120, hidden = true)
     @JsonIgnore
     private String chunkDirPath;
 
-    @ApiModelProperty(value = "文件相对全路径", position = 110, hidden = true)
+    @ApiModelProperty(value = "文件相对全路径", position = 130, hidden = true)
     @JsonIgnore
     private String relativeFullPath;
 
     @ApiModelProperty(value = "已经上传的分片索引", position = 120, hidden = true)
     @JsonIgnore
     private ConcurrentSkipListSet<Integer> indexs;
-
-    @ApiModelProperty(value = "最近更新时间", position = 130, hidden = true)
-    @JsonIgnore
-    private AtomicReference<LocalDateTime> recentUpdateTime;
 
 }

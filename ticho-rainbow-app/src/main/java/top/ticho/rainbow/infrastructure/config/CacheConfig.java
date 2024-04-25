@@ -42,7 +42,7 @@ public class CacheConfig {
         USER_INFO(CacheConst.USER_INFO, 1800, 10000),
         USER_ROLE_INFO(CacheConst.USER_ROLE_INFO, 1800, 10000),
         ROLE_MENU_INFO(CacheConst.ROLE_MENU_INFO, 1800, 10000),
-        UPLOAD_CHUNK(CacheConst.UPLOAD_CHUNK, 2, 1800, 10000),
+        UPLOAD_CHUNK(CacheConst.UPLOAD_CHUNK, 2, 600, 10000),
         ;
 
         CacheEnum(String key, int ttl, int maxSize) {

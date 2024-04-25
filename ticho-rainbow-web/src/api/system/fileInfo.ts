@@ -8,8 +8,6 @@ enum Api {
   FileInfo = '/file',
   FileInfoPage = '/file/page',
   Upload = '/file/upload',
-  Download = '/file/download',
-  Delete = '/file/delete',
   UploadChunk = '/file/uploadChunk',
   ComposeChunk = '/file/composeChunk',
 }
@@ -18,7 +16,7 @@ export function delFileInfo(id: string) {
   const params = { id: id };
   return defHttp.delete<any>(
     { url: Api.FileInfo, params },
-    { errorMessageMode: 'message', joinParamsToUrl: true },
+    { errorMessageMode: 'message', successMessageMode: 'message', joinParamsToUrl: true },
   );
 }
 
@@ -48,6 +46,7 @@ export function upload(
 
 export function uploadChunk(chunkFile: ChunkFileDTO) {
   const data = {
+    chunkId: chunkFile.chunkId,
     md5: chunkFile.md5,
     fileName: chunkFile.fileName,
     chunkCount: chunkFile.chunkCount,
@@ -63,8 +62,8 @@ export function uploadChunk(chunkFile: ChunkFileDTO) {
     params,
   );
 }
-export function composeChunk(md5: string) {
-  const params = { md5: md5 };
+export function composeChunk(chunkId: string) {
+  const params = { chunkId: chunkId };
   return defHttp.get<any>({
     url: Api.ComposeChunk,
     params,

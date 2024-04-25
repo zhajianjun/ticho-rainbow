@@ -57,6 +57,9 @@ public class FileInfo extends Model<FileInfo> implements Serializable {
     /** 分片id */
     private String chunkId;
 
+    /** 分片元数据 */
+    private String chunkMetadata;
+
     /** md5 */
     private String md5;
 

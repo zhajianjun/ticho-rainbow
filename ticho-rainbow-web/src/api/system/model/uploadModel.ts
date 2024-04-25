@@ -5,6 +5,8 @@ export interface UploadApiResult {
 }
 
 export interface ChunkFileDTO {
+  /** 分片id */
+  chunkId: string;
   /** md5 */
   md5: string;
   /** 文件名 */

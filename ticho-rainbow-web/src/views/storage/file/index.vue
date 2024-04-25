@@ -100,6 +100,7 @@
       const { createMessage } = useMessage();
       function handleChange(list: string[]) {
         createMessage.info(`已上传文件${JSON.stringify(list)}`);
+        reload();
       }
 
       function handleEdit(record: Recordable) {
@@ -124,7 +125,7 @@
         onUploadProgress: (progressEvent: AxiosProgressEvent) => void,
       ) {
         const file = params.file;
-        console.log(file);
+        const uid = file.uid;
         // 30MB
         const chunkSize = 20 * 1024 * 1024;
         const fileSize = file.size;
@@ -149,6 +150,7 @@
           const chunkFile = file.slice(start, end);
           // 定义分片上传接口参数，跟后端商定
           const formdata = {
+            chunkId: uid,
             md5: fileMd5,
             fileName: fileName,
             chunkCount: chunkCount,
@@ -161,7 +163,7 @@
           onUploadProgress(axiosProgressEvent);
         }
         // 合并
-        await composeChunk(fileMd5);
+        await composeChunk(uid);
         return Promise.resolve({ data: { url: '', type: '' || '', name: '' } });
       }
 
