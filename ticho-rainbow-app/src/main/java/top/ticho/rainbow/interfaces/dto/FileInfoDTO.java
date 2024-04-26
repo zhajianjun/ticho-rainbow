@@ -1,15 +1,15 @@
 package top.ticho.rainbow.interfaces.dto;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import top.ticho.boot.web.util.valid.ValidGroup;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 文件信息DTO
@@ -59,6 +59,10 @@ public class FileInfoDTO implements Serializable {
     /** 文件元数据 */
     @ApiModelProperty(value = "文件元数据", position = 90)
     private String metadata;
+
+    /** 分片id */
+    @ApiModelProperty(value = "分片id", position = 92)
+    private String chunkId;
 
     /** 状态;1-正常,2-停用,3-分片上传,99-作废 */
     @ApiModelProperty(value = "状态;1-正常,2-停用,3-分片上传,99-作废", position = 100)

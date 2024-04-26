@@ -15,6 +15,8 @@ export interface FileInfoDTO {
   contentType: string;
   /** 原始文件名 */
   originalFilename: string;
+  /** 分片id */
+  chunkId: string;
   /** 文件元数据 */
   metadata: string;
   /** 状态;1-正常,2-停用,3-分片上传,99-作废 */

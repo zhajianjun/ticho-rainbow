@@ -4,19 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 分片信息
+ * 分片缓存信息
  *
  * @author zhajianjun
  * @date 2024-02-19 12:08
  */
 @Data
-public class ChunkDTO {
+public class ChunkCacheDTO {
 
     @ApiModelProperty(value = "分片id", position = 10)
     private String chunkId;
@@ -32,6 +30,9 @@ public class ChunkDTO {
 
     @ApiModelProperty(value = "文件名", position = 50)
     private String fileName;
+
+    @ApiModelProperty(value = "文件大小", position = 55)
+    private Long fileSize;
 
     @ApiModelProperty(value = "存储类型;1-公共,2-私有", position = 60)
     private Integer type;

@@ -45,16 +45,9 @@ export function upload(
 }
 
 export function uploadChunk(chunkFile: ChunkFileDTO) {
-  const data = {
-    chunkId: chunkFile.chunkId,
-    md5: chunkFile.md5,
-    fileName: chunkFile.fileName,
-    chunkCount: chunkFile.chunkCount,
-    index: chunkFile.index,
-  };
   const params = {} as UploadFileParams;
-  params.data = data;
-  params.file = chunkFile.file;
+  params.data = chunkFile;
+  params.file = chunkFile.chunkfile;
   return defHttp.uploadFile<ChunkDTO>(
     {
       url: Api.UploadChunk,

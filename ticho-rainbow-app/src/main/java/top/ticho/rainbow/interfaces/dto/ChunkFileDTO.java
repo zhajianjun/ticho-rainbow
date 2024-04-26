@@ -30,15 +30,19 @@ public class ChunkFileDTO {
     @ApiModelProperty(value = "文件名", required = true, position = 20)
     private String fileName;
 
+    @NotNull(message = "文件大小不能空")
+    @ApiModelProperty(value = "文件大小", required = true, position = 25)
+    private Long fileSize;
+
     @NotNull(message = "分片数量不能为空")
     @Min(value = 1, message = "分片数量最小为1")
     @ApiModelProperty(value = "分片数量", required = true, position = 30)
     private Integer chunkCount;
 
-    @NotNull(message = "文件不能空")
-    @ApiModelProperty(value = "文件", required = true, position = 40)
+    @NotNull(message = "分片文件不能空")
+    @ApiModelProperty(value = "分片文件", required = true, position = 40)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private MultipartFile file;
+    private MultipartFile chunkfile;
 
     @ApiModelProperty(value = "存储类型;1-公共,2-私有", required = true, position = 50)
     private Integer type = 2;

@@ -11,10 +11,12 @@ export interface ChunkFileDTO {
   md5: string;
   /** 文件名 */
   fileName: string;
+  /** 文件大小 */
+  fileSize: number;
   /** 分片数量 */
   chunkCount: number;
-  /** 文件 */
-  file: File;
+  /** 分片文件 */
+  chunkfile: File;
   /** 分片索引 */
   index: number;
 }

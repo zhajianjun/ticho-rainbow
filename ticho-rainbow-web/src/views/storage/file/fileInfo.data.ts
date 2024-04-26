@@ -1,5 +1,9 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { isNumber } from '@/utils/is';
+import { getDictByCodeAndValue } from '@/store/modules/dict';
+
+const fileStorageType = 'fileStorageType';
+const fileStatus = 'fileStatus';
 
 export function getTableColumns(): BasicColumn[] {
   return [
@@ -27,6 +31,9 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'type',
       resizable: true,
       width: 100,
+      customRender({ text }) {
+        return getDictByCodeAndValue(fileStorageType, text);
+      },
     },
     {
       title: '文件扩展名',
@@ -70,6 +77,9 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'status',
       resizable: true,
       width: 100,
+      customRender({ text }) {
+        return getDictByCodeAndValue(fileStatus, text);
+      },
     },
     {
       title: '备注信息',

@@ -1,7 +1,7 @@
 package top.ticho.rainbow.application.service;
 
 import top.ticho.boot.view.core.PageResult;
-import top.ticho.rainbow.interfaces.dto.ChunkDTO;
+import top.ticho.rainbow.interfaces.dto.ChunkCacheDTO;
 import top.ticho.rainbow.interfaces.dto.ChunkFileDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoReqDTO;
@@ -56,9 +56,9 @@ public interface FileInfoService {
      * 分片文件上传
      *
      * @param chunkFileDTO 分片文件信息
-     * @return {@link ChunkDTO}
+     * @return {@link ChunkCacheDTO}
      */
-    ChunkDTO uploadChunk(ChunkFileDTO chunkFileDTO);
+    ChunkCacheDTO uploadChunk(ChunkFileDTO chunkFileDTO);
 
     /**
      * 分片文件合并

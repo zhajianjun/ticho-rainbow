@@ -19,7 +19,7 @@ import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.core.Result;
 import top.ticho.boot.web.annotation.View;
 import top.ticho.rainbow.application.service.FileInfoService;
-import top.ticho.rainbow.interfaces.dto.ChunkDTO;
+import top.ticho.rainbow.interfaces.dto.ChunkCacheDTO;
 import top.ticho.rainbow.interfaces.dto.ChunkFileDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoReqDTO;
@@ -101,7 +101,7 @@ public class FileInfoController {
     @ApiOperation(value = "分片文件上传")
     @ApiOperationSupport(order = 50)
     @PostMapping("uploadChunk")
-    public Result<ChunkDTO> uploadChunk(ChunkFileDTO chunkFileDTO) {
+    public Result<ChunkCacheDTO> uploadChunk(ChunkFileDTO chunkFileDTO) {
         return Result.ok(fileInfoService.uploadChunk(chunkFileDTO));
     }
 

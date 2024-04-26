@@ -2,12 +2,11 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <BasicUpload
+        <CustomUpload
           :maxSize="10240000"
           :maxNumber="10"
           @change="handleChange"
-          :api="chunkUpload"
-          class="my-5"
+          :api="uploadFile"
         />
       </template>
       <template #action="{ record }">
@@ -15,7 +14,7 @@
           :actions="[
             {
               icon: 'clarity:note-edit-line',
-              onClick: handleEdit.bind(null, record),
+              onClick: openUploadModalProxy.bind(null, record),
               tooltip: '修改',
               auth: 'FileInfoEdit',
             },
@@ -33,11 +32,19 @@
         />
       </template>
     </BasicTable>
+    <UploadModal
+      @register="registerUploadModal"
+      @change="handleChange"
+      @delete="handleDelete"
+      :maxSize="10240000"
+      :uploadParams="{ uid: uidRef }"
+      :api="uploadFile"
+    />
     <FileInfoModal @register="registerModal" @success="handleSuccess" />
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent } from 'vue';
+  import { defineComponent, ref } from 'vue';
   import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { useModal } from '@/components/Modal';
   import FileInfoModal from './FileInfoModal.vue';
@@ -50,16 +57,17 @@
     uploadChunk,
   } from '@/api/system/fileInfo';
   import { usePermission } from '@/hooks/web/usePermission';
-  import { BasicUpload } from '@/components/Upload';
+  import { CustomUpload } from '@/components/Upload';
   import { useMessage } from '@/hooks/web/useMessage';
   import { UploadFileParams } from '#/axios';
   import { AxiosProgressEvent } from 'axios';
   import { ChunkFileDTO } from '@/api/system/model/uploadModel';
   import SparkMD5 from 'spark-md5';
+  import UploadModal from '@/components/Upload/src/components/UploadModal.vue';
 
   export default defineComponent({
     name: 'FileInfo',
-    components: { BasicUpload, BasicTable, FileInfoModal, TableAction },
+    components: { UploadModal, CustomUpload, BasicTable, FileInfoModal, TableAction },
     setup() {
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('FileInfoSelect');
@@ -120,20 +128,38 @@
         reload();
       }
 
-      async function chunkUpload(
+      const chunkSize = 5 * 1024 * 1024;
+
+      async function uploadFile(
         params: UploadFileParams,
         onUploadProgress: (progressEvent: AxiosProgressEvent) => void,
       ) {
+        console.log(params);
         const file = params.file;
-        const uid = file.uid;
-        // 30MB
-        const chunkSize = 20 * 1024 * 1024;
         const fileSize = file.size;
         if (fileSize <= chunkSize) {
           return upload(params, onUploadProgress).then((res) => {
             res.data.data = 'https://localhost:5122/file/download?filename=123165464.png';
             return Promise.resolve(res);
           });
+        }
+        return uploadBigFile(params, file, onUploadProgress);
+      }
+
+      const uidRef = ref(null);
+
+      async function uploadBigFile(
+        params: UploadFileParams,
+        file: File,
+        onUploadProgress: (progressEvent: AxiosProgressEvent) => void,
+      ) {
+        const paramData = params.data;
+        const fileSize = file.size;
+        let uid;
+        if (paramData && paramData.uid && paramData.uid !== '' && paramData.uid !== undefined) {
+          uid = paramData.uid;
+        } else {
+          uid = file.uid;
         }
         // 分片数量
         const chunkCount = Math.ceil(fileSize / chunkSize);
@@ -153,12 +179,24 @@
             chunkId: uid,
             md5: fileMd5,
             fileName: fileName,
+            fileSize: fileSize,
             chunkCount: chunkCount,
-            file: chunkFile,
+            chunkfile: chunkFile,
             index: i,
           } as ChunkFileDTO;
-          // 循环上传
-          await uploadChunk(formdata);
+          let response;
+          try {
+            // 调用分片上传接口
+            response = await uploadChunk(formdata);
+          } catch (e) {
+            createMessage.error(`${e}`);
+            return Promise.reject(e);
+          }
+          const { code, msg } = response.data;
+          if (response.status !== 200 || code !== 0) {
+            createMessage.error(`${msg}`);
+            return Promise.reject(msg);
+          }
           axiosProgressEvent.loaded = ((i + 1) / chunkCount) * 100;
           onUploadProgress(axiosProgressEvent);
         }
@@ -167,7 +205,7 @@
         return Promise.resolve({ data: { url: '', type: '' || '', name: '' } });
       }
 
-      function getFileMd5(file: File, chunkCount: number, chunkSize: number) {
+      async function getFileMd5(file: File, chunkCount: number, chunkSize: number) {
         return new Promise((resolve, reject) => {
           const blobSlice = File.prototype.slice;
           const chunks = chunkCount;
@@ -200,15 +238,28 @@
         });
       }
 
+      // 上传modal
+      const [registerUploadModal, { openModal: openUploadModal, setModalProps }] = useModal();
+
+      function openUploadModalProxy(record: Recordable) {
+        openUploadModal(true);
+        setModalProps({ okText: '确定', cancelText: '取消' });
+        uidRef.value = record.chunkId;
+      }
+
       return {
         registerTable,
         registerModal,
         handleChange,
-        chunkUpload,
+        uploadFile,
+        uploadBigFile,
         handleEdit,
         handleDelete,
         handleSuccess,
         hasPermission,
+        registerUploadModal,
+        openUploadModalProxy,
+        uidRef,
       };
     },
   });

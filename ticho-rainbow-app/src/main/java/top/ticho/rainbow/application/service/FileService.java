@@ -1,13 +1,10 @@
 package top.ticho.rainbow.application.service;
 
 
-import top.ticho.rainbow.interfaces.dto.BucketInfoDTO;
-import top.ticho.rainbow.interfaces.dto.ChunkDTO;
+import top.ticho.rainbow.interfaces.dto.ChunkCacheDTO;
 import top.ticho.rainbow.interfaces.dto.ChunkFileDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoReqDTO;
-
-import java.util.List;
 
 /**
  * 文件 服务接口
@@ -53,9 +50,9 @@ public interface FileService {
      * 分片文件上传
      *
      * @param chunkFileDTO 分片文件信息
-     * @return {@link ChunkDTO}
+     * @return {@link ChunkCacheDTO}
      */
-    ChunkDTO uploadChunk(ChunkFileDTO chunkFileDTO);
+    ChunkCacheDTO uploadChunk(ChunkFileDTO chunkFileDTO);
 
     /**
      * 分片文件合并

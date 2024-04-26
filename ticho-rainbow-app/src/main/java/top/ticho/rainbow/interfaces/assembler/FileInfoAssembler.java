@@ -1,7 +1,7 @@
 package top.ticho.rainbow.interfaces.assembler;
 
 import top.ticho.rainbow.infrastructure.entity.FileInfo;
-import top.ticho.rainbow.interfaces.dto.ChunkDTO;
+import top.ticho.rainbow.interfaces.dto.ChunkCacheDTO;
 import top.ticho.rainbow.interfaces.dto.ChunkMetadataDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import org.mapstruct.Mapper;
@@ -33,7 +33,7 @@ public interface FileInfoAssembler {
      */
     FileInfoDTO entityToDto(FileInfo entity);
 
-    FileInfo chunkToEntity(ChunkDTO chunkDTO);
+    FileInfo chunkToEntity(ChunkCacheDTO chunkCacheDTO);
 
-    ChunkMetadataDTO chunkToMetadata(ChunkDTO chunkDTO);
+    ChunkMetadataDTO chunkToMetadata(ChunkCacheDTO chunkCacheDTO);
 }
