@@ -97,7 +97,7 @@ public class FileInfoController {
         return Result.ok(fileInfoService.getUrl(id, expires));
     }
 
-    @PreAuthorize("@perm.hasPerms('storage:file:uploadChunk')")
+    @PreAuthorize("@file_perm.hasPerms('storage:file:uploadChunk')")
     @ApiOperation(value = "分片文件上传")
     @ApiOperationSupport(order = 50)
     @PostMapping("uploadChunk")

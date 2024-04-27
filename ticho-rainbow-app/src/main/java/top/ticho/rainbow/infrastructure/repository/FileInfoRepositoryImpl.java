@@ -38,7 +38,7 @@ public class FileInfoRepositoryImpl extends RootServiceImpl<FileInfoMapper, File
         wrapper.eq(StrUtil.isNotBlank(query.getPath()), FileInfo::getPath, query.getPath());
         wrapper.eq(Objects.nonNull(query.getSize()), FileInfo::getSize, query.getSize());
         wrapper.eq(StrUtil.isNotBlank(query.getContentType()), FileInfo::getContentType, query.getContentType());
-        wrapper.eq(StrUtil.isNotBlank(query.getOriginalFilename()), FileInfo::getOriginalFilename, query.getOriginalFilename());
+        wrapper.eq(StrUtil.isNotBlank(query.getOriginalFileName()), FileInfo::getOriginalFileName, query.getOriginalFileName());
         wrapper.eq(Objects.nonNull(query.getStatus()), FileInfo::getStatus, query.getStatus());
         wrapper.eq(StrUtil.isNotBlank(query.getRemark()), FileInfo::getRemark, query.getRemark());
         wrapper.eq(StrUtil.isNotBlank(query.getCreateBy()), FileInfo::getCreateBy, query.getCreateBy());
@@ -59,8 +59,7 @@ public class FileInfoRepositoryImpl extends RootServiceImpl<FileInfoMapper, File
     public FileInfo getByChunkId(String chunkId) {
         LambdaQueryWrapper<FileInfo> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(FileInfo::getChunkId, chunkId);
-        wrapper.eq(FileInfo::getStatus, 3);
-        wrapper.last(StrUtil.format("limit {}", 1));
+        wrapper.last("limit 1");
         return getOne(wrapper);
     }
 

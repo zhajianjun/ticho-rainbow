@@ -66,7 +66,7 @@ function convert(dicts: Nullable<DictDTO[]>) {
  * @param code  字典编码
  * @param toNum value值是否转int，默认为true
  */
-export function getDictByCode(code: string, toNum: boolean = true) {
+export function getDictByCode(code: string, toNum: boolean = true): DictLabel[] {
   const dictStore = useDictStore();
   const dicts = dictStore.getDicts;
   if (!dicts || dicts.size <= 0) {
@@ -91,23 +91,53 @@ export function getDictByCode(code: string, toNum: boolean = true) {
  * @param code  字典编码
  * @param value 字典值
  */
-export function getDictByCodeAndValue(code: string, value: string | number) {
+export function getDictByCodeAndValue(
+  code: string,
+  value: string | number,
+): Nullable<DictLabelDTO> {
   const valueStr = value + '';
   if (!code || !valueStr) {
-    return value;
+    return null;
   }
   const dictStore = useDictStore();
   const dictMap = dictStore.getDicts;
   if (!dictMap || dictMap.size <= 0) {
-    return value;
+    return null;
   }
   const dictLableMap = dictMap.get(code);
   if (!dictLableMap || dictLableMap.size <= 0) {
-    return value;
+    return null;
   }
   const dictLable = dictLableMap.get(valueStr);
   if (!dictLable) {
-    return value;
+    return null;
+  }
+  return dictLable;
+}
+
+/**
+ * 获取字典值
+ *
+ * @param code  字典编码
+ * @param value 字典值
+ */
+export function getDictLabelByCodeAndValue(code: string, value: string | number): string {
+  const valueStr = value + '';
+  if (!code || !valueStr) {
+    return valueStr;
+  }
+  const dictStore = useDictStore();
+  const dictMap = dictStore.getDicts;
+  if (!dictMap || dictMap.size <= 0) {
+    return valueStr;
+  }
+  const dictLableMap = dictMap.get(code);
+  if (!dictLableMap || dictLableMap.size <= 0) {
+    return valueStr;
+  }
+  const dictLable = dictLableMap.get(valueStr);
+  if (!dictLable) {
+    return valueStr;
   }
   return dictLable.label;
 }

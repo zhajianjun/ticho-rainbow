@@ -26,7 +26,7 @@ public class ChunkCacheDTO {
     private Long id;
 
     @ApiModelProperty(value = "原始文件名", position = 40)
-    private String originalFilename;
+    private String originalFileName;
 
     @ApiModelProperty(value = "文件名", position = 50)
     private String fileName;

@@ -1,11 +1,6 @@
 package top.ticho.rainbow.domain.service;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import top.ticho.boot.view.enums.BizErrCode;
 import top.ticho.boot.view.util.Assert;
@@ -15,21 +10,12 @@ import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.DictLabelService;
 import top.ticho.rainbow.domain.repository.DictLabelRepository;
 import top.ticho.rainbow.domain.repository.DictRepository;
-import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.entity.Dict;
 import top.ticho.rainbow.infrastructure.entity.DictLabel;
-import top.ticho.rainbow.interfaces.assembler.DictAssembler;
 import top.ticho.rainbow.interfaces.assembler.DictLabelAssembler;
 import top.ticho.rainbow.interfaces.dto.DictLabelDTO;
-import top.ticho.rainbow.interfaces.dto.DictDTO;
-import top.ticho.rainbow.interfaces.query.DictLabelQuery;
-import top.ticho.rainbow.interfaces.query.DictQuery;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -47,9 +33,6 @@ public class DictLabelServiceImpl implements DictLabelService {
 
     @Autowired
     private DictRepository dictRepository;
-
-    @Autowired
-    private CacheManager cacheManager;
 
     @Override
     public void save(DictLabelDTO dictLabelDTO) {

@@ -3,6 +3,7 @@ import { listRoles } from '@/api/system/role';
 import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
 import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
+import { isNull } from 'xe-utils';
 
 const userStatus = 'userStatus';
 
@@ -26,10 +27,12 @@ export const columns: BasicColumn[] = [
     title: '状态',
     dataIndex: 'status',
     width: 80,
-    customRender: ({ text }) => {
-      const isNormal = ~~text === 1;
-      const color = isNormal ? 'green' : 'red';
-      return h(Tag, { color: color }, () => getDictByCodeAndValue(userStatus, text));
+    customRender({ text }) {
+      const dict = getDictByCodeAndValue(userStatus, text);
+      if (text === undefined || isNull(text) || isNull(dict)) {
+        return text;
+      }
+      return h(Tag, { color: dict.color }, () => dict.label);
     },
   },
   {

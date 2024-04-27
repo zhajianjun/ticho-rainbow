@@ -51,7 +51,7 @@ public class FileInfoQuery extends BasePageQuery implements Serializable {
 
     /** 原始文件名 */
     @ApiModelProperty(value = "原始文件名", position = 80)
-    private String originalFilename;
+    private String originalFileName;
 
     /** 状态;1-正常,2-停用,3-分片上传,99-作废 */
     @ApiModelProperty(value = "状态;1-正常,2-停用,3-分片上传,99-作废", position = 100)

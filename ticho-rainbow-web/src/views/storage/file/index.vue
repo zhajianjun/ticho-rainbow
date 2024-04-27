@@ -6,17 +6,27 @@
           :maxSize="10240000"
           :maxNumber="10"
           @change="handleChange"
+          :multiple="true"
           :api="uploadFile"
+          v-auth="'FileUpload'"
         />
       </template>
       <template #action="{ record }">
         <TableAction
           :actions="[
             {
-              icon: 'clarity:note-edit-line',
+              icon: 'ant-design:upload-outlined',
               onClick: openUploadModalProxy.bind(null, record),
-              tooltip: '修改',
-              auth: 'FileInfoEdit',
+              tooltip: '断点续传',
+              auth: 'FileContinueUpload',
+              ifShow: record.status === 3,
+            },
+            {
+              icon: 'ant-design:download-outlined',
+              onClick: handleDownload.bind(null, record),
+              tooltip: '文件下载',
+              auth: 'FileContinueUpload',
+              ifShow: record.status === 1,
             },
             {
               icon: 'ant-design:delete-outlined',
@@ -38,7 +48,7 @@
       @delete="handleDelete"
       :maxSize="10240000"
       :uploadParams="{ uid: uidRef }"
-      :api="uploadFile"
+      :api="uploadBigFile"
     />
     <FileInfoModal @register="registerModal" @success="handleSuccess" />
   </div>
@@ -55,15 +65,17 @@
     composeChunk,
     upload,
     uploadChunk,
-  } from '@/api/system/fileInfo';
+    downloadFile,
+  } from '@/api/storage/fileInfo';
   import { usePermission } from '@/hooks/web/usePermission';
   import { CustomUpload } from '@/components/Upload';
   import { useMessage } from '@/hooks/web/useMessage';
   import { UploadFileParams } from '#/axios';
   import { AxiosProgressEvent } from 'axios';
-  import { ChunkFileDTO } from '@/api/system/model/uploadModel';
+  import { ChunkFileDTO } from '@/api/storage/model/uploadModel';
   import SparkMD5 from 'spark-md5';
   import UploadModal from '@/components/Upload/src/components/UploadModal.vue';
+  import { downloadByData } from '@/utils/file/download';
 
   export default defineComponent({
     name: 'FileInfo',
@@ -134,7 +146,6 @@
         params: UploadFileParams,
         onUploadProgress: (progressEvent: AxiosProgressEvent) => void,
       ) {
-        console.log(params);
         const file = params.file;
         const fileSize = file.size;
         if (fileSize <= chunkSize) {
@@ -143,23 +154,26 @@
             return Promise.resolve(res);
           });
         }
-        return uploadBigFile(params, file, onUploadProgress);
+        return uploadBigFile(params, onUploadProgress);
       }
 
       const uidRef = ref(null);
 
       async function uploadBigFile(
         params: UploadFileParams,
-        file: File,
         onUploadProgress: (progressEvent: AxiosProgressEvent) => void,
       ) {
+        const file = params.file;
         const paramData = params.data;
         const fileSize = file.size;
         let uid;
+        let isContinued;
         if (paramData && paramData.uid && paramData.uid !== '' && paramData.uid !== undefined) {
           uid = paramData.uid;
+          isContinued = true;
         } else {
           uid = file.uid;
+          isContinued = false;
         }
         // 分片数量
         const chunkCount = Math.ceil(fileSize / chunkSize);
@@ -177,6 +191,7 @@
           // 定义分片上传接口参数，跟后端商定
           const formdata = {
             chunkId: uid,
+            isContinued: isContinued,
             md5: fileMd5,
             fileName: fileName,
             fileSize: fileSize,
@@ -197,7 +212,12 @@
             createMessage.error(`${msg}`);
             return Promise.reject(msg);
           }
-          axiosProgressEvent.loaded = ((i + 1) / chunkCount) * 100;
+          if (i - 1 === chunkCount) {
+            axiosProgressEvent.loaded = 99;
+          } else {
+            axiosProgressEvent.loaded = ((i + 1) / chunkCount) * 100;
+          }
+
           onUploadProgress(axiosProgressEvent);
         }
         // 合并
@@ -247,6 +267,12 @@
         uidRef.value = record.chunkId;
       }
 
+      function handleDownload(record: Recordable) {
+        downloadFile(record.id).then((res) => {
+          downloadByData(res, record.originalFileName);
+        });
+      }
+
       return {
         registerTable,
         registerModal,
@@ -260,6 +286,7 @@
         registerUploadModal,
         openUploadModalProxy,
         uidRef,
+        handleDownload,
       };
     },
   });

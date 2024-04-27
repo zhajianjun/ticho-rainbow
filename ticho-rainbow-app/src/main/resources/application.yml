@@ -12,8 +12,14 @@ spring:
       max-request-size: 100MB
 
 
+
 server:
   port: 5122
+  undertow:
+    buffer-size: 1024
+  netty:
+    connection-timeout: 60s
+
 
 jasypt:
   encryptor:

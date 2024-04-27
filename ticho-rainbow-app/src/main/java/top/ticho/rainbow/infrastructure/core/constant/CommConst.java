@@ -14,6 +14,7 @@ public class CommConst {
 
     public static final long PARENT_ID = 0;
     public static final String PERM_KEY = "perm";
+    public static final String FILE_PERM_KEY = "file_perm";
     public static final String GUEST_ROLE_CODE = "guest";
 
 }

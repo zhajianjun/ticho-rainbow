@@ -1,6 +1,10 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
-import { isNumber } from '@/utils/is';
-import { getDictByCodeAndValue } from '@/store/modules/dict';
+import { toFinite } from 'lodash-es';
+import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
+import { isNull } from 'xe-utils';
+import { Tag } from 'ant-design-vue';
+import { h } from 'vue';
+import dayjs from 'dayjs';
 
 const fileStorageType = 'fileStorageType';
 const fileStatus = 'fileStatus';
@@ -16,7 +20,7 @@ export function getTableColumns(): BasicColumn[] {
     },
     {
       title: '文件名',
-      dataIndex: 'originalFilename',
+      dataIndex: 'originalFileName',
       resizable: true,
       width: 100,
     },
@@ -32,7 +36,11 @@ export function getTableColumns(): BasicColumn[] {
       resizable: true,
       width: 100,
       customRender({ text }) {
-        return getDictByCodeAndValue(fileStorageType, text);
+        const dict = getDictByCodeAndValue(fileStorageType, text);
+        if (text === undefined || isNull(text) || isNull(dict)) {
+          return text;
+        }
+        return h(Tag, { color: dict.color }, () => dict.label);
       },
     },
     {
@@ -53,11 +61,11 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'size',
       resizable: true,
       width: 100,
-      customRender: ({ record }) => {
-        if (!isNumber(record)) {
-          return record;
+      customRender: ({ value }) => {
+        if (!value) {
+          return value;
         }
-        return parseInt(record) / 1024 + 'kb';
+        return Math.floor(toFinite(value) / 1024) + 'kb';
       },
     },
     {
@@ -71,6 +79,7 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'metadata',
       resizable: true,
       width: 100,
+      ifShow: false,
     },
     {
       title: '状态',
@@ -78,7 +87,11 @@ export function getTableColumns(): BasicColumn[] {
       resizable: true,
       width: 100,
       customRender({ text }) {
-        return getDictByCodeAndValue(fileStatus, text);
+        const dict = getDictByCodeAndValue(fileStatus, text);
+        if (text === undefined || isNull(text) || isNull(dict)) {
+          return text;
+        }
+        return h(Tag, { color: dict.color }, () => dict.label);
       },
     },
     {
@@ -129,10 +142,11 @@ export function getSearchColumns(): FormSchema[] {
     {
       field: `type`,
       label: `存储类型`,
-      component: 'Input',
+      component: 'Select',
       colProps: { span: 8 },
       componentProps: {
-        placeholder: '请输入存储类型',
+        placeholder: '请选择存储类型',
+        options: getDictByCode(fileStorageType),
       },
     },
     {
@@ -172,7 +186,7 @@ export function getSearchColumns(): FormSchema[] {
       },
     },
     {
-      field: `originalFilename`,
+      field: `originalFileName`,
       label: `原始文件名`,
       component: 'Input',
       colProps: { span: 8 },
@@ -183,10 +197,11 @@ export function getSearchColumns(): FormSchema[] {
     {
       field: `status`,
       label: `状态`,
-      component: 'Input',
+      component: 'Select',
       colProps: { span: 8 },
       componentProps: {
-        placeholder: '请输入状态',
+        placeholder: '请选择状态',
+        options: getDictByCode(fileStatus),
       },
     },
     {
@@ -210,10 +225,14 @@ export function getSearchColumns(): FormSchema[] {
     {
       field: `createTime`,
       label: `创建时间`,
-      component: 'Input',
+      defaultValue: [dayjs().startOf('month'), dayjs().endOf('month')],
+      component: 'RangePicker',
       colProps: { span: 8 },
       componentProps: {
-        placeholder: '请输入创建时间',
+        placeholder: ['开始日期', '结束日期'],
+        style: { width: '100%' },
+        showTime: true,
+        format: 'YYYY-MM-DD HH:mm:ss',
       },
     },
     {
@@ -228,10 +247,13 @@ export function getSearchColumns(): FormSchema[] {
     {
       field: `updateTime`,
       label: `修改时间`,
-      component: 'Input',
+      component: 'RangePicker',
       colProps: { span: 8 },
       componentProps: {
-        placeholder: '请输入修改时间',
+        placeholder: ['开始日期', '结束日期'],
+        style: { width: '100%' },
+        showTime: true,
+        format: 'YYYY-MM-DD HH:mm:ss',
       },
     },
   ];
@@ -318,7 +340,7 @@ export function getModalFormColumns(): FormSchema[] {
       },
     },
     {
-      field: `originalFilename`,
+      field: `originalFileName`,
       label: `原始文件名`,
       component: 'Input',
       componentProps: {

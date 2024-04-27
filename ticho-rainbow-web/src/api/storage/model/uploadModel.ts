@@ -7,6 +7,8 @@ export interface UploadApiResult {
 export interface ChunkFileDTO {
   /** 分片id */
   chunkId: string;
+  /** 是否续传 */
+  isContinued: boolean;
   /** md5 */
   md5: string;
   /** 文件名 */

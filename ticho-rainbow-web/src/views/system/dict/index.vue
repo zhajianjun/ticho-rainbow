@@ -41,7 +41,9 @@
     <div class="w-1/2 p-4">
       <BasicTable @register="registerDictLabelTable">
         <template #toolbar>
-          <a-button type="primary" v-auth="'DictAdd'" @click="openDictLabelAddModel"> 新增 </a-button>
+          <a-button type="primary" v-auth="'DictAdd'" @click="openDictLabelAddModel">
+            新增
+          </a-button>
         </template>
         <template #action="{ record }">
           <TableAction

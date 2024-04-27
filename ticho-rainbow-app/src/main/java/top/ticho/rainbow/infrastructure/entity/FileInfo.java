@@ -49,7 +49,7 @@ public class FileInfo extends Model<FileInfo> implements Serializable {
     private String contentType;
 
     /** 原始文件名 */
-    private String originalFilename;
+    private String originalFileName;
 
     /** 文件元数据 */
     private String metadata;

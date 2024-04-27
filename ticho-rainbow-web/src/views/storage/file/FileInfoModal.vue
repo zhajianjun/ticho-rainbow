@@ -14,8 +14,8 @@
   import { BasicModal, useModalInner } from '@/components/Modal';
   import { BasicForm, useForm } from '@/components/Form/index';
   import { getModalFormColumns } from './fileInfo.data';
-  import { modifyFileInfo } from '@/api/system/fileInfo';
-  import { FileInfoDTO } from '@/api/system/model/fileInfoModel';
+  import { modifyFileInfo } from '@/api/storage/fileInfo';
+  import { FileInfoDTO } from '@/api/storage/model/fileInfoModel';
 
   export default defineComponent({
     name: 'FileInfoModal',

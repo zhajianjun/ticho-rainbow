@@ -7,6 +7,10 @@ export interface DictLabelDTO {
   label: string;
   /** 字典值 */
   value: string;
+  /** 图标 */
+  icon: string;
+  /** 颜色 */
+  color: string;
   /** 排序 */
   sort: number;
   /** 状态;1-启用,0-停用 */

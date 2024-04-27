@@ -2,6 +2,8 @@ import { BasicColumn, FormSchema } from '@/components/Table';
 import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
 import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
+import Icon from '@/components/Icon/Icon.vue';
+import { isNull } from 'xe-utils';
 
 const commonStatus = 'commonStatus';
 
@@ -34,6 +36,27 @@ export function getTableColumns(): BasicColumn[] {
       width: 50,
     },
     {
+      title: '图标',
+      dataIndex: 'icon',
+      resizable: true,
+      width: 50,
+      customRender: ({ record }) => {
+        return h(Icon, { icon: record.icon ? record.icon : '' });
+      },
+    },
+    {
+      title: '颜色',
+      dataIndex: 'color',
+      resizable: true,
+      width: 50,
+      customRender: ({ record }) => {
+        if (!record.color) {
+          return record.color;
+        }
+        return h(Tag, { color: record.color }, () => record.color);
+      },
+    },
+    {
       title: '排序',
       dataIndex: 'sort',
       resizable: true,
@@ -44,10 +67,12 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'status',
       resizable: true,
       width: 50,
-      customRender: ({ text }) => {
-        const isNormal = ~~text === 1;
-        const color = isNormal ? 'green' : 'red';
-        return h(Tag, { color: color }, () => getDictByCodeAndValue(commonStatus, text));
+      customRender({ text }) {
+        const dict = getDictByCodeAndValue(commonStatus, text);
+        if (text === undefined || isNull(text) || isNull(dict)) {
+          return text;
+        }
+        return h(Tag, { color: dict.color }, () => dict.label);
       },
     },
     {
@@ -115,6 +140,22 @@ export function getModalFormColumns(): FormSchema[] {
         span: 24,
       },
       required: true,
+    },
+    {
+      field: `color`,
+      label: `颜色`,
+      slot: 'colorSlot',
+      colProps: {
+        span: 24,
+      },
+    },
+    {
+      field: `icon`,
+      label: `图标`,
+      component: 'IconPicker',
+      colProps: {
+        span: 24,
+      },
     },
     {
       field: `sort`,

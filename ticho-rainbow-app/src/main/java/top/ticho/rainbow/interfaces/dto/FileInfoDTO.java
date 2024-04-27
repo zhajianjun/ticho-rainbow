@@ -54,7 +54,7 @@ public class FileInfoDTO implements Serializable {
 
     /** 原始文件名 */
     @ApiModelProperty(value = "原始文件名", position = 80)
-    private String originalFilename;
+    private String originalFileName;
 
     /** 文件元数据 */
     @ApiModelProperty(value = "文件元数据", position = 90)

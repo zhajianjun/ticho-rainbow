@@ -50,14 +50,11 @@ export function getTableColumns(): BasicColumn[] {
       resizable: true,
       width: 50,
       customRender({ text }) {
-        const label = getDictByCodeAndValue(protocolType, text);
-        if (text === undefined || isNull(text)) {
-          return label;
+        const dict = getDictByCodeAndValue(protocolType, text);
+        if (text === undefined || isNull(text) || isNull(dict)) {
+          return text;
         }
-        if (text === 2) {
-          return h(Tag, { color: 'red' }, () => label);
-        }
-        return h(Tag, { color: 'blue' }, () => label);
+        return h(Tag, { color: dict.color }, () => dict.label);
       },
     },
     {

@@ -3,7 +3,7 @@ import { h } from 'vue';
 import { Switch } from 'ant-design-vue';
 import { useMessage } from '@/hooks/web/useMessage';
 import { modifyRoleStatus } from '@/api/system/role';
-import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
+import { getDictByCode, getDictLabelByCodeAndValue } from '@/store/modules/dict';
 
 const commonStatus = 'commonStatus';
 
@@ -34,8 +34,8 @@ export const columns: BasicColumn[] = [
       }
       return h(Switch, {
         checked: record.status === 1,
-        checkedChildren: getDictByCodeAndValue(commonStatus, 1),
-        unCheckedChildren: getDictByCodeAndValue(commonStatus, 0),
+        checkedChildren: getDictLabelByCodeAndValue(commonStatus, 1),
+        unCheckedChildren: getDictLabelByCodeAndValue(commonStatus, 0),
         loading: record.pendingStatus,
         onChange(checked) {
           record.pendingStatus = true;

@@ -28,8 +28,8 @@ public interface DictLabelService {
     /**
      * 修改字典标签
      *
-     * @param dictLabelDTO 字典标签DTO 对象
-     */
+     // * @param dictLabelDTO 字典标签DTO 对象
+     // */
     void updateById(DictLabelDTO dictLabelDTO);
 
     /**

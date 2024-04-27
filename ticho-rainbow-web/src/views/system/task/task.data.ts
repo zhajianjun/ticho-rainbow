@@ -2,6 +2,7 @@ import { BasicColumn, FormSchema } from '@/components/Table';
 import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
 import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
+import { isNull } from 'xe-utils';
 
 const commonStatus = 'commonStatus';
 const planTask = 'planTask';
@@ -26,8 +27,12 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'content',
       resizable: true,
       width: 100,
-      customRender: ({ text }) => {
-        return h(Tag, { color: 'green' }, () => getDictByCodeAndValue(planTask, text));
+      customRender({ text }) {
+        const dict = getDictByCodeAndValue(planTask, text);
+        if (text === undefined || isNull(text) || isNull(dict)) {
+          return text;
+        }
+        return h(Tag, { color: dict.color }, () => dict.label);
       },
     },
     {
@@ -53,10 +58,12 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'status',
       resizable: true,
       width: 100,
-      customRender: ({ text }) => {
-        const isNormal = ~~text === 1;
-        const color = isNormal ? 'green' : 'red';
-        return h(Tag, { color: color }, () => getDictByCodeAndValue(commonStatus, text));
+      customRender({ text }) {
+        const dict = getDictByCodeAndValue(commonStatus, text);
+        if (text === undefined || isNull(text) || isNull(dict)) {
+          return text;
+        }
+        return h(Tag, { color: dict.color }, () => dict.label);
       },
     },
     {
@@ -189,6 +196,7 @@ export function getModalFormColumns(): FormSchema[] {
     {
       field: `status`,
       label: `任务状态`,
+      defaultValue: 1,
       component: 'RadioButtonGroup',
       componentProps: {
         options: getDictByCode(commonStatus),

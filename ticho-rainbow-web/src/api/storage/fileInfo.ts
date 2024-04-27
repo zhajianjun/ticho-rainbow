@@ -1,13 +1,14 @@
 import { defHttp } from '@/utils/http/axios';
 import { FileInfoDTO, FileInfoQuery } from './model/fileInfoModel';
-import { UploadFileParams } from '#/axios';
+import { RetryRequest, UploadFileParams } from "#/axios";
 import { AxiosProgressEvent } from 'axios';
-import { ChunkDTO, ChunkFileDTO, UploadApiResult } from '@/api/system/model/uploadModel';
+import { ChunkDTO, ChunkFileDTO, UploadApiResult } from './model/uploadModel';
 
 enum Api {
   FileInfo = '/file',
   FileInfoPage = '/file/page',
   Upload = '/file/upload',
+  Download = '/file/download',
   UploadChunk = '/file/uploadChunk',
   ComposeChunk = '/file/composeChunk',
 }
@@ -61,4 +62,17 @@ export function composeChunk(chunkId: string) {
     url: Api.ComposeChunk,
     params,
   });
+}
+
+export function downloadFile(id: string) {
+  const params = { id: id };
+  return defHttp.get<any>(
+    { url: Api.Download, params, responseType: 'blob' },
+    {
+      errorMessageMode: 'message',
+      isTransformResponse: false,
+      joinParamsToUrl: true,
+      retryRequest: { isOpenRetry: false } as RetryRequest,
+    },
+  );
 }

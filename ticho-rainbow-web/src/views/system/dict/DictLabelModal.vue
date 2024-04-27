@@ -6,7 +6,18 @@
     :maskClosable="false"
     @ok="handleSubmit"
   >
-    <BasicForm @register="registerForm" />
+    <BasicForm @register="registerForm">
+      <template #colorSlot="{ model, field }">
+        <a-input-group compact>
+          <a-input v-model:value="model[field]" style="width: calc(100% - 32px)" />
+          <a-input
+            type="color"
+            v-model:value="model[field]"
+            style="width: 32px; margin: auto; padding: 0"
+          />
+        </a-input-group>
+      </template>
+    </BasicForm>
   </BasicModal>
 </template>
 <script lang="ts">

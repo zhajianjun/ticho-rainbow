@@ -48,6 +48,14 @@ public class DictLabelDTO implements Serializable {
     @Size(max = 50, message = "字典值最大不能超过50个字符")
     private String value;
 
+    /** 图标 */
+    @ApiModelProperty(value = "图标", position = 42)
+    private String icon;
+
+    /** 颜色 */
+    @ApiModelProperty(value = "颜色", position = 44)
+    private String color;
+
     /** 排序 */
     @ApiModelProperty(value = "排序", position = 60)
     @Max(value = 65535, message = "排序最大值为65535")

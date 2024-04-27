@@ -43,8 +43,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -83,13 +83,13 @@ public class FileInfoServiceImpl implements FileInfoService {
         Integer type = fileInfoReqDTO.getType();
         MultipartFile file = fileInfoReqDTO.getFile();
         // 原始文件名，logo.svg
-        String originalFilename = file.getOriginalFilename();
+        String originalFileName = file.getOriginalFilename();
         DataSize fileSize = fileProperty.getMaxFileSize();
         Assert.isTrue(file.getSize() <= fileSize.toBytes(), FileErrCode.FILE_SIZE_TO_LARGER, "文件大小不能超出" + fileSize.toMegabytes() + "MB");
         // 主文件名 logo.svg -> logo
-        String mainName = FileNameUtil.mainName(originalFilename);
+        String mainName = FileNameUtil.mainName(originalFileName);
         // 后缀名 svg
-        String extName = FileNameUtil.extName(originalFilename);
+        String extName = FileNameUtil.extName(originalFileName);
         // 存储文件名 logo.svg -> logo-wKpdqhmC.svg
         String fileName = mainName + StrUtil.DASHED + CommonUtil.fastShortUUID() + StrUtil.DOT + extName;
         // 相对路径
@@ -103,7 +103,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         fileInfo.setId(CloudIdUtil.getId());
         fileInfo.setType(type);
         fileInfo.setFileName(fileName);
-        fileInfo.setOriginalFilename(originalFilename);
+        fileInfo.setOriginalFileName(originalFileName);
         fileInfo.setPath(relativePath);
         fileInfo.setSize(file.getSize());
         fileInfo.setExt(extName);
@@ -154,15 +154,15 @@ public class FileInfoServiceImpl implements FileInfoService {
         String absolutePath = getAbsolutePath(fileInfo);
         File file = new File(absolutePath);
         Assert.isTrue(FileUtil.exist(file), FileErrCode.FILE_NOT_EXIST, "文件不存在");
-        try (OutputStream outputStream = response.getOutputStream()) {
+        try {
             response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
-            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLUtil.encodeAll(fileInfo.getOriginalFilename()));
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLUtil.encodeAll(fileInfo.getOriginalFileName()));
             response.setContentType(fileInfo.getContentType());
             response.setHeader(HttpHeaders.PRAGMA, "no-cache");
             response.setHeader(HttpHeaders.CACHE_CONTROL, "no-cache");
             response.setHeader(HttpHeaders.CONTENT_LENGTH, fileInfo.getSize() + "");
             response.setDateHeader(HttpHeaders.EXPIRES, 0);
-            IoUtil.write(outputStream, true, FileUtil.readBytes(file));
+            IoUtil.copy(Files.newInputStream(file.toPath()), response.getOutputStream(), 1024);
         } catch (Exception e) {
             log.error("文件下载失败，{}", e.getMessage(), e);
             throw new BizException(FileErrCode.DOWNLOAD_ERROR);
@@ -225,6 +225,7 @@ public class FileInfoServiceImpl implements FileInfoService {
      */
     private ChunkCacheDTO getChunkSafe(ChunkFileDTO chunkFileDTO) {
         String chunkId = chunkFileDTO.getChunkId();
+        boolean isContinued = Boolean.TRUE.equals(chunkFileDTO.getIsContinued());
         // 先从缓存中获取,每次走同步锁，性能比较差
         ChunkCacheDTO chunkCacheDTO = cacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkCacheDTO.class);
         if (Objects.nonNull(chunkCacheDTO)) {
@@ -238,10 +239,10 @@ public class FileInfoServiceImpl implements FileInfoService {
             if (hasCache) {
                 return chunkCacheDTO;
             }
-            // 缓存不存在，再查询数据库
             FileInfo dbFileInfo = fileInfoRepository.getByChunkId(chunkId);
-            // 数据库不存在则当做第一个分片进行处理
-            if (Objects.isNull(dbFileInfo)) {
+            // 缓存不存在，非续传则转换参数为分片信息
+            if (!isContinued) {
+                Assert.isNull(dbFileInfo, "文件上传失败, 数据已存在");
                 // 分片文件信息转换缓存信息
                 chunkCacheDTO = chunkFileConvertCache(chunkFileDTO);
                 // 保存数据库
@@ -250,6 +251,7 @@ public class FileInfoServiceImpl implements FileInfoService {
                 saveChunkCache(chunkCacheDTO);
                 return chunkCacheDTO;
             }
+            Assert.isNotNull(dbFileInfo, "续传失败, 分片文件信息不存在");
             Assert.isTrue(Objects.equals(dbFileInfo.getStatus(), 3), BizErrCode.PARAM_ERROR, "分片文件状态才可进行续传");
             Assert.isTrue(Objects.equals(dbFileInfo.getMd5(), chunkFileDTO.getMd5()), BizErrCode.PARAM_ERROR, "分片文件md5不一致");
             // 数据库存在则转换分片信息
@@ -280,7 +282,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         chunkCacheDTO.setId(dbFileInfo.getId());
         chunkCacheDTO.setChunkCount(metadata.getChunkCount());
         chunkCacheDTO.setFileName(dbFileInfo.getFileName());
-        chunkCacheDTO.setOriginalFilename(dbFileInfo.getOriginalFilename());
+        chunkCacheDTO.setOriginalFileName(dbFileInfo.getOriginalFileName());
         chunkCacheDTO.setRelativeFullPath(dbFileInfo.getPath());
         chunkCacheDTO.setChunkDirPath(metadata.getChunkDirPath());
         chunkCacheDTO.setExtName(dbFileInfo.getExt());
@@ -312,11 +314,11 @@ public class FileInfoServiceImpl implements FileInfoService {
     private ChunkCacheDTO chunkFileConvertCache(ChunkFileDTO chunkFileDTO) {
         ChunkCacheDTO chunkCacheDTO = new ChunkCacheDTO();
         // 原文件名 logo.svg
-        String originalFilename = chunkFileDTO.getFileName();
+        String originalFileName = chunkFileDTO.getFileName();
         // 后缀 svg
-        String extName = FileNameUtil.extName(originalFilename);
+        String extName = FileNameUtil.extName(originalFileName);
         // 原主文件名 logo
-        String originalMainName = FileNameUtil.mainName(originalFilename);
+        String originalMainName = FileNameUtil.mainName(originalFileName);
         // 主文件名 logo-wKpdqhmC
         String mainName = originalMainName + StrUtil.DASHED + CommonUtil.fastShortUUID();
         // 文件名 logo-wKpdqhmC.svg
@@ -341,7 +343,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         chunkCacheDTO.setChunkCount(chunkFileDTO.getChunkCount());
         chunkCacheDTO.setFileName(fileName);
         chunkCacheDTO.setFileSize(chunkFileDTO.getFileSize());
-        chunkCacheDTO.setOriginalFilename(originalMainName);
+        chunkCacheDTO.setOriginalFileName(originalFileName);
         chunkCacheDTO.setContentType(FileUtil.getMimeType(fileName));
         chunkCacheDTO.setRelativeFullPath(relativeFullPath);
         chunkCacheDTO.setChunkDirPath(chunkDirPath);

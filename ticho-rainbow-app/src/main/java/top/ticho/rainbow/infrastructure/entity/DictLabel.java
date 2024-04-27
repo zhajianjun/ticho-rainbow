@@ -39,6 +39,12 @@ public class DictLabel extends Model<DictLabel> implements Serializable {
     /** 字典值 */
     private String value;
 
+    /** 图标 */
+    private String icon;
+
+    /** 颜色 */
+    private String color;
+
     /** 排序 */
     private Integer sort;
 

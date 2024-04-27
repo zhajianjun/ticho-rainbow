@@ -151,10 +151,12 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'isErr',
       resizable: true,
       width: 100,
-      customRender: ({ text }) => {
-        const isErr = ~~text === 1;
-        const color = isErr ? 'red' : 'green';
-        return h(Tag, { color: color }, () => getDictByCodeAndValue(yesOrNo, text));
+      customRender({ text }) {
+        const dict = getDictByCodeAndValue(yesOrNo, text);
+        if (text === undefined || isNull(text) || isNull(dict)) {
+          return text;
+        }
+        return h(Tag, { color: dict.color }, () => dict.label);
       },
     },
   ];
