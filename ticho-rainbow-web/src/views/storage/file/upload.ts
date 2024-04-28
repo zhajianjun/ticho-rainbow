@@ -107,16 +107,19 @@ export async function uploadBigFileHandler(
       createMessage.error(`${msg}`);
       return Promise.reject(msg);
     }
-    if (i === chunkCount) {
+    if (i + 1 < chunkCount) {
       axiosProgressEvent.loaded = 99;
-    } else {
+      onUploadProgress(axiosProgressEvent);
+    } else if (i + 1 === chunkCount) {
       axiosProgressEvent.loaded = ((i + 1) / chunkCount) * 100;
+      onUploadProgress(axiosProgressEvent);
     }
-    onUploadProgress(axiosProgressEvent);
   }
   // 合并
   return composeChunk(uid)
     .then(() => {
+      axiosProgressEvent.loaded = 100;
+      onUploadProgress(axiosProgressEvent);
       createMessage.info(`${file.name} 上传成功`);
       return Promise.resolve({
         data: { data: fileName },

@@ -3,7 +3,7 @@ import { FileInfoDTO, FileInfoQuery } from './model/fileInfoModel';
 import { RetryRequest, UploadFileParams } from '#/axios';
 import { AxiosProgressEvent } from 'axios';
 import { ChunkDTO, ChunkFileDTO, UploadApiResult } from './model/uploadModel';
-import {ContentTypeEnum} from "@/enums/httpEnum";
+import { ContentTypeEnum } from '@/enums/httpEnum';
 
 enum Api {
   FileInfo = '/file',
