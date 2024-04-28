@@ -90,7 +90,7 @@ export function composeChunk(chunkId: string) {
 export function getUrl(id: string, expire?: number | null, limit?: boolean | null) {
   const params = { id: id, expire: expire, limit: limit };
   return defHttp.get<string>(
-    { url: Api.GetUrl, params, timeout: 30 * 1000 },
+    { url: Api.GetUrl, params },
     {
       errorMessageMode: 'message',
       joinParamsToUrl: true,

@@ -198,6 +198,9 @@ public class FileInfoServiceImpl implements FileInfoService {
         }
         FileInfo dbFileInfo = fileInfoRepository.getById(id);
         Assert.isNotNull(dbFileInfo, FileErrCode.FILE_NOT_EXIST, "文件信息不存在");
+        String absolutePath = getAbsolutePath(dbFileInfo.getType(), dbFileInfo.getPath());
+        File file = new File(absolutePath);
+         Assert.isTrue(file.exists(), BizErrCode.PARAM_ERROR, "文件不存在");
         String sign = CommonUtil.fastShortUUID();
         FileCache fileCache = new FileCache();
         fileCache.setSign(sign);
