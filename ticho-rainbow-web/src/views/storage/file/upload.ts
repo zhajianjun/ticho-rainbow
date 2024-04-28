@@ -102,8 +102,8 @@ export async function uploadBigFileHandler(
       createMessage.error(`${e}`);
       return Promise.reject(e);
     }
-    const { code, msg } = response.data;
-    if (response.status !== 200 || code !== 0) {
+    const { code, msg } = response;
+    if (code !== 0) {
       createMessage.error(`${msg}`);
       return Promise.reject(msg);
     }

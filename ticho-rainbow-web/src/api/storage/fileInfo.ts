@@ -61,17 +61,16 @@ export function uploadFile(
   });
 }
 
-export function uploadChunk(chunkFile: ChunkFileDTO) {
-  const params = {} as UploadFileParams;
-  params.data = chunkFile;
-  params.file = chunkFile.chunkfile;
-  return defHttp.uploadFile<ChunkDTO>(
-    {
-      url: Api.UploadChunk,
+export function uploadChunk(params: ChunkFileDTO) {
+  return defHttp.post<ChunkDTO>({
+    url: Api.UploadChunk,
+    headers: {
+      'Content-type': ContentTypeEnum.FORM_DATA,
     },
     params,
-  );
+  });
 }
+
 export function composeChunk(chunkId: string) {
   const params = { chunkId: chunkId };
   return defHttp.get<any>({
