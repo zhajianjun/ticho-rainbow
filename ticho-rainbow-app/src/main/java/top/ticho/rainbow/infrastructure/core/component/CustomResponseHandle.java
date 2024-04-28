@@ -1,5 +1,6 @@
 package top.ticho.rainbow.infrastructure.core.component;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -33,7 +34,8 @@ public class CustomResponseHandle {
     public void prefix(Exception ex) {
         HttpLog httpLog = WebLogInterceptor.logInfo();
         if (Objects.nonNull(httpLog)) {
-            httpLog.setErrMessage(ex.getMessage());
+            String errorMsg = ExceptionUtil.stacktraceToString(ex);
+            httpLog.setErrMessage(errorMsg);
         }
     }
 

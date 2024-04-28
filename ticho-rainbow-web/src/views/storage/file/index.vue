@@ -7,7 +7,6 @@
           :maxNumber="10"
           @change="handleChange"
           :multiple="true"
-          :api="uploadFile"
           v-auth="'FileUpload'"
         />
       </template>
@@ -42,44 +41,31 @@
         />
       </template>
     </BasicTable>
-    <UploadModal
+    <CustomUploadModal
       @register="registerUploadModal"
       @change="handleChange"
       @delete="handleDelete"
       :maxSize="10240000"
-      :uploadParams="{ uid: uidRef }"
-      :api="uploadBigFile"
     />
     <FileInfoModal @register="registerModal" @success="handleSuccess" />
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent, ref } from 'vue';
+  import { defineComponent } from 'vue';
   import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { useModal } from '@/components/Modal';
   import FileInfoModal from './FileInfoModal.vue';
   import { getTableColumns, getSearchColumns } from './fileInfo.data';
-  import {
-    fileInfoPage,
-    delFileInfo,
-    composeChunk,
-    upload,
-    uploadChunk,
-    downloadFile,
-  } from '@/api/storage/fileInfo';
+  import { fileInfoPage, delFileInfo, getUrl } from '@/api/storage/fileInfo';
   import { usePermission } from '@/hooks/web/usePermission';
-  import { CustomUpload } from '@/components/Upload';
   import { useMessage } from '@/hooks/web/useMessage';
-  import { UploadFileParams } from '#/axios';
-  import { AxiosProgressEvent } from 'axios';
-  import { ChunkFileDTO } from '@/api/storage/model/uploadModel';
-  import SparkMD5 from 'spark-md5';
-  import UploadModal from '@/components/Upload/src/components/UploadModal.vue';
-  import { downloadByData } from '@/utils/file/download';
+  import CustomUploadModal from './CustomUploadModal.vue';
+  import CustomUpload from './CustomUpload.vue';
+  import { downloadByUrl } from '@/utils/file/download';
 
   export default defineComponent({
     name: 'FileInfo',
-    components: { UploadModal, CustomUpload, BasicTable, FileInfoModal, TableAction },
+    components: { CustomUploadModal, CustomUpload, BasicTable, FileInfoModal, TableAction },
     setup() {
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('FileInfoSelect');
@@ -119,7 +105,7 @@
 
       const { createMessage } = useMessage();
       function handleChange(list: string[]) {
-        createMessage.info(`已上传文件${JSON.stringify(list)}`);
+        console.log(list);
         reload();
       }
 
@@ -140,152 +126,35 @@
         reload();
       }
 
-      const chunkSize = 5 * 1024 * 1024;
-
-      async function uploadFile(
-        params: UploadFileParams,
-        onUploadProgress: (progressEvent: AxiosProgressEvent) => void,
-      ) {
-        const file = params.file;
-        const fileSize = file.size;
-        if (fileSize <= chunkSize) {
-          return upload(params, onUploadProgress).then((res) => {
-            res.data.data = 'https://localhost:5122/file/download?filename=123165464.png';
-            return Promise.resolve(res);
-          });
-        }
-        return uploadBigFile(params, onUploadProgress);
-      }
-
-      const uidRef = ref(null);
-
-      async function uploadBigFile(
-        params: UploadFileParams,
-        onUploadProgress: (progressEvent: AxiosProgressEvent) => void,
-      ) {
-        const file = params.file;
-        const paramData = params.data;
-        const fileSize = file.size;
-        let uid;
-        let isContinued;
-        if (paramData && paramData.uid && paramData.uid !== '' && paramData.uid !== undefined) {
-          uid = paramData.uid;
-          isContinued = true;
-        } else {
-          uid = file.uid;
-          isContinued = false;
-        }
-        // 分片数量
-        const chunkCount = Math.ceil(fileSize / chunkSize);
-        const fileName = file.name;
-        const fileMd5 = (await getFileMd5(file, chunkCount, chunkSize)) as string;
-        const axiosProgressEvent = { loaded: 0, total: 100 } as AxiosProgressEvent;
-        // 上传分片
-        for (let i = 0; i < chunkCount; i++) {
-          // 分片开始
-          const start = i * chunkSize;
-          // 分片结束
-          const end = Math.min(fileSize, start + chunkSize);
-          // 分片文件
-          const chunkFile = file.slice(start, end);
-          // 定义分片上传接口参数，跟后端商定
-          const formdata = {
-            chunkId: uid,
-            isContinued: isContinued,
-            md5: fileMd5,
-            fileName: fileName,
-            fileSize: fileSize,
-            chunkCount: chunkCount,
-            chunkfile: chunkFile,
-            index: i,
-          } as ChunkFileDTO;
-          let response;
-          try {
-            // 调用分片上传接口
-            response = await uploadChunk(formdata);
-          } catch (e) {
-            createMessage.error(`${e}`);
-            return Promise.reject(e);
-          }
-          const { code, msg } = response.data;
-          if (response.status !== 200 || code !== 0) {
-            createMessage.error(`${msg}`);
-            return Promise.reject(msg);
-          }
-          if (i - 1 === chunkCount) {
-            axiosProgressEvent.loaded = 99;
-          } else {
-            axiosProgressEvent.loaded = ((i + 1) / chunkCount) * 100;
-          }
-
-          onUploadProgress(axiosProgressEvent);
-        }
-        // 合并
-        await composeChunk(uid);
-        return Promise.resolve({ data: { url: '', type: '' || '', name: '' } });
-      }
-
-      async function getFileMd5(file: File, chunkCount: number, chunkSize: number) {
-        return new Promise((resolve, reject) => {
-          const blobSlice = File.prototype.slice;
-          const chunks = chunkCount;
-          let currentChunk = 0;
-          const spark = new SparkMD5.ArrayBuffer();
-          const fileReader = new FileReader();
-          fileReader.onload = (e) => {
-            let result = e.target?.result as ArrayBuffer;
-            spark.append(result);
-            currentChunk++;
-            if (currentChunk < chunks) {
-              loadNext();
-            } else {
-              const md5 = spark.end();
-              resolve(md5);
-            }
-          };
-          fileReader.onerror = (e) => {
-            reject(e);
-          };
-          function loadNext() {
-            const start = currentChunk * chunkSize;
-            let end = start + chunkSize;
-            if (end > file.size) {
-              end = file.size;
-            }
-            fileReader.readAsArrayBuffer(blobSlice.call(file, start, end));
-          }
-          loadNext();
-        });
-      }
-
       // 上传modal
       const [registerUploadModal, { openModal: openUploadModal, setModalProps }] = useModal();
 
       function openUploadModalProxy(record: Recordable) {
-        openUploadModal(true);
+        openUploadModal(true, record.chunkId);
         setModalProps({ okText: '确定', cancelText: '取消' });
-        uidRef.value = record.chunkId;
       }
 
       function handleDownload(record: Recordable) {
-        downloadFile(record.id).then((res) => {
-          downloadByData(res, record.originalFileName);
-        });
+        try {
+          getUrl(record.id, null, true).then((res) => {
+            downloadByUrl({ url: res, target: '_self' });
+            createMessage.info('文件下载中');
+          });
+        } catch (e) {
+          createMessage.error('文件下载失败');
+        }
       }
 
       return {
         registerTable,
         registerModal,
         handleChange,
-        uploadFile,
-        uploadBigFile,
         handleEdit,
         handleDelete,
         handleSuccess,
         hasPermission,
         registerUploadModal,
         openUploadModalProxy,
-        uidRef,
         handleDownload,
       };
     },

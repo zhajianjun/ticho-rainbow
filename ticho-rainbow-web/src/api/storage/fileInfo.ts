@@ -1,14 +1,16 @@
 import { defHttp } from '@/utils/http/axios';
 import { FileInfoDTO, FileInfoQuery } from './model/fileInfoModel';
-import { RetryRequest, UploadFileParams } from "#/axios";
+import { RetryRequest, UploadFileParams } from '#/axios';
 import { AxiosProgressEvent } from 'axios';
 import { ChunkDTO, ChunkFileDTO, UploadApiResult } from './model/uploadModel';
+import {ContentTypeEnum} from "@/enums/httpEnum";
 
 enum Api {
   FileInfo = '/file',
   FileInfoPage = '/file/page',
   Upload = '/file/upload',
-  Download = '/file/download',
+  GetUrl = '/file/getUrl',
+  Download = '/file/downloadById',
   UploadChunk = '/file/uploadChunk',
   ComposeChunk = '/file/composeChunk',
 }
@@ -45,6 +47,20 @@ export function upload(
   );
 }
 
+export function uploadFile(
+  params: UploadFileParams,
+  onUploadProgress: (progressEvent: AxiosProgressEvent) => void,
+) {
+  return defHttp.post<UploadApiResult>({
+    url: Api.Upload,
+    onUploadProgress,
+    headers: {
+      'Content-type': ContentTypeEnum.FORM_DATA,
+    },
+    params,
+  });
+}
+
 export function uploadChunk(chunkFile: ChunkFileDTO) {
   const params = {} as UploadFileParams;
   params.data = chunkFile;
@@ -62,6 +78,25 @@ export function composeChunk(chunkId: string) {
     url: Api.ComposeChunk,
     params,
   });
+}
+
+/**
+ * 获取下载链接
+ *
+ * @param id
+ * @param expire
+ * @param limit
+ */
+export function getUrl(id: string, expire?: number | null, limit?: boolean | null) {
+  const params = { id: id, expire: expire, limit: limit };
+  return defHttp.get<string>(
+    { url: Api.GetUrl, params, timeout: 30 * 1000 },
+    {
+      errorMessageMode: 'message',
+      joinParamsToUrl: true,
+      retryRequest: { isOpenRetry: false } as RetryRequest,
+    },
+  );
 }
 
 export function downloadFile(id: string) {

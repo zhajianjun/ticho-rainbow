@@ -25,11 +25,13 @@ import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.FileInfoService;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.infrastructure.config.CacheConfig;
-import top.ticho.rainbow.infrastructure.core.component.CacheTemplate;
+import top.ticho.rainbow.infrastructure.core.component.cache.CommonCacheTemplate;
+import top.ticho.rainbow.infrastructure.core.component.cache.SpringCacheTemplate;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.enums.FileErrCode;
 import top.ticho.rainbow.infrastructure.core.prop.FileProperty;
 import top.ticho.rainbow.infrastructure.core.util.CommonUtil;
+import top.ticho.rainbow.infrastructure.entity.FileCache;
 import top.ticho.rainbow.infrastructure.entity.FileInfo;
 import top.ticho.rainbow.interfaces.assembler.FileInfoAssembler;
 import top.ticho.rainbow.interfaces.dto.ChunkCacheDTO;
@@ -63,7 +65,9 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class FileInfoServiceImpl implements FileInfoService {
-    public static final String STORAGE_ID_NOT_BLANK = "资源id不能为空";
+    public static final String STORAGE_ID_NOT_BLANK = "id不能为空";
+
+    private final CommonCacheTemplate<FileCache> fileCacheTemplate = new CommonCacheTemplate<>(FileCache::getExpire);
 
     @Resource
     private FileProperty fileProperty;
@@ -72,7 +76,7 @@ public class FileInfoServiceImpl implements FileInfoService {
     private HttpServletResponse response;
 
     @Autowired
-    private CacheTemplate cacheTemplate;
+    private SpringCacheTemplate springCacheTemplate;
 
     @Autowired
     private FileInfoRepository fileInfoRepository;
@@ -146,12 +150,28 @@ public class FileInfoServiceImpl implements FileInfoService {
 
 
     @Override
-    public void download(Long id) {
-        // @formatter:off
+    public void downloadById(Long id) {
         Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
         FileInfo fileInfo = fileInfoRepository.getById(id);
         Assert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST, "文件不存在");
-        String absolutePath = getAbsolutePath(fileInfo);
+        download(fileInfo);
+    }
+
+    @Override
+    public void download(String sign) {
+        Assert.isNotBlank(sign, BizErrCode.PARAM_ERROR, "sign不能为空");
+        FileCache fileCache = fileCacheTemplate.get(sign);
+        Assert.isNotNull(fileCache, FileErrCode.FILE_NOT_EXIST, "文件不存在");
+        FileInfo fileInfo = fileCache.getFileInfo();
+        if (Boolean.TRUE.equals(fileCache.getLimit())) {
+            fileCache.setLimited(true);
+            fileCacheTemplate.put(sign, fileCache);
+        }
+        download(fileInfo);
+    }
+
+    private void download(FileInfo fileInfo) {
+        String absolutePath = getAbsolutePath(fileInfo.getType(), fileInfo.getPath());
         File file = new File(absolutePath);
         Assert.isTrue(FileUtil.exist(file), FileErrCode.FILE_NOT_EXIST, "文件不存在");
         try {
@@ -167,25 +187,35 @@ public class FileInfoServiceImpl implements FileInfoService {
             log.error("文件下载失败，{}", e.getMessage(), e);
             throw new BizException(FileErrCode.DOWNLOAD_ERROR);
         }
-        // @formatter:on
     }
 
     @Override
-    public String getUrl(Long id, Integer expires) {
+    public String getUrl(Long id, Integer expire, Boolean limit) {
         Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
-        if (expires != null) {
-            Assert.isTrue(expires <= TimeUnit.DAYS.toSeconds(7), BizErrCode.PARAM_ERROR, "过期时间最长为7天");
+        long seconds = TimeUnit.DAYS.toSeconds(7);
+        if (expire != null) {
+            Assert.isTrue(expire <= seconds, BizErrCode.PARAM_ERROR, "过期时间最长为7天");
         }
-        return null;
+        FileInfo dbFileInfo = fileInfoRepository.getById(id);
+        Assert.isNotNull(dbFileInfo, FileErrCode.FILE_NOT_EXIST, "文件信息不存在");
+        String sign = CommonUtil.fastShortUUID();
+        FileCache fileCache = new FileCache();
+        fileCache.setSign(sign);
+        fileCache.setFileInfo(dbFileInfo);
+        fileCache.setExpire(expire == null ? seconds : expire);
+        fileCache.setLimit(limit);
+        String domain = StrUtil.removeSuffix(fileProperty.getDomain(), "/");
+        fileCacheTemplate.put(sign, fileCache);
+        return domain + "/file/download?sign=" + sign;
     }
 
     @Override
     public ChunkCacheDTO uploadChunk(ChunkFileDTO chunkFileDTO) {
         ValidUtil.valid(chunkFileDTO);
         MultipartFile chunkfile = chunkFileDTO.getChunkfile();
-        DataSize maxFileSize = fileProperty.getMaxFileSize();
+        DataSize maxFileSize = fileProperty.getMaxPartSize();
         Integer index = chunkFileDTO.getIndex();
-        Assert.isTrue(chunkfile.getSize() <= maxFileSize.toBytes(), FileErrCode.FILE_SIZE_TO_LARGER, "文件大小不能超出" + maxFileSize.toMegabytes() + "MB");
+        Assert.isTrue(chunkfile.getSize() <= maxFileSize.toBytes(), FileErrCode.FILE_SIZE_TO_LARGER, "分片文件大小不能超出" + maxFileSize.toMegabytes() + "MB");
         // 相对路径处理
         String relativePath = Optional.ofNullable(chunkFileDTO.getRelativePath())
             .filter(StrUtil::isNotBlank)
@@ -227,13 +257,13 @@ public class FileInfoServiceImpl implements FileInfoService {
         String chunkId = chunkFileDTO.getChunkId();
         boolean isContinued = Boolean.TRUE.equals(chunkFileDTO.getIsContinued());
         // 先从缓存中获取,每次走同步锁，性能比较差
-        ChunkCacheDTO chunkCacheDTO = cacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkCacheDTO.class);
+        ChunkCacheDTO chunkCacheDTO = springCacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkCacheDTO.class);
         if (Objects.nonNull(chunkCacheDTO)) {
             return chunkCacheDTO;
         }
         // 加锁的意义是，防止并发上传同一个文件，导致缓存被覆盖
         synchronized (chunkId) {
-            chunkCacheDTO = cacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkCacheDTO.class);
+            chunkCacheDTO = springCacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkCacheDTO.class);
             boolean hasCache = Objects.nonNull(chunkCacheDTO);
             // 缓存存在则返回false
             if (hasCache) {
@@ -243,6 +273,9 @@ public class FileInfoServiceImpl implements FileInfoService {
             // 缓存不存在，非续传则转换参数为分片信息
             if (!isContinued) {
                 Assert.isNull(dbFileInfo, "文件上传失败, 数据已存在");
+                DataSize maxBigFileSize = fileProperty.getMaxBigFileSize();
+                boolean match = chunkFileDTO.getFileSize() <= maxBigFileSize.toBytes();
+                Assert.isTrue(match, BizErrCode.PARAM_ERROR, "文件大小不能超出" + maxBigFileSize.toMegabytes() + "MB");
                 // 分片文件信息转换缓存信息
                 chunkCacheDTO = chunkFileConvertCache(chunkFileDTO);
                 // 保存数据库
@@ -264,13 +297,13 @@ public class FileInfoServiceImpl implements FileInfoService {
 
     private void saveChunkCache(ChunkCacheDTO chunkCacheDTO) {
         // 上传队列大小限制
-        long size = cacheTemplate.size(CacheConst.UPLOAD_CHUNK);
+        long size = springCacheTemplate.size(CacheConst.UPLOAD_CHUNK);
         Assert.isTrue(size + 1 <= CacheConfig.CacheEnum.UPLOAD_CHUNK.getMaxSize(), BizErrCode.PARAM_ERROR, "分片文件上传数量超过限制");
-        cacheTemplate.put(CacheConst.UPLOAD_CHUNK, chunkCacheDTO.getChunkId(), chunkCacheDTO);
+        springCacheTemplate.put(CacheConst.UPLOAD_CHUNK, chunkCacheDTO.getChunkId(), chunkCacheDTO);
     }
 
     /**
-     *  数据库分片文件信息转换缓存信息
+     * 数据库分片文件信息转换缓存信息
      */
     private ChunkCacheDTO fileInfoConvertCache(FileInfo dbFileInfo) {
         String chunkId = dbFileInfo.getChunkId();
@@ -368,7 +401,7 @@ public class FileInfoServiceImpl implements FileInfoService {
     public void composeChunk(String chunkId) {
         // @formatter:off
         Assert.isNotBlank(chunkId, "分片id不能为空");
-        ChunkCacheDTO chunkCacheDTO = cacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkCacheDTO.class);
+        ChunkCacheDTO chunkCacheDTO = springCacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkCacheDTO.class);
         Assert.isNotNull(chunkCacheDTO, "分片文件不存在");
         ConcurrentSkipListSet<Integer> indexs = Optional.ofNullable(chunkCacheDTO.getIndexs()).orElseGet(ConcurrentSkipListSet::new);
         AtomicInteger uploadedChunkCountAto = chunkCacheDTO.getUploadedChunkCount();
@@ -404,7 +437,7 @@ public class FileInfoServiceImpl implements FileInfoService {
             throw new BizException(HttpErrCode.FAIL, "文件合并失败");
         } finally{
             // 清除缓存
-            cacheTemplate.evict(CacheConst.UPLOAD_CHUNK, chunkId);
+            springCacheTemplate.evict(CacheConst.UPLOAD_CHUNK, chunkId);
             moveToTmp(chunkCacheDTO.getType(), chunkCacheDTO.getChunkDirPath());
         }
         // @formatter:on

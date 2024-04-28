@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import top.ticho.boot.security.auth.PermissionService;
-import top.ticho.rainbow.infrastructure.core.component.CacheTemplate;
+import top.ticho.rainbow.infrastructure.core.component.cache.SpringCacheTemplate;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.constant.CommConst;
 
@@ -28,7 +28,7 @@ public class FilePermissionServiceImpl implements PermissionService {
     private HttpServletRequest request;
 
     @Autowired
-    private CacheTemplate cacheTemplate;
+    private SpringCacheTemplate cacheTemplate;
 
     @Autowired
     @Qualifier("perm")

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import top.ticho.boot.security.annotation.IgnoreJwtCheck;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.core.Result;
 import top.ticho.boot.web.annotation.View;
@@ -59,7 +60,7 @@ public class FileInfoController {
         fileInfoService.update(fileInfoDTO);
         return Result.ok();
     }
-    
+
     @PreAuthorize("@perm.hasPerms('storage:file:delete')")
     @ApiOperation(value = "根据id删除文件")
     @ApiOperationSupport(order = 30)
@@ -79,22 +80,36 @@ public class FileInfoController {
     }
 
     @View(ignore = true)
-    @PreAuthorize("@perm.hasPerms('storage:file:download')")
+    @PreAuthorize("@perm.hasPerms('storage:file:downloadById')")
     @ApiOperation(value = "文件下载", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "文件id", name = "id", required = true)
+    @GetMapping("downloadById")
+    public void downloadById(Long id) {
+        fileInfoService.downloadById(id);
+    }
+
+    @View(ignore = true)
+    @IgnoreJwtCheck
+    @ApiOperation(value = "文件下载(公共)", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ApiOperationSupport(order = 20)
+    @ApiImplicitParam(value = "签名", name = "sign", required = true)
     @GetMapping("download")
-    public void download(Long id) {
-        fileInfoService.download(id);
+    public void download(String sign) {
+        fileInfoService.download(sign);
     }
 
     @PreAuthorize("@perm.hasPerms('storage:file:getUrl')")
     @ApiOperation(value = "根据文件id获取下载链接")
     @ApiOperationSupport(order = 40)
-    @ApiImplicitParams({@ApiImplicitParam(value = "文件id", name = "id", required = true), @ApiImplicitParam(value = "过期时间 <=7天，默认30分钟，单位：秒", name = "expires")})
+    @ApiImplicitParams({
+        @ApiImplicitParam(value = "文件id", name = "id", required = true),
+        @ApiImplicitParam(value = "过期时间 <=7天，默认30分钟，单位：秒", name = "expire"),
+        @ApiImplicitParam(value = "是否限制", name = "limit"),
+    })
     @GetMapping("getUrl")
-    public Result<String> getUrl(Long id, Integer expires) {
-        return Result.ok(fileInfoService.getUrl(id, expires));
+    public Result<String> getUrl(Long id, Integer expire, Boolean limit) {
+        return Result.ok(fileInfoService.getUrl(id, expire, limit));
     }
 
     @PreAuthorize("@file_perm.hasPerms('storage:file:uploadChunk')")

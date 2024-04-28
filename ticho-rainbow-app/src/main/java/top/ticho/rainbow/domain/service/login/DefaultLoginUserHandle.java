@@ -6,11 +6,8 @@ import top.ticho.boot.security.dto.LoginRequest;
 import top.ticho.boot.security.dto.Oauth2AccessToken;
 import top.ticho.boot.security.handle.BaseLoginUserHandle;
 import top.ticho.boot.view.core.BaseSecurityUser;
-import top.ticho.boot.view.util.Assert;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.UserService;
-import top.ticho.rainbow.infrastructure.core.component.CacheTemplate;
-import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.interfaces.dto.UserLoginDTO;
 
 /**

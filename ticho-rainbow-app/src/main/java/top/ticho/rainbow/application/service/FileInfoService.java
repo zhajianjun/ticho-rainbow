@@ -37,20 +37,28 @@ public interface FileInfoService {
     void delete(Long id);
 
     /**
-     * 根据资源id下载
+     * 根据id下载
      *
-     * @param id 资源id
+     * @param id id
      */
-    void download(Long id);
+    void downloadById(Long id);
+
+    /**
+     * 根据签名下载
+     *
+     * @param sign 签名
+     */
+    void download(String sign);
 
     /**
      * 根据资源id获取下载链接
      *
      * @param id      资源id
-     * @param expires 过期时间 <=7天，默认30分钟，单位：秒
+     * @param expire 过期时间 <=7天，默认30分钟，单位：秒
+     * @param limit   是否限制
      * @return 资源链接
      */
-    String getUrl(Long id, Integer expires);
+    String getUrl(Long id, Integer expire, Boolean limit);
 
     /**
      * 分片文件上传

@@ -32,7 +32,7 @@ import java.util.stream.Stream;
 @Slf4j
 public class OpLogListen {
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
-    private final List<String> ignorePaths = Stream.of("/opLog/page").collect(Collectors.toList());
+    private final List<String> ignorePaths = Stream.of("/opLog/page", "/file/uploadChunk").collect(Collectors.toList());
 
     @Autowired
     private OpLogRepository opLogRepository;

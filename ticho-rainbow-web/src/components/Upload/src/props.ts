@@ -66,7 +66,7 @@ export const basicProps = {
   api: {
     type: Function as PropType<PromiseFn>,
     default: null,
-    required: true,
+    required: false,
   },
   name: {
     type: String as PropType<string>,

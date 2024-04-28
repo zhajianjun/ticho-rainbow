@@ -87,7 +87,9 @@ spring:
               threadsInheritContextClassLoaderOfInitializingThread: true
 rainbow:
   file:
-    domain:
+    domain: http://localhost:5122
     mvc-resource-path: /static/data/public/**
     max-file-size: 20MB
     max-part-size: 10MB
+    max-big-file-size: 1GB
+

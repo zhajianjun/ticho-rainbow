@@ -1,4 +1,4 @@
-package top.ticho.rainbow.infrastructure.core.component;
+package top.ticho.rainbow.infrastructure.core.component.cache;
 
 import cn.hutool.core.util.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
  * @date 2024-02-04 11:36
  */
 @Component
-public class CacheTemplate {
+public class SpringCacheTemplate {
 
     @Autowired
     private CacheManager cacheManager;

@@ -20,6 +20,7 @@ ${JAVA_OPTS} \
 -Dticho.intranet.server.sslPassword="${INTRANET_SERVER_SSL_PASSWORD}" \
 -Dticho.intranet.server.maxRequests="${INTRANET_SERVER_MAX_REQUESTS}" \
 -Dticho.intranet.server.maxBindPorts="${INTRANET_SERVER_MAX_BIND_PORTS}" \
+-Drainbow.file.domain="${FILE_DOMAIN}" \
 -Dspring.profiles.active="${PROFILES}" \
 -jar \
 /app.jar \

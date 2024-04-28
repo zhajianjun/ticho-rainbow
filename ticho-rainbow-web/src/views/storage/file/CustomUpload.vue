@@ -18,7 +18,7 @@
         </template>
       </Tooltip>
     </Space>
-    <UploadModal
+    <CustomUploadModal
       v-bind="bindValue"
       :previewFileList="fileList"
       :fileListOpenDrag="fileListOpenDrag"
@@ -34,11 +34,11 @@
   import { Recordable } from '@vben/types';
   import { Tooltip, Space } from 'ant-design-vue';
   import { useModal } from '@/components/Modal';
-  import { uploadContainerProps } from './props';
+  import { uploadContainerProps } from '@/components/Upload/src/props';
   import { omit } from 'lodash-es';
   import { useI18n } from '@/hooks/web/useI18n';
   import { isArray } from '@/utils/is';
-  import UploadModal from './components/UploadModal.vue';
+  import CustomUploadModal from './CustomUploadModal.vue';
 
   defineOptions({ name: 'BasicUpload' });
 

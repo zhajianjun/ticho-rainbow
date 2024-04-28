@@ -33,7 +33,7 @@ import top.ticho.rainbow.domain.repository.EmailRepository;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
-import top.ticho.rainbow.infrastructure.core.component.CacheTemplate;
+import top.ticho.rainbow.infrastructure.core.component.cache.SpringCacheTemplate;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.enums.UserStatus;
 import top.ticho.rainbow.infrastructure.core.util.BeetlUtil;
@@ -97,7 +97,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     private RoleRepository roleRepository;
 
     @Autowired
-    private CacheTemplate cacheTemplate;
+    private SpringCacheTemplate springCacheTemplate;
 
     @Autowired
     private EmailRepository emailRepository;
@@ -113,7 +113,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
             LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
             gifCaptcha.createCode();
             String code = gifCaptcha.getCode();
-            cacheTemplate.put(CacheConst.VERIFY_CODE, imgKey, code);
+            springCacheTemplate.put(CacheConst.VERIFY_CODE, imgKey, code);
             BufferedImage buffImg = gifCaptcha.getImage();
             ImageIO.write(buffImg, "png", out);
         } catch (Exception e) {
@@ -137,9 +137,9 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         ValidUtil.valid(imgCodeDTO, ImgCodeDTO.ImgCodeValid.class);
         String imgCode = imgCodeDTO.getImgCode();
         String key = imgCodeDTO.getImgKey();
-        String cacheImgCode = cacheTemplate.get(CacheConst.VERIFY_CODE, key, String.class);
+        String cacheImgCode = springCacheTemplate.get(CacheConst.VERIFY_CODE, key, String.class);
         Assert.isNotBlank(cacheImgCode, "验证码已过期");
-        cacheTemplate.evict(CacheConst.VERIFY_CODE, key);
+        springCacheTemplate.evict(CacheConst.VERIFY_CODE, key);
         Assert.isTrue(imgCode.equalsIgnoreCase(cacheImgCode), "验证码不正确");
     }
 
@@ -152,12 +152,12 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         String email = imgCodeEmailDTO.getEmail();
         User dbUser = userRepository.getByEmail(email);
         Assert.isNull(dbUser, "用户已存在");
-        String code = cacheTemplate.get(CacheConst.SIGN_UP_CODE, email, String.class);
+        String code = springCacheTemplate.get(CacheConst.SIGN_UP_CODE, email, String.class);
         Assert.isBlank(code, "验证码已发送，请稍后再试");
         LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
         gifCaptcha.createCode();
         code = gifCaptcha.getCode();
-        cacheTemplate.put(CacheConst.SIGN_UP_CODE, email, code);
+        springCacheTemplate.put(CacheConst.SIGN_UP_CODE, email, code);
         GroupTemplate groupTemplate = BeetlUtil.getGroupTemplate(true);
         Template template = groupTemplate.getTemplate("/template/signUpEmailSend.html");
         MailInines mailInines = new MailInines();
@@ -176,9 +176,9 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     public UserLoginDTO signUp(UserSignUpOrResetDTO userSignUpOrResetDTO) {
         ValidUtil.valid(userSignUpOrResetDTO);
         String email = userSignUpOrResetDTO.getEmail();
-        String cacheEmailCode = cacheTemplate.get(CacheConst.SIGN_UP_CODE, email, String.class);
+        String cacheEmailCode = springCacheTemplate.get(CacheConst.SIGN_UP_CODE, email, String.class);
         Assert.isNotBlank(cacheEmailCode, "验证码已过期");
-        cacheTemplate.evict(CacheConst.SIGN_UP_CODE, email);
+        springCacheTemplate.evict(CacheConst.SIGN_UP_CODE, email);
         Assert.isTrue(userSignUpOrResetDTO.getEmailCode().equalsIgnoreCase(cacheEmailCode), "验证码不正确");
         String username = userSignUpOrResetDTO.getUsername();
         String password = userSignUpOrResetDTO.getPassword();
@@ -207,12 +207,12 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         String email = imgCodeEmailDTO.getEmail();
         User dbUser = userRepository.getByEmail(email);
         Assert.isNotNull(dbUser, "用户不存在");
-        String code = cacheTemplate.get(CacheConst.RESET_PASSWORD_CODE, email, String.class);
+        String code = springCacheTemplate.get(CacheConst.RESET_PASSWORD_CODE, email, String.class);
         Assert.isBlank(code, "验证码已发送，请稍后再试");
         LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
         gifCaptcha.createCode();
         code = gifCaptcha.getCode();
-        cacheTemplate.put(CacheConst.RESET_PASSWORD_CODE, email, code);
+        springCacheTemplate.put(CacheConst.RESET_PASSWORD_CODE, email, code);
         GroupTemplate groupTemplate = BeetlUtil.getGroupTemplate(true);
         Template template = groupTemplate.getTemplate("/template/resetPasswordEmailSend.html");
         MailInines mailInines = new MailInines();
@@ -231,9 +231,9 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     public UserLoginDTO resetPassword(UserSignUpOrResetDTO userSignUpOrResetDTO) {
         ValidUtil.valid(userSignUpOrResetDTO);
         String email = userSignUpOrResetDTO.getEmail();
-        String cacheEmailCode = cacheTemplate.get(CacheConst.RESET_PASSWORD_CODE, email, String.class);
+        String cacheEmailCode = springCacheTemplate.get(CacheConst.RESET_PASSWORD_CODE, email, String.class);
         Assert.isNotBlank(cacheEmailCode, "验证码已过期");
-        cacheTemplate.evict(CacheConst.RESET_PASSWORD_CODE, email);
+        springCacheTemplate.evict(CacheConst.RESET_PASSWORD_CODE, email);
         Assert.isTrue(userSignUpOrResetDTO.getEmailCode().equalsIgnoreCase(cacheEmailCode), "验证码不正确");
         User dbUser = userRepository.getByEmail(email);
         Assert.isNotNull(dbUser, BizErrCode.FAIL, () -> {
@@ -275,7 +275,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
         gifCaptcha.createCode();
         String code = gifCaptcha.getCode();
-        cacheTemplate.put(CacheConst.VERIFY_CODE, imgKey, code);
+        springCacheTemplate.put(CacheConst.VERIFY_CODE, imgKey, code);
         UserLoginDTO userLoginDTO = new UserLoginDTO();
         userLoginDTO.setUsername(username);
         userLoginDTO.setImgKey(imgKey);

@@ -30,6 +30,9 @@ public class FileProperty {
     /** 分段上传大小限制 */
     private DataSize maxPartSize = DataSize.ofMegabytes(5L);
 
+    /** 大文件大小限制，默认1GB */
+    private DataSize maxBigFileSize = DataSize.ofGigabytes(1L);
+
 
     /**
      * 开放路径，相对路径为 /data/public/
