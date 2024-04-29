@@ -4,6 +4,15 @@ export interface UploadApiResult {
   data: string;
 }
 
+export interface FileInfoReqDTO {
+  /** 文件 */
+  file: File;
+  /** 文件名 */
+  type: string;
+  /** 相对位置，不包含文件名 */
+  relativePath: number;
+}
+
 export interface ChunkFileDTO {
   /** 分片id */
   chunkId: string;
@@ -21,6 +30,8 @@ export interface ChunkFileDTO {
   chunkfile: File;
   /** 分片索引 */
   index: number;
+  /** 存储类型;1-公共,2-私有 */
+  type: number;
 }
 
 export interface ChunkDTO {

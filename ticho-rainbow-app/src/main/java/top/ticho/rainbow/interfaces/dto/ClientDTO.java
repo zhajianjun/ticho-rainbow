@@ -72,12 +72,12 @@ public class ClientDTO implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 
-    /** 更新人 */
-    @ApiModelProperty(value = "更新人", position = 100)
+    /** 修改人 */
+    @ApiModelProperty(value = "修改人", position = 100)
     private String updateBy;
 
-    /** 更新时间 */
-    @ApiModelProperty(value = "更新时间", position = 110)
+    /** 修改时间 */
+    @ApiModelProperty(value = "修改时间", position = 110)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
 

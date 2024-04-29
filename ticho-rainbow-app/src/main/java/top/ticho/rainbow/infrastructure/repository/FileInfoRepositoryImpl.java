@@ -8,12 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
+import top.ticho.rainbow.infrastructure.core.enums.FileInfoStatus;
 import top.ticho.rainbow.infrastructure.entity.FileInfo;
 import top.ticho.rainbow.infrastructure.mapper.FileInfoMapper;
 import top.ticho.rainbow.interfaces.query.FileInfoQuery;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -51,6 +50,7 @@ public class FileInfoRepositoryImpl extends RootServiceImpl<FileInfoMapper, File
             wrapper.ge(FileInfo::getUpdateTime, query.getUpdateTime()[0]);
             wrapper.le(FileInfo::getUpdateTime, query.getUpdateTime()[1]);
         }
+        wrapper.orderByDesc(FileInfo::getCreateTime);
         return list(wrapper);
         // @formatter:on
     }
@@ -64,24 +64,40 @@ public class FileInfoRepositoryImpl extends RootServiceImpl<FileInfoMapper, File
     }
 
     @Override
-    public List<FileInfo> listChunkFile(LocalDateTime before, Integer size) {
-        if (Objects.isNull(before)) {
-            return Collections.emptyList();
+    public boolean enable(Long id) {
+        if (Objects.isNull(id)) {
+            return false;
         }
-        LambdaQueryWrapper<FileInfo> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(FileInfo::getStatus, 3);
-        wrapper.le(FileInfo::getCreateTime, before);
-        wrapper.orderByAsc(FileInfo::getCreateTime);
-        wrapper.last(StrUtil.format("limit {}", size));
-        return list(wrapper);
+        LambdaUpdateWrapper<FileInfo> wrapper = Wrappers.lambdaUpdate();
+        wrapper.eq(FileInfo::getId, id);
+        wrapper.eq(FileInfo::getStatus, FileInfoStatus.DISABLED.code());
+        wrapper.set(FileInfo::getStatus, FileInfoStatus.NORMAL.code());
+        return update(wrapper);
     }
 
     @Override
-    public boolean removeChunkFile(Long id) {
+    public boolean disable(Long id) {
+        if (Objects.isNull(id)) {
+            return false;
+        }
         LambdaUpdateWrapper<FileInfo> wrapper = Wrappers.lambdaUpdate();
         wrapper.eq(FileInfo::getId, id);
-        wrapper.eq(FileInfo::getStatus, 3);
-        return remove(wrapper);
+        wrapper.eq(FileInfo::getStatus, FileInfoStatus.NORMAL.code());
+        wrapper.set(FileInfo::getStatus, FileInfoStatus.DISABLED.code());
+        return update(wrapper);
     }
+
+    @Override
+    public boolean cancel(Long id) {
+        if (Objects.isNull(id)) {
+            return false;
+        }
+        LambdaUpdateWrapper<FileInfo> wrapper = Wrappers.lambdaUpdate();
+        wrapper.eq(FileInfo::getId, id);
+        wrapper.ne(FileInfo::getStatus, FileInfoStatus.CANCE.code());
+        wrapper.set(FileInfo::getStatus, FileInfoStatus.CANCE.code());
+        return update(wrapper);
+    }
+
 
 }

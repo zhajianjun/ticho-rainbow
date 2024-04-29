@@ -4,7 +4,6 @@ import top.ticho.boot.datasource.service.RootService;
 import top.ticho.rainbow.infrastructure.entity.FileInfo;
 import top.ticho.rainbow.interfaces.query.FileInfoQuery;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -32,16 +31,20 @@ public interface FileInfoRepository extends RootService<FileInfo> {
     FileInfo getByChunkId(String chunkId);
 
     /**
-     * 查询分片状态的文件
+     * 启用
+     * 状态;1-正常,2-停用,3-分片上传,99-作废
      */
-    List<FileInfo> listChunkFile(LocalDateTime before, Integer size);
+    boolean enable(Long id);
 
     /**
-     * 移除分片状态的文件
+     * 停用
+     * 状态;1-正常,2-停用,3-分片上传,99-作废
      */
-    boolean removeChunkFile(Long id);
+    boolean disable(Long id);
 
-
-
+    /**
+     * 作废
+     */
+    boolean cancel(Long id);
 }
 

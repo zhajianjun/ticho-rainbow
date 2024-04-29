@@ -5,33 +5,33 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 租户状态
- * <p>租户状态;1-正常,2-未激活,3-已锁定,4-已注销</p>
+ * 文件状态
+ * <p>文件状态;1-正常,2-停用,3-分片上传,99-作废</p>
  *
  * @author zhajianjun
- * @date 2024-01-08 20:30
+ * @date 2024-04-29 18:19
  */
-public enum TenantStatus {
+public enum FileInfoStatus {
 
     /** 正常 */
     NORMAL(1, "正常"),
 
-    /** 未激活 */
-    NOT_ACTIVE(2, "未激活"),
+    /** 停用 */
+    DISABLED(2, "停用"),
 
-    /** 锁定 */
-    LOCKED(3, "已锁定"),
+    /** 分片上传 */
+    CHUNK(3, "分片上传"),
 
-    /** 注销 */
-    LOG_OUT(4, "已注销"),
+    /** 作废 */
+    CANCE(99, "作废"),
     ;
 
     private final int code;
-    private final String msg;
+    private final String message;
 
-    TenantStatus(int code, String msg) {
+    FileInfoStatus(int code, String message) {
         this.code = code;
-        this.msg = msg;
+        this.message = message;
     }
 
     public int code() {
@@ -39,13 +39,13 @@ public enum TenantStatus {
     }
 
     public String message() {
-        return msg;
+        return message;
     }
 
     private static final Map<Integer, String> map;
 
     static {
-        map = Arrays.stream(values()).collect(Collectors.toMap(TenantStatus::code, TenantStatus::message));
+        map = Arrays.stream(values()).collect(Collectors.toMap(FileInfoStatus::code, FileInfoStatus::message));
     }
 
     public static Map<Integer, String> get() {

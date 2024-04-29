@@ -17,9 +17,9 @@ export interface TaskDTO {
   createBy: string;
   /** 创建时间 */
   createTime: string;
-  /** 更新人 */
+  /** 修改人 */
   updateBy: string;
-  /** 更新时间 */
+  /** 修改时间 */
   updateTime: string;
 }
 
@@ -44,8 +44,8 @@ export interface TaskQuery {
   createBy: string;
   /** 创建时间 */
   createTime: string;
-  /** 更新人 */
+  /** 修改人 */
   updateBy: string;
-  /** 更新时间 */
+  /** 修改时间 */
   updateTime: string;
 }

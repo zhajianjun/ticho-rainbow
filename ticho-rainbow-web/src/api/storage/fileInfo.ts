@@ -2,36 +2,20 @@ import { defHttp } from '@/utils/http/axios';
 import { FileInfoDTO, FileInfoQuery } from './model/fileInfoModel';
 import { RetryRequest, UploadFileParams } from '#/axios';
 import { AxiosProgressEvent } from 'axios';
-import { ChunkDTO, ChunkFileDTO, UploadApiResult } from './model/uploadModel';
+import {ChunkDTO, ChunkFileDTO, FileInfoReqDTO, UploadApiResult} from './model/uploadModel';
 import { ContentTypeEnum } from '@/enums/httpEnum';
 
 enum Api {
-  FileInfo = '/file',
-  FileInfoPage = '/file/page',
   Upload = '/file/upload',
   GetUrl = '/file/getUrl',
   Download = '/file/downloadById',
   UploadChunk = '/file/uploadChunk',
   ComposeChunk = '/file/composeChunk',
-}
-
-export function delFileInfo(id: string) {
-  const params = { id: id };
-  return defHttp.delete<any>(
-    { url: Api.FileInfo, params },
-    { errorMessageMode: 'message', successMessageMode: 'message', joinParamsToUrl: true },
-  );
-}
-
-export function modifyFileInfo(params: FileInfoDTO) {
-  return defHttp.put<any>({ url: Api.FileInfo, params }, { errorMessageMode: 'message' });
-}
-
-export function fileInfoPage(params?: FileInfoQuery) {
-  return defHttp.get<FileInfoDTO[]>(
-    { url: Api.FileInfoPage, params },
-    { errorMessageMode: 'none' },
-  );
+  EnableFileInfo = '/file/enable',
+  DisableFileInfo = '/file/disable',
+  CancelFileInfo = '/file/cancel',
+  FileInfo = '/file',
+  FileInfoPage = '/file/page',
 }
 
 export function upload(
@@ -48,7 +32,7 @@ export function upload(
 }
 
 export function uploadFile(
-  params: UploadFileParams,
+  params: FileInfoReqDTO,
   onUploadProgress: (progressEvent: AxiosProgressEvent) => void,
 ) {
   return defHttp.post<FileInfoDTO>({
@@ -73,10 +57,15 @@ export function uploadChunk(params: ChunkFileDTO) {
 
 export function composeChunk(chunkId: string) {
   const params = { chunkId: chunkId };
-  return defHttp.get<FileInfoDTO>({
-    url: Api.ComposeChunk,
-    params,
-  });
+  return defHttp.post<FileInfoDTO>(
+    {
+      url: Api.ComposeChunk,
+      params,
+    },
+    {
+      joinParamsToUrl: true,
+    },
+  );
 }
 
 /**
@@ -108,5 +97,48 @@ export function downloadFile(id: string) {
       joinParamsToUrl: true,
       retryRequest: { isOpenRetry: false } as RetryRequest,
     },
+  );
+}
+
+export function enableFileInfo(id: string) {
+  const params = { id: id };
+  return defHttp.put<any>(
+    { url: Api.EnableFileInfo, params },
+    { errorMessageMode: 'message', successMessageMode: 'message', joinParamsToUrl: true },
+  );
+}
+
+export function disableFileInfo(id: string) {
+  const params = { id: id };
+  return defHttp.put<any>(
+    { url: Api.DisableFileInfo, params },
+    { errorMessageMode: 'message', successMessageMode: 'message', joinParamsToUrl: true },
+  );
+}
+
+export function cancelFileInfo(id: string) {
+  const params = { id: id };
+  return defHttp.put<any>(
+    { url: Api.CancelFileInfo, params },
+    { errorMessageMode: 'message', successMessageMode: 'message', joinParamsToUrl: true },
+  );
+}
+
+export function delFileInfo(id: string) {
+  const params = { id: id };
+  return defHttp.delete<any>(
+    { url: Api.FileInfo, params },
+    { errorMessageMode: 'message', successMessageMode: 'message', joinParamsToUrl: true },
+  );
+}
+
+export function modifyFileInfo(params: FileInfoDTO) {
+  return defHttp.put<any>({ url: Api.FileInfo, params }, { errorMessageMode: 'message' });
+}
+
+export function fileInfoPage(params?: FileInfoQuery) {
+  return defHttp.get<FileInfoDTO[]>(
+    { url: Api.FileInfoPage, params },
+    { errorMessageMode: 'none' },
   );
 }

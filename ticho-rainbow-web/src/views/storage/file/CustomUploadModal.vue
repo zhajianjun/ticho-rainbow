@@ -26,7 +26,14 @@
 
     <div class="upload-modal-toolbar">
       <Alert :message="getHelpText" type="info" banner class="upload-modal-toolbar__text" />
-
+      <Select
+        class="upload-modal-toolbar__btn"
+        style="text-align: left"
+        :disabled="!showFileStoregeTypeRef"
+        v-model:value="typeRef"
+        placeholder="请输入存储类型"
+        :options="typeOptions"
+      />
       <Upload
         :accept="getStringAccept"
         :multiple="multiple"
@@ -50,13 +57,14 @@
 </template>
 <script lang="ts" setup>
   import { computed, PropType, ref, toRefs, unref } from 'vue';
-  import { Alert, Upload } from 'ant-design-vue';
+  import { Alert, Upload, Select } from 'ant-design-vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   // hooks
   import { useUploadType } from '@/components/Upload/src/hooks/useUpload';
   import { useMessage } from '@/hooks/web/useMessage';
   //   types
-  import { FileItem, UploadResultStatus } from '@/components/Upload/src/types/typing';
+  import { UploadResultStatus } from '@/components/Upload/src/types/typing';
+  import { FileItem } from './typing';
   import { basicProps } from '@/components/Upload/src/props';
   import { createActionColumn, createTableColumns } from '@/components/Upload/src/components/data';
   // utils
@@ -66,8 +74,8 @@
   import { warn } from '@/utils/log';
   import FileList from '@/components/Upload/src/components/FileList.vue';
   import { useI18n } from '@/hooks/web/useI18n';
-  import { get } from 'lodash-es';
   import { uploadFileHandler } from './upload';
+  import { getDictByCode } from '@/store/modules/dict';
 
   const props = defineProps({
     ...basicProps,
@@ -80,11 +88,26 @@
       default: uploadFileHandler,
       required: false,
     },
+    defaultFileStorageType: {
+      type: Number,
+      default: 2,
+      required: false,
+    },
+    showFileStoregeType: {
+      type: Boolean,
+      default: true,
+      required: false,
+    },
   });
 
   const emit = defineEmits(['change', 'register', 'delete', 'save']);
 
   const columns = createTableColumns();
+  columns.unshift({
+    title: '序号',
+    dataIndex: 'num',
+    width: 50,
+  });
   const actionColumn = createActionColumn(handleRemove);
 
   // 是否正在上传
@@ -95,10 +118,16 @@
   const { t } = useI18n();
 
   const uidRef = ref(null);
+  const typeRef = ref(props.defaultFileStorageType);
+  const showFileStoregeTypeRef = ref(props.showFileStoregeType);
+  const typeOptions = getDictByCode('fileStorageType');
 
-  const [register, { closeModal }] = useModalInner(async (uid) => {
-    console.log('uid', uid);
-    uidRef.value = uid;
+  const [register, { closeModal }] = useModalInner(async (data) => {
+    if (data?.uid) {
+      uidRef.value = data.uid;
+      typeRef.value = data.type;
+      showFileStoregeTypeRef.value = false;
+    }
   });
 
   const { getStringAccept, getHelpText } = useUploadType({
@@ -134,7 +163,7 @@
         ? t('component.upload.reUploadFailed')
         : t('component.upload.startUpload');
   });
-
+  let num = 0;
   // 上传前校验
   function beforeUpload(file: File) {
     const { size, name } = file;
@@ -144,8 +173,9 @@
       createMessage.error(t('component.upload.maxSizeMultiple', [maxSize]));
       return false;
     }
-
+    num++;
     const commonItem = {
+      num: num,
       uuid: buildUUID(),
       file,
       size,
@@ -179,6 +209,7 @@
     isUploadingRef.value = fileListRef.value.some(
       (item) => item.status === UploadResultStatus.UPLOADING,
     );
+    num--;
     emit('delete', record);
   }
 
@@ -204,6 +235,7 @@
             ...(props.uploadParams || {}),
             uid: uid,
             isContinued: isContinued,
+            type: typeRef.value,
           },
           file: item.file,
           name: props.name,
@@ -286,6 +318,7 @@
 
   // 点击关闭：则所有操作不保存，包括上传的
   async function handleCloseFunc() {
+    num = 0;
     if (!isUploadingRef.value) {
       fileListRef.value = [];
       return true;

@@ -3,7 +3,7 @@
     <BasicTable @register="registerTable">
       <template #toolbar>
         <CustomUpload
-          :maxSize="10240000"
+          :maxSize="100"
           :maxNumber="10"
           @save="handleSave"
           :multiple="true"
@@ -14,22 +14,60 @@
         <TableAction
           :actions="[
             {
-              icon: 'ant-design:upload-outlined',
+              // icon: 'ant-design:download-outlined',
+              onClick: handleDownload.bind(null, record),
+              label: '下载',
+              tooltip: '下载',
+              color: 'success',
+              type: 'primary',
+              auth: 'FileContinueUpload',
+              disabled: record.status !== 1,
+              ifShow: record.status !== 3,
+            },
+            {
+              // icon: 'ant-design:upload-outlined',
               onClick: openUploadModalProxy.bind(null, record),
+              color: 'success',
+              type: 'primary',
+              label: '续传',
               tooltip: '断点续传',
               auth: 'FileContinueUpload',
               ifShow: record.status === 3,
             },
             {
-              icon: 'ant-design:download-outlined',
-              onClick: handleDownload.bind(null, record),
-              tooltip: '文件下载',
-              auth: 'FileContinueUpload',
-              ifShow: record.status === 1,
+              onClick: handleEnable.bind(null, record),
+              label: '启用',
+              type: 'primary',
+              color: 'success',
+              tooltip: '启用',
+              auth: 'FileEnable',
+              disabled: record.status !== 2,
             },
+            {
+              onClick: handleDisable.bind(null, record),
+              label: '停用',
+              tooltip: '停用',
+              color: 'warning',
+              type: 'primary',
+              auth: 'FileDisable',
+              disabled: record.status !== 1,
+            },
+            {
+              onClick: handleCancel.bind(null, record),
+              label: '作废',
+              color: 'error',
+              type: 'primary',
+              tooltip: '作废',
+              auth: 'FileCancel',
+              disabled: record.status === 99 || record.status === 3,
+            },
+          ]"
+          :dropDownActions="[
             {
               icon: 'ant-design:delete-outlined',
               color: 'error',
+              type: 'primary',
+              label: '删除',
               popConfirm: {
                 title: '是否确认删除',
                 confirm: handleDelete.bind(null, record),
@@ -45,7 +83,7 @@
       @register="registerUploadModal"
       @save="handleSave"
       @delete="handleDelete"
-      :maxSize="10240000"
+      :maxSize="100"
     />
     <FileInfoModal @register="registerModal" @success="handleSuccess" />
   </div>
@@ -56,7 +94,14 @@
   import { useModal } from '@/components/Modal';
   import FileInfoModal from './FileInfoModal.vue';
   import { getTableColumns, getSearchColumns } from './fileInfo.data';
-  import { fileInfoPage, delFileInfo, getUrl } from '@/api/storage/fileInfo';
+  import {
+    fileInfoPage,
+    getUrl,
+    delFileInfo,
+    enableFileInfo,
+    disableFileInfo,
+    cancelFileInfo,
+  } from '@/api/storage/fileInfo';
   import { usePermission } from '@/hooks/web/usePermission';
   import { useMessage } from '@/hooks/web/useMessage';
   import CustomUploadModal from './CustomUploadModal.vue';
@@ -93,7 +138,7 @@
         bordered: true,
         showIndexColumn: false,
         actionColumn: {
-          width: 100,
+          width: 140,
           title: '操作',
           dataIndex: 'action',
           slots: { customRender: 'action' },
@@ -110,19 +155,6 @@
         reload();
       }
 
-      function handleEdit(record: Recordable) {
-        openModal(true, {
-          record,
-          isUpdate: true,
-        });
-      }
-
-      function handleDelete(record: Recordable) {
-        delFileInfo(record.id).then(() => {
-          reload();
-        });
-      }
-
       function handleSuccess() {
         reload();
       }
@@ -131,7 +163,7 @@
       const [registerUploadModal, { openModal: openUploadModal, setModalProps }] = useModal();
 
       function openUploadModalProxy(record: Recordable) {
-        openUploadModal(true, record.chunkId);
+        openUploadModal(true, { uid: record.chunkId, type: record.type });
         setModalProps({ okText: '确定', cancelText: '取消' });
       }
 
@@ -146,12 +178,49 @@
         }
       }
 
+      function handleEdit(record: Recordable) {
+        openModal(true, {
+          record,
+          isUpdate: true,
+        });
+      }
+
+      function handleDelete(record: Recordable) {
+        delFileInfo(record.id).then(() => {
+          reload();
+        });
+      }
+
+      /** 启用 */
+      function handleEnable(record: Recordable) {
+        enableFileInfo(record.id).then(() => {
+          reload();
+        });
+      }
+
+      /** 停用 */
+      function handleDisable(record: Recordable) {
+        disableFileInfo(record.id).then(() => {
+          reload();
+        });
+      }
+
+      /** 作废 */
+      function handleCancel(record: Recordable) {
+        cancelFileInfo(record.id).then(() => {
+          reload();
+        });
+      }
+
       return {
         registerTable,
         registerModal,
         handleSave,
         handleEdit,
         handleDelete,
+        handleEnable,
+        handleDisable,
+        handleCancel,
         handleSuccess,
         hasPermission,
         registerUploadModal,

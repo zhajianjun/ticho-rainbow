@@ -29,6 +29,7 @@ import top.ticho.rainbow.infrastructure.core.component.cache.CommonCacheTemplate
 import top.ticho.rainbow.infrastructure.core.component.cache.SpringCacheTemplate;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.enums.FileErrCode;
+import top.ticho.rainbow.infrastructure.core.enums.FileInfoStatus;
 import top.ticho.rainbow.infrastructure.core.prop.FileProperty;
 import top.ticho.rainbow.infrastructure.core.util.CommonUtil;
 import top.ticho.rainbow.infrastructure.entity.FileCache;
@@ -67,7 +68,8 @@ import java.util.stream.Collectors;
 public class FileInfoServiceImpl implements FileInfoService {
     public static final String STORAGE_ID_NOT_BLANK = "id不能为空";
 
-    private final CommonCacheTemplate<FileCache> fileCacheTemplate = new CommonCacheTemplate<>(FileCache::getExpire);
+    /** 下载链接缓存 */
+    private final CommonCacheTemplate<FileCache> fileUrlCacheTemplate = new CommonCacheTemplate<>(FileCache::getExpire);
 
     @Resource
     private FileProperty fileProperty;
@@ -113,7 +115,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         fileInfo.setExt(extName);
         fileInfo.setContentType(file.getContentType());
         fileInfo.setRemark(remark);
-        fileInfo.setStatus(1);
+        fileInfo.setStatus(FileInfoStatus.NORMAL.code());
         // 文件存储
         String absolutePath = getAbsolutePath(fileInfo);
         try {
@@ -133,12 +135,33 @@ public class FileInfoServiceImpl implements FileInfoService {
     }
 
     @Override
+    public void enable(Long id) {
+        Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
+        boolean enable = fileInfoRepository.enable(id);
+        Assert.isTrue(enable, BizErrCode.FAIL, "启用失败");
+    }
+
+    @Override
+    public void disable(Long id) {
+        Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
+        boolean enable = fileInfoRepository.disable(id);
+        Assert.isTrue(enable, BizErrCode.FAIL, "停用失败");
+    }
+
+    @Override
+    public void cancel(Long id) {
+        Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
+        boolean enable = fileInfoRepository.cancel(id);
+        Assert.isTrue(enable, BizErrCode.FAIL, "作废失败");
+    }
+
+    @Override
     public void delete(Long id) {
         Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
         FileInfo dbFileInfo = fileInfoRepository.getById(id);
         Assert.isNotNull(dbFileInfo, FileErrCode.FILE_NOT_EXIST, "文件信息不存在");
         String path;
-        if (Objects.equals(dbFileInfo.getStatus(), 3)) {
+        if (Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CHUNK.code())) {
             ChunkMetadataDTO metadata = JsonUtil.toJavaObject(dbFileInfo.getChunkMetadata(), ChunkMetadataDTO.class);
             path = metadata.getChunkDirPath();
         } else {
@@ -153,27 +176,27 @@ public class FileInfoServiceImpl implements FileInfoService {
     public void downloadById(Long id) {
         Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
         FileInfo fileInfo = fileInfoRepository.getById(id);
-        Assert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST, "文件不存在");
+        Assert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST);
+        boolean normal = Objects.equals(fileInfo.getStatus(), FileInfoStatus.NORMAL.code());
+        Assert.isTrue(normal, FileErrCode.FILE_STATUS_ERROR);
         download(fileInfo);
     }
 
     @Override
     public void download(String sign) {
         Assert.isNotBlank(sign, BizErrCode.PARAM_ERROR, "sign不能为空");
-        FileCache fileCache = fileCacheTemplate.get(sign);
-        Assert.isNotNull(fileCache, FileErrCode.FILE_NOT_EXIST, "文件不存在");
+        FileCache fileCache = fileUrlCacheTemplate.get(sign);
+        Assert.isNotNull(fileCache, FileErrCode.FILE_NOT_EXIST);
         FileInfo fileInfo = fileCache.getFileInfo();
         if (Boolean.TRUE.equals(fileCache.getLimit())) {
             fileCache.setLimited(true);
-            fileCacheTemplate.put(sign, fileCache);
+            fileUrlCacheTemplate.put(sign, fileCache);
         }
         download(fileInfo);
     }
 
     private void download(FileInfo fileInfo) {
-        String absolutePath = getAbsolutePath(fileInfo.getType(), fileInfo.getPath());
-        File file = new File(absolutePath);
-        Assert.isTrue(FileUtil.exist(file), FileErrCode.FILE_NOT_EXIST, "文件不存在");
+        File file = getFile(fileInfo);
         try {
             response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
             response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLUtil.encodeAll(fileInfo.getOriginalFileName()));
@@ -189,6 +212,13 @@ public class FileInfoServiceImpl implements FileInfoService {
         }
     }
 
+    private File getFile(FileInfo fileInfo) {
+        String absolutePath = getAbsolutePath(fileInfo.getType(), fileInfo.getPath());
+        File file = new File(absolutePath);
+        Assert.isTrue(FileUtil.exist(file), FileErrCode.FILE_NOT_EXIST);
+        return file;
+    }
+
     @Override
     public String getUrl(Long id, Integer expire, Boolean limit) {
         Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
@@ -197,18 +227,25 @@ public class FileInfoServiceImpl implements FileInfoService {
             Assert.isTrue(expire <= seconds, BizErrCode.PARAM_ERROR, "过期时间最长为7天");
         }
         FileInfo dbFileInfo = fileInfoRepository.getById(id);
-        Assert.isNotNull(dbFileInfo, FileErrCode.FILE_NOT_EXIST, "文件信息不存在");
+        Assert.isNotNull(dbFileInfo, FileErrCode.FILE_NOT_EXIST);
+        boolean normal = Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.NORMAL.code());
+        Assert.isTrue(normal, FileErrCode.FILE_STATUS_ERROR);
         String absolutePath = getAbsolutePath(dbFileInfo.getType(), dbFileInfo.getPath());
         File file = new File(absolutePath);
-         Assert.isTrue(file.exists(), BizErrCode.PARAM_ERROR, "文件不存在");
+        Assert.isTrue(file.exists(), BizErrCode.PARAM_ERROR);
+        String domain = StrUtil.removeSuffix(fileProperty.getDomain(), "/");
+        if (Objects.equals(dbFileInfo.getType(), 1)) {
+            String mvcResourcePath = StrUtil.removeSuffix(fileProperty.getMvcResourcePath(), "/**");
+            mvcResourcePath = StrUtil.removePrefix(mvcResourcePath, "/");
+            return domain + "/" + mvcResourcePath + "/" + dbFileInfo.getPath();
+        }
         String sign = CommonUtil.fastShortUUID();
         FileCache fileCache = new FileCache();
         fileCache.setSign(sign);
         fileCache.setFileInfo(dbFileInfo);
         fileCache.setExpire(expire == null ? seconds : expire);
         fileCache.setLimit(limit);
-        String domain = StrUtil.removeSuffix(fileProperty.getDomain(), "/");
-        fileCacheTemplate.put(sign, fileCache);
+        fileUrlCacheTemplate.put(sign, fileCache);
         return domain + "/file/download?sign=" + sign;
     }
 
@@ -288,7 +325,7 @@ public class FileInfoServiceImpl implements FileInfoService {
                 return chunkCacheDTO;
             }
             Assert.isNotNull(dbFileInfo, "续传失败, 分片文件信息不存在");
-            Assert.isTrue(Objects.equals(dbFileInfo.getStatus(), 3), BizErrCode.PARAM_ERROR, "分片文件状态才可进行续传");
+            Assert.isTrue(Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CHUNK.code()), BizErrCode.PARAM_ERROR, "分片文件状态才可进行续传");
             Assert.isTrue(Objects.equals(dbFileInfo.getMd5(), chunkFileDTO.getMd5()), BizErrCode.PARAM_ERROR, "分片文件md5不一致");
             // 数据库存在则转换分片信息
             chunkCacheDTO = fileInfoConvertCache(dbFileInfo);
@@ -396,7 +433,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         fileInfo.setExt(chunkCacheDTO.getExtName());
         fileInfo.setSize(chunkCacheDTO.getFileSize());
         fileInfo.setChunkMetadata(JsonUtil.toJsonString(chunkMetadataDTO));
-        fileInfo.setStatus(3);
+        fileInfo.setStatus(FileInfoStatus.CHUNK.code());
         fileInfoRepository.save(fileInfo);
     }
 
@@ -434,7 +471,7 @@ public class FileInfoServiceImpl implements FileInfoService {
             FileInfo fileInfo = new FileInfo();
             fileInfo.setId(chunkCacheDTO.getId());
             fileInfo.setSize(fileSize);
-            fileInfo.setStatus(1);
+            fileInfo.setStatus(FileInfoStatus.NORMAL.code());
             fileInfoRepository.updateById(fileInfo);
         } catch (IOException e) {
             throw new BizException(HttpErrCode.FAIL, "文件合并失败");

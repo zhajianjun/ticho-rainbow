@@ -103,11 +103,11 @@ public class User extends Model<User> implements Serializable, UserHelper {
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    /** 更新人 */
+    /** 修改人 */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateBy;
 
-    /** 更新时间 */
+    /** 修改时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;

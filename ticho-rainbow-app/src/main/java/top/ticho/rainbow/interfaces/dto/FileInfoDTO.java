@@ -85,8 +85,8 @@ public class FileInfoDTO implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 
-    /** 更新人 */
-    @ApiModelProperty(value = "更新人", position = 150)
+    /** 修改人 */
+    @ApiModelProperty(value = "修改人", position = 150)
     private String updateBy;
 
     /** 修改时间 */

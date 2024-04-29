@@ -25,11 +25,11 @@ public enum MenuType {
     ;
 
     private final int code;
-    private final String message;
+    private final String msg;
 
-    MenuType(int code, String message) {
+    MenuType(int code, String msg) {
         this.code = code;
-        this.message = message;
+        this.msg = msg;
     }
 
     public int code() {
@@ -37,7 +37,7 @@ public enum MenuType {
     }
 
     public String message() {
-        return message;
+        return msg;
     }
 
     private static final Map<Integer, String> map;

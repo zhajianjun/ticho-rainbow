@@ -44,33 +44,6 @@ public class FileInfoController {
     @Autowired
     private FileInfoService fileInfoService;
 
-    @PreAuthorize("@perm.hasPerms('storage:file:page')")
-    @ApiOperation(value = "分页查询文件信息")
-    @ApiOperationSupport(order = 10)
-    @GetMapping("page")
-    public Result<PageResult<FileInfoDTO>> page(FileInfoQuery query) {
-        return Result.ok(fileInfoService.page(query));
-    }
-
-    @PreAuthorize("@perm.hasPerms('storage:file:update')")
-    @ApiOperation(value = "修改文件信息")
-    @ApiOperationSupport(order = 10)
-    @PutMapping
-    public Result<Void> update(FileInfoDTO fileInfoDTO) {
-        fileInfoService.update(fileInfoDTO);
-        return Result.ok();
-    }
-
-    @PreAuthorize("@perm.hasPerms('storage:file:delete')")
-    @ApiOperation(value = "根据id删除文件")
-    @ApiOperationSupport(order = 30)
-    @ApiImplicitParam(value = "文件id", name = "id", required = true)
-    @DeleteMapping
-    public Result<Void> delete(Long id) {
-        fileInfoService.delete(id);
-        return Result.ok();
-    }
-
     @PreAuthorize("@perm.hasPerms('storage:file:upload')")
     @ApiOperation(value = "文件上传")
     @ApiOperationSupport(order = 10)
@@ -79,10 +52,27 @@ public class FileInfoController {
         return Result.ok(fileInfoService.upload(fileInfoReqDTO));
     }
 
+    @PreAuthorize("@file_perm.hasPerms('storage:file:uploadChunk')")
+    @ApiOperation(value = "分片文件上传")
+    @ApiOperationSupport(order = 20)
+    @PostMapping("uploadChunk")
+    public Result<ChunkCacheDTO> uploadChunk(ChunkFileDTO chunkFileDTO) {
+        return Result.ok(fileInfoService.uploadChunk(chunkFileDTO));
+    }
+
+    @PreAuthorize("@perm.hasPerms('storage:file:composeChunk')")
+    @ApiOperation(value = "分片文件合并")
+    @ApiOperationSupport(order = 30)
+    @ApiImplicitParam(value = "分片id", name = "chunkId", required = true)
+    @PostMapping("composeChunk")
+    public Result<FileInfoDTO> composeChunk(String chunkId) {
+        return Result.ok(fileInfoService.composeChunk(chunkId));
+    }
+
     @View(ignore = true)
     @PreAuthorize("@perm.hasPerms('storage:file:downloadById')")
     @ApiOperation(value = "文件下载", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    @ApiOperationSupport(order = 20)
+    @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "文件id", name = "id", required = true)
     @GetMapping("downloadById")
     public void downloadById(Long id) {
@@ -92,7 +82,7 @@ public class FileInfoController {
     @View(ignore = true)
     @IgnoreJwtCheck
     @ApiOperation(value = "文件下载(公共)", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    @ApiOperationSupport(order = 20)
+    @ApiOperationSupport(order = 50)
     @ApiImplicitParam(value = "签名", name = "sign", required = true)
     @GetMapping("download")
     public void download(String sign) {
@@ -101,7 +91,7 @@ public class FileInfoController {
 
     @PreAuthorize("@perm.hasPerms('storage:file:getUrl')")
     @ApiOperation(value = "根据文件id获取下载链接")
-    @ApiOperationSupport(order = 40)
+    @ApiOperationSupport(order = 60)
     @ApiImplicitParams({
         @ApiImplicitParam(value = "文件id", name = "id", required = true),
         @ApiImplicitParam(value = "过期时间 <=7天，默认30分钟，单位：秒", name = "expire"),
@@ -112,21 +102,61 @@ public class FileInfoController {
         return Result.ok(fileInfoService.getUrl(id, expire, limit));
     }
 
-    @PreAuthorize("@file_perm.hasPerms('storage:file:uploadChunk')")
-    @ApiOperation(value = "分片文件上传")
-    @ApiOperationSupport(order = 50)
-    @PostMapping("uploadChunk")
-    public Result<ChunkCacheDTO> uploadChunk(ChunkFileDTO chunkFileDTO) {
-        return Result.ok(fileInfoService.uploadChunk(chunkFileDTO));
+    @PreAuthorize("@perm.hasPerms('storage:file:enable')")
+    @ApiOperation(value = "根据id启用文件")
+    @ApiOperationSupport(order = 70)
+    @ApiImplicitParam(value = "文件id", name = "id", required = true)
+    @PutMapping("enable")
+    public Result<Void> enable(Long id) {
+        fileInfoService.enable(id);
+        return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('storage:file:composeChunk')")
-    @ApiOperation(value = "分片文件合并")
-    @ApiOperationSupport(order = 60)
-    @ApiImplicitParam(value = "分片id", name = "chunkId", required = true)
-    @GetMapping("composeChunk")
-    public Result<FileInfoDTO> composeChunk(String chunkId) {
-        return Result.ok(fileInfoService.composeChunk(chunkId));
+    @PreAuthorize("@perm.hasPerms('storage:file:disable')")
+    @ApiOperation(value = "停用文件")
+    @ApiOperationSupport(order = 80)
+    @ApiImplicitParam(value = "文件id", name = "id", required = true)
+    @PutMapping("disable")
+    public Result<Void> disable(Long id) {
+        fileInfoService.disable(id);
+        return Result.ok();
+    }
+
+    @PreAuthorize("@perm.hasPerms('storage:file:cancel')")
+    @ApiOperation(value = "作废文件")
+    @ApiOperationSupport(order = 90)
+    @ApiImplicitParam(value = "文件id", name = "id", required = true)
+    @PutMapping("cancel")
+    public Result<Void> cancel(Long id) {
+        fileInfoService.cancel(id);
+        return Result.ok();
+    }
+
+    @PreAuthorize("@perm.hasPerms('storage:file:delete')")
+    @ApiOperation(value = "删除文件")
+    @ApiOperationSupport(order = 100)
+    @ApiImplicitParam(value = "文件id", name = "id", required = true)
+    @DeleteMapping
+    public Result<Void> delete(Long id) {
+        fileInfoService.delete(id);
+        return Result.ok();
+    }
+
+    @PreAuthorize("@perm.hasPerms('storage:file:update')")
+    @ApiOperation(value = "修改文件信息")
+    @ApiOperationSupport(order = 110)
+    @PutMapping
+    public Result<Void> update(FileInfoDTO fileInfoDTO) {
+        fileInfoService.update(fileInfoDTO);
+        return Result.ok();
+    }
+
+    @PreAuthorize("@perm.hasPerms('storage:file:page')")
+    @ApiOperation(value = "分页查询文件信息")
+    @ApiOperationSupport(order = 120)
+    @GetMapping("page")
+    public Result<PageResult<FileInfoDTO>> page(FileInfoQuery query) {
+        return Result.ok(fileInfoService.page(query));
     }
 
 }

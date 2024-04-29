@@ -27,11 +27,11 @@ public enum UserStatus {
     ;
 
     private final int code;
-    private final String message;
+    private final String msg;
 
-    UserStatus(int code, String message) {
+    UserStatus(int code, String msg) {
         this.code = code;
-        this.message = message;
+        this.msg = msg;
     }
 
     public int code() {
@@ -39,7 +39,7 @@ public enum UserStatus {
     }
 
     public String message() {
-        return message;
+        return msg;
     }
 
     private static final Map<Integer, String> map;

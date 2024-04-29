@@ -66,7 +66,7 @@ public class DictLabel extends Model<DictLabel> implements Serializable {
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    /** 更新人 */
+    /** 修改人 */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateBy;
 

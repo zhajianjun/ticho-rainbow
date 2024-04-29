@@ -22,19 +22,20 @@ export function getTableColumns(): BasicColumn[] {
       title: '文件名',
       dataIndex: 'originalFileName',
       resizable: true,
-      width: 100,
+      width: 140,
     },
     {
       title: '存储文件名',
       dataIndex: 'fileName',
       resizable: true,
       width: 100,
+      ifShow: false,
     },
     {
       title: '存储类型',
       dataIndex: 'type',
       resizable: true,
-      width: 100,
+      width: 60,
       customRender({ text }) {
         const dict = getDictByCodeAndValue(fileStorageType, text);
         if (text === undefined || isNull(text) || isNull(dict)) {
@@ -55,6 +56,7 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'path',
       resizable: true,
       width: 100,
+      ifShow: false,
     },
     {
       title: '文件大小',
@@ -73,6 +75,7 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'contentType',
       resizable: true,
       width: 100,
+      ifShow: false,
     },
     {
       title: '文件元数据',
@@ -85,7 +88,7 @@ export function getTableColumns(): BasicColumn[] {
       title: '状态',
       dataIndex: 'status',
       resizable: true,
-      width: 100,
+      width: 60,
       customRender({ text }) {
         const dict = getDictByCodeAndValue(fileStatus, text);
         if (text === undefined || isNull(text) || isNull(dict)) {
@@ -98,13 +101,13 @@ export function getTableColumns(): BasicColumn[] {
       title: '备注信息',
       dataIndex: 'remark',
       resizable: true,
-      width: 100,
+      width: 120,
     },
     {
       title: '创建人',
       dataIndex: 'createBy',
       resizable: true,
-      width: 100,
+      width: 60,
     },
     {
       title: '创建时间',
@@ -113,10 +116,10 @@ export function getTableColumns(): BasicColumn[] {
       width: 100,
     },
     {
-      title: '更新人',
+      title: '修改人',
       dataIndex: 'updateBy',
       resizable: true,
-      width: 100,
+      width: 60,
     },
     {
       title: '修改时间',
@@ -237,11 +240,11 @@ export function getSearchColumns(): FormSchema[] {
     },
     {
       field: `updateBy`,
-      label: `更新人`,
+      label: `修改人`,
       component: 'Input',
       colProps: { span: 8 },
       componentProps: {
-        placeholder: '请输入更新人',
+        placeholder: '请输入修改人',
       },
     },
     {

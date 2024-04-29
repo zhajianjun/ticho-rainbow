@@ -29,7 +29,7 @@ export interface FileInfoDTO {
   createBy: string;
   /** 创建时间 */
   createTime: string;
-  /** 更新人 */
+  /** 修改人 */
   updateBy: string;
   /** 修改时间 */
   updateTime: string;
@@ -66,7 +66,7 @@ export interface FileInfoQuery {
   createBy: string;
   /** 创建时间 */
   createTime: string;
-  /** 更新人 */
+  /** 修改人 */
   updateBy: string;
   /** 修改时间 */
   updateTime: string;

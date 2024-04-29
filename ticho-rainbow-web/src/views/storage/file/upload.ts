@@ -2,7 +2,7 @@ import SparkMD5 from 'spark-md5';
 import { UploadFileParams } from '#/axios';
 import { AxiosProgressEvent } from 'axios';
 import { composeChunk, uploadChunk, uploadFile } from '@/api/storage/fileInfo';
-import { ChunkFileDTO } from '@/api/storage/model/uploadModel';
+import { ChunkFileDTO, FileInfoReqDTO } from '@/api/storage/model/uploadModel';
 import { useMessage } from '@/hooks/web/useMessage';
 
 const { createMessage } = useMessage();
@@ -41,12 +41,16 @@ export async function getFileMd5(file: File, chunkCount: number, chunkSize: numb
 }
 
 export async function uploadFileHandler(
-  params: UploadFileParams,
+  fileParams: UploadFileParams,
   onUploadProgress: (progressEvent: AxiosProgressEvent) => void,
 ) {
-  const file = params.file;
+  const file = fileParams.file;
   const fileSize = file.size;
   if (fileSize <= chunkSize) {
+    const params = {
+      ...fileParams,
+      ...fileParams.data,
+    } as FileInfoReqDTO;
     return uploadFile(params, onUploadProgress)
       .then((res) => {
         createMessage.info(`${file.name} 上传成功`);
@@ -56,17 +60,21 @@ export async function uploadFileHandler(
         return Promise.reject(e);
       });
   }
-  return uploadBigFileHandler(params, onUploadProgress);
+  return uploadBigFileHandler(fileParams, onUploadProgress);
 }
 
 const chunkSize = 5 * 1024 * 1024;
 
 export async function uploadBigFileHandler(
-  params: UploadFileParams,
+  fileParams: UploadFileParams,
   onUploadProgress: (progressEvent: AxiosProgressEvent) => void,
 ) {
-  const file = params.file;
-  const { uid, isContinued } = params?.data as { uid: string; isContinued: boolean };
+  const file = fileParams.file;
+  const { uid, isContinued, type } = fileParams?.data as {
+    uid: string;
+    isContinued: boolean;
+    type: number;
+  };
   const fileSize = file.size;
   // 分片数量
   const chunkCount = Math.ceil(fileSize / chunkSize);
@@ -93,6 +101,7 @@ export async function uploadBigFileHandler(
       chunkCount: chunkCount,
       chunkfile: chunkFile,
       index: i,
+      type: type,
     } as ChunkFileDTO;
     const prom: Promise<any> = new Promise((resolve) => {
       uploadChunk(formdata)

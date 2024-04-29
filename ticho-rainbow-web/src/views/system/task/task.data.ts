@@ -79,13 +79,13 @@ export function getTableColumns(): BasicColumn[] {
       width: 100,
     },
     {
-      title: '更新人',
+      title: '修改人',
       dataIndex: 'updateBy',
       resizable: true,
       width: 100,
     },
     {
-      title: '更新时间',
+      title: '修改时间',
       dataIndex: 'updateTime',
       resizable: true,
       width: 100,

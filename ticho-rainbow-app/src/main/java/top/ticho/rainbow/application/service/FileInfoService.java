@@ -14,25 +14,34 @@ import top.ticho.rainbow.interfaces.query.FileInfoQuery;
  * @date 2024-04-23 17:55
  */
 public interface FileInfoService {
+
     /**
      * 文件上传
-     *
-     * @param fileInfoReqDTO 文件上传信息
-     * @return FileInfoDTO
      */
     FileInfoDTO upload(FileInfoReqDTO fileInfoReqDTO);
 
     /**
      * 修改文件信息
-     *
-     * @param fileInfoDTO 文件信息DTO 对象
      */
     void update(FileInfoDTO fileInfoDTO);
 
     /**
-     * 根据资源id删除
-     *
-     * @param id 资源id
+     * 启用
+     */
+    void enable(Long id);
+
+    /**
+     * 停用
+     */
+    void disable(Long id);
+
+    /**
+     * 作废
+     */
+    void cancel(Long id);
+
+    /**
+     * 删除
      */
     void delete(Long id);
 
@@ -53,9 +62,9 @@ public interface FileInfoService {
     /**
      * 根据资源id获取下载链接
      *
-     * @param id      资源id
+     * @param id     资源id
      * @param expire 过期时间 <=7天，默认30分钟，单位：秒
-     * @param limit   是否限制
+     * @param limit  是否限制
      * @return 资源链接
      */
     String getUrl(Long id, Integer expire, Boolean limit);
