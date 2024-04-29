@@ -48,11 +48,9 @@ export async function uploadFileHandler(
   const fileSize = file.size;
   if (fileSize <= chunkSize) {
     return uploadFile(params, onUploadProgress)
-      .then(() => {
+      .then((res) => {
         createMessage.info(`${file.name} 上传成功`);
-        return Promise.resolve({
-          data: { data: file.name },
-        });
+        return Promise.resolve(res);
       })
       .catch((e) => {
         return Promise.reject(e);
@@ -75,6 +73,8 @@ export async function uploadBigFileHandler(
   const fileName = file.name;
   const fileMd5 = (await getFileMd5(file, chunkCount, chunkSize)) as string;
   const axiosProgressEvent = { loaded: 0, total: 100 } as AxiosProgressEvent;
+  let total = 1;
+  const proms: Promise<any>[] = [];
   // 上传分片
   for (let i = 0; i < chunkCount; i++) {
     // 分片开始
@@ -94,36 +94,42 @@ export async function uploadBigFileHandler(
       chunkfile: chunkFile,
       index: i,
     } as ChunkFileDTO;
-    let response;
+    const prom: Promise<any> = new Promise((resolve) => {
+      uploadChunk(formdata)
+        .then(() => {
+          total = total + 1;
+          if (total < chunkCount) {
+            axiosProgressEvent.loaded = 99;
+            onUploadProgress(axiosProgressEvent);
+          } else if (total === chunkCount) {
+            axiosProgressEvent.loaded = (total / chunkCount) * 100;
+            onUploadProgress(axiosProgressEvent);
+          }
+          resolve(true);
+        })
+        .catch((e) => {
+          return Promise.reject(e);
+        });
+    });
+    proms.push(prom);
+
+    // 等待所有分片上传完成
+    await Promise.all(proms);
     try {
       // 调用分片上传接口
-      response = await uploadChunk(formdata);
+      await uploadChunk(formdata);
     } catch (e) {
       createMessage.error(`${e}`);
       return Promise.reject(e);
     }
-    const { code, msg } = response;
-    if (code !== 0) {
-      createMessage.error(`${msg}`);
-      return Promise.reject(msg);
-    }
-    if (i + 1 < chunkCount) {
-      axiosProgressEvent.loaded = 99;
-      onUploadProgress(axiosProgressEvent);
-    } else if (i + 1 === chunkCount) {
-      axiosProgressEvent.loaded = ((i + 1) / chunkCount) * 100;
-      onUploadProgress(axiosProgressEvent);
-    }
   }
   // 合并
   return composeChunk(uid)
-    .then(() => {
+    .then((res) => {
       axiosProgressEvent.loaded = 100;
       onUploadProgress(axiosProgressEvent);
       createMessage.info(`${file.name} 上传成功`);
-      return Promise.resolve({
-        data: { data: fileName },
-      });
+      return Promise.resolve(res);
     })
     .catch((e) => {
       return Promise.reject(e);

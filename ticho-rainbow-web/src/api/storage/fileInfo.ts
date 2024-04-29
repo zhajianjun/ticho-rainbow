@@ -51,7 +51,7 @@ export function uploadFile(
   params: UploadFileParams,
   onUploadProgress: (progressEvent: AxiosProgressEvent) => void,
 ) {
-  return defHttp.post<UploadApiResult>({
+  return defHttp.post<FileInfoDTO>({
     url: Api.Upload,
     onUploadProgress,
     headers: {
@@ -73,7 +73,7 @@ export function uploadChunk(params: ChunkFileDTO) {
 
 export function composeChunk(chunkId: string) {
   const params = { chunkId: chunkId };
-  return defHttp.get<any>({
+  return defHttp.get<FileInfoDTO>({
     url: Api.ComposeChunk,
     params,
   });

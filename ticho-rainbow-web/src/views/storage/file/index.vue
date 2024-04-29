@@ -5,7 +5,7 @@
         <CustomUpload
           :maxSize="10240000"
           :maxNumber="10"
-          @change="handleChange"
+          @save="handleSave"
           :multiple="true"
           v-auth="'FileUpload'"
         />
@@ -43,7 +43,7 @@
     </BasicTable>
     <CustomUploadModal
       @register="registerUploadModal"
-      @change="handleChange"
+      @save="handleSave"
       @delete="handleDelete"
       :maxSize="10240000"
     />
@@ -62,6 +62,7 @@
   import CustomUploadModal from './CustomUploadModal.vue';
   import CustomUpload from './CustomUpload.vue';
   import { downloadByUrl } from '@/utils/file/download';
+  import { FileItem } from '@/components/Upload/src/types/typing';
 
   export default defineComponent({
     name: 'FileInfo',
@@ -104,8 +105,8 @@
       });
 
       const { createMessage } = useMessage();
-      function handleChange(list: string[]) {
-        console.log(list);
+      function handleSave(fileItems: FileItem[]) {
+        console.log(fileItems);
         reload();
       }
 
@@ -148,7 +149,7 @@
       return {
         registerTable,
         registerModal,
-        handleChange,
+        handleSave,
         handleEdit,
         handleDelete,
         handleSuccess,

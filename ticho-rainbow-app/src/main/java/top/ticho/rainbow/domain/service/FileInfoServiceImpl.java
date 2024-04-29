@@ -401,7 +401,7 @@ public class FileInfoServiceImpl implements FileInfoService {
     }
 
     @Override
-    public void composeChunk(String chunkId) {
+    public FileInfoDTO composeChunk(String chunkId) {
         // @formatter:off
         Assert.isNotBlank(chunkId, "分片id不能为空");
         ChunkCacheDTO chunkCacheDTO = springCacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkCacheDTO.class);
@@ -443,6 +443,8 @@ public class FileInfoServiceImpl implements FileInfoService {
             springCacheTemplate.evict(CacheConst.UPLOAD_CHUNK, chunkId);
             moveToTmp(chunkCacheDTO.getType(), chunkCacheDTO.getChunkDirPath());
         }
+        FileInfo fileInfo = fileInfoRepository.getById(chunkCacheDTO.getId());
+        return FileInfoAssembler.INSTANCE.entityToDto(fileInfo);
         // @formatter:on
     }
 

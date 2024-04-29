@@ -73,7 +73,7 @@ public interface FileInfoService {
      *
      * @param chunkId 分片id
      */
-    void composeChunk(String chunkId);
+    FileInfoDTO composeChunk(String chunkId);
 
     /**
      * 分页查询文件信息列表

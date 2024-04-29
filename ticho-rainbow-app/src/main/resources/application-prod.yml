@@ -36,7 +36,7 @@ ticho:
       maxBindPorts:
   log:
     enable: true
-    print: true
+    print: false
   swagger:
     enable: false
   mail:

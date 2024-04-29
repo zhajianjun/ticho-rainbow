@@ -125,9 +125,8 @@ public class FileInfoController {
     @ApiOperationSupport(order = 60)
     @ApiImplicitParam(value = "分片id", name = "chunkId", required = true)
     @GetMapping("composeChunk")
-    public Result<Void> composeChunk(String chunkId) {
-        fileInfoService.composeChunk(chunkId);
-        return Result.ok();
+    public Result<FileInfoDTO> composeChunk(String chunkId) {
+        return Result.ok(fileInfoService.composeChunk(chunkId));
     }
 
 }

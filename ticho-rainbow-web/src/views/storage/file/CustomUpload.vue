@@ -25,6 +25,7 @@
       :fileListDragOptions="fileListDragOptions"
       @register="registerUploadModal"
       @change="handleChange"
+      @save="handleSave"
       @delete="handleDelete"
     />
   </div>
@@ -39,12 +40,13 @@
   import { useI18n } from '@/hooks/web/useI18n';
   import { isArray } from '@/utils/is';
   import CustomUploadModal from './CustomUploadModal.vue';
+  import { FileItem } from '@/components/Upload/src/types/typing';
 
   defineOptions({ name: 'BasicUpload' });
 
   const props = defineProps(uploadContainerProps);
 
-  const emit = defineEmits(['change', 'delete', 'preview-delete', 'update:value']);
+  const emit = defineEmits(['change', 'delete', 'preview-delete', 'update:value', 'save']);
 
   const attrs = useAttrs();
   const { t } = useI18n();
@@ -86,5 +88,9 @@
 
   function handleDelete(record: Recordable<any>) {
     emit('delete', record);
+  }
+
+  function handleSave(fileItems: FileItem[]) {
+    emit('save', fileItems);
   }
 </script>

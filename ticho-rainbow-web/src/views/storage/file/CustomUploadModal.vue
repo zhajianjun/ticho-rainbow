@@ -82,7 +82,7 @@
     },
   });
 
-  const emit = defineEmits(['change', 'register', 'delete']);
+  const emit = defineEmits(['change', 'register', 'delete', 'save']);
 
   const columns = createTableColumns();
   const actionColumn = createActionColumn(handleRemove);
@@ -213,17 +213,8 @@
           item.percent = ((progressEvent.loaded / progressEvent.total) * 100) | 0;
         },
       );
-      const { data } = ret;
       item.status = UploadResultStatus.SUCCESS;
-      item.response = data;
-      if (props.resultField) {
-        // 适配预览组件而进行封装
-        item.response = {
-          code: 0,
-          message: 'upload Success!',
-          url: get(ret, props.resultField),
-        };
-      }
+      item.response = ret;
       return {
         success: true,
         error: null,
@@ -275,11 +266,12 @@
       return createMessage.warning(t('component.upload.saveWarn'));
     }
     const fileList: string[] = [];
-
+    const fileItem: FileItem[] = [];
     for (const item of fileListRef.value) {
       const { status, response } = item;
       if (status === UploadResultStatus.SUCCESS && response) {
-        fileList.push(response.data);
+        fileList.push(item.name);
+        fileItem.push(item);
       }
     }
     // 存在一个上传成功的即可保存
@@ -289,6 +281,7 @@
     fileListRef.value = [];
     closeModal();
     emit('change', fileList);
+    emit('save', fileItem);
   }
 
   // 点击关闭：则所有操作不保存，包括上传的
