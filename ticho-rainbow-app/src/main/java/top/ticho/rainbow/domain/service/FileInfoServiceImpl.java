@@ -72,16 +72,18 @@ public class FileInfoServiceImpl implements FileInfoService {
     private final CommonCacheTemplate<FileCache> fileUrlCacheTemplate = new CommonCacheTemplate<>(FileCache::getExpire);
 
     @Resource
-    private FileProperty fileProperty;
-
-    @Resource
     private HttpServletResponse response;
 
     @Autowired
     private SpringCacheTemplate springCacheTemplate;
 
     @Autowired
+    private FileProperty fileProperty;
+
+    @Autowired
     private FileInfoRepository fileInfoRepository;
+
+    // @formatter:off
 
     @Override
     public FileInfoDTO upload(FileInfoReqDTO fileInfoReqDTO) {
@@ -159,9 +161,14 @@ public class FileInfoServiceImpl implements FileInfoService {
     public void delete(Long id) {
         Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
         FileInfo dbFileInfo = fileInfoRepository.getById(id);
-        Assert.isNotNull(dbFileInfo, FileErrCode.FILE_NOT_EXIST, "文件信息不存在");
+        Assert.isNotNull(dbFileInfo, FileErrCode.FILE_NOT_EXIST, "删除失败, 文件信息不存在");
+        boolean isCancel = Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CANCE.code());
+        boolean isChunk = Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CHUNK.code());
+        Assert.isTrue(isCancel || isChunk, "删除失败, 分片或者作废状态文件才能删除");
         String path;
         if (Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CHUNK.code())) {
+            boolean isUploadChunkIng = springCacheTemplate.contain(CacheConst.UPLOAD_CHUNK, dbFileInfo.getChunkId());
+            Assert.isTrue(!isUploadChunkIng, "删除失败, 分片文件正在上传中");
             ChunkMetadataDTO metadata = JsonUtil.toJavaObject(dbFileInfo.getChunkMetadata(), ChunkMetadataDTO.class);
             path = metadata.getChunkDirPath();
         } else {
@@ -220,30 +227,40 @@ public class FileInfoServiceImpl implements FileInfoService {
     }
 
     @Override
-    public String getUrl(Long id, Integer expire, Boolean limit) {
+    public String getUrl(Long id, Long expire, Boolean limit) {
         Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
         long seconds = TimeUnit.DAYS.toSeconds(7);
         if (expire != null) {
             Assert.isTrue(expire <= seconds, BizErrCode.PARAM_ERROR, "过期时间最长为7天");
+        } else {
+            expire = seconds;
         }
         FileInfo dbFileInfo = fileInfoRepository.getById(id);
-        Assert.isNotNull(dbFileInfo, FileErrCode.FILE_NOT_EXIST);
-        boolean normal = Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.NORMAL.code());
-        Assert.isTrue(normal, FileErrCode.FILE_STATUS_ERROR);
-        String absolutePath = getAbsolutePath(dbFileInfo.getType(), dbFileInfo.getPath());
+        return getUrl(dbFileInfo, expire, limit);
+    }
+
+    public String getUrl(FileInfo fileInfo, Long expire, Boolean limit) {
+        Assert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST);
+        boolean normal = Objects.equals(fileInfo.getStatus(), FileInfoStatus.NORMAL.code());
+        if (!normal) {
+            return null;
+        }
+        String absolutePath = getAbsolutePath(fileInfo.getType(), fileInfo.getPath());
         File file = new File(absolutePath);
-        Assert.isTrue(file.exists(), BizErrCode.PARAM_ERROR);
+        if (!file.exists()) {
+            return null;
+        }
         String domain = StrUtil.removeSuffix(fileProperty.getDomain(), "/");
-        if (Objects.equals(dbFileInfo.getType(), 1)) {
+        if (Objects.equals(fileInfo.getType(), 1)) {
             String mvcResourcePath = StrUtil.removeSuffix(fileProperty.getMvcResourcePath(), "/**");
             mvcResourcePath = StrUtil.removePrefix(mvcResourcePath, "/");
-            return domain + "/" + mvcResourcePath + "/" + dbFileInfo.getPath();
+            return domain + "/" + mvcResourcePath + "/" + fileInfo.getPath();
         }
         String sign = CommonUtil.fastShortUUID();
         FileCache fileCache = new FileCache();
         fileCache.setSign(sign);
-        fileCache.setFileInfo(dbFileInfo);
-        fileCache.setExpire(expire == null ? seconds : expire);
+        fileCache.setFileInfo(fileInfo);
+        fileCache.setExpire(expire);
         fileCache.setLimit(limit);
         fileUrlCacheTemplate.put(sign, fileCache);
         return domain + "/file/download?sign=" + sign;
@@ -312,7 +329,7 @@ public class FileInfoServiceImpl implements FileInfoService {
             FileInfo dbFileInfo = fileInfoRepository.getByChunkId(chunkId);
             // 缓存不存在，非续传则转换参数为分片信息
             if (!isContinued) {
-                Assert.isNull(dbFileInfo, "文件上传失败, 数据已存在");
+                Assert.isNull(dbFileInfo, "上传失败, 文件已存在");
                 DataSize maxBigFileSize = fileProperty.getMaxBigFileSize();
                 boolean match = chunkFileDTO.getFileSize() <= maxBigFileSize.toBytes();
                 Assert.isTrue(match, BizErrCode.PARAM_ERROR, "文件大小不能超出" + maxBigFileSize.toMegabytes() + "MB");
@@ -439,7 +456,6 @@ public class FileInfoServiceImpl implements FileInfoService {
 
     @Override
     public FileInfoDTO composeChunk(String chunkId) {
-        // @formatter:off
         Assert.isNotBlank(chunkId, "分片id不能为空");
         ChunkCacheDTO chunkCacheDTO = springCacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkCacheDTO.class);
         Assert.isNotNull(chunkCacheDTO, "分片文件不存在");
@@ -482,10 +498,9 @@ public class FileInfoServiceImpl implements FileInfoService {
         }
         FileInfo fileInfo = fileInfoRepository.getById(chunkCacheDTO.getId());
         return FileInfoAssembler.INSTANCE.entityToDto(fileInfo);
-        // @formatter:on
     }
 
-    public void moveToTmp(Integer type, String relativePath)  {
+    public void moveToTmp(Integer type, String relativePath) {
         String absolutePath = getAbsolutePath(type, relativePath);
         File source = new File(absolutePath);
         if (!source.exists()) {

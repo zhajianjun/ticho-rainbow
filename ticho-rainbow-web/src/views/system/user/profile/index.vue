@@ -4,7 +4,11 @@
       <Card title="个人信息">
         <Row :gutter="[20, 20]">
           <Col :span="24" class="text-center align-center">
-            <CropperAvatar :showBtn="false" :uploadApi="uploadAvatar" />
+            <CropperAvatar
+              :showBtn="false"
+              :uploadApi="uploadUserAvatar"
+              v-model:value="userInfo.photo"
+            />
           </Col>
           <Col :span="8" class="text-right">
             <Icon icon="ant-design:user-outlined" color="black" />用户名称</Col
@@ -39,7 +43,7 @@
   import { useUserStore } from '@/store/modules/user';
   import { basicFormSchema, passwordFormSchema } from '@/views/system/user/profile/profile.data';
   import { PasswordDTO, UserDTO, UserProfileDTO } from '@/api/system/model/userModel';
-  import { modifyUserForSelf, modifyPasswordForSelf } from '@/api/system/user';
+  import { modifyUserForSelf, modifyPasswordForSelf, uploadAvatar } from '@/api/system/user';
   import { useMessage } from '@/hooks/web/useMessage';
   import { onMounted } from 'vue';
 
@@ -100,9 +104,18 @@
     createMessage.success('修改密码成功');
   }
 
-  function uploadAvatar(file) {
-    console.log(file);
-    return Promise.resolve({ url: '' });
+  function uploadUserAvatar({ file }) {
+    const newFile = new File([file], `${userInfo.username}-avatar.png`, { type: file.type });
+    return new Promise((resolve, reject) => {
+      uploadAvatar(newFile)
+        .then((res) => {
+          userStore.updateUserAvatar(res);
+          resolve(res);
+        })
+        .catch((e) => {
+          reject(e);
+        });
+    });
   }
 </script>
 <style scoped lang="less"></style>

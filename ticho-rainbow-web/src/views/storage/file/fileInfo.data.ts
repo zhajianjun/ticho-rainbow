@@ -22,7 +22,7 @@ export function getTableColumns(): BasicColumn[] {
       title: '文件名',
       dataIndex: 'originalFileName',
       resizable: true,
-      width: 140,
+      width: 100,
     },
     {
       title: '存储文件名',
@@ -55,14 +55,14 @@ export function getTableColumns(): BasicColumn[] {
       title: '存储路径',
       dataIndex: 'path',
       resizable: true,
-      width: 100,
-      ifShow: false,
+      width: 120,
+      ifShow: true,
     },
     {
       title: '文件大小',
       dataIndex: 'size',
       resizable: true,
-      width: 100,
+      width: 60,
       customRender: ({ value }) => {
         if (!value) {
           return value;
@@ -88,7 +88,7 @@ export function getTableColumns(): BasicColumn[] {
       title: '状态',
       dataIndex: 'status',
       resizable: true,
-      width: 60,
+      width: 40,
       customRender({ text }) {
         const dict = getDictByCodeAndValue(fileStatus, text);
         if (text === undefined || isNull(text) || isNull(dict)) {

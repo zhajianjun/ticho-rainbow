@@ -1,11 +1,13 @@
 package top.ticho.rainbow.domain.service;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import top.ticho.boot.security.auth.PermissionService;
+import top.ticho.boot.view.util.Assert;
 import top.ticho.rainbow.infrastructure.core.component.cache.SpringCacheTemplate;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.constant.CommConst;
@@ -37,6 +39,7 @@ public class FilePermissionServiceImpl implements PermissionService {
     public boolean hasPerms(String... permissions) {
         log.debug("权限校验，permissions = {}", String.join(",", permissions));
         String chunkId = request.getParameter("chunkId");
+        Assert.isNotBlank(chunkId, "chunkId is null");
         boolean hasCache = cacheTemplate.contain(CacheConst.UPLOAD_CHUNK, chunkId);
         if (hasCache) {
             return true;

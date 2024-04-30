@@ -1,5 +1,6 @@
 package top.ticho.rainbow.application.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.rainbow.interfaces.dto.ImgCodeDTO;
 import top.ticho.rainbow.interfaces.dto.ImgCodeEmailDTO;
@@ -93,6 +94,13 @@ public interface UserService {
      * @param userDTO 用户信息DTO 对象
      */
     void updateForSelf(UserDTO userDTO);
+
+    /**
+     * 用户头像上传
+     *
+     * @param file 文件信息
+     */
+    String uploadAvatar(MultipartFile file);
 
     /**
      * 修改用户密码信息

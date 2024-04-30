@@ -4,6 +4,7 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import top.ticho.boot.json.util.JsonUtil;
 import top.ticho.boot.mail.component.MailContent;
 import top.ticho.boot.mail.component.MailInines;
@@ -27,6 +29,7 @@ import top.ticho.boot.web.file.BaseMultPartFile;
 import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.boot.web.util.valid.ValidGroup;
 import top.ticho.boot.web.util.valid.ValidUtil;
+import top.ticho.rainbow.application.service.FileInfoService;
 import top.ticho.rainbow.application.service.UserService;
 import top.ticho.rainbow.domain.handle.AuthHandle;
 import top.ticho.rainbow.domain.repository.EmailRepository;
@@ -38,10 +41,14 @@ import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.enums.UserStatus;
 import top.ticho.rainbow.infrastructure.core.util.BeetlUtil;
 import top.ticho.rainbow.infrastructure.core.util.UserUtil;
+import top.ticho.rainbow.infrastructure.entity.FileInfo;
 import top.ticho.rainbow.infrastructure.entity.Role;
 import top.ticho.rainbow.infrastructure.entity.User;
+import top.ticho.rainbow.interfaces.assembler.FileInfoAssembler;
 import top.ticho.rainbow.interfaces.assembler.RoleAssembler;
 import top.ticho.rainbow.interfaces.assembler.UserAssembler;
+import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
+import top.ticho.rainbow.interfaces.dto.FileInfoReqDTO;
 import top.ticho.rainbow.interfaces.dto.ImgCodeDTO;
 import top.ticho.rainbow.interfaces.dto.ImgCodeEmailDTO;
 import top.ticho.rainbow.interfaces.dto.PasswordDTO;
@@ -101,6 +108,9 @@ public class UserServiceImpl extends AuthHandle implements UserService {
 
     @Autowired
     private EmailRepository emailRepository;
+
+    @Autowired
+    private FileInfoService fileInfoService;
 
     @Override
     public void imgCode(String imgKey) throws IOException {
@@ -330,9 +340,29 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     @Transactional(rollbackFor = Exception.class)
     public void updateForSelf(UserDTO userDTO) {
         User dbUser = userRepository.getByUsername(UserUtil.getCurrentUsername());
-        Assert.isNotNull(dbUser, BizErrCode.FAIL, "修改失败,用户不存在");
+        Assert.isNotNull(dbUser, BizErrCode.FAIL, "修改失败, 用户不存在");
         userDTO.setId(dbUser.getId());
         update(userDTO);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String uploadAvatar(MultipartFile file) {
+        User dbUser = userRepository.getByUsername(UserUtil.getCurrentUsername());
+        Assert.isNotNull(dbUser, BizErrCode.FAIL, "头像上传失败, 用户不存在");
+        FileInfoReqDTO fileInfoReqDTO = new FileInfoReqDTO();
+        fileInfoReqDTO.setFile(file);
+        fileInfoReqDTO.setType(1);
+        fileInfoReqDTO.setRelativePath(StrUtil.format("user/{}/avatar", dbUser.getUsername()));
+        fileInfoReqDTO.setRemark("头像");
+        FileInfoDTO upload = fileInfoService.upload(fileInfoReqDTO);
+        User user = new User();
+        user.setId(dbUser.getId());
+        user.setUsername(dbUser.getUsername());
+        user.setPhoto(upload.getId().toString());
+        userRepository.updateById(user);
+        FileInfo fileInfo = FileInfoAssembler.INSTANCE.dtoToEntity(upload);
+        return fileInfoService.getUrl(fileInfo, null, true);
     }
 
     @Override

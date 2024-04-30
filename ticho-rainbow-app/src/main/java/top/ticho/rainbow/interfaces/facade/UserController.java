@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.core.Result;
 import top.ticho.rainbow.application.service.UserService;
@@ -74,6 +76,14 @@ public class UserController {
     public Result<Void> updateForSelf(@RequestBody UserDTO userDTO) {
         userService.updateForSelf(userDTO);
         return Result.ok();
+    }
+
+    @PreAuthorize("@perm.hasPerms('system:user:uploadAvatar')")
+    @ApiOperation(value = "用户头像上传", notes = "用户头像上传")
+    @ApiOperationSupport(order = 36)
+    @PostMapping("uploadAvatar")
+    public Result<String> uploadAvatar(@RequestPart("file") MultipartFile file) {
+        return Result.ok(userService.uploadAvatar(file));
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:resetPassword')")

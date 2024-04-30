@@ -79,6 +79,15 @@ export const useUserStore = defineStore({
         this.userInfo = newUserInfo as UserRoleMenuDtlDTO;
       }
     },
+    updateUserAvatar(url: string) {
+      const userInfo = getAuthCache<UserRoleMenuDtlDTO>(USER_INFO_KEY);
+      if (userInfo) {
+        // 对象属性拷贝
+        userInfo.photo = url;
+        setAuthCache(USER_INFO_KEY, userInfo);
+        this.userInfo = userInfo;
+      }
+    },
     setSessionTimeout(flag: boolean) {
       this.sessionTimeout = flag;
     },

@@ -3,8 +3,9 @@ package top.ticho.rainbow.domain.handle;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import top.ticho.boot.security.util.BaseUserUtil;
 import top.ticho.boot.web.util.TreeUtil;
+import top.ticho.rainbow.application.service.FileInfoService;
+import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.domain.repository.MenuRepository;
 import top.ticho.rainbow.domain.repository.RoleMenuRepository;
 import top.ticho.rainbow.domain.repository.RoleRepository;
@@ -12,6 +13,7 @@ import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.core.enums.MenuType;
 import top.ticho.rainbow.infrastructure.core.util.UserUtil;
+import top.ticho.rainbow.infrastructure.entity.FileInfo;
 import top.ticho.rainbow.infrastructure.entity.Menu;
 import top.ticho.rainbow.infrastructure.entity.Role;
 import top.ticho.rainbow.infrastructure.entity.User;
@@ -21,7 +23,6 @@ import top.ticho.rainbow.interfaces.assembler.UserAssembler;
 import top.ticho.rainbow.interfaces.dto.MenuDtlDTO;
 import top.ticho.rainbow.interfaces.dto.RoleDTO;
 import top.ticho.rainbow.interfaces.dto.RoleMenuDtlDTO;
-import top.ticho.rainbow.interfaces.dto.SecurityUser;
 import top.ticho.rainbow.interfaces.dto.UserRoleMenuDtlDTO;
 
 import java.util.ArrayList;
@@ -31,7 +32,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -61,6 +61,12 @@ public class AuthHandle {
     @Autowired
     private MenuRepository menuRepository;
 
+    @Autowired
+    private FileInfoRepository fileInfoRepository;
+
+    @Autowired
+    private FileInfoService fileInfoService;
+
     /**
      * 查询用户角色菜单权限标识信息
      *
@@ -73,6 +79,7 @@ public class AuthHandle {
         if (userRoleMenuDtlDTO == null) {
             return null;
         }
+        setPhoto(userRoleMenuDtlDTO);
         List<Long> roleIds = userRoleRepository.listByUserId(user.getId());
         RoleMenuDtlDTO roleMenuFuncDtl = mergeRoleByIds(roleIds, false, false);
         if (roleMenuFuncDtl == null) {
@@ -84,6 +91,20 @@ public class AuthHandle {
         userRoleMenuDtlDTO.setRoles(roleMenuFuncDtl.getRoles());
         userRoleMenuDtlDTO.setMenus(roleMenuFuncDtl.getMenus());
         return userRoleMenuDtlDTO;
+    }
+
+    private void setPhoto(UserRoleMenuDtlDTO userRoleMenuDtlDTO) {
+        if (userRoleMenuDtlDTO == null || !StrUtil.isNumeric(userRoleMenuDtlDTO.getPhoto())) {
+            return;
+        }
+        Long fileId = Long.parseLong(userRoleMenuDtlDTO.getPhoto());
+        FileInfo fileInfo = fileInfoRepository.getById(fileId);
+        if (fileInfo == null) {
+            userRoleMenuDtlDTO.setPhoto(null);
+            return;
+        }
+        String url = fileInfoService.getUrl(fileInfo, null, true);
+        userRoleMenuDtlDTO.setPhoto(url);
     }
 
     /**

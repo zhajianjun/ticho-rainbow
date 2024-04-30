@@ -1,6 +1,7 @@
 package top.ticho.rainbow.application.service;
 
 import top.ticho.boot.view.core.PageResult;
+import top.ticho.rainbow.infrastructure.entity.FileInfo;
 import top.ticho.rainbow.interfaces.dto.ChunkCacheDTO;
 import top.ticho.rainbow.interfaces.dto.ChunkFileDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
@@ -60,14 +61,24 @@ public interface FileInfoService {
     void download(String sign);
 
     /**
-     * 根据资源id获取下载链接
+     * 根据id获取下载链接
      *
-     * @param id     资源id
+     * @param id     id
      * @param expire 过期时间 <=7天，默认30分钟，单位：秒
      * @param limit  是否限制
      * @return 资源链接
      */
-    String getUrl(Long id, Integer expire, Boolean limit);
+    String getUrl(Long id, Long expire, Boolean limit);
+
+    /**
+     * 根据文件信息获取下载链接
+     *
+     * @param fileInfo 文件信息
+     * @param expire   过期时间 <=7天，默认30分钟，单位：秒
+     * @param limit    是否限制
+     * @return {@link String }
+     */
+    String getUrl(FileInfo fileInfo, Long expire, Boolean limit);
 
     /**
      * 分片文件上传

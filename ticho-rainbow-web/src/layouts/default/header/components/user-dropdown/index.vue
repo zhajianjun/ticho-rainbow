@@ -81,8 +81,9 @@
   const go = useGo();
 
   const getUserInfo = computed(() => {
-    const { nickname = '' } = userStore.getUserInfo || {};
-    return { nickname, avatar: headerImg };
+    const { nickname = '', photo } = userStore.getUserInfo || {};
+    console.log(headerImg);
+    return { nickname, avatar: photo || headerImg };
   });
 
   const [register, { openModal }] = useModal();

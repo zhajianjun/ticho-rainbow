@@ -48,7 +48,7 @@
     btnProps: { type: Object as PropType<ButtonProps> },
     btnText: { type: String, default: '' },
     uploadApi: {
-      type: Function as PropType<({ file, name }: { file: Blob; name: string }) => Promise<void>>,
+      type: Function as PropType<({ file, name }: { file: Blob; name: string }) => Promise<any>>,
     },
 
     size: { type: Number, default: 5 },

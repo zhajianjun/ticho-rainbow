@@ -52,7 +52,10 @@
               auth: 'FileDisable',
               disabled: record.status !== 1,
             },
+          ]"
+          :dropDownActions="[
             {
+              icon: 'ant-design:delete-outlined',
               onClick: handleCancel.bind(null, record),
               label: '作废',
               color: 'error',
@@ -61,10 +64,8 @@
               auth: 'FileCancel',
               disabled: record.status === 99 || record.status === 3,
             },
-          ]"
-          :dropDownActions="[
             {
-              icon: 'ant-design:delete-outlined',
+              icon: 'ant-design:delete-filled',
               color: 'error',
               type: 'primary',
               label: '删除',
@@ -74,6 +75,7 @@
               },
               tooltip: '删除',
               auth: 'FileInfoDel',
+              disabled: record.status !== 99 && record.status !== 3,
             },
           ]"
         />
@@ -170,7 +172,11 @@
       function handleDownload(record: Recordable) {
         try {
           getUrl(record.id, null, true).then((res) => {
-            downloadByUrl({ url: res, target: '_self' });
+            if (!res) {
+              createMessage.error('文件不存在');
+              return;
+            }
+            downloadByUrl({ url: res, target: '_blank' });
             createMessage.info('文件下载中');
           });
         } catch (e) {

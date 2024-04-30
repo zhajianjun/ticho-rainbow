@@ -98,7 +98,7 @@ public class FileInfoController {
         @ApiImplicitParam(value = "是否限制", name = "limit"),
     })
     @GetMapping("getUrl")
-    public Result<String> getUrl(Long id, Integer expire, Boolean limit) {
+    public Result<String> getUrl(Long id, Long expire, Boolean limit) {
         return Result.ok(fileInfoService.getUrl(id, expire, limit));
     }
 
