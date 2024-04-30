@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.unit.DataSize;
 
 import java.io.File;
+import java.util.Objects;
 
 /**
  * @author zhajianjun
@@ -33,23 +34,29 @@ public class FileProperty {
     /** 大文件大小限制，默认1GB */
     private DataSize maxBigFileSize = DataSize.ofGigabytes(1L);
 
+    public String getRootPath() {
+        if (Objects.isNull(this.rootPath) || Objects.equals(this.rootPath, File.separator)) {
+            return File.separator;
+        }
+        return this.rootPath + File.separator;
+    }
 
     /**
      * 开放路径，相对路径为 /data/public/
      */
     public String getPublicPath() {
-        return this.rootPath + File.separator + "data" + File.separator + "public" + File.separator;
+        return getRootPath() + "data" + File.separator + "public" + File.separator;
     }
 
     /**
      * 私有，相对路径为 /data/private/
      */
     public String getPrivatePath() {
-        return this.rootPath + File.separator + "data" + File.separator + "private" + File.separator;
+        return getRootPath() + "data" + File.separator + "private" + File.separator;
     }
 
     public String getTmpPath() {
-        return this.rootPath + File.separator + "data" + File.separator + "tmp" + File.separator;
+        return getRootPath() + "data" + File.separator + "tmp" + File.separator;
     }
 
 }
