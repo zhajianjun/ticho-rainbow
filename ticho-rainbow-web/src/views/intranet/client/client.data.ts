@@ -3,7 +3,7 @@ import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
 import { getDictByCode } from '@/store/modules/dict';
 import { isNull } from '@/utils/is';
-import { formatToDate } from '@/utils/dateUtil';
+import { formatToDateTime } from '@/utils/dateUtil';
 
 const commonStatus = 'commonStatus';
 
@@ -43,7 +43,7 @@ export function getTableColumns(): BasicColumn[] {
         if (record.expireAt === undefined || isNull(record.expireAt)) {
           return record.expireAt;
         }
-        const isEffect = formatToDate(new Date()) < formatToDate(record.expireAt);
+        const isEffect = formatToDateTime(new Date()) < formatToDateTime(record.expireAt);
         const color = isEffect ? '#108ee9' : '#f50';
         return h(Tag, { color: color }, () => record.expireAt);
       },
