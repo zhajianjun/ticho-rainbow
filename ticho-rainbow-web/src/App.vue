@@ -14,7 +14,8 @@
 
   import { useDarkModeTheme } from '@/hooks/setting/useDarkModeTheme';
   import 'dayjs/locale/zh-cn';
-  import { computed } from 'vue';
+  import { computed, onMounted, nextTick } from 'vue';
+  import { autoRefresh } from '@/utils/autoUpdate';
 
   // support Multi-language
   const { getAntdLocale } = useLocale();
@@ -37,4 +38,10 @@
   );
   // Listening to page changes and dynamically changing site titles
   useTitle();
+  // 加载组件时，添加版本热更新
+  onMounted(() => {
+    nextTick(() => {
+      if (import.meta.env.MODE !== 'development') autoRefresh();
+    });
+  });
 </script>
