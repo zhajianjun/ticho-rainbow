@@ -128,6 +128,7 @@ public class ClientServiceImpl implements ClientService {
         // @formatter:off
         ClientQuery clientQuery = new ClientQuery();
         clientQuery.setStatus(1);
+        clientQuery.setExpireAt(LocalDateTime.now());
         List<Client> clients = clientRepository.list(clientQuery);
         List<String> accessKeys = clients.stream().map(Client::getAccessKey).collect(Collectors.toList());
         Predicate<Port> filter = x -> Objects.equals(x.getStatus(), 1) && LocalDateTime.now().isBefore(x.getExpireAt());

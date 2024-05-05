@@ -1,12 +1,14 @@
 package top.ticho.rainbow.interfaces.query;
 
-import top.ticho.boot.view.core.BasePageQuery;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import top.ticho.boot.view.core.BasePageQuery;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 端口信息查询条件
@@ -35,6 +37,11 @@ public class PortQuery extends BasePageQuery implements Serializable {
     /** 域名 */
     @ApiModelProperty(value = "域名", position = 50)
     private String domain;
+
+    /** 过期时间 */
+    @ApiModelProperty(value = "过期时间", position = 60)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime expireAt;
 
     /** 协议类型 */
     @ApiModelProperty(value = "协议类型", position = 90)

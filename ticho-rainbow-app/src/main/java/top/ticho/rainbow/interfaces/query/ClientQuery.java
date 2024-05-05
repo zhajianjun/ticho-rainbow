@@ -1,5 +1,6 @@
 package top.ticho.rainbow.interfaces.query;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import top.ticho.boot.view.core.BasePageQuery;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 客户端信息查询条件
@@ -27,6 +29,11 @@ public class ClientQuery extends BasePageQuery implements Serializable {
     /** 客户端名称 */
     @ApiModelProperty(value = "客户端名称", position = 30)
     private String name;
+
+    /** 过期时间 */
+    @ApiModelProperty(value = "过期时间", position = 35)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime expireAt;
 
     /** 状态;1-启用,0-停用 */
     @ApiModelProperty(value = "状态;1-启用,0-停用", position = 40)
