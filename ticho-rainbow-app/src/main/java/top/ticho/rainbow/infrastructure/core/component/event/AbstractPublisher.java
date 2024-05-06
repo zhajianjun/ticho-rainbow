@@ -24,16 +24,18 @@ public abstract class AbstractPublisher<M> {
     /** 环形存储区 */
     private RingBuffer<ContextEvent<M>> ringBuffer;
 
-     public AbstractPublisher() {
-         this(1024);
-     }
-
     /**
      * @param ringBufferSize 环形缓冲区大小，必须是2的幂次方
      */
     public AbstractPublisher(int ringBufferSize) {
-        // 等待策略，超时
-        WaitStrategy waitStrategy = new TimeoutBlockingWaitStrategy(30, TimeUnit.SECONDS);
+        this(ringBufferSize, new TimeoutBlockingWaitStrategy(30, TimeUnit.SECONDS));
+    }
+
+    /**
+     * @param ringBufferSize 环形缓冲区大小，必须是2的幂次方
+     * @param waitStrategy   等待策略
+     */
+    public AbstractPublisher(int ringBufferSize, WaitStrategy waitStrategy) {
         // 线程工厂
         ThreadFactory threadFactory = ThreadUtil.newNamedThreadFactory("ticho-event-", false);
         // 生产者类型，多个
@@ -55,7 +57,7 @@ public abstract class AbstractPublisher<M> {
         try {
             // 根据序号创建数据
             ContextEvent<M> contextEvent = ringBuffer.get(ringSeq);
-            contextEvent.setData(data);
+            contextEvent.setName(name);
             contextEvent.setData(data);
         } finally {
             // 事件发布
