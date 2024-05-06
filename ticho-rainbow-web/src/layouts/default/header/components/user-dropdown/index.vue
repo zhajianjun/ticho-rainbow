@@ -82,7 +82,6 @@
 
   const getUserInfo = computed(() => {
     const { nickname = '', photo } = userStore.getUserInfo || {};
-    console.log(headerImg);
     return { nickname, avatar: photo || headerImg };
   });
 

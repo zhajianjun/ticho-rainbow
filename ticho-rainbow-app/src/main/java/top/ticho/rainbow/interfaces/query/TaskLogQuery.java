@@ -53,9 +53,13 @@ public class TaskLogQuery extends BasePageQuery implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime[] endTime;
 
-    /** 执行间隔(毫秒) */
-    @ApiModelProperty(value = "执行间隔(毫秒)", position = 90)
-    private Integer consume;
+    /** 执行间隔开始 */
+    @ApiModelProperty(value = "执行间隔开始", position = 90)
+    private Integer consumeStart;
+
+    /** 执行间隔结束 */
+    @ApiModelProperty(value = "执行间隔结束", position = 92)
+    private Integer consumeEnd;
 
     /** 链路id */
     @ApiModelProperty(value = "链路id", position = 110)

@@ -4,6 +4,7 @@ import { TaskDTO, TaskQuery } from './model/taskModel';
 enum Api {
   Task = '/task',
   TaskPage = '/task/page',
+  TaskList = '/task/list',
   RunOnceTask = '/task/runOnce',
   PauseTask = '/task/pause',
   ResumeTask = '/task/resume',
@@ -27,6 +28,10 @@ export function modifyTask(params: TaskDTO) {
 
 export function taskPage(params?: TaskQuery) {
   return defHttp.get<TaskDTO[]>({ url: Api.TaskPage, params }, { errorMessageMode: 'none' });
+}
+
+export function taskList(params?: TaskQuery) {
+  return defHttp.get<TaskDTO[]>({ url: Api.TaskList, params }, { errorMessageMode: 'none' });
 }
 
 export function runOnceTask(params) {

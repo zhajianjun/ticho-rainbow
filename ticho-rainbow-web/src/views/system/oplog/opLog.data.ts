@@ -26,7 +26,7 @@ const httpType = {
 export function getTableColumns(): BasicColumn[] {
   return [
     {
-      title: '主键编号',
+      title: '日志编号',
       dataIndex: 'id',
       resizable: true,
       width: 100,

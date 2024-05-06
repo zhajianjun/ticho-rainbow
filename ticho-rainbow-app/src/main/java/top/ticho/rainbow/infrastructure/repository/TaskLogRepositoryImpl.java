@@ -44,12 +44,14 @@ public class TaskLogRepositoryImpl extends RootServiceImpl<TaskLogMapper, TaskLo
             wrapper.ge(TaskLog::getEndTime, query.getEndTime()[0]);
             wrapper.le(TaskLog::getEndTime, query.getEndTime()[1]);
         }
-        wrapper.eq(Objects.nonNull(query.getConsume()), TaskLog::getConsume, query.getConsume());
-        wrapper.eq(StrUtil.isNotBlank(query.getTraceId()), TaskLog::getTraceId, query.getTraceId());
+        wrapper.ge(Objects.nonNull(query.getConsumeStart()), TaskLog::getConsume, query.getConsumeStart());
+        wrapper.le(Objects.nonNull(query.getConsumeEnd()), TaskLog::getConsume, query.getConsumeEnd());
+        wrapper.like(StrUtil.isNotBlank(query.getTraceId()), TaskLog::getTraceId, query.getTraceId());
         wrapper.eq(Objects.nonNull(query.getStatus()), TaskLog::getStatus, query.getStatus());
-        wrapper.eq(StrUtil.isNotBlank(query.getOperateBy()), TaskLog::getOperateBy, query.getOperateBy());
+        wrapper.like(StrUtil.isNotBlank(query.getOperateBy()), TaskLog::getOperateBy, query.getOperateBy());
         wrapper.eq(Objects.nonNull(query.getIsErr()), TaskLog::getIsErr, query.getIsErr());
-        wrapper.eq(StrUtil.isNotBlank(query.getErrMessage()), TaskLog::getErrMessage, query.getErrMessage());
+        wrapper.like(StrUtil.isNotBlank(query.getErrMessage()), TaskLog::getErrMessage, query.getErrMessage());
+        wrapper.orderByDesc(TaskLog::getId);
         return list(wrapper);
         // @formatter:on
     }
