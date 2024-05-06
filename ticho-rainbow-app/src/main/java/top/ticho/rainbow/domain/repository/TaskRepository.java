@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 定时任务调度信息 repository接口
+ * 计划任务信息 repository接口
  *
  * @author zhajianjun
  * @date 2024-03-23 23:38
@@ -16,7 +16,7 @@ import java.util.List;
 public interface TaskRepository extends RootService<Task> {
 
     /**
-     * 根据条件查询定时任务调度信息列表
+     * 根据条件查询计划任务信息列表
      *
      * @param query 查询条件
      * @return {@link List}<{@link Task}>

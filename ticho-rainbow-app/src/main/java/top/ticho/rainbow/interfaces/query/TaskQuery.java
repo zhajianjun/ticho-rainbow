@@ -10,14 +10,14 @@ import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
- * 定时任务调度信息查询条件
+ * 计划任务信息查询条件
  *
  * @author zhajianjun
  * @date 2024-03-23 23:38
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "定时任务调度信息查询条件")
+@ApiModel(value = "计划任务信息查询条件")
 public class TaskQuery extends BasePageQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 

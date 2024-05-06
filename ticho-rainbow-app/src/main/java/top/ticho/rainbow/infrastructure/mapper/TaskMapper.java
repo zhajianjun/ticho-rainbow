@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 
 /**
- * 定时任务调度信息 mapper
+ * 计划任务信息 mapper
  *
  * @author zhajianjun
  * @date 2024-03-23 23:38

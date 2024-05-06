@@ -14,7 +14,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 
 /**
- * 定时任务调度信息
+ * 计划任务信息
  *
  * @author zhajianjun
  * @date 2024-03-23 23:38

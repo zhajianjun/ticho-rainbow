@@ -30,7 +30,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * 定时任务调度信息 服务实现
+ * 计划任务信息 服务实现
  *
  * @author zhajianjun
  * @date 2024-03-23 23:38

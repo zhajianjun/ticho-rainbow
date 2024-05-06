@@ -13,14 +13,14 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
- * 定时任务调度信息DTO
+ * 计划任务信息DTO
  *
  * @author zhajianjun
  * @date 2024-03-23 23:38
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "定时任务调度信息DTO")
+@ApiModel(value = "计划任务信息DTO")
 public class TaskDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 定时任务调度信息 repository实现
+ * 计划任务信息 repository实现
  *
  * @author zhajianjun
  * @date 2024-03-23 23:38
