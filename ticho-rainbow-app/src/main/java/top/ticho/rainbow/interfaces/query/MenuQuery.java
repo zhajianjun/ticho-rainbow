@@ -23,7 +23,7 @@ import java.util.List;
 public class MenuQuery extends BasePageQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** 主键编号; */
+    /** 主键编号 */
     @ApiModelProperty(value = "主键编号", position = 10)
     private Long id;
 

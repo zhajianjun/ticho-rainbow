@@ -27,7 +27,7 @@ import java.util.List;
 public class UserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** 主键编号; */
+    /** 主键编号 */
     @ApiModelProperty(value = "主键编号", position = 10)
     @NotNull(message = "主键编号不能为空", groups = ValidGroup.Upd.class)
     private Long id;

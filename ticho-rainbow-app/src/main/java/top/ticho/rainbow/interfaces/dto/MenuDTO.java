@@ -24,7 +24,7 @@ import java.util.List;
 public class MenuDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** 主键编号; */
+    /** 主键编号 */
     @ApiModelProperty(value = "主键编号", position = 10)
     @NotNull(message = "id不能为空", groups = {ValidGroup.Upd.class})
     @Null(message = "id应为空", groups = {ValidGroup.Add.class})

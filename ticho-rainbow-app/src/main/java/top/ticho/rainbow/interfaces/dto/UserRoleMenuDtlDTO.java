@@ -23,7 +23,7 @@ import java.util.List;
 public class UserRoleMenuDtlDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** 主键编号; */
+    /** 主键编号 */
     @ApiModelProperty(value = "用户id", position = 10)
     private Long id;
 

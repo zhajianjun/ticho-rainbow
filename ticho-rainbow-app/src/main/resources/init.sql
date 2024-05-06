@@ -58,7 +58,7 @@ INSERT INTO `sys_user` VALUES (1580743544448905218,'admin','$2a$10$E/mhGMUGKHcn8
 
 DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role` (
-  `id` bigint NOT NULL COMMENT '主键编号;',
+  `id` bigint NOT NULL COMMENT '主键编号',
   `code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '角色编码',
   `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '角色名称',
   `status` tinyint DEFAULT NULL COMMENT '状态;1-正常,0-停用',
@@ -103,7 +103,7 @@ INSERT INTO `sys_dict_label` VALUES (1746819115722473472,'commonStatus','启用'
 
 DROP TABLE IF EXISTS `sys_op_log`;
 CREATE TABLE `sys_op_log` (
-  `id` bigint NOT NULL COMMENT '主键编号;',
+  `id` bigint NOT NULL COMMENT '主键编号',
   `url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求地址',
   `type` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '日志类型',
   `method` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求方法',
@@ -120,7 +120,7 @@ CREATE TABLE `sys_op_log` (
 
 DROP TABLE IF EXISTS `sys_menu`;
 CREATE TABLE `sys_menu` (
-  `id` bigint NOT NULL COMMENT '主键编号;',
+  `id` bigint NOT NULL COMMENT '主键编号',
   `parent_id` bigint DEFAULT NULL COMMENT '父级id',
   `structure` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '结构',
   `type` tinyint DEFAULT NULL COMMENT '类型;1-目录,2-菜单,3-按钮',

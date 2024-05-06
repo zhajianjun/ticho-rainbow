@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 public class User extends Model<User> implements Serializable, UserHelper {
     private static final long serialVersionUID = 1L;
 
-    /** 主键编号; */
+    /** 主键编号 */
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
