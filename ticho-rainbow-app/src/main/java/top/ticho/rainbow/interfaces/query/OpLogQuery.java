@@ -9,7 +9,6 @@ import top.ticho.boot.view.core.BasePageQuery;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * 日志信息查询条件
@@ -91,11 +90,6 @@ public class OpLogQuery extends BasePageQuery implements Serializable {
     /** 操作人 */
     @ApiModelProperty(value = "操作人", position = 160)
     private String operateBy;
-
-    /** 创建时间 */
-    @ApiModelProperty(value = "创建时间", position = 170)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private List<LocalDateTime> createTime;
 
     /** 是否异常 */
     @ApiModelProperty(value = "是否异常", position = 180)

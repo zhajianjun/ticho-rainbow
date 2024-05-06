@@ -201,4 +201,12 @@ public class TaskServiceImpl implements TaskService {
         return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), taskDTOs);
         // @formatter:on
     }
+
+    @Override
+    public List<TaskDTO> list(TaskQuery query) {
+        List<Task> list = taskRepository.list(query);
+        return list.stream()
+        .map(TaskAssembler.INSTANCE::entityToDto)
+        .collect(Collectors.toList());
+    }
 }

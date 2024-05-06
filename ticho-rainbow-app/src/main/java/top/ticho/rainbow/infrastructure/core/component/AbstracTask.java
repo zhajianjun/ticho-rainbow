@@ -2,7 +2,9 @@ package top.ticho.rainbow.infrastructure.core.component;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.date.SystemClock;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import top.ticho.boot.json.util.JsonUtil;
+import top.ticho.rainbow.domain.repository.TaskLogRepository;
+import top.ticho.rainbow.infrastructure.core.util.UserUtil;
+import top.ticho.rainbow.infrastructure.entity.TaskLog;
 import top.ticho.tool.trace.common.bean.TraceInfo;
 import top.ticho.tool.trace.common.constant.LogConst;
 import top.ticho.tool.trace.common.prop.TraceProperty;
@@ -23,8 +28,12 @@ import top.ticho.tool.trace.spring.event.TraceEvent;
 import top.ticho.tool.trace.spring.util.IpUtil;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author zhajianjun
@@ -39,15 +48,10 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
     @Resource
     private TraceProperty traceProperty;
 
+    @Resource
+    private TaskLogRepository taskLogRepository;
+
     public abstract void run(JobExecutionContext context);
-
-    public void before(JobExecutionContext context) {
-
-    }
-
-    public void complete(JobExecutionContext context) {
-
-    }
 
     public T getTaskParam(JobExecutionContext context, Class<T> claz) {
         JobDataMap jobDataMap = context.getMergedJobDataMap();
@@ -62,27 +66,53 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
         // @formatter:off
         long start = SystemClock.now();
         JobDataMap jobDataMap = context.getMergedJobDataMap();
+        Date scheduledFireTime = context.getScheduledFireTime();
+        JobDetail jobDetail = context.getJobDetail();
         mdcHandle(jobDataMap);
         String taskName = jobDataMap.getString(TaskTemplate.TASK_NAME);
         String taskParam = jobDataMap.getString(TaskTemplate.TASK_PARAM);
-        String runTime = DateUtil.format(context.getScheduledFireTime(), DatePattern.NORM_DATETIME_FORMAT);
-        JobDetail jobDetail = context.getJobDetail();
+        String runTime = DateUtil.format(scheduledFireTime, DatePattern.NORM_DATETIME_FORMAT);
         String jobName = jobDetail.getKey().getName();
         String jobClassName = jobDetail.getJobClass().getName();
+        int isErr = 0;
+        String errorMsg = null;
         try {
             log.info("定时任务开始, 任务ID:{}, 任务名称:{}, 任务时间:{}, 任务类:{}, 任务参数:{}", jobName, taskName, runTime, jobClassName, taskParam);
-            before(context);
             run(context);
         } catch (Exception e) {
             log.error("定时任务异常, 任务ID:{}, 任务名称:{}, 任务时间:{}, 任务类:{}, 异常信息:{}", jobName, taskName, runTime, jobClassName, e.getMessage(), e);
+            isErr = 1;
+            errorMsg = ExceptionUtil.stacktraceToString(e);
         } finally {
             long end = SystemClock.now();
             long consume = end - start;
-            complete(context);
             log.info("定时任务结束, 任务ID:{}, 任务名称:{}, 耗时{}ms, 任务时间:{}, 任务类:{}", jobName, taskName, consume, runTime, jobClassName);
+            saveTaskLog(jobName, jobClassName, taskParam, scheduledFireTime, start, end, consume, isErr, errorMsg);
             traceHandle(jobDataMap, start, end, consume);
         }
         // @formatter:on
+    }
+
+    private void saveTaskLog(String jobName, String jobClassName, String taskParam, Date executeDate, long start, long end,long consume, int isErr, String errorMsg) {
+        Map<String, String> mdcMap = MDC.getCopyOfContextMap();
+        LocalDateTime executeTime = Optional.ofNullable(executeDate)
+            .map(DateUtil::toLocalDateTime)
+            .orElse(LocalDateTime.now());
+        TaskLog taskLog = new TaskLog();
+        taskLog.setTaskId(Long.parseLong(jobName));
+        taskLog.setContent(jobClassName);
+        taskLog.setParam(taskParam);
+        taskLog.setExecuteTime(executeTime);
+        taskLog.setStartTime(LocalDateTimeUtil.of(start));
+        taskLog.setEndTime(LocalDateTimeUtil.of(end));
+        taskLog.setConsume(Long.valueOf(consume).intValue());
+        taskLog.setMdc(JsonUtil.toJsonString(mdcMap));
+        taskLog.setTraceId(mdcMap.get(LogConst.TRACE_ID_KEY));
+        taskLog.setStatus(Objects.equals(isErr, 1) ? 0 : 1);
+        taskLog.setOperateBy(UserUtil.getCurrentUsername());
+        taskLog.setIsErr(isErr);
+        taskLog.setErrMessage(errorMsg);
+        taskLogRepository.save(taskLog);
     }
 
     /**

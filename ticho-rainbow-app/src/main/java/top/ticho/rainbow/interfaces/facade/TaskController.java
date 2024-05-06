@@ -119,4 +119,12 @@ public class TaskController {
         return Result.ok(taskService.page(query));
     }
 
+    @PreAuthorize("@perm.hasPerms('system:task:list')")
+    @ApiOperation(value = "查询定时任务调度")
+    @ApiOperationSupport(order = 100)
+    @GetMapping("list")
+    public Result<List<TaskDTO>> list(TaskQuery query) {
+        return Result.ok(taskService.list(query));
+    }
+
 }

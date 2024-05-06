@@ -83,5 +83,13 @@ public interface TaskService {
      */
     PageResult<TaskDTO> page(TaskQuery query);
 
+    /**
+     * 分页查询定时任务调度列表
+     *
+     * @param query 查询
+     * @return {@link PageResult}<{@link TaskDTO}>
+     */
+    List<TaskDTO> list(TaskQuery query);
+
 }
 
