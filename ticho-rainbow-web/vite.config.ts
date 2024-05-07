@@ -2,6 +2,9 @@ import { defineApplicationConfig } from '@vben/vite-config';
 
 export default defineApplicationConfig({
   overrides: {
+    build: {
+      target: 'esnext',
+    },
     optimizeDeps: {
       include: [
         'echarts/core',
