@@ -40,7 +40,7 @@ ticho:
   swagger:
     enable: false
   mail:
-    enable: true
+    enable: false
     # 配置 SMTP 服务器地址
     host: ENC(KaLsKm7W9pkoyWkfAfZyczaZOtVGvYjE)
     # SMTP 服务器的端口
