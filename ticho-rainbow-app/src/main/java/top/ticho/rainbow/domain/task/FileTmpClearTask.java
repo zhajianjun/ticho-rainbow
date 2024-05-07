@@ -34,4 +34,9 @@ public class FileTmpClearTask extends AbstracTask<String> {
         FileUtil.del(file);
     }
 
+    @Override
+    public Class<String> getParamClass() {
+        return String.class;
+    }
+
 }

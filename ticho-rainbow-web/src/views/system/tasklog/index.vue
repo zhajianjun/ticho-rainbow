@@ -5,30 +5,51 @@
         <TableAction
           :actions="[
             {
-              icon: 'clarity:note-edit-line',
-              onClick: handleEdit.bind(null, record),
-              tooltip: '修改',
-              auth: 'TaskLogEdit',
+              icon: 'clarity:info-standard-line',
+              color: 'success',
+              onClick: handleDetail.bind(null, record),
+              tooltip: '查看详情',
+              ifShow: hasPermission('TaskLogDetail'),
             },
           ]"
         />
       </template>
     </BasicTable>
+    <TaskLogDetailModal @register="registerModal" />
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent } from 'vue';
+  import { defineComponent, unref } from 'vue';
   import { BasicTable, useTable, TableAction } from '@/components/Table';
-  import { getTableColumns, getSearchColumns } from './taskLog.data';
+  import { getTableColumns, getSearchColumns, task } from './taskLog.data';
   import { taskLogPage } from '@/api/system/taskLog';
   import { usePermission } from '@/hooks/web/usePermission';
+  import TaskLogDetailModal from './TaskLogDetailModal.vue';
+  import { useModal } from '@/components/Modal';
+  import { useRouter } from 'vue-router';
+  import { useTabs } from '@/hooks/web/useTabs';
 
   export default defineComponent({
     name: 'TaskLog',
-    components: { BasicTable, TableAction },
+    components: { TaskLogDetailModal, BasicTable, TableAction },
     setup() {
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('TaskLogSelect');
+      const router = useRouter();
+      const { currentRoute } = router;
+      const route = unref(currentRoute);
+      const taskId = route.query?.taskId ?? null;
+      const searchColumns = getSearchColumns();
+      const { setTitle } = useTabs();
+      if (taskId) {
+        searchColumns.find((item) => {
+          if (item.field === 'taskId') {
+            item.defaultValue = taskId;
+          }
+        });
+        const taskData = task.find((item) => item.id === taskId);
+        setTitle(`任务日志:${taskData?.name}`);
+      }
       const [registerTable, { reload }] = useTable({
         title: '任务日志信息列表',
         api: taskLogPage,
@@ -37,7 +58,7 @@
         useSearchForm: true,
         formConfig: {
           labelWidth: 120,
-          schemas: getSearchColumns(),
+          schemas: searchColumns,
           showActionButtonGroup: showSelect,
           showSubmitButton: showSelect,
           showResetButton: showSelect,
@@ -51,7 +72,7 @@
         bordered: true,
         showIndexColumn: false,
         actionColumn: {
-          width: 100,
+          width: 40,
           title: '操作',
           dataIndex: 'action',
           slots: { customRender: 'action' },
@@ -62,22 +83,22 @@
         },
       });
 
-      function handleCreate() {}
-
-      function handleEdit(record: Recordable) {
-        console.log(record);
+      function handleDetail(record: Recordable) {
+        openModal(true, record, true);
       }
 
       function handleSuccess() {
         reload();
       }
 
+      const [registerModal, { openModal }] = useModal();
+
       return {
         registerTable,
-        handleCreate,
-        handleEdit,
+        handleDetail,
         handleSuccess,
         hasPermission,
+        registerModal,
       };
     },
   });

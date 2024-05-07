@@ -1,8 +1,8 @@
 export interface TaskLogDTO {
   /** 主键编号 */
-  id: number;
+  id: string;
   /** 任务ID */
-  taskId: number;
+  taskId: string;
   /** 任务内容 */
   content: string;
   /** 任务参数 */

@@ -31,4 +31,9 @@ public class IntranetTask extends AbstracTask<String> {
         serverHandler.flushClientBatch(clients);
     }
 
+    @Override
+    public Class<String> getParamClass() {
+        return String.class;
+    }
+
 }

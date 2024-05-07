@@ -14,39 +14,38 @@
               auth: 'TaskEdit',
             },
             {
-              icon: 'ant-design:delete-outlined',
-              color: 'error',
-              popConfirm: {
-                title: '是否确认删除',
-                confirm: handleDelete.bind(null, record),
-              },
-              auth: 'TaskDel',
-              tooltip: '删除',
-            },
-          ]"
-          :dropDownActions="[
-            {
-              label: '执行一次',
+              icon: 'ant-design:play-circle-twotone',
+              tooltip: '执行一次',
               onClick: openRunOnceTaskModal.bind(null, record),
               auth: 'TaskRunOnce',
             },
             {
+              icon: 'ant-design:login-outlined',
+              tooltip: '查看日志',
+              onClick: goTaskLog.bind(null, record),
+              auth: 'GoTaskLog',
+            },
+          ]"
+          :dropDownActions="[
+            {
               label: '启动',
-              popConfirm: {
-                title: '是否启动？',
-                confirm: handleResume.bind(null, record),
-              },
+              onClick: handleResume.bind(null, record),
               disabled: record.status == 1,
               auth: 'TaskResume',
             },
             {
               label: '暂停',
-              popConfirm: {
-                title: '是否暂停？',
-                confirm: handlePause.bind(null, record),
-              },
+              onClick: handlePause.bind(null, record),
               disabled: record.status !== 1,
               auth: 'TaskPause',
+            },
+            {
+              label: '删除',
+              popConfirm: {
+                title: '是否确认删除?',
+                confirm: handleDelete.bind(null, record),
+              },
+              auth: 'TaskDel',
             },
           ]"
         />
@@ -65,6 +64,7 @@
   import { getTableColumns, getSearchColumns } from './task.data';
   import { taskPage, delTask, pauseTask, resumeTask } from '@/api/system/task';
   import { usePermission } from '@/hooks/web/usePermission';
+  import { useGo } from '@/hooks/web/usePage';
 
   export default defineComponent({
     name: 'Task',
@@ -148,6 +148,12 @@
         openRunOnceModal(true, record, true);
       }
 
+      const go = useGo();
+
+      function goTaskLog(record: Recordable) {
+        go(`/system/log/tasklog?taskId=${record.id}`);
+      }
+
       return {
         registerTable,
         registerModal,
@@ -161,6 +167,7 @@
         cronValue,
         registerRunOnceModal,
         openRunOnceTaskModal,
+        goTaskLog,
       };
     },
   });

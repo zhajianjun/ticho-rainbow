@@ -16,8 +16,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import top.ticho.boot.json.util.JsonUtil;
+import top.ticho.boot.view.util.Assert;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
-import top.ticho.rainbow.infrastructure.core.util.UserUtil;
 import top.ticho.rainbow.infrastructure.entity.TaskLog;
 import top.ticho.tool.trace.common.bean.TraceInfo;
 import top.ticho.tool.trace.common.constant.LogConst;
@@ -53,13 +53,25 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
 
     public abstract void run(JobExecutionContext context);
 
-    public T getTaskParam(JobExecutionContext context, Class<T> claz) {
+    public abstract Class<T> getParamClass();
+
+    public T getTaskParam(String taskParam) {
+        Class<T> paramClass = getParamClass();
+        if (Objects.equals(String.class, paramClass)) {
+            return paramClass.cast(taskParam);
+        }
+        return JsonUtil.toJavaObject(taskParam, paramClass);
+    }
+
+    public T getTaskParam(JobExecutionContext context) {
         JobDataMap jobDataMap = context.getMergedJobDataMap();
         String taskParam = jobDataMap.getString(TaskTemplate.TASK_PARAM);
         if (StrUtil.isBlank(taskParam)) {
             return null;
         }
-        return JsonUtil.toJavaObject(taskParam, claz);
+        T taskParamObj = getTaskParam(taskParam);
+        Assert.isNotNull(taskParamObj, "任务参数异常");
+        return taskParamObj;
     }
 
     public void executeInternal(JobExecutionContext context) {
@@ -93,11 +105,10 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
         // @formatter:on
     }
 
-    private void saveTaskLog(String jobName, String jobClassName, String taskParam, Date executeDate, long start, long end,long consume, int isErr, String errorMsg) {
+    private void saveTaskLog(String jobName, String jobClassName, String taskParam, Date executeDate, long start, long end, long consume, int isErr, String errorMsg) {
         Map<String, String> mdcMap = MDC.getCopyOfContextMap();
-        LocalDateTime executeTime = Optional.ofNullable(executeDate)
-            .map(DateUtil::toLocalDateTime)
-            .orElse(LocalDateTime.now());
+        LocalDateTime executeTime = Optional.ofNullable(executeDate).map(DateUtil::toLocalDateTime).orElse(LocalDateTime.now());
+        String username = mdcMap.getOrDefault("username", "自动定时任务");
         TaskLog taskLog = new TaskLog();
         taskLog.setTaskId(Long.parseLong(jobName));
         taskLog.setContent(jobClassName);
@@ -109,7 +120,7 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
         taskLog.setMdc(JsonUtil.toJsonString(mdcMap));
         taskLog.setTraceId(mdcMap.get(LogConst.TRACE_ID_KEY));
         taskLog.setStatus(Objects.equals(isErr, 1) ? 0 : 1);
-        taskLog.setOperateBy(UserUtil.getCurrentUsername());
+        taskLog.setOperateBy(username);
         taskLog.setIsErr(isErr);
         taskLog.setErrMessage(errorMsg);
         taskLogRepository.save(taskLog);
@@ -122,23 +133,14 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
         if (!mergedJobDataMap.containsKey(TaskTemplate.TASK_MDC_INFO)) {
             return;
         }
-        TraceInfo traceInfo = TraceInfo.builder()
-            .traceId(MDC.get(LogConst.TRACE_ID_KEY))
-            .spanId(MDC.get(LogConst.SPAN_ID_KEY))
-            .appName(MDC.get(LogConst.APP_NAME_KEY))
-            .env(environment.getProperty("spring.profiles.active"))
-            .ip(MDC.get(LogConst.IP_KEY))
-            .preAppName(MDC.get(LogConst.PRE_APP_NAME_KEY))
-            .preIp(MDC.get(LogConst.PRE_IP_KEY))
-            // .url(url)
-            // .port(port)
-            // .method(handlerMethod.toString())
-            // .type(type)
-            // .status(status)
-            .start(start)
-            .end(end)
-            .consume(consume)
-            .build();
+        TraceInfo traceInfo = TraceInfo.builder().traceId(MDC.get(LogConst.TRACE_ID_KEY)).spanId(MDC.get(LogConst.SPAN_ID_KEY)).appName(MDC.get(LogConst.APP_NAME_KEY))
+                .env(environment.getProperty("spring.profiles.active")).ip(MDC.get(LogConst.IP_KEY)).preAppName(MDC.get(LogConst.PRE_APP_NAME_KEY)).preIp(MDC.get(LogConst.PRE_IP_KEY))
+                // .url(url)
+                // .port(port)
+                // .method(handlerMethod.toString())
+                // .type(type)
+                // .status(status)
+                .start(start).end(end).consume(consume).build();
         TracePushContext.asyncPushTrace(traceProperty, traceInfo);
         ApplicationContext applicationContext = SpringUtil.getApplicationContext();
         applicationContext.publishEvent(new TraceEvent(applicationContext, traceInfo));
@@ -168,7 +170,6 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
         mdcMap.put(LogConst.IP_KEY, ip);
         TraceUtil.prepare(mdcMap);
     }
-
 
 
 }

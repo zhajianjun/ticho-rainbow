@@ -1,6 +1,6 @@
 export interface TaskDTO {
   /** 任务ID */
-  id: number;
+  id: string;
   /** 任务名称 */
   name: string;
   /** 任务内容 */

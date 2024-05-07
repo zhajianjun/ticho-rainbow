@@ -1,6 +1,6 @@
 export interface DictLabelDTO {
   /** 主键编号 */
-  id: number;
+  id: string;
   /** 字典编码 */
   code: string;
   /** 字典标签 */

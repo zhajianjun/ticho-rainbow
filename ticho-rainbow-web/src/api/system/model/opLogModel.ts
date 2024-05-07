@@ -1,6 +1,6 @@
 export interface OpLogDTO {
   /** 主键编号 */
-  id: number;
+  id: string;
   /** 名称 */
   name: string;
   /** 请求地址 */

@@ -146,7 +146,7 @@
       }
 
       function handleView(record: Recordable) {
-        go('/system/user/userDetail/' + record.username);
+        go(`/system/user/userDetail/${record.username}`);
       }
 
       return {

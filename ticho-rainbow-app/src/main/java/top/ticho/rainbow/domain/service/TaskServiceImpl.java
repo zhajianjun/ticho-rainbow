@@ -1,5 +1,6 @@
 package top.ticho.rainbow.domain.service;
 
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -43,7 +44,7 @@ public class TaskServiceImpl implements TaskService {
     private TaskRepository taskRepository;
 
     @Autowired
-    private List<AbstracTask> abstracTasks;
+    private List<AbstracTask<?>> abstracTasks;
 
     @Autowired
     private TaskTemplate taskTemplate;
@@ -89,17 +90,20 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void check(Task task) {
-        boolean present = abstracTasks
-            .stream()
-            .map(x -> x.getClass().getName())
-            .anyMatch(x -> x.equals(task.getContent()));
-        Assert.isTrue(present, BizErrCode.FAIL, "执行类不存在");
         boolean valid = TaskTemplate.isValid(task.getCronExpression());
         Assert.isTrue(valid, BizErrCode.FAIL, "cron表达式不正确");
+        Optional<AbstracTask<?>>  abstracTaskOpt = abstracTasks
+            .stream()
+            .filter(x -> Objects.equals(x.getClass().getName(), task.getContent()))
+            .findFirst();
+        if (!abstracTaskOpt.isPresent()) {
+             Assert.cast(BizErrCode.PARAM_ERROR, "执行类不存在");
+        }
+        AbstracTask<?> abstracTask = abstracTaskOpt.get();
         String param = task.getParam();
         if (StrUtil.isNotBlank(param)) {
-            boolean json = JsonUtil.isJson(param);
-            Assert.isTrue(json, BizErrCode.FAIL, "参数格式不正确");
+            Object taskParam = abstracTask.getTaskParam(param);
+            Assert.isNotNull(taskParam, BizErrCode.FAIL, "参数格式不正确");
         }
     }
 
@@ -139,6 +143,7 @@ public class TaskServiceImpl implements TaskService {
         Assert.isNotNull(task, BizErrCode.FAIL, "任务不存在");
         boolean exists = taskTemplate.checkExists(task.getId().toString(), DEFAULT_JOB_GROUP);
         Assert.isTrue(exists, BizErrCode.FAIL, "任务不存在");
+        check(task);
         boolean runJob = taskTemplate.runOnce(task.getId().toString(), DEFAULT_JOB_GROUP, param);
         Assert.isTrue(runJob, BizErrCode.FAIL, "立即执行任务失败");
     }

@@ -2,7 +2,7 @@ import { DictLabelDTO } from '@/api/system/model/dictLabelModel';
 
 export interface DictDTO {
   /** 主键编号 */
-  id: number;
+  id: string;
   /** 字典编码 */
   code: string;
   /** 字典名称 */

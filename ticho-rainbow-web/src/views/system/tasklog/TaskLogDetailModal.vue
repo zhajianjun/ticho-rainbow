@@ -12,37 +12,31 @@
 <script lang="ts">
   import { defineComponent, reactive } from 'vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
-  import { OpLogDTO } from '@/api/system/model/opLogModel';
+  import { TaskLogDTO } from '@/api/system/model/taskLogModel';
   import { Description, useDescription } from '@/components/Description';
-  import { getDescColumns } from './opLog.data';
+  import { getDescColumns } from './taskLog.data';
 
   export default defineComponent({
     name: 'TaskModal',
     components: { BasicModal, Description },
     emits: ['success', 'register'],
     setup(_) {
-      const dataRef = reactive<OpLogDTO>({
+      const dataRef = reactive<TaskLogDTO>({
         consume: 0,
+        content: '',
         createTime: '',
         endTime: '',
         errMessage: '',
+        executeTime: '',
         id: 0,
-        ip: '',
         isErr: 0,
         mdc: '',
-        name: '',
         operateBy: '',
-        position: '',
-        reqBody: '',
-        reqHeaders: '',
-        reqParams: '',
-        resBody: '',
-        resHeaders: '',
-        resStatus: 0,
+        param: '',
         startTime: '',
+        status: 0,
+        taskId: 0,
         traceId: '',
-        type: '',
-        url: '',
       });
       const [registerDescription] = useDescription({
         data: dataRef,
