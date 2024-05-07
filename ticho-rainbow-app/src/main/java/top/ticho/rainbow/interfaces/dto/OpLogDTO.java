@@ -49,17 +49,9 @@ public class OpLogDTO implements Serializable {
     @ApiModelProperty(value = "请求参数", position = 70)
     private String reqParams;
 
-    /** 请求头 */
-    @ApiModelProperty(value = "请求头", position = 80)
-    private String reqHeaders;
-
     /** 响应体 */
     @ApiModelProperty(value = "响应体", position = 90)
     private String resBody;
-
-    /** 响应头 */
-    @ApiModelProperty(value = "响应头", position = 100)
-    private String resHeaders;
 
     /** 请求开始时间 */
     @ApiModelProperty(value = "请求开始时间", position = 110)

@@ -13,12 +13,8 @@ export interface OpLogDTO {
   reqBody: string;
   /** 请求参数 */
   reqParams: string;
-  /** 请求头 */
-  reqHeaders: string;
   /** 响应体 */
   resBody: string;
-  /** 响应头 */
-  resHeaders: string;
   /** 请求开始时间 */
   startTime: string;
   /** 请求结束时间 */
@@ -56,12 +52,8 @@ export interface OpLogQuery {
   reqBody: string;
   /** 请求参数 */
   reqParams: string;
-  /** 请求头 */
-  reqHeaders: string;
   /** 响应体 */
   resBody: string;
-  /** 响应头 */
-  resHeaders: string;
   /** 请求开始时间 */
   startTime: string[];
   /** 请求结束时间 */

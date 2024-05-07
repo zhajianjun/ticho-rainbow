@@ -47,14 +47,8 @@ public class OpLog extends Model<OpLog> implements Serializable {
     /** 请求参数 */
     private String reqParams;
 
-    /** 请求头 */
-    private String reqHeaders;
-
     /** 响应体 */
     private String resBody;
-
-    /** 响应头 */
-    private String resHeaders;
 
     /** 请求开始时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

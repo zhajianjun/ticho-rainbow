@@ -67,22 +67,8 @@ export function getTableColumns(): BasicColumn[] {
       ifShow: false,
     },
     {
-      title: '请求头',
-      dataIndex: 'reqHeaders',
-      resizable: true,
-      width: 100,
-      ifShow: false,
-    },
-    {
       title: '响应体',
       dataIndex: 'resBody',
-      resizable: true,
-      width: 100,
-      ifShow: false,
-    },
-    {
-      title: '响应头',
-      dataIndex: 'resHeaders',
       resizable: true,
       width: 100,
       ifShow: false,
@@ -222,30 +208,12 @@ export function getSearchColumns(): FormSchema[] {
       },
     },
     {
-      field: `reqHeaders`,
-      label: `请求头`,
-      component: 'Input',
-      colProps: { span: 8 },
-      componentProps: {
-        placeholder: '请输入请求头',
-      },
-    },
-    {
       field: `resBody`,
       label: `响应体`,
       component: 'Input',
       colProps: { span: 8 },
       componentProps: {
         placeholder: '请输入响应体',
-      },
-    },
-    {
-      field: `resHeaders`,
-      label: `响应头`,
-      component: 'Input',
-      colProps: { span: 8 },
-      componentProps: {
-        placeholder: '请输入响应头',
       },
     },
     {

@@ -34,9 +34,7 @@ public class OpLogRepositoryImpl extends RootServiceImpl<OpLogMapper, OpLog> imp
         wrapper.like(StrUtil.isNotBlank(query.getType()), OpLog::getType, query.getType());
         wrapper.like(StrUtil.isNotBlank(query.getReqBody()), OpLog::getReqBody, query.getReqBody());
         wrapper.like(StrUtil.isNotBlank(query.getReqParams()), OpLog::getReqParams, query.getReqParams());
-        wrapper.like(StrUtil.isNotBlank(query.getReqHeaders()), OpLog::getReqHeaders, query.getReqHeaders());
         wrapper.like(StrUtil.isNotBlank(query.getResBody()), OpLog::getResBody, query.getResBody());
-        wrapper.like(StrUtil.isNotBlank(query.getResHeaders()), OpLog::getResHeaders, query.getResHeaders());
         if (Objects.nonNull(query.getStartTime()) && query.getStartTime().length == 2) {
             wrapper.ge(OpLog::getStartTime, query.getStartTime()[0]);
             wrapper.le(OpLog::getStartTime, query.getStartTime()[1]);
