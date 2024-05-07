@@ -142,16 +142,6 @@ export function getTableColumns(): BasicColumn[] {
 export function getSearchColumns(): FormSchema[] {
   return [
     {
-      field: `id`,
-      label: `主键编号`,
-      component: 'Input',
-      colProps: { span: 8 },
-      componentProps: {
-        placeholder: '请输入主键编号',
-      },
-      ifShow: false,
-    },
-    {
       field: `name`,
       label: `接口名称`,
       component: 'Input',
