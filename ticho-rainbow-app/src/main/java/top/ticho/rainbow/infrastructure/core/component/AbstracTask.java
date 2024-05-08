@@ -42,6 +42,8 @@ import java.util.Optional;
 @Slf4j
 public abstract class AbstracTask<T> extends QuartzJobBean {
 
+    // @formatter:off
+
     @Resource
     private Environment environment;
 
@@ -75,7 +77,6 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
     }
 
     public void executeInternal(JobExecutionContext context) {
-        // @formatter:off
         long start = SystemClock.now();
         JobDataMap jobDataMap = context.getMergedJobDataMap();
         Date scheduledFireTime = context.getScheduledFireTime();
@@ -102,12 +103,13 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
             saveTaskLog(jobName, jobClassName, taskParam, scheduledFireTime, start, end, consume, isErr, errorMsg);
             traceHandle(jobDataMap, start, end, consume);
         }
-        // @formatter:on
     }
 
     private void saveTaskLog(String jobName, String jobClassName, String taskParam, Date executeDate, long start, long end, long consume, int isErr, String errorMsg) {
         Map<String, String> mdcMap = MDC.getCopyOfContextMap();
-        LocalDateTime executeTime = Optional.ofNullable(executeDate).map(DateUtil::toLocalDateTime).orElse(LocalDateTime.now());
+        LocalDateTime executeTime = Optional.ofNullable(executeDate)
+            .map(DateUtil::toLocalDateTime)
+            .orElse(LocalDateTime.now());
         String username = mdcMap.getOrDefault("username", "自动定时任务");
         TaskLog taskLog = new TaskLog();
         taskLog.setTaskId(Long.parseLong(jobName));
@@ -131,16 +133,26 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
      */
     private void traceHandle(JobDataMap mergedJobDataMap, long start, long end, long consume) {
         if (!mergedJobDataMap.containsKey(TaskTemplate.TASK_MDC_INFO)) {
+            TraceUtil.complete();
             return;
         }
-        TraceInfo traceInfo = TraceInfo.builder().traceId(MDC.get(LogConst.TRACE_ID_KEY)).spanId(MDC.get(LogConst.SPAN_ID_KEY)).appName(MDC.get(LogConst.APP_NAME_KEY))
-                .env(environment.getProperty("spring.profiles.active")).ip(MDC.get(LogConst.IP_KEY)).preAppName(MDC.get(LogConst.PRE_APP_NAME_KEY)).preIp(MDC.get(LogConst.PRE_IP_KEY))
-                // .url(url)
-                // .port(port)
-                // .method(handlerMethod.toString())
-                // .type(type)
-                // .status(status)
-                .start(start).end(end).consume(consume).build();
+        TraceInfo traceInfo = TraceInfo.builder()
+            .traceId(MDC.get(LogConst.TRACE_ID_KEY))
+            .spanId(MDC.get(LogConst.SPAN_ID_KEY))
+            .appName(MDC.get(LogConst.APP_NAME_KEY))
+            .env(environment.getProperty("spring.profiles.active"))
+            .ip(MDC.get(LogConst.IP_KEY))
+            .preAppName(MDC.get(LogConst.PRE_APP_NAME_KEY))
+            .preIp(MDC.get(LogConst.PRE_IP_KEY))
+            // .url(url)
+            // .port(port)
+            // .method(handlerMethod.toString())
+            // .type(type)
+            // .status(status)
+            .start(start)
+            .end(end)
+            .consume(consume)
+            .build();
         TracePushContext.asyncPushTrace(traceProperty, traceInfo);
         ApplicationContext applicationContext = SpringUtil.getApplicationContext();
         applicationContext.publishEvent(new TraceEvent(applicationContext, traceInfo));
