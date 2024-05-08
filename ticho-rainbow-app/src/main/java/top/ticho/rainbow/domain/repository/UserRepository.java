@@ -5,6 +5,7 @@ import top.ticho.rainbow.infrastructure.entity.User;
 import top.ticho.rainbow.interfaces.query.UserAccountQuery;
 import top.ticho.rainbow.interfaces.query.UserQuery;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,6 +25,14 @@ public interface UserRepository extends RootService<User> {
     List<User> list(UserQuery query);
 
     /**
+     * 根据用户名查询(缓存)
+     *
+     * @param username 用户名
+     * @return {@link User}
+     */
+    User getCacheByUsername(String username);
+
+    /**
      * 根据用户名查询
      *
      * @param username 用户名
@@ -32,7 +41,16 @@ public interface UserRepository extends RootService<User> {
     User getByUsername(String username);
 
     /**
+     * 根据用户名列表查询
      *
+     * @param usernames  用户名列表
+     * @param status     更新状态
+     * @param neDbStatus 不能更新的状态
+     * @return {@link User}
+     */
+    Integer updateStatus(Collection<String> usernames, Integer status, Integer... neDbStatus);
+
+    /**
      * @param email 邮箱
      * @return {@link User}
      */

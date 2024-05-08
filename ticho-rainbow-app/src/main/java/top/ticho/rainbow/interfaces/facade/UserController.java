@@ -7,7 +7,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,6 +24,8 @@ import top.ticho.rainbow.interfaces.dto.UserPasswordDTO;
 import top.ticho.rainbow.interfaces.dto.UserRoleDTO;
 import top.ticho.rainbow.interfaces.dto.UserRoleMenuDtlDTO;
 import top.ticho.rainbow.interfaces.query.UserQuery;
+
+import java.util.List;
 
 /**
  * 用户信息 控制器
@@ -50,13 +51,33 @@ public class UserController {
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('system:user:remove')")
-    @ApiOperation(value = "删除用户信息")
+    @PreAuthorize("@perm.hasPerms('system:user:lock')")
+    @ApiOperation(value = "锁定用户信息")
     @ApiOperationSupport(order = 20)
-    @ApiImplicitParam(value = "用户名", name = "username", required = true)
-    @DeleteMapping
-    public Result<Void> removeByUsername(String username) {
-        userService.removeByUsername(username);
+    @ApiImplicitParam(value = "用户名, 多个用逗号隔开", name = "username", required = true)
+    @PostMapping("lock")
+    public Result<Void> lock(List<String> username) {
+        userService.lock(username);
+        return Result.ok();
+    }
+
+    @PreAuthorize("@perm.hasPerms('system:user:unlock')")
+    @ApiOperation(value = "解锁用户")
+    @ApiOperationSupport(order = 20)
+    @ApiImplicitParam(value = "用户名, 多个用逗号隔开", name = "username", required = true)
+    @PostMapping("unlock")
+    public Result<Void> unlock(List<String> username) {
+        userService.unlock(username);
+        return Result.ok();
+    }
+
+    @PreAuthorize("@perm.hasPerms('system:user:logOut')")
+    @ApiOperation(value = "注销用户")
+    @ApiOperationSupport(order = 20)
+    @ApiImplicitParam(value = "用户名, 多个用逗号隔开", name = "username", required = true)
+    @PostMapping("logOut")
+    public Result<Void> logOut(List<String> username) {
+        userService.logOut(username);
         return Result.ok();
     }
 

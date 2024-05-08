@@ -5,6 +5,8 @@ import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -310,18 +312,6 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     }
 
     @Override
-    public void removeByUsername(String username) {
-        Assert.isNotBlank(username, "用户名不能为空");
-        User user = userRepository.getByUsername(username);
-        Assert.isNotNull(user, BizErrCode.FAIL, "注销失败,用户不存在");
-        // 账户注销
-        user.setStatus(UserStatus.LOG_OUT.code());
-        user.setUsername(username);
-        boolean b = userRepository.updateById(user);
-        Assert.isNotNull(b, BizErrCode.FAIL, "注销失败");
-    }
-
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(UserDTO userDTO) {
         ValidUtil.valid(userDTO, ValidGroup.Upd.class);
@@ -367,7 +357,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
 
     @Override
     public UserDTO getInfoByUsername(String username) {
-        User user = userRepository.getByUsername(username);
+        User user = userRepository.getCacheByUsername(username);
         UserDTO userDTO = UserAssembler.INSTANCE.entityToDto(user);
         Optional.ofNullable(userDTO).ifPresent(x -> setRoles(Collections.singletonList(x)));
         return userDTO;
@@ -402,6 +392,27 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         List<Long> roleIds = Optional.ofNullable(userRoleDTO.getRoleIds()).orElseGet(ArrayList::new);
         userRoleRepository.removeAndSave(userId, roleIds);
         // @formatter:on
+    }
+
+    @Override
+    public void lock(List<String> usernames) {
+        Assert.isNotEmpty(usernames, "用户名不能为空");
+        Integer count = userRepository.updateStatus(usernames, UserStatus.LOCKED.code(), UserStatus.LOG_OUT.code());
+        Assert.isTrue(count > 0, BizErrCode.FAIL, "锁定用户失败");
+    }
+
+    @Override
+    public void unlock(List<String> usernames) {
+        Assert.isNotEmpty(usernames, "用户名不能为空");
+        Integer count = userRepository.updateStatus(usernames, UserStatus.NORMAL.code(), UserStatus.LOG_OUT.code());
+        Assert.isTrue(count > 0, BizErrCode.FAIL, "解锁用户失败");
+    }
+
+    @Override
+    public void logOut(List<String> usernames) {
+        Assert.isNotEmpty(usernames, "用户名不能为空");
+        Integer count = userRepository.updateStatus(usernames, UserStatus.LOG_OUT.code(), UserStatus.LOG_OUT.code());
+        Assert.isTrue(count > 0, BizErrCode.FAIL, "注销用户失败");
     }
 
     @Override

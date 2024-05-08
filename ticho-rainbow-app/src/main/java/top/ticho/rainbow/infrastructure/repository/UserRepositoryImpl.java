@@ -1,8 +1,10 @@
 package top.ticho.rainbow.infrastructure.repository;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -10,6 +12,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import top.ticho.boot.view.util.Assert;
+import top.ticho.boot.web.util.SpringContext;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.entity.User;
@@ -17,6 +20,7 @@ import top.ticho.rainbow.infrastructure.mapper.UserMapper;
 import top.ticho.rainbow.interfaces.query.UserAccountQuery;
 import top.ticho.rainbow.interfaces.query.UserQuery;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,13 +36,41 @@ public class UserRepositoryImpl extends RootServiceImpl<UserMapper, User> implem
 
     @Override
     @Cacheable(value = CacheConst.USER_INFO, key = "#username")
+    public User getCacheByUsername(String username) {
+        return getByUsername(username);
+    }
+
+    @Override
     public User getByUsername(String username) {
         if (StrUtil.isBlank(username)) {
             return null;
         }
-        LambdaQueryWrapper<User> queryWrapper = getUserLambdaQueryWrapper();
+        LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(User::getUsername, username);
         return getOne(queryWrapper);
+    }
+
+    @Override
+    public Integer updateStatus(Collection<String> usernames, Integer status, Integer... neDbStatus) {
+        if (CollUtil.isEmpty(usernames)) {
+            return 0;
+        }
+        LambdaUpdateWrapper<User> wrapper = Wrappers.lambdaUpdate();
+        wrapper.in(User::getUsername, usernames);
+        wrapper.notIn(ArrayUtil.isNotEmpty(neDbStatus), User::getStatus, CollUtil.toList(neDbStatus));
+        wrapper.set(User::getStatus, status);
+        int update = baseMapper.update(null, wrapper);
+        clearCache(usernames);
+        return update;
+    }
+
+    private void clearCache(Collection<String> usernames) {
+        UserRepositoryImpl bean = SpringContext.getBean(this.getClass());
+        usernames.forEach(bean::clearCache);
+    }
+
+    @CacheEvict(value = CacheConst.USER_INFO, key = "#username")
+    public void clearCache(String username) {
     }
 
     @Override
@@ -47,7 +79,7 @@ public class UserRepositoryImpl extends RootServiceImpl<UserMapper, User> implem
         if (StrUtil.isBlank(email)) {
             return null;
         }
-        LambdaQueryWrapper<User> queryWrapper = getUserLambdaQueryWrapper();
+        LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(User::getEmail, email);
         return getOne(queryWrapper);
     }
@@ -58,10 +90,6 @@ public class UserRepositoryImpl extends RootServiceImpl<UserMapper, User> implem
         // 为了保证缓存，用户名不能为空
         Assert.isNotBlank(user.getUsername(), "用户名不能为空");
         return super.updateById(user);
-    }
-
-    private LambdaQueryWrapper<User> getUserLambdaQueryWrapper() {
-        return Wrappers.lambdaQuery();
     }
 
     @Override

@@ -14,6 +14,7 @@ import top.ticho.rainbow.interfaces.dto.UserSignUpOrResetDTO;
 import top.ticho.rainbow.interfaces.query.UserQuery;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 用户信息 服务接口
@@ -73,13 +74,6 @@ public interface UserService {
      * @param userDTO 用户信息DTO 对象
      */
     void save(UserDTO userDTO);
-
-    /**
-     * 删除用户信息
-     *
-     * @param username 用户名
-     */
-    void removeByUsername(String username);
 
     /**
      * 修改用户信息
@@ -160,6 +154,21 @@ public interface UserService {
      * @param userRoleDTO 用户角色dto
      */
     void bindRole(UserRoleDTO userRoleDTO);
+
+    /**
+     * 锁定账户
+     */
+    void lock(List<String> usernames);
+
+    /**
+     * 解锁账户
+     */
+    void unlock(List<String> usernames);
+
+    /**
+     * 注销账户
+     */
+    void logOut(List<String> usernames);
 
 }
 

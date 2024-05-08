@@ -48,7 +48,7 @@ public class DefaultUsernameLoadUserService implements LoadUserService {
             return null;
         }
         // 用户信息校验
-        User user = userRepository.getByUsername(account);
+        User user = userRepository.getCacheByUsername(account);
         Assert.isNotNull(user, HttpErrCode.NOT_LOGIN, "用户或者密码不正确");
         Integer status = user.getStatus();
         String message = UserStatus.getByCode(status);

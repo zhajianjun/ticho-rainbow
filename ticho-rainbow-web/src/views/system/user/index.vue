@@ -2,7 +2,38 @@
   <PageWrapper dense contentFullHeight fixedHeight contentClass="flex">
     <BasicTable @register="registerTable" :searchInfo="searchInfo">
       <template #toolbar>
-        <a-button type="primary" v-auth="'UserAdd'" @click="handleCreate">新增账号</a-button>
+        <a-button type="primary" v-auth="'UserAdd'" @click="handleCreate">
+          <Icon icon="ant-design:plus-outlined" />
+          新增
+        </a-button>
+        <a-button type="primary" danger ghost v-auth="'UserLock'" @click="handleLock">
+          <Icon icon="ant-design:lock-outlined" />
+          锁定
+        </a-button>
+        <a-button type="dashed" v-auth="'UserUnLock'" @click="handleLock">
+          <Icon icon="ant-design:unlock-outlined" />
+          解锁
+        </a-button>
+        <a-button
+          type="primary"
+          ghost
+          v-auth="'UserImport'"
+          @click="handleLock"
+          style="color: #2a7dc9"
+        >
+          <Icon icon="ant-design:upload-outlined" />
+          导入
+        </a-button>
+        <a-button
+          type="primary"
+          ghost
+          v-auth="'UserExport'"
+          @click="handleLock"
+          style="color: #2a7dc9"
+        >
+          <Icon icon="ant-design:download-outlined" />
+          导出
+        </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'roles'">
@@ -35,13 +66,13 @@
               tooltip: '重置密码',
             },
             {
-              icon: 'ant-design:delete-outlined',
+              icon: 'ant-design:logout-outlined',
               color: 'error',
               popConfirm: {
                 title: '是否确认删除',
                 confirm: handleDelete.bind(null, record),
               },
-              tooltip: '删除',
+              tooltip: '注销',
             },
           ]"
         />
@@ -62,17 +93,18 @@
   import { usePermission } from '@/hooks/web/usePermission';
   import { Tag, Space } from 'ant-design-vue';
   import { useMessage } from '@/hooks/web/useMessage';
+  import Icon from '@/components/Icon/Icon.vue';
 
   export default defineComponent({
     name: 'AccountManagement',
-    components: { BasicTable, PageWrapper, UserModel, TableAction, Tag, Space },
+    components: { Icon, BasicTable, PageWrapper, UserModel, TableAction, Tag, Space },
     setup() {
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('UserSelect');
       const go = useGo();
       const [registerModal, { openModal }] = useModal();
       const searchInfo = reactive<Recordable>({});
-      const [registerTable, { reload }] = useTable({
+      const [registerTable, { reload, getSelectRows, getSelectRowKeys }] = useTable({
         title: '用户列表',
         api: userPage,
         rowKey: 'id',
@@ -85,6 +117,12 @@
           showActionButtonGroup: showSelect,
           showSubmitButton: showSelect,
           showResetButton: showSelect,
+          submitButtonOptions: {
+            preIcon: 'ant-design:unlock-outlined',
+          },
+          resetButtonOptions: {
+            preIcon: 'ant-design:sync-outlined',
+          },
         },
         tableSetting: {
           redo: showSelect,
@@ -103,7 +141,12 @@
         },
         pagination: {
           simple: false,
-          position: ['bottomLeft'],
+          position: ['bottomCenter'],
+          pageSizeOptions: ['2', '10'],
+        },
+        showSelectionBar: true,
+        rowSelection: {
+          type: 'checkbox',
         },
       });
 
@@ -149,6 +192,12 @@
         go(`/system/user/userDetail/${record.username}`);
       }
 
+      function handleLock() {
+        console.log(getSelectRowKeys());
+        console.log('-----');
+        console.log(getSelectRows());
+      }
+
       return {
         registerTable,
         registerModal,
@@ -161,6 +210,7 @@
         handleView,
         searchInfo,
         hasPermission,
+        handleLock,
       };
     },
   });

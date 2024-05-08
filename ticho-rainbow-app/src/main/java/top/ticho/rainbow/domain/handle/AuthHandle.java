@@ -74,7 +74,7 @@ public class AuthHandle {
      * @return {@link UserRoleMenuDtlDTO}
      */
     public UserRoleMenuDtlDTO getUserDtl(String username) {
-        User user = userRepository.getByUsername(username);
+        User user = userRepository.getCacheByUsername(username);
         UserRoleMenuDtlDTO userRoleMenuDtlDTO = UserAssembler.INSTANCE.entityToDtl(user);
         if (userRoleMenuDtlDTO == null) {
             return null;
