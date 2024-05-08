@@ -318,8 +318,10 @@ public class FileInfoServiceImpl implements FileInfoService {
         if (Objects.nonNull(chunkCacheDTO)) {
             return chunkCacheDTO;
         }
+        // intern是为了从常量池拿引用，防止new的字符串，锁的字符串内容一样，但是锁得不一样
+        String lock = chunkId.intern();
         // 加锁的意义是，防止并发上传同一个文件，导致缓存被覆盖
-        synchronized (chunkId) {
+        synchronized (lock) {
             chunkCacheDTO = springCacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkCacheDTO.class);
             boolean hasCache = Objects.nonNull(chunkCacheDTO);
             // 缓存存在则返回false
