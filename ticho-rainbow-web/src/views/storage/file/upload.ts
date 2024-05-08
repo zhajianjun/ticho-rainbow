@@ -81,7 +81,7 @@ export async function uploadBigFileHandler(
   const fileName = file.name;
   const fileMd5 = (await getFileMd5(file, chunkCount, chunkSize)) as string;
   const axiosProgressEvent = { loaded: 0, total: 100 } as AxiosProgressEvent;
-  let total = 1;
+  let total = 0;
   const proms: Promise<any>[] = [];
   // 上传分片
   for (let i = 0; i < chunkCount; i++) {
@@ -103,35 +103,24 @@ export async function uploadBigFileHandler(
       index: i,
       type: type,
     } as ChunkFileDTO;
-    const prom: Promise<any> = new Promise((resolve) => {
-      uploadChunk(formdata)
-        .then(() => {
-          total = total + 1;
-          if (total < chunkCount) {
-            axiosProgressEvent.loaded = 99;
-            onUploadProgress(axiosProgressEvent);
-          } else if (total === chunkCount) {
-            axiosProgressEvent.loaded = (total / chunkCount) * 100;
-            onUploadProgress(axiosProgressEvent);
-          }
-          resolve(true);
-        })
-        .catch((e) => {
-          return Promise.reject(e);
-        });
-    });
+    const prom: Promise<any> = uploadChunk(formdata)
+      .then(() => {
+        total = total + 1;
+        if (total < chunkCount) {
+          axiosProgressEvent.loaded = (total / chunkCount) * 100;
+          onUploadProgress(axiosProgressEvent);
+        } else if (total === chunkCount) {
+          axiosProgressEvent.loaded = 99;
+          onUploadProgress(axiosProgressEvent);
+        }
+      })
+      .catch((e) => {
+        return Promise.reject(e);
+      });
     proms.push(prom);
-
-    // 等待所有分片上传完成
-    await Promise.all(proms);
-    try {
-      // 调用分片上传接口
-      await uploadChunk(formdata);
-    } catch (e) {
-      createMessage.error(`${e}`);
-      return Promise.reject(e);
-    }
   }
+  // 等待所有分片上传完成
+  await Promise.all(proms);
   // 合并
   return composeChunk(uid)
     .then((res) => {
