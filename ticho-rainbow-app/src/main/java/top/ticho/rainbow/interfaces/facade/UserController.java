@@ -6,6 +6,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.HandlerMapping;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.core.Result;
+import top.ticho.boot.web.annotation.View;
 import top.ticho.rainbow.application.service.UserService;
 import top.ticho.rainbow.interfaces.dto.PasswordDTO;
 import top.ticho.rainbow.interfaces.dto.UserDTO;
@@ -25,6 +29,7 @@ import top.ticho.rainbow.interfaces.dto.UserRoleDTO;
 import top.ticho.rainbow.interfaces.dto.UserRoleMenuDtlDTO;
 import top.ticho.rainbow.interfaces.query.UserQuery;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -41,6 +46,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Qualifier("viewControllerHandlerMapping")
+    @Autowired
+    private HandlerMapping viewControllerHandlerMapping;
 
     @PreAuthorize("@perm.hasPerms('system:user:save')")
     @ApiOperation(value = "保存用户信息")
@@ -182,6 +190,15 @@ public class UserController {
     public Result<Void> bindRole(@RequestBody UserRoleDTO userRoleDTO) {
         userService.bindRole(userRoleDTO);
         return Result.ok();
+    }
+
+    @View(ignore = true)
+    @PreAuthorize("@perm.hasPerms('system:user:export')")
+    @ApiOperation(value = "导出用户信息", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ApiOperationSupport(order = 100)
+    @GetMapping("export")
+    public void export(UserQuery query) throws IOException {
+        userService.export(query);
     }
 
 }

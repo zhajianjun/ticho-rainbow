@@ -170,5 +170,12 @@ public interface UserService {
      */
     void logOut(List<String> usernames);
 
+    /**
+     * excel导出
+     *
+     * @param query 查询条件
+     */
+    void export(UserQuery query) throws IOException;
+
 }
 

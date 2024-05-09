@@ -3,6 +3,8 @@ package top.ticho.rainbow.domain.service;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.Page;
@@ -37,6 +39,7 @@ import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.core.component.cache.SpringCacheTemplate;
+import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
 import top.ticho.rainbow.infrastructure.core.enums.UserStatus;
@@ -60,6 +63,7 @@ import top.ticho.rainbow.interfaces.dto.UserLoginDTO;
 import top.ticho.rainbow.interfaces.dto.UserPasswordDTO;
 import top.ticho.rainbow.interfaces.dto.UserRoleDTO;
 import top.ticho.rainbow.interfaces.dto.UserSignUpOrResetDTO;
+import top.ticho.rainbow.interfaces.excel.UserExp;
 import top.ticho.rainbow.interfaces.query.UserAccountQuery;
 import top.ticho.rainbow.interfaces.query.UserQuery;
 
@@ -69,6 +73,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -423,6 +429,23 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         List<Integer> eqDbStatus = Collections.singletonList(UserStatus.NORMAL.code());
         Integer count = userRepository.updateStatus(usernames, UserStatus.LOG_OUT.code(), eqDbStatus, null);
         Assert.isTrue(count > 0, BizErrCode.FAIL, "无可注销用户");
+    }
+
+    @Override
+    public void export(UserQuery query) throws IOException {
+        String sheetName = "用户信息";
+        String fileName = "用户信息-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.NORM_DATETIME_PATTERN));
+        ExcelHandle.writeToResponseBatch(this::excelExpHandle, query, fileName, sheetName, UserExp.class, response);
+    }
+
+    private Collection<UserExp> excelExpHandle(UserQuery query) {
+        query.checkPage();
+        Page<User> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
+        userRepository.list(query);
+        return page.getResult()
+            .stream()
+            .map(UserAssembler.INSTANCE::entityToExp)
+            .collect(Collectors.toList());
     }
 
     @Override

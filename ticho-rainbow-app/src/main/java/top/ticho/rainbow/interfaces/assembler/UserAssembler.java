@@ -6,6 +6,7 @@ import org.mapstruct.factory.Mappers;
 import top.ticho.rainbow.infrastructure.entity.User;
 import top.ticho.rainbow.interfaces.dto.UserDTO;
 import top.ticho.rainbow.interfaces.dto.UserRoleMenuDtlDTO;
+import top.ticho.rainbow.interfaces.excel.UserExp;
 import top.ticho.rainbow.interfaces.query.UserAccountQuery;
 
 /**
@@ -45,4 +46,5 @@ public interface UserAssembler {
 
     UserRoleMenuDtlDTO entityToDtl(User user);
 
+    UserExp entityToExp(User user);
 }
