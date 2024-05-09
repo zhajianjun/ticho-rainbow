@@ -59,6 +59,7 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'remark',
       resizable: true,
       width: 100,
+      ifShow: false,
     },
     {
       title: '创建时间',

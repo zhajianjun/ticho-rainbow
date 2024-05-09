@@ -5,8 +5,6 @@ import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +38,7 @@ import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.core.component.cache.SpringCacheTemplate;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
 import top.ticho.rainbow.infrastructure.core.enums.UserStatus;
 import top.ticho.rainbow.infrastructure.core.util.BeetlUtil;
 import top.ticho.rainbow.infrastructure.core.util.UserUtil;
@@ -249,7 +248,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         Assert.isTrue(userSignUpOrResetDTO.getEmailCode().equalsIgnoreCase(cacheEmailCode), "验证码不正确");
         User dbUser = userRepository.getByEmail(email);
         Assert.isNotNull(dbUser, BizErrCode.FAIL, () -> {
-            log.info("重置用户" + email + "密码失败，用户不存在");
+            log.info("重置用户{}密码失败，用户不存在", email);
             return "重置失败";
         });
         String username = dbUser.getUsername();
@@ -269,6 +268,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     public void resetPassword(String username) {
         boolean admin = UserUtil.isAdmin();
         Assert.isTrue(admin, BizErrCode.FAIL, "无管理员操作权限");
+        Assert.isTrue(!SecurityConst.ADMIN.equals(username), BizErrCode.FAIL, "管理员账户无法重置密码");
         UserDTO dbUser = getInfoByUsername(username);
         Assert.isNotNull(dbUser, "用户不存在");
         String encodedPasswordNew = passwordEncoder.encode("123456");
@@ -318,7 +318,9 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         userDTO.setPassword(null);
         User user = UserAssembler.INSTANCE.dtoToEntity(userDTO);
         UserAccountQuery accountDTO = UserAssembler.INSTANCE.entityToAccount(user);
-        preCheckRepeatUser(accountDTO, userDTO.getId());
+        User dbUser = preCheckRepeatUser(accountDTO, userDTO.getId());
+        // 用户名不能修改
+        user.setUsername(dbUser.getUsername());
         Assert.isTrue(userRepository.updateById(user), BizErrCode.FAIL, "修改失败");
         if (CollUtil.isEmpty(userDTO.getRoleIds())) {
             return;
@@ -397,22 +399,30 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     @Override
     public void lock(List<String> usernames) {
         Assert.isNotEmpty(usernames, "用户名不能为空");
-        Integer count = userRepository.updateStatus(usernames, UserStatus.LOCKED.code(), UserStatus.LOG_OUT.code());
-        Assert.isTrue(count > 0, BizErrCode.FAIL, "锁定用户失败");
+        Assert.isTrue(!usernames.contains(SecurityConst.ADMIN), BizErrCode.FAIL, "管理员账户无法锁定");
+        // 正常状态才能锁定
+        List<Integer> eqDbStatus = Collections.singletonList(UserStatus.NORMAL.code());
+        Integer count = userRepository.updateStatus(usernames, UserStatus.LOCKED.code(), eqDbStatus, null);
+        Assert.isTrue(count > 0, BizErrCode.FAIL, "无可锁定用户");
     }
 
     @Override
-    public void unlock(List<String> usernames) {
+    public void unLock(List<String> usernames) {
         Assert.isNotEmpty(usernames, "用户名不能为空");
-        Integer count = userRepository.updateStatus(usernames, UserStatus.NORMAL.code(), UserStatus.LOG_OUT.code());
-        Assert.isTrue(count > 0, BizErrCode.FAIL, "解锁用户失败");
+        // 锁定状态才能解锁
+        List<Integer> eqDbStatus = Collections.singletonList(UserStatus.LOCKED.code());
+        Integer count = userRepository.updateStatus(usernames, UserStatus.NORMAL.code(), eqDbStatus, null);
+        Assert.isTrue(count > 0, BizErrCode.FAIL, "无可解锁用户");
     }
 
     @Override
     public void logOut(List<String> usernames) {
         Assert.isNotEmpty(usernames, "用户名不能为空");
-        Integer count = userRepository.updateStatus(usernames, UserStatus.LOG_OUT.code(), UserStatus.LOG_OUT.code());
-        Assert.isTrue(count > 0, BizErrCode.FAIL, "注销用户失败");
+        Assert.isTrue(!usernames.contains(SecurityConst.ADMIN), BizErrCode.FAIL, "管理员账户无法注销");
+        // 正常状态才能注销
+        List<Integer> eqDbStatus = Collections.singletonList(UserStatus.NORMAL.code());
+        Integer count = userRepository.updateStatus(usernames, UserStatus.LOG_OUT.code(), eqDbStatus, null);
+        Assert.isTrue(count > 0, BizErrCode.FAIL, "无可注销用户");
     }
 
     @Override
@@ -455,16 +465,20 @@ public class UserServiceImpl extends AuthHandle implements UserService {
      *
      * @param userAccountQuery 用户登录账号信息
      */
-    private void preCheckRepeatUser(UserAccountQuery userAccountQuery, Long updateId) {
+    private User preCheckRepeatUser(UserAccountQuery userAccountQuery, Long updateId) {
         String username = userAccountQuery.getUsername();
         String email = userAccountQuery.getEmail();
         String mobile = userAccountQuery.getMobile();
         List<User> users = userRepository.getByAccount(userAccountQuery);
         boolean isUpdate = Objects.nonNull(updateId);
+        User user = null;
         for (User item : users) {
             Long itemId = item.getId();
-            if (isUpdate && Objects.equals(updateId, itemId)) {
-                continue;
+            if (isUpdate) {
+                if (Objects.equals(updateId, itemId)) {
+                    user = item;
+                    continue;
+                }
             }
             String itemUsername = item.getUsername();
             String itemMobile = item.getMobile();
@@ -476,6 +490,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
             // 邮箱重复判断
             Assert.isTrue(!Objects.equals(email, itemEmail), BizErrCode.FAIL, "该邮箱已经存在");
         }
+        return user;
     }
 
     public void setRoles(List<UserDTO> userDtos) {

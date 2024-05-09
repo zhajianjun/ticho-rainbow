@@ -93,13 +93,16 @@ export const userFormSchema: FormSchema[] = [
     field: 'username',
     label: '用户名',
     component: 'Input',
-    helpMessage: ['本字段演示异步验证', '不能输入带有admin的用户名'],
+    helpMessage: ['用户名'],
     rules: [
       {
         required: true,
         message: '请输入用户名',
       },
     ],
+    dynamicDisabled: ({ values }) => {
+      return values.id;
+    },
   },
   {
     field: 'password',
@@ -121,6 +124,9 @@ export const userFormSchema: FormSchema[] = [
     required: true,
     colProps: {
       span: 24,
+    },
+    dynamicDisabled: ({ values }) => {
+      return values.username === 'admin';
     },
   },
   {
@@ -154,15 +160,6 @@ export const userFormSchema: FormSchema[] = [
     field: 'email',
     component: 'Input',
     required: true,
-  },
-  {
-    label: '状态',
-    field: 'status',
-    component: 'Select',
-    required: true,
-    componentProps: {
-      options: getDictByCode(userStatus),
-    },
   },
   {
     label: '备注',

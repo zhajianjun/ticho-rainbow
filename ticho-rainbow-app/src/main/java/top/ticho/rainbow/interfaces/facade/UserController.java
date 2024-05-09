@@ -56,18 +56,18 @@ public class UserController {
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "用户名, 多个用逗号隔开", name = "username", required = true)
     @PostMapping("lock")
-    public Result<Void> lock(List<String> username) {
+    public Result<Void> lock(@RequestBody List<String> username) {
         userService.lock(username);
         return Result.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('system:user:unlock')")
+    @PreAuthorize("@perm.hasPerms('system:user:unLock')")
     @ApiOperation(value = "解锁用户")
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "用户名, 多个用逗号隔开", name = "username", required = true)
-    @PostMapping("unlock")
-    public Result<Void> unlock(List<String> username) {
-        userService.unlock(username);
+    @PostMapping("unLock")
+    public Result<Void> unLock(@RequestBody List<String> username) {
+        userService.unLock(username);
         return Result.ok();
     }
 
@@ -76,7 +76,7 @@ public class UserController {
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "用户名, 多个用逗号隔开", name = "username", required = true)
     @PostMapping("logOut")
-    public Result<Void> logOut(List<String> username) {
+    public Result<Void> logOut(@RequestBody List<String> username) {
         userService.logOut(username);
         return Result.ok();
     }

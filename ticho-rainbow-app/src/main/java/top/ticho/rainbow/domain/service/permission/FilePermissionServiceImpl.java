@@ -1,6 +1,5 @@
-package top.ticho.rainbow.domain.service;
+package top.ticho.rainbow.domain.service.permission;
 
-import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

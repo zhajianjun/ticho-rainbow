@@ -45,10 +45,11 @@ public interface UserRepository extends RootService<User> {
      *
      * @param usernames  用户名列表
      * @param status     更新状态
+     * @param eqDbStatus 必须是某些状态
      * @param neDbStatus 不能更新的状态
      * @return {@link User}
      */
-    Integer updateStatus(Collection<String> usernames, Integer status, Integer... neDbStatus);
+    Integer updateStatus(Collection<String> usernames, Integer status, Collection<Integer> eqDbStatus, Collection<Integer> neDbStatus);
 
     /**
      * @param email 邮箱

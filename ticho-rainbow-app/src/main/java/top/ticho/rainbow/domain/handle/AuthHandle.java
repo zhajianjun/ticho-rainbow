@@ -23,6 +23,7 @@ import top.ticho.rainbow.interfaces.assembler.UserAssembler;
 import top.ticho.rainbow.interfaces.dto.MenuDtlDTO;
 import top.ticho.rainbow.interfaces.dto.RoleDTO;
 import top.ticho.rainbow.interfaces.dto.RoleMenuDtlDTO;
+import top.ticho.rainbow.interfaces.dto.UserDTO;
 import top.ticho.rainbow.interfaces.dto.UserRoleMenuDtlDTO;
 
 import java.util.ArrayList;
@@ -66,6 +67,11 @@ public class AuthHandle {
 
     @Autowired
     private FileInfoService fileInfoService;
+
+    public UserDTO getUser(String username) {
+        User user = userRepository.getCacheByUsername(username);
+        return UserAssembler.INSTANCE.entityToDto(user);
+    }
 
     /**
      * 查询用户角色菜单权限标识信息

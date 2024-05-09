@@ -163,7 +163,7 @@ public interface UserService {
     /**
      * 解锁账户
      */
-    void unlock(List<String> usernames);
+    void unLock(List<String> usernames);
 
     /**
      * 注销账户

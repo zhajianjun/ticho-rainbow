@@ -6,11 +6,11 @@
           <Icon icon="ant-design:plus-outlined" />
           新增
         </a-button>
-        <a-button type="primary" danger ghost v-auth="'UserLock'" @click="handleLock">
+        <a-button type="primary" danger ghost v-auth="'UserLock'" @click="handleBatch(Action.lockUser)">
           <Icon icon="ant-design:lock-outlined" />
           锁定
         </a-button>
-        <a-button type="dashed" v-auth="'UserUnLock'" @click="handleLock">
+        <a-button type="dashed" v-auth="'UserUnLock'" @click="handleBatch(Action.unLockUser)">
           <Icon icon="ant-design:unlock-outlined" />
           解锁
         </a-button>
@@ -18,7 +18,7 @@
           type="primary"
           ghost
           v-auth="'UserImport'"
-          @click="handleLock"
+          @click="handleCreate"
           style="color: #2a7dc9"
         >
           <Icon icon="ant-design:upload-outlined" />
@@ -28,7 +28,7 @@
           type="primary"
           ghost
           v-auth="'UserExport'"
-          @click="handleLock"
+          @click="handleCreate"
           style="color: #2a7dc9"
         >
           <Icon icon="ant-design:download-outlined" />
@@ -64,15 +64,17 @@
                 confirm: resetPassword.bind(null, record),
               },
               tooltip: '重置密码',
+              disabled: record.status !== 1 || record.username === 'admin',
             },
             {
               icon: 'ant-design:logout-outlined',
               color: 'error',
               popConfirm: {
-                title: '是否确认删除',
-                confirm: handleDelete.bind(null, record),
+                title: '是否确认注销',
+                confirm: handleLogOut.bind(null, record),
               },
               tooltip: '注销',
+              disabled: record.status !== 1 || record.username === 'admin',
             },
           ]"
         />
@@ -84,7 +86,7 @@
 <script lang="ts">
   import { defineComponent, reactive } from 'vue';
   import { BasicTable, useTable, TableAction } from '@/components/Table';
-  import { userPage, delUser, resetUserPassword } from '@/api/system/user';
+  import { userPage, resetUserPassword, lockUser, unlockUser, logOutUser } from '@/api/system/user';
   import { PageWrapper } from '@/components/Page';
   import { useModal } from '@/components/Modal';
   import UserModel from './UserModal.vue';
@@ -95,6 +97,11 @@
   import { useMessage } from '@/hooks/web/useMessage';
   import Icon from '@/components/Icon/Icon.vue';
 
+  enum Action {
+    lockUser,
+    unLockUser,
+  }
+
   export default defineComponent({
     name: 'AccountManagement',
     components: { Icon, BasicTable, PageWrapper, UserModel, TableAction, Tag, Space },
@@ -104,7 +111,7 @@
       const go = useGo();
       const [registerModal, { openModal }] = useModal();
       const searchInfo = reactive<Recordable>({});
-      const [registerTable, { reload, getSelectRows, getSelectRowKeys }] = useTable({
+      const [registerTable, { reload, getSelectRows }] = useTable({
         title: '用户列表',
         api: userPage,
         rowKey: 'id',
@@ -118,7 +125,7 @@
           showSubmitButton: showSelect,
           showResetButton: showSelect,
           submitButtonOptions: {
-            preIcon: 'ant-design:unlock-outlined',
+            preIcon: 'ant-design:search-outlined',
           },
           resetButtonOptions: {
             preIcon: 'ant-design:sync-outlined',
@@ -142,7 +149,6 @@
         pagination: {
           simple: false,
           position: ['bottomCenter'],
-          pageSizeOptions: ['2', '10'],
         },
         showSelectionBar: true,
         rowSelection: {
@@ -172,9 +178,27 @@
         });
       }
 
-      function handleDelete(record: Recordable) {
-        delUser(record.username).then(() => {
-          createMessage.success('删除成功');
+      function handleLogOut(record: Recordable) {
+        logOutUser([record.username]).then(() => {
+          reload();
+        });
+      }
+
+      async function handleBatch(type: Action) {
+        const selectRows = getSelectRows();
+        const usernames = selectRows.map((item) => item.username) as string[];
+        let api: Promise<any>;
+        switch (type) {
+          case Action.lockUser:
+            api = lockUser(usernames);
+            break;
+          case Action.unLockUser:
+            api = unlockUser(usernames);
+            break;
+          default:
+            return;
+        }
+        api.then(() => {
           reload();
         });
       }
@@ -192,25 +216,20 @@
         go(`/system/user/userDetail/${record.username}`);
       }
 
-      function handleLock() {
-        console.log(getSelectRowKeys());
-        console.log('-----');
-        console.log(getSelectRows());
-      }
-
       return {
         registerTable,
         registerModal,
         handleCreate,
         handleEdit,
         resetPassword,
-        handleDelete,
+        handleBatch,
+        handleLogOut,
         handleSuccess,
         handleSelect,
         handleView,
         searchInfo,
         hasPermission,
-        handleLock,
+        Action,
       };
     },
   });

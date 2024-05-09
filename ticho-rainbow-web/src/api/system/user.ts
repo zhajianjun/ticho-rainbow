@@ -11,6 +11,9 @@ enum Api {
   UpdatePasswordForSelf = '/user/updatePasswordForSelf',
   ResetUserPassword = '/user/resetPassword',
   UploadAvatar = '/user/uploadAvatar',
+  LockUser = '/user/lock',
+  UnLockUser = '/user/unLock',
+  LogOutUser = '/user/logOut',
 }
 
 export function userPage(params?: UserQuery) {
@@ -26,11 +29,24 @@ export function saveUser(params: UserDTO) {
   return defHttp.post<any>({ url: Api.UserInfo, params }, { errorMessageMode: 'message' });
 }
 
-export function delUser(id: string) {
-  const params = { id: id };
-  return defHttp.delete<any>(
-    { url: Api.UserInfo, params },
-    { errorMessageMode: 'message', joinParamsToUrl: true },
+export function lockUser(params: string[]) {
+  return defHttp.post<any>(
+    { url: Api.LockUser, params },
+    { errorMessageMode: 'message', successMessageMode: 'message' },
+  );
+}
+
+export function unlockUser(params: string[]) {
+  return defHttp.post<any>(
+    { url: Api.UnLockUser, params },
+    { errorMessageMode: 'message', successMessageMode: 'message' },
+  );
+}
+
+export function logOutUser(params: string[]) {
+  return defHttp.post<any>(
+    { url: Api.LogOutUser, params },
+    { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
 

@@ -18,6 +18,8 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import top.ticho.boot.json.util.JsonUtil;
 import top.ticho.boot.view.util.Assert;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
+import top.ticho.rainbow.infrastructure.core.constant.CommConst;
+import top.ticho.rainbow.infrastructure.core.util.UserUtil;
 import top.ticho.rainbow.infrastructure.entity.TaskLog;
 import top.ticho.tool.trace.common.bean.TraceInfo;
 import top.ticho.tool.trace.common.constant.LogConst;
@@ -110,7 +112,7 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
         LocalDateTime executeTime = Optional.ofNullable(executeDate)
             .map(DateUtil::toLocalDateTime)
             .orElse(LocalDateTime.now());
-        String username = mdcMap.getOrDefault("username", "自动定时任务");
+        String username = mdcMap.get(CommConst.USERNAME_KEY);
         TaskLog taskLog = new TaskLog();
         taskLog.setTaskId(Long.parseLong(jobName));
         taskLog.setContent(jobClassName);
@@ -173,7 +175,9 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
         }
         boolean hasTraceInfo = mdcMap.containsKey(LogConst.TRACE_KEY);
         if (hasTraceInfo) {
+            // mdc参数中本来就有username
             MDC.setContextMap(mdcMap);
+            UserUtil.userTrace(null);
             return;
         }
         String appName = environment.getProperty("spring.application.name");
@@ -181,6 +185,7 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
         mdcMap.put(LogConst.APP_NAME_KEY, appName);
         mdcMap.put(LogConst.IP_KEY, ip);
         TraceUtil.prepare(mdcMap);
+        UserUtil.userTrace("自动定时任务");
     }
 
 

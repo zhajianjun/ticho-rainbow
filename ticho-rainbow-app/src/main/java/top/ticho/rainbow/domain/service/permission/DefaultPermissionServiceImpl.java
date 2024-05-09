@@ -1,4 +1,4 @@
-package top.ticho.rainbow.domain.service;
+package top.ticho.rainbow.domain.service.permission;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
@@ -10,8 +10,10 @@ import top.ticho.boot.security.constant.BaseOAuth2Const;
 import top.ticho.rainbow.domain.handle.AuthHandle;
 import top.ticho.rainbow.infrastructure.core.constant.CommConst;
 import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
+import top.ticho.rainbow.infrastructure.core.enums.UserStatus;
 import top.ticho.rainbow.infrastructure.core.util.UserUtil;
 import top.ticho.rainbow.interfaces.dto.SecurityUser;
+import top.ticho.rainbow.interfaces.dto.UserDTO;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -52,6 +54,10 @@ public class DefaultPermissionServiceImpl extends AuthHandle implements Permissi
         }
         if (roleCodes.contains(SecurityConst.ADMIN)) {
             return true;
+        }
+        UserDTO user = getUser(currentUser.getUsername());
+        if (Objects.isNull(user) || !Objects.equals(user.getStatus(), UserStatus.NORMAL.code())) {
+            return false;
         }
         List<String> perms = getPerms(roleCodes);
         if (CollUtil.isEmpty(perms)) {

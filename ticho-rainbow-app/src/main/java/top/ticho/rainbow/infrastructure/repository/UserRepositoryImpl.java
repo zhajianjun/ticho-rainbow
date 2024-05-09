@@ -1,7 +1,6 @@
 package top.ticho.rainbow.infrastructure.repository;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -51,13 +50,14 @@ public class UserRepositoryImpl extends RootServiceImpl<UserMapper, User> implem
     }
 
     @Override
-    public Integer updateStatus(Collection<String> usernames, Integer status, Integer... neDbStatus) {
+    public Integer updateStatus(Collection<String> usernames, Integer status, Collection<Integer> eqDbStatus, Collection<Integer> neDbStatus) {
         if (CollUtil.isEmpty(usernames)) {
             return 0;
         }
         LambdaUpdateWrapper<User> wrapper = Wrappers.lambdaUpdate();
         wrapper.in(User::getUsername, usernames);
-        wrapper.notIn(ArrayUtil.isNotEmpty(neDbStatus), User::getStatus, CollUtil.toList(neDbStatus));
+        wrapper.in(CollUtil.isNotEmpty(eqDbStatus), User::getStatus, eqDbStatus);
+        wrapper.notIn(CollUtil.isNotEmpty(neDbStatus), User::getStatus, neDbStatus);
         wrapper.set(User::getStatus, status);
         int update = baseMapper.update(null, wrapper);
         clearCache(usernames);

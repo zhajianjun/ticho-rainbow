@@ -36,11 +36,7 @@ public class CustomTraceInterceptor implements HandlerInterceptor, Ordered {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
-        String traceKey = Optional.ofNullable(MDC.get("trace")).orElse(StrUtil.EMPTY) + ".${username}";
-        String currentUsername = UserUtil.getCurrentUsername();
-        MDC.put("username", currentUsername);
-        String trace = BeetlUtil.render(traceKey, MDC.getCopyOfContextMap());
-        MDC.put("trace", trace);
+        UserUtil.userTrace();
         return true;
     }
 

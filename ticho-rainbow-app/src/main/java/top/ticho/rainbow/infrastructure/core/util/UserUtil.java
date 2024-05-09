@@ -1,19 +1,22 @@
 package top.ticho.rainbow.infrastructure.core.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.slf4j.MDC;
 import top.ticho.boot.security.util.BaseUserUtil;
+import top.ticho.rainbow.infrastructure.core.constant.CommConst;
 import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
 import top.ticho.rainbow.interfaces.dto.SecurityUser;
 import top.ticho.rainbow.interfaces.dto.UserHelper;
+import top.ticho.tool.trace.core.util.BeetlUtil;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
- *
- *
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
@@ -72,7 +75,7 @@ public class UserUtil {
      * 查询两个用户是否一致
      *
      * @param userHelper 用户帮助
-     * @param loginUser 登录用户
+     * @param loginUser  登录用户
      * @return boolean
      */
     public static boolean isSelf(UserHelper userHelper, UserHelper loginUser) {
@@ -82,6 +85,19 @@ public class UserUtil {
         String username = userHelper.getUsername();
         String loginUsername = loginUser.getUsername();
         return Objects.equals(username, loginUsername);
+    }
+
+    public static void userTrace() {
+        userTrace(UserUtil.getCurrentUsername());
+    }
+
+    public static void userTrace(String username) {
+        if (Objects.nonNull(username)) {
+            MDC.put(CommConst.USERNAME_KEY, username);
+        }
+        String traceKey = Optional.ofNullable(MDC.get("trace")).orElse(StrUtil.EMPTY) + ".${username!}";
+        String trace = BeetlUtil.render(traceKey, MDC.getCopyOfContextMap());
+        MDC.put("trace", trace);
     }
 
 }
