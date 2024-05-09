@@ -7,9 +7,13 @@ import { useUserStoreWithOut } from '@/store/modules/user';
 
 import { PAGE_NOT_FOUND_ROUTE } from '@/router/routes/basic';
 
+import { useMessage } from '@/hooks/web/useMessage';
+
 const LOGIN_PATH = PageEnum.BASE_LOGIN;
 
 const whitePathList: PageEnum[] = [LOGIN_PATH];
+
+const { createMessage } = useMessage();
 
 export function createPermissionGuard(router: Router) {
   const userStore = useUserStoreWithOut();
@@ -66,12 +70,13 @@ export function createPermissionGuard(router: Router) {
       return;
     }
 
-    // get userinfo while last fetch time is empty
+    // 刷新整个页面LastUpdateTime会等于0，重新进行查询用户信息，如果报错则跳到登录页
     if (userStore.getLastUpdateTime === 0) {
       try {
         await userStore.getUserInfoAction();
       } catch (err) {
-        next();
+        createMessage.error(`${err?.response?.data?.msg ?? '权限不足'},请重新登录`);
+        await userStore.logout(true);
         return;
       }
     }
