@@ -4,7 +4,6 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.Page;
@@ -34,6 +33,7 @@ import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.FileInfoService;
 import top.ticho.rainbow.application.service.UserService;
 import top.ticho.rainbow.domain.handle.AuthHandle;
+import top.ticho.rainbow.domain.handle.DictTemplate;
 import top.ticho.rainbow.domain.repository.EmailRepository;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
@@ -41,6 +41,7 @@ import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.core.component.cache.SpringCacheTemplate;
 import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.core.constant.DictConst;
 import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
 import top.ticho.rainbow.infrastructure.core.enums.UserStatus;
 import top.ticho.rainbow.infrastructure.core.util.BeetlUtil;
@@ -64,6 +65,7 @@ import top.ticho.rainbow.interfaces.dto.UserPasswordDTO;
 import top.ticho.rainbow.interfaces.dto.UserRoleDTO;
 import top.ticho.rainbow.interfaces.dto.UserSignUpOrResetDTO;
 import top.ticho.rainbow.interfaces.excel.UserExp;
+import top.ticho.rainbow.interfaces.excel.UserImp;
 import top.ticho.rainbow.interfaces.query.UserAccountQuery;
 import top.ticho.rainbow.interfaces.query.UserQuery;
 
@@ -82,6 +84,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -118,6 +121,9 @@ public class UserServiceImpl extends AuthHandle implements UserService {
 
     @Autowired
     private FileInfoService fileInfoService;
+
+    @Autowired
+    private DictTemplate dictTemplate;
 
     @Override
     public void imgCode(String imgKey) throws IOException {
@@ -432,19 +438,45 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     }
 
     @Override
-    public void export(UserQuery query) throws IOException {
+    public void impTemplate() throws IOException {
         String sheetName = "用户信息";
-        String fileName = "用户信息-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.NORM_DATETIME_PATTERN));
-        ExcelHandle.writeToResponseBatch(this::excelExpHandle, query, fileName, sheetName, UserExp.class, response);
+        String fileName = "用户信息模板-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
+        ExcelHandle.writeEmptyToResponseBatch(fileName, sheetName, UserExp.class, response);
     }
 
-    private Collection<UserExp> excelExpHandle(UserQuery query) {
+    @Override
+    public void impExcel(MultipartFile file) throws IOException {
+        String sheetName = "用户信息";
+        String fileName = "用户信息模板-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
+        ExcelHandle.readAndWriteToResponse(this::readAndWrite, file, fileName, sheetName, UserImp.class, UserExp.class, response);
+    }
+
+    public void readAndWrite(List<UserImp> userImps, Consumer<UserImp> errHandle) {
+        for (UserImp userImp : userImps) {
+            // TODO excel导出
+        }
+    }
+
+    @Override
+    public void expExcel(UserQuery query) throws IOException {
+        String sheetName = "用户信息";
+        String fileName = "用户信息-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
+        Map<String, String> labelMap = dictTemplate.getLabelMapBatch(DictConst.USER_STATUS, DictConst.SEX);
+        ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, UserExp.class, response);
+    }
+
+    private Collection<UserExp> excelExpHandle(UserQuery query, Map<String, String> labelMap) {
         query.checkPage();
         Page<User> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
         userRepository.list(query);
         return page.getResult()
             .stream()
-            .map(UserAssembler.INSTANCE::entityToExp)
+            .map(x-> {
+                UserExp userExp = UserAssembler.INSTANCE.entityToExp(x);
+                userExp.setStatusName(labelMap.get(DictConst.USER_STATUS + x.getStatus()));
+                userExp.setSexName(labelMap.get(DictConst.SEX + x.getSex()));
+                return userExp;
+            })
             .collect(Collectors.toList());
     }
 

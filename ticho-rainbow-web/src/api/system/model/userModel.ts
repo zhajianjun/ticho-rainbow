@@ -11,6 +11,7 @@ export interface UserLoginDTO {
 export interface UserQuery {
   pageNum: number;
   pageSize: number;
+  ids: string[];
   id: string;
   username: string;
   realname: string;

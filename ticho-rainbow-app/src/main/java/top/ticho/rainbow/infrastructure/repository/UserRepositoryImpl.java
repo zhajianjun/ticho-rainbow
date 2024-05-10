@@ -95,6 +95,7 @@ public class UserRepositoryImpl extends RootServiceImpl<UserMapper, User> implem
     @Override
     public List<User> list(UserQuery query) {
         LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
+        wrapper.in(CollUtil.isNotEmpty(query.getIds()), User::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), User::getId, query.getId());
         wrapper.like(StrUtil.isNotBlank(query.getUsername()), User::getUsername, query.getUsername());
         wrapper.like(StrUtil.isNotBlank(query.getNickname()), User::getNickname, query.getNickname());
@@ -106,7 +107,7 @@ public class UserRepositoryImpl extends RootServiceImpl<UserMapper, User> implem
         wrapper.like(StrUtil.isNotBlank(query.getAddress()), User::getAddress, query.getAddress());
         wrapper.like(StrUtil.isNotBlank(query.getEducation()), User::getEducation, query.getEducation());
         wrapper.like(StrUtil.isNotBlank(query.getEmail()), User::getEmail, query.getEmail());
-        wrapper.like(Objects.nonNull(query.getQq()), User::getQq, query.getQq());
+        wrapper.like(StrUtil.isNotBlank(query.getQq()), User::getQq, query.getQq());
         wrapper.like(StrUtil.isNotBlank(query.getWechat()), User::getWechat, query.getWechat());
         wrapper.like(StrUtil.isNotBlank(query.getMobile()), User::getMobile, query.getMobile());
         wrapper.eq(StrUtil.isNotBlank(query.getLastIp()), User::getLastIp, query.getLastIp());

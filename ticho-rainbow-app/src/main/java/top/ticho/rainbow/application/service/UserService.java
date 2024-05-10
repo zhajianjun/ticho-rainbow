@@ -171,11 +171,25 @@ public interface UserService {
     void logOut(List<String> usernames);
 
     /**
-     * excel导出
+     * 导入模板下载
+     */
+    void impTemplate() throws IOException;
+
+
+    /**
+     * 导入用户信息
+     *
+     * @param file 文件信息
+     */
+    void impExcel(MultipartFile file) throws IOException;
+
+    /**
+     * 导出用户信息
      *
      * @param query 查询条件
      */
-    void export(UserQuery query) throws IOException;
+    void expExcel(UserQuery query) throws IOException;
+
 
 }
 

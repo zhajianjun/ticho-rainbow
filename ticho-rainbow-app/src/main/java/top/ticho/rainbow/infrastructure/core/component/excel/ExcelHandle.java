@@ -16,8 +16,10 @@ import top.ticho.boot.view.core.Result;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -58,6 +60,25 @@ public class ExcelHandle {
      * @param datas 数据
      * @param title 标题
      * @param claz  excel类
+     */
+    public static <M> void write(
+        OutputStream outputStream,
+        List<M> datas,
+        String title,
+        Class<M> claz
+    ) {
+        try (ExcelWriter excelWriter = EasyExcel.write(outputStream, claz).build()) {
+            WriteSheet writeSheet = EasyExcel.writerSheet(title).build();
+            excelWriter.write(datas, writeSheet);
+        }
+    }
+
+    /**
+     * 数据写入流
+     *
+     * @param datas 数据
+     * @param title 标题
+     * @param claz  excel类
      * @return {@link ByteArrayOutputStream} 返回流
      */
     public static <M> ByteArrayOutputStream write(
@@ -68,7 +89,6 @@ public class ExcelHandle {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream(); ExcelWriter excelWriter = EasyExcel.write(out, claz).build()) {
             WriteSheet writeSheet = EasyExcel.writerSheet(title).build();
             excelWriter.write(datas, writeSheet);
-            excelWriter.close();
             return out;
         }
     }
@@ -87,6 +107,7 @@ public class ExcelHandle {
     ) throws IOException {
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLUtil.encodeAll(fileName + ".xlsx"));
         try {
             ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), claz).build();
@@ -118,6 +139,23 @@ public class ExcelHandle {
         HttpServletResponse response
     ) throws IOException {
         writeToResponseBatch(handlerDataBatch, query, fileName, sheetName, claz, 50, 10000L, response);
+    }
+
+    /**
+     * 空数据写入HttpServletResponse
+     *
+     * @param fileName         文件名称
+     * @param sheetName        sheetName
+     * @param claz             excel类
+     * @param response         HttpServletResponse
+     */
+    public static <R> void writeEmptyToResponseBatch(
+        String fileName,
+        String sheetName,
+        Class<R> claz,
+        HttpServletResponse response
+    ) throws IOException {
+        writeToResponseBatch(null, null, fileName, sheetName, claz, 50, 10000L, response);
     }
 
     /**
@@ -153,15 +191,21 @@ public class ExcelHandle {
         }
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLUtil.encodeAll(fileName + ".xlsx"));
-        try {
-            ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), claz).build();
+        try(ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), claz).build()) {
             WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
             long total = 0;
+            if (query == null) {
+                // 要执行write,不然没有标题
+                excelWriter.write(Collections.emptyList(), writeSheet);
+                return;
+            }
             query.setPageNum(1);
             query.setPageSize(batchSize);
             while (true) {
                 Collection<R> apply = handlerDataBatch.apply(query);
+                // 如果第一次执行是空数据，也要执行write,不然没有标题
                 excelWriter.write(apply, writeSheet);
                 if (apply.isEmpty()) {
                     break;
@@ -177,10 +221,42 @@ public class ExcelHandle {
                 }
                 query.setPageNum(query.getPageNum() + 1);
             }
-            excelWriter.close();
         } catch (Exception e) {
             log.error("{}下载失败，{}", sheetName, e.getMessage(), e);
             downloadFileErrRes(response, e.getMessage());
+        }
+    }
+
+    /**
+     * 读取excel,把结果写入到新的excel中
+     *
+     * @param file 文件
+     * @param handlerDataBatch 对读取的数据处理的逻辑
+     * @param impClaz excel导入类
+     * @param expClaz excel导出类
+     */
+    public static <I extends ExcelBaseImp, E> void readAndWriteToResponse(
+        BiConsumer<List<I>, Consumer<I>> handlerDataBatch,
+        MultipartFile file,
+        String fileName,
+        String sheetName,
+        Class<I> impClaz,
+        Class<E> expClaz,
+        HttpServletResponse response
+    ) throws IOException {
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLUtil.encodeAll(fileName + ".xlsx"));
+        try (ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), expClaz).build()) {
+            WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
+            excelWriter.write(Collections.emptyList(), writeSheet);
+            BiConsumer<List<I>, Consumer<I>> handlerDataBatchProxy = (s, t) -> {
+                handlerDataBatch.accept(s, t);
+                excelWriter.write(s, writeSheet);
+            };
+            ExcelListener<I> readListener = new ExcelListener<>(handlerDataBatchProxy);
+            EasyExcel.read(file.getInputStream(), impClaz, readListener).sheet().doRead();
         }
     }
 

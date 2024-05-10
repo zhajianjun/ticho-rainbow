@@ -1,7 +1,6 @@
 package top.ticho.rainbow.interfaces.query;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,6 +10,7 @@ import top.ticho.boot.view.core.BasePageQuery;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 用户信息查询条件
@@ -23,6 +23,10 @@ import java.time.LocalDateTime;
 @ApiModel(value = "用户信息查询条件")
 public class UserQuery extends BasePageQuery implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    /** 主键编号 */
+    @ApiModelProperty(value = "主键编号列表", position = 9)
+    private List<Long> ids;
 
     /** 主键编号 */
     @ApiModelProperty(value = "主键编号", position = 10)
@@ -71,7 +75,7 @@ public class UserQuery extends BasePageQuery implements Serializable {
 
     /** QQ号码 */
     @ApiModelProperty(value = "QQ号码", position = 130)
-    private Long qq;
+    private String qq;
 
     /** 微信号码 */
     @ApiModelProperty(value = "微信号码", position = 140)

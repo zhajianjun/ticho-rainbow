@@ -82,7 +82,7 @@ public class UserDTO implements Serializable {
 
     /** QQ号码 */
     @ApiModelProperty(value = "QQ号码", position = 130)
-    private Long qq;
+    private String qq;
 
     /** 微信号码 */
     @ApiModelProperty(value = "微信号码", position = 140)

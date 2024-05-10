@@ -178,8 +178,8 @@ public class UserController {
     @PreAuthorize("@perm.hasPerms('system:user:page')")
     @ApiOperation(value = "分页查询用户信息")
     @ApiOperationSupport(order = 80)
-    @GetMapping("page")
-    public Result<PageResult<UserDTO>> page(UserQuery query) {
+    @PostMapping("page")
+    public Result<PageResult<UserDTO>> page(@RequestBody UserQuery query) {
         return Result.ok(userService.page(query));
     }
 
@@ -193,12 +193,30 @@ public class UserController {
     }
 
     @View(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:user:export')")
-    @ApiOperation(value = "导出用户信息", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @PreAuthorize("@perm.hasPerms('system:user:impTemplate')")
+    @ApiOperation(value = "导入模板下载", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 100)
-    @GetMapping("export")
-    public void export(UserQuery query) throws IOException {
-        userService.export(query);
+    @PostMapping("impTemplate")
+    public void impTemplate() throws IOException {
+        userService.impTemplate();
+    }
+
+    @View(ignore = true)
+    @PreAuthorize("@perm.hasPerms('system:user:impExcel')")
+    @ApiOperation(value = "导入用户信息", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ApiOperationSupport(order = 100)
+    @PostMapping("impExcel")
+    public void impExcel(@RequestPart("file") MultipartFile file) throws IOException {
+        userService.impExcel(file);
+    }
+
+    @View(ignore = true)
+    @PreAuthorize("@perm.hasPerms('system:user:expExcel')")
+    @ApiOperation(value = "导出用户信息", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ApiOperationSupport(order = 110)
+    @PostMapping("expExcel")
+    public void expExcel(@RequestBody UserQuery query) throws IOException {
+        userService.expExcel(query);
     }
 
 }

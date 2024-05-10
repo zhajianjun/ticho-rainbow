@@ -1,6 +1,7 @@
 import { defHttp } from '@/utils/http/axios';
 import { PasswordDTO, UserDTO, UserPasswordDTO, UserQuery, UserRoleDTO } from './model/userModel';
 import { ContentTypeEnum } from '@/enums/httpEnum';
+import { RetryRequest } from '#/axios';
 
 enum Api {
   UserInfo = '/user',
@@ -14,10 +15,11 @@ enum Api {
   LockUser = '/user/lock',
   UnLockUser = '/user/unLock',
   LogOutUser = '/user/logOut',
+  Export = '/user/expExcel',
 }
 
 export function userPage(params?: UserQuery) {
-  return defHttp.get<UserDTO>({ url: Api.UserPage, params }, { errorMessageMode: 'none' });
+  return defHttp.post<UserDTO>({ url: Api.UserPage, params }, { errorMessageMode: 'none' });
 }
 
 export function getUserInfo(username: string) {
@@ -92,5 +94,16 @@ export function uploadAvatar(file: File) {
       params,
     },
     { errorMessageMode: 'message' },
+  );
+}
+
+export function exportExcel(params?: UserQuery) {
+  return defHttp.post<any>(
+    { url: Api.Export, params, responseType: 'blob' },
+    {
+      errorMessageMode: 'message',
+      isReturnNativeResponse: true,
+      retryRequest: { isOpenRetry: false } as RetryRequest,
+    },
   );
 }

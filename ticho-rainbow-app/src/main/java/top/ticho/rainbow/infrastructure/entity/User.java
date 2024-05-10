@@ -67,7 +67,7 @@ public class User extends Model<User> implements Serializable, UserHelper {
     private String email;
 
     /** QQ号码 */
-    private Long qq;
+    private String qq;
 
     /** 微信号码 */
     private String wechat;

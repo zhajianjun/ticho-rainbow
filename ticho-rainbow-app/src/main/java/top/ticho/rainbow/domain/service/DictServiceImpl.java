@@ -147,7 +147,8 @@ public class DictServiceImpl implements DictService {
         Map<String, List<DictLabelDTO>> dictDtoMap = dictLabels
             .stream()
             .sorted(Comparator.comparing(DictLabel::getSort))
-            .map(DictLabelAssembler.INSTANCE::entityToDto).collect(Collectors.groupingBy(DictLabelDTO::getCode, LinkedHashMap::new, Collectors.toList()));
+            .map(DictLabelAssembler.INSTANCE::entityToDto)
+            .collect(Collectors.groupingBy(DictLabelDTO::getCode, LinkedHashMap::new, Collectors.toList()));
         return dicts
             .stream()
             .map(DictAssembler.INSTANCE::entityToDto)

@@ -6,11 +6,23 @@
           <Icon icon="ant-design:plus-outlined" />
           新增
         </a-button>
-        <a-button type="primary" danger ghost v-auth="'UserLock'" @click="handleBatch(Action.lockUser)">
+        <a-button
+          type="primary"
+          danger
+          ghost
+          v-auth="'UserLock'"
+          :loading="lockLoading"
+          @click="handleBatch(Action.lockUser)"
+        >
           <Icon icon="ant-design:lock-outlined" />
           锁定
         </a-button>
-        <a-button type="dashed" v-auth="'UserUnLock'" @click="handleBatch(Action.unLockUser)">
+        <a-button
+          type="dashed"
+          v-auth="'UserUnLock'"
+          :loading="unLockLoading"
+          @click="handleBatch(Action.unLockUser)"
+        >
           <Icon icon="ant-design:unlock-outlined" />
           解锁
         </a-button>
@@ -28,7 +40,8 @@
           type="primary"
           ghost
           v-auth="'UserExport'"
-          @click="handleCreate"
+          :loading="exportLoding"
+          @click="handleExport"
           style="color: #2a7dc9"
         >
           <Icon icon="ant-design:download-outlined" />
@@ -84,9 +97,16 @@
   </PageWrapper>
 </template>
 <script lang="ts">
-  import { defineComponent, reactive } from 'vue';
+  import { defineComponent, reactive, ref } from 'vue';
   import { BasicTable, useTable, TableAction } from '@/components/Table';
-  import { userPage, resetUserPassword, lockUser, unlockUser, logOutUser } from '@/api/system/user';
+  import {
+    userPage,
+    resetUserPassword,
+    lockUser,
+    unlockUser,
+    logOutUser,
+    exportExcel,
+  } from '@/api/system/user';
   import { PageWrapper } from '@/components/Page';
   import { useModal } from '@/components/Modal';
   import UserModel from './UserModal.vue';
@@ -96,6 +116,8 @@
   import { Tag, Space } from 'ant-design-vue';
   import { useMessage } from '@/hooks/web/useMessage';
   import Icon from '@/components/Icon/Icon.vue';
+  import { downloadByData } from '@/utils/file/download';
+  import { UserQuery } from '@/api/system/model/userModel';
 
   enum Action {
     lockUser,
@@ -111,7 +133,7 @@
       const go = useGo();
       const [registerModal, { openModal }] = useModal();
       const searchInfo = reactive<Recordable>({});
-      const [registerTable, { reload, getSelectRows }] = useTable({
+      const [registerTable, { reload, getSelectRows, getSelectRowKeys, getForm }] = useTable({
         title: '用户列表',
         api: userPage,
         rowKey: 'id',
@@ -184,23 +206,38 @@
         });
       }
 
+      const lockLoading = ref<Boolean>(false);
+      const unLockLoading = ref<Boolean>(false);
+
       async function handleBatch(type: Action) {
         const selectRows = getSelectRows();
         const usernames = selectRows.map((item) => item.username) as string[];
+        if (!usernames || usernames.length === 0) {
+          createMessage.warn(`至少选择一条数据`);
+          return;
+        }
         let api: Promise<any>;
+        let loading: any;
         switch (type) {
           case Action.lockUser:
+            loading = lockLoading;
             api = lockUser(usernames);
             break;
           case Action.unLockUser:
+            loading = unLockLoading;
             api = unlockUser(usernames);
             break;
           default:
             return;
         }
-        api.then(() => {
-          reload();
-        });
+        loading.value = true;
+        api
+          .then(() => {
+            reload();
+          })
+          .finally(() => {
+            loading.value = false;
+          });
       }
 
       function handleSuccess() {
@@ -214,6 +251,31 @@
 
       function handleView(record: Recordable) {
         go(`/system/user/userDetail/${record.username}`);
+      }
+
+      const exportLoding = ref<Boolean>(false);
+
+      function handleExport() {
+        exportLoding.value = true;
+        // 是否有选中，优先下载选中数据
+        const selectRowKeys = getSelectRowKeys();
+        let params: UserQuery;
+        if (selectRowKeys && selectRowKeys.length > 0) {
+          params = { ids: selectRowKeys } as UserQuery;
+        } else {
+          // 获取查询参数
+          const { getFieldsValue } = getForm();
+          params = getFieldsValue() as UserQuery;
+        }
+        exportExcel(params)
+          .then((res) => {
+            // 提取文件名
+            let fileName = decodeURI(res.headers['content-disposition'].split('filename=')[1]);
+            downloadByData(res.data, fileName);
+          })
+          .finally(() => {
+            exportLoding.value = false;
+          });
       }
 
       return {
@@ -230,6 +292,10 @@
         searchInfo,
         hasPermission,
         Action,
+        handleExport,
+        exportLoding,
+        lockLoading,
+        unLockLoading,
       };
     },
   });
