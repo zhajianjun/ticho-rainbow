@@ -9,13 +9,11 @@ import com.alibaba.excel.annotation.write.style.HeadStyle;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
- * 用户信息导出
+ * 用户信息excel模板
  *
  * @author zhajianjun
  * @date 2024-05-09 18:41
@@ -25,13 +23,12 @@ import java.time.LocalDate;
 @HeadFontStyle(fontHeightInPoints = 12)
 @HeadStyle(fillForegroundColor = 1, leftBorderColor = 22, rightBorderColor = 22, bottomBorderColor = 57)
 @ContentFontStyle(fontHeightInPoints = 10)
-public class UserExp implements Serializable {
+public class UserImpModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /** 账户;账户具有唯一性 */
     @ColumnWidth(20)
     @ExcelProperty(value = "用户名")
-    @NotBlank(message = "用户名不能为空")
     private String username;
 
     /** 昵称 */
@@ -78,8 +75,6 @@ public class UserExp implements Serializable {
     /** 邮箱 */
     @ColumnWidth(20)
     @ExcelProperty(value = "邮箱")
-    @NotBlank(message = "邮箱不能为空")
-    @Email(message = "邮箱格式不正确")
     private String email;
 
     /** QQ号码 */
@@ -96,10 +91,5 @@ public class UserExp implements Serializable {
     @ColumnWidth(20)
     @ExcelProperty(value = "手机号码")
     private String mobile;
-
-    /** 用户状态;1-正常,2-未激活,3-已锁定,4-已注销 */
-    @ColumnWidth(20)
-    @ExcelProperty(value = "状态")
-    private String statusName;
 
 }

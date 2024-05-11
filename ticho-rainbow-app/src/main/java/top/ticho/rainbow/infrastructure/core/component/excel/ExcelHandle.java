@@ -232,31 +232,29 @@ public class ExcelHandle {
      *
      * @param file 文件
      * @param handlerDataBatch 对读取的数据处理的逻辑
-     * @param impClaz excel导入类
-     * @param expClaz excel导出类
+     * @param claz excel导入类
      */
-    public static <I extends ExcelBaseImp, E> void readAndWriteToResponse(
-        BiConsumer<List<I>, Consumer<I>> handlerDataBatch,
+    public static <M extends ExcelBaseImp> void readAndWriteToResponse(
+        BiConsumer<List<M>, Consumer<M>> handlerDataBatch,
         MultipartFile file,
         String fileName,
         String sheetName,
-        Class<I> impClaz,
-        Class<E> expClaz,
+        Class<M> claz,
         HttpServletResponse response
     ) throws IOException {
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLUtil.encodeAll(fileName + ".xlsx"));
-        try (ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), expClaz).build()) {
+        try (ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), claz).build()) {
             WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
             excelWriter.write(Collections.emptyList(), writeSheet);
-            BiConsumer<List<I>, Consumer<I>> handlerDataBatchProxy = (s, t) -> {
+            BiConsumer<List<M>, Consumer<M>> handlerDataBatchProxy = (s, t) -> {
                 handlerDataBatch.accept(s, t);
                 excelWriter.write(s, writeSheet);
             };
-            ExcelListener<I> readListener = new ExcelListener<>(handlerDataBatchProxy);
-            EasyExcel.read(file.getInputStream(), impClaz, readListener).sheet().doRead();
+            ExcelListener<M> readListener = new ExcelListener<>(handlerDataBatchProxy);
+            EasyExcel.read(file.getInputStream(), claz, readListener).sheet().doRead();
         }
     }
 

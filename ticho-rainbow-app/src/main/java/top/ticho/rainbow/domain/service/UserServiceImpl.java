@@ -70,6 +70,7 @@ import top.ticho.rainbow.interfaces.dto.UserRoleDTO;
 import top.ticho.rainbow.interfaces.dto.UserSignUpOrResetDTO;
 import top.ticho.rainbow.interfaces.excel.UserExp;
 import top.ticho.rainbow.interfaces.excel.UserImp;
+import top.ticho.rainbow.interfaces.excel.UserImpModel;
 import top.ticho.rainbow.interfaces.query.UserAccountQuery;
 import top.ticho.rainbow.interfaces.query.UserQuery;
 
@@ -466,7 +467,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     public void impTemplate() throws IOException {
         String sheetName = "用户信息";
         String fileName = "用户信息模板-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
-        ExcelHandle.writeEmptyToResponseBatch(fileName, sheetName, UserImp.class, response);
+        ExcelHandle.writeEmptyToResponseBatch(fileName, sheetName, UserImpModel.class, response);
     }
 
     @Override
@@ -477,7 +478,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         Assert.isNotNull(guestRole, "默认角色不存在，请联系管理员进行处理");
         UserServiceImpl bean = SpringContext.getBean(this.getClass());
         Map<String, Integer> valueMap = dictTemplate.getValueMap(DictConst.SEX, NumberUtil::parseInt);
-        ExcelHandle.readAndWriteToResponse((x, y)-> bean.readAndWrite(x, y, guestRole, valueMap), file, fileName, sheetName, UserImp.class, UserExp.class, response);
+        ExcelHandle.readAndWriteToResponse((x, y)-> bean.readAndWrite(x, y, guestRole, valueMap), file, fileName, sheetName, UserImp.class, response);
     }
 
     @Transactional(rollbackFor = Exception.class)
