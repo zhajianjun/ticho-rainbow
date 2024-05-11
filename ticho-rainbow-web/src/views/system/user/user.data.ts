@@ -126,7 +126,7 @@ export const userFormSchema: FormSchema[] = [
       span: 24,
     },
     dynamicDisabled: ({ values }) => {
-      return values.username === 'admin';
+      return values.username === 'admin' && values.id;
     },
   },
   {

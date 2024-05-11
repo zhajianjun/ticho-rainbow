@@ -106,8 +106,8 @@
   } from '@/api/storage/fileInfo';
   import { usePermission } from '@/hooks/web/usePermission';
   import { useMessage } from '@/hooks/web/useMessage';
-  import CustomUploadModal from './CustomUploadModal.vue';
-  import CustomUpload from './CustomUpload.vue';
+  import CustomUploadModal from '@/views/component/file/CustomUploadModal.vue';
+  import CustomUpload from '@/views/component/file/CustomUpload.vue';
   import { downloadByUrl } from '@/utils/file/download';
   import { FileItem } from '@/components/Upload/src/types/typing';
 

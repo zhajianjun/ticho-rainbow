@@ -41,6 +41,14 @@ public interface UserRepository extends RootService<User> {
     User getByUsername(String username);
 
     /**
+     * 根据用户名删除
+     *
+     * @param username 用户名
+     * @return {@link User}
+     */
+    boolean removeByUsername(String username);
+
+    /**
      * 根据用户名列表查询
      *
      * @param usernames  用户名列表

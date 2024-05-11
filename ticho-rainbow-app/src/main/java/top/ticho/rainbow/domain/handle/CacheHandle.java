@@ -2,6 +2,7 @@ package top.ticho.rainbow.domain.handle;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.method.HandlerMethod;
@@ -13,7 +14,9 @@ import top.ticho.rainbow.interfaces.dto.PermDTO;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,7 +38,9 @@ public class CacheHandle {
         if (CollUtil.isEmpty(perms)) {
             return Collections.emptyList();
         }
-        Map<String, String> map = perms.stream().collect(Collectors.toMap(PermDTO::getCode, PermDTO::getName));
+        Map<String, String> map = perms
+            .stream()
+            .collect(Collectors.toMap(PermDTO::getCode, PermDTO::getName, (v1, v2)-> v1, LinkedHashMap::new));
         MAP.put(SecurityConst.MICRO_REDIS_ALL_PERMS, map);
         return perms;
     }
@@ -97,6 +102,7 @@ public class CacheHandle {
             .stream()
             .map(this::getFunc)
             .filter(Objects::nonNull)
+            .sorted(Comparator.comparing(PermDTO::getSort))
             .collect(Collectors.toList());
     }
 
@@ -113,10 +119,12 @@ public class CacheHandle {
         int end = value.lastIndexOf("'");
         value = value.substring(start, end);
         ApiOperation apiOperation = handlerMethod.getMethodAnnotation(ApiOperation.class);
+        ApiOperationSupport support = handlerMethod.getMethodAnnotation(ApiOperationSupport.class);
         String name = handlerMethod.getBeanType().toString();
         PermDTO perm = new PermDTO();
         perm.setCode(value);
-        perm.setName(apiOperation == null ? name : apiOperation.value());
+        perm.setName(Optional.ofNullable(apiOperation).map(ApiOperation::value).orElse(name));
+        perm.setSort(Optional.ofNullable(support).map(ApiOperationSupport::order).orElse(Integer.MAX_VALUE));
         return perm;
     }
 

@@ -6,7 +6,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.HandlerMapping;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.core.Result;
 import top.ticho.boot.web.annotation.View;
@@ -46,9 +44,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    @Qualifier("viewControllerHandlerMapping")
-    @Autowired
-    private HandlerMapping viewControllerHandlerMapping;
 
     @PreAuthorize("@perm.hasPerms('system:user:save')")
     @ApiOperation(value = "保存用户信息")
@@ -71,7 +66,7 @@ public class UserController {
 
     @PreAuthorize("@perm.hasPerms('system:user:unLock')")
     @ApiOperation(value = "解锁用户")
-    @ApiOperationSupport(order = 20)
+    @ApiOperationSupport(order = 30)
     @ApiImplicitParam(value = "用户名, 多个用逗号隔开", name = "username", required = true)
     @PostMapping("unLock")
     public Result<Void> unLock(@RequestBody List<String> username) {
@@ -81,7 +76,7 @@ public class UserController {
 
     @PreAuthorize("@perm.hasPerms('system:user:logOut')")
     @ApiOperation(value = "注销用户")
-    @ApiOperationSupport(order = 20)
+    @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "用户名, 多个用逗号隔开", name = "username", required = true)
     @PostMapping("logOut")
     public Result<Void> logOut(@RequestBody List<String> username) {
@@ -89,9 +84,19 @@ public class UserController {
         return Result.ok();
     }
 
+    @PreAuthorize("@perm.hasPerms('system:user:remove')")
+    @ApiOperation(value = "删除用户信息")
+    @ApiOperationSupport(order = 50)
+    @ApiImplicitParam(value = "用户名, 多个用逗号隔开", name = "username", required = true)
+    @PostMapping("remove")
+    public Result<Void> remove(@RequestBody List<String> username) {
+        userService.remove(username);
+        return Result.ok();
+    }
+
     @PreAuthorize("@perm.hasPerms('system:user:update')")
     @ApiOperation(value = "修改用户信息", notes = "修改用户信息")
-    @ApiOperationSupport(order = 30)
+    @ApiOperationSupport(order = 60)
     @PutMapping
     public Result<Void> update(@RequestBody UserDTO userDTO) {
         userService.update(userDTO);
@@ -100,7 +105,7 @@ public class UserController {
 
     @PreAuthorize("@perm.hasPerms('system:user:updateForSelf')")
     @ApiOperation(value = "修改登录用户信息", notes = "修改登录用户信息")
-    @ApiOperationSupport(order = 35)
+    @ApiOperationSupport(order = 70)
     @PutMapping("updateForSelf")
     public Result<Void> updateForSelf(@RequestBody UserDTO userDTO) {
         userService.updateForSelf(userDTO);
@@ -109,7 +114,7 @@ public class UserController {
 
     @PreAuthorize("@perm.hasPerms('system:user:uploadAvatar')")
     @ApiOperation(value = "用户头像上传", notes = "用户头像上传")
-    @ApiOperationSupport(order = 36)
+    @ApiOperationSupport(order = 80)
     @PostMapping("uploadAvatar")
     public Result<String> uploadAvatar(@RequestPart("file") MultipartFile file) {
         return Result.ok(userService.uploadAvatar(file));
@@ -117,7 +122,7 @@ public class UserController {
 
     @PreAuthorize("@perm.hasPerms('system:user:resetPassword')")
     @ApiOperation(value = "重置用户密码", notes = "重置用户密码")
-    @ApiOperationSupport(order = 40)
+    @ApiOperationSupport(order = 90)
     @PutMapping("resetPassword")
     public Result<Void> resetPassword(String username) {
         userService.resetPassword(username);
@@ -126,7 +131,7 @@ public class UserController {
 
     @PreAuthorize("@perm.hasPerms('system:user:updatePassword')")
     @ApiOperation(value = "修改用户密码", notes = "修改用户密码")
-    @ApiOperationSupport(order = 50)
+    @ApiOperationSupport(order = 100)
     @PutMapping("updatePassword")
     public Result<Void> updatePassword(@RequestBody UserPasswordDTO userDetailDto) {
         userService.updatePassword(userDetailDto);
@@ -135,7 +140,7 @@ public class UserController {
 
     @PreAuthorize("@perm.hasPerms('system:user:updatePasswordForSelf')")
     @ApiOperation(value = "修改登录人密码", notes = "修改登录人密码")
-    @ApiOperationSupport(order = 50)
+    @ApiOperationSupport(order = 110)
     @PutMapping("updatePasswordForSelf")
     public Result<Void> updatePasswordForSelf(@RequestBody PasswordDTO passwordDTO) {
         userService.updatePasswordForSelf(passwordDTO);
@@ -144,7 +149,7 @@ public class UserController {
 
     @PreAuthorize("@perm.hasPerms('system:user:info')")
     @ApiOperation(value = "根据用户名查询用户信息")
-    @ApiOperationSupport(order = 60)
+    @ApiOperationSupport(order = 120)
     @ApiImplicitParam(value = "用户名", name = "username", required = true)
     @GetMapping("info")
     public Result<UserDTO> info(String username) {
@@ -153,7 +158,7 @@ public class UserController {
 
     @PreAuthorize("@perm.hasPerms('system:user:infoForSelf')")
     @ApiOperation(value = "查询登录人用户信息")
-    @ApiOperationSupport(order = 60)
+    @ApiOperationSupport(order = 130)
     @GetMapping("infoForSelf")
     public Result<UserDTO> info() {
         return Result.ok(userService.getInfo());
@@ -161,7 +166,7 @@ public class UserController {
 
     @PreAuthorize("@perm.hasPerms('system:user:detail')")
     @ApiOperation(value = "查询用户角色菜单权限标识信息")
-    @ApiOperationSupport(order = 70)
+    @ApiOperationSupport(order = 140)
     @GetMapping("detail")
     public Result<UserRoleMenuDtlDTO> detail(String username) {
         return Result.ok(userService.getUserDtl(username));
@@ -169,7 +174,7 @@ public class UserController {
 
     @PreAuthorize("@perm.hasPerms('system:user:detailForSelf')")
     @ApiOperation(value = "查询登录人用户角色菜单权限标识信息")
-    @ApiOperationSupport(order = 70)
+    @ApiOperationSupport(order = 150)
     @GetMapping("detailForSelf")
     public Result<UserRoleMenuDtlDTO> detailForSelf() {
         return Result.ok(userService.getUserDtl());
@@ -177,7 +182,7 @@ public class UserController {
 
     @PreAuthorize("@perm.hasPerms('system:user:page')")
     @ApiOperation(value = "分页查询用户信息")
-    @ApiOperationSupport(order = 80)
+    @ApiOperationSupport(order = 160)
     @PostMapping("page")
     public Result<PageResult<UserDTO>> page(@RequestBody UserQuery query) {
         return Result.ok(userService.page(query));
@@ -185,7 +190,7 @@ public class UserController {
 
     @PreAuthorize("@perm.hasPerms('system:user:bindRole')")
     @ApiOperation(value = "用户绑定角色信息")
-    @ApiOperationSupport(order = 90)
+    @ApiOperationSupport(order = 170)
     @PostMapping("bindRole")
     public Result<Void> bindRole(@RequestBody UserRoleDTO userRoleDTO) {
         userService.bindRole(userRoleDTO);
@@ -195,7 +200,7 @@ public class UserController {
     @View(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:user:impTemplate')")
     @ApiOperation(value = "导入模板下载", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    @ApiOperationSupport(order = 100)
+    @ApiOperationSupport(order = 180)
     @PostMapping("impTemplate")
     public void impTemplate() throws IOException {
         userService.impTemplate();
@@ -204,7 +209,7 @@ public class UserController {
     @View(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:user:impExcel')")
     @ApiOperation(value = "导入用户信息", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    @ApiOperationSupport(order = 100)
+    @ApiOperationSupport(order = 190)
     @PostMapping("impExcel")
     public void impExcel(@RequestPart("file") MultipartFile file) throws IOException {
         userService.impExcel(file);
@@ -213,7 +218,7 @@ public class UserController {
     @View(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:user:expExcel')")
     @ApiOperation(value = "导出用户信息", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    @ApiOperationSupport(order = 110)
+    @ApiOperationSupport(order = 200)
     @PostMapping("expExcel")
     public void expExcel(@RequestBody UserQuery query) throws IOException {
         userService.expExcel(query);

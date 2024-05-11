@@ -58,7 +58,7 @@ export const columns: BasicColumn[] = [
   {
     title: '排序',
     dataIndex: 'sort',
-    width: 50,
+    width: 60,
   },
   {
     title: '状态',

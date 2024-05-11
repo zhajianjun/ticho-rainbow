@@ -20,6 +20,7 @@ import top.ticho.rainbow.interfaces.query.UserAccountQuery;
 import top.ticho.rainbow.interfaces.query.UserQuery;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,9 +45,20 @@ public class UserRepositoryImpl extends RootServiceImpl<UserMapper, User> implem
         if (StrUtil.isBlank(username)) {
             return null;
         }
-        LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(User::getUsername, username);
-        return getOne(queryWrapper);
+        LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(User::getUsername, username);
+        return getOne(wrapper);
+    }
+
+    @Override
+    @CacheEvict(value = CacheConst.USER_INFO, key = "#username")
+    public boolean removeByUsername(String username) {
+        if (StrUtil.isBlank(username)) {
+            return false;
+        }
+        LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(User::getUsername, username);
+        return remove(wrapper);
     }
 
     @Override
@@ -121,19 +133,22 @@ public class UserRepositoryImpl extends RootServiceImpl<UserMapper, User> implem
     @Override
     public List<User> getByAccount(UserAccountQuery userAccountQuery) {
         // @formatter:off
-        LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
         String username = userAccountQuery.getUsername();
         String email = userAccountQuery.getEmail();
         String mobile = userAccountQuery.getMobile();
         List<Integer> status = userAccountQuery.getStatus();
+        if (StrUtil.isAllBlank(username, email, mobile)) {
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
         wrapper
             .eq(CollUtil.isNotEmpty(status), User::getStatus, status)
             .and(x->
-                x.eq(User::getUsername, username)
+                x.eq(StrUtil.isNotBlank(username), User::getUsername, username)
                  .or()
-                 .eq(User::getEmail, email)
+                 .eq(StrUtil.isNotBlank(email), User::getEmail, email)
                  .or()
-                 .eq(User::getMobile, mobile)
+                 .eq(StrUtil.isNotBlank(mobile), User::getMobile, mobile)
             );
         // @formatter:on
         return list(wrapper);

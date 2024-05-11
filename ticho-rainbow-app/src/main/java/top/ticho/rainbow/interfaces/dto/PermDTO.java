@@ -28,8 +28,12 @@ public class PermDTO implements Serializable {
     @ApiModelProperty(value = "名称", position = 20)
     private String name;
 
+    /** 排序 */
+    @ApiModelProperty(value = "排序", position = 30)
+    private Integer sort;
+
     /** 子对象 */
-    @ApiModelProperty(value = "子对象", position = 30)
+    @ApiModelProperty(value = "子对象", position = 40)
     private List<PermDTO> children;
 
 }

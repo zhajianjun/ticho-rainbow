@@ -1,5 +1,6 @@
 package top.ticho.rainbow.interfaces.excel;
 
+import cn.hutool.core.lang.RegexPool;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
@@ -12,6 +13,7 @@ import top.ticho.rainbow.infrastructure.core.component.excel.ExcelBaseImp;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -79,7 +81,6 @@ public class UserImp extends ExcelBaseImp implements Serializable {
     /** 邮箱 */
     @ColumnWidth(20)
     @ExcelProperty(value = "邮箱")
-    @NotBlank(message = "邮箱不能为空")
     @Email(message = "邮箱格式不正确")
     private String email;
 
@@ -96,11 +97,7 @@ public class UserImp extends ExcelBaseImp implements Serializable {
     /** 手机号码 */
     @ColumnWidth(20)
     @ExcelProperty(value = "手机号码")
+    @Pattern(regexp = RegexPool.MOBILE, message = "手机号码格式不正确")
     private String mobile;
-
-    /** 用户状态;1-正常,2-未激活,3-已锁定,4-已注销 */
-    @ColumnWidth(20)
-    @ExcelProperty(value = "状态")
-    private String statusName;
 
 }

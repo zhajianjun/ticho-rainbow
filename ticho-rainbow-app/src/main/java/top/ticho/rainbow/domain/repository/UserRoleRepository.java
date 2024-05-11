@@ -23,12 +23,28 @@ public interface UserRoleRepository extends RootService<UserRole> {
     List<Long> listByUserId(Long userId);
 
     /**
+     * 移除用户角色信息
+     *
+     * @param userId 用户id
+     * @return boolean
+     */
+    boolean removeByUserId(Long userId);
+
+    /**
      * 移除用户角色信息，并重新保存角色id
      *
      * @param userId  用户id
      * @param roleIds 角色id列表
      */
     void removeAndSave(Long userId, Collection<Long> roleIds);
+
+    /**
+     * 保存用户角色信息
+     *
+     * @param userId  用户id
+     * @param roleIds 角色id列表
+     */
+    void saveUserRoles(Long userId, Collection<Long> roleIds);
 
     /**
      * 根据角色id列表查询是否存在

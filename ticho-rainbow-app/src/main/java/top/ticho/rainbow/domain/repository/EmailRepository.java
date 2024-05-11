@@ -17,13 +17,13 @@ public interface EmailRepository {
      *
      * @param mailContent 邮件内容
      */
-    void sendMail(MailContent mailContent);
+    boolean sendMail(MailContent mailContent);
 
     /**
      * 邮件发送(批量)
      *
      * @param mailContent 邮件内容列表
      */
-    void sendMailBatch(List<MailContent> mailContent);
+    boolean sendMailBatch(List<MailContent> mailContent);
 
 }

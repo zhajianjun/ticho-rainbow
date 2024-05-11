@@ -22,39 +22,41 @@ import java.util.Objects;
 public class EmailRepositoryImpl implements EmailRepository {
 
     @Override
-    public void sendMail(MailContent mailContent) {
+    public boolean sendMail(MailContent mailContent) {
         if (Objects.isNull(mailContent)) {
-            return;
+            return false;
         }
-        sendMailExecute(mailContent);
+        return sendMailExecute(mailContent);
     }
 
     @Override
-    public void sendMailBatch(List<MailContent> mailContents) {
+    public boolean sendMailBatch(List<MailContent> mailContents) {
         if (CollUtil.isEmpty(mailContents)) {
-            return;
+            return false;
         }
-        sendMailBatchExecute(mailContents);
+        return sendMailBatchExecute(mailContents);
     }
 
     private MailTemplate getMailTemplate() {
         return SpringUtil.getBean(MailTemplate.class);
     }
 
-    public void sendMailExecute(MailContent mailContent) {
+    public boolean sendMailExecute(MailContent mailContent) {
         MailTemplate mailTemplate = getMailTemplate();
         if (Objects.isNull(mailTemplate)) {
-            return;
+            return false;
         }
         mailTemplate.sendMail(mailContent);
+        return true;
     }
 
-    public void sendMailBatchExecute(List<MailContent> mailContents) {
+    public boolean sendMailBatchExecute(List<MailContent> mailContents) {
         MailTemplate mailTemplate = getMailTemplate();
         if (Objects.isNull(mailTemplate)) {
-            return;
+            return false;
         }
         mailTemplate.sendMailBatch(mailContents);
+        return true;
     }
 
 }

@@ -15,6 +15,9 @@ enum Api {
   LockUser = '/user/lock',
   UnLockUser = '/user/unLock',
   LogOutUser = '/user/logOut',
+  RemoveUser = '/user/remove',
+  ImpTemplate = '/user/impTemplate',
+  ImpExcel = '/user/impExcel',
   Export = '/user/expExcel',
 }
 
@@ -48,6 +51,13 @@ export function unlockUser(params: string[]) {
 export function logOutUser(params: string[]) {
   return defHttp.post<any>(
     { url: Api.LogOutUser, params },
+    { errorMessageMode: 'message', successMessageMode: 'message' },
+  );
+}
+
+export function removeUser(params: string[]) {
+  return defHttp.post<any>(
+    { url: Api.RemoveUser, params },
     { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
@@ -97,7 +107,37 @@ export function uploadAvatar(file: File) {
   );
 }
 
-export function exportExcel(params?: UserQuery) {
+export function impTemplate() {
+  return defHttp.post<any>(
+    { url: Api.ImpTemplate, responseType: 'blob' },
+    {
+      errorMessageMode: 'message',
+      isReturnNativeResponse: true,
+      retryRequest: { isOpenRetry: false } as RetryRequest,
+    },
+  );
+}
+
+export function impExcel(file: File) {
+  const params = { file: file };
+  return defHttp.post<any>(
+    {
+      url: Api.ImpExcel,
+      params,
+      responseType: 'blob',
+      headers: {
+        'Content-type': ContentTypeEnum.FORM_DATA,
+      },
+    },
+    {
+      errorMessageMode: 'message',
+      isReturnNativeResponse: true,
+      retryRequest: { isOpenRetry: false } as RetryRequest,
+    },
+  );
+}
+
+export function expExcel(params?: UserQuery) {
   return defHttp.post<any>(
     { url: Api.Export, params, responseType: 'blob' },
     {

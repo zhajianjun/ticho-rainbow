@@ -2,8 +2,12 @@
   <PageWrapper dense contentFullHeight fixedHeight contentClass="flex">
     <BasicTable @register="registerTable" :searchInfo="searchInfo">
       <template #toolbar>
-        <a-button type="primary" v-auth="'UserAdd'" @click="handleCreate">
-          <Icon icon="ant-design:plus-outlined" />
+        <a-button
+          type="primary"
+          v-auth="'UserAdd'"
+          preIcon="ant-design:plus-outlined"
+          @click="handleCreate"
+        >
           新增
         </a-button>
         <a-button
@@ -11,40 +15,40 @@
           danger
           ghost
           v-auth="'UserLock'"
+          preIcon="ant-design:lock-outlined"
           :loading="lockLoading"
           @click="handleBatch(Action.lockUser)"
         >
-          <Icon icon="ant-design:lock-outlined" />
           锁定
         </a-button>
         <a-button
           type="dashed"
           v-auth="'UserUnLock'"
+          preIcon="ant-design:unlock-outlined"
           :loading="unLockLoading"
           @click="handleBatch(Action.unLockUser)"
         >
-          <Icon icon="ant-design:unlock-outlined" />
           解锁
         </a-button>
         <a-button
           type="primary"
           ghost
           v-auth="'UserImport'"
-          @click="handleCreate"
+          preIcon="ant-design:upload-outlined"
+          @click="handleImp"
           style="color: #2a7dc9"
         >
-          <Icon icon="ant-design:upload-outlined" />
           导入
         </a-button>
         <a-button
           type="primary"
           ghost
           v-auth="'UserExport'"
+          preIcon="ant-design:download-outlined"
           :loading="exportLoding"
           @click="handleExport"
           style="color: #2a7dc9"
         >
-          <Icon icon="ant-design:download-outlined" />
           导出
         </a-button>
       </template>
@@ -60,20 +64,17 @@
       <template #action="{ record }">
         <TableAction
           :actions="[
-            // {
-            //   icon: 'clarity:info-standard-line',
-            //   onClick: handleView.bind(null, record),
-            //   tooltip: '查看',
-            // },
             {
               icon: 'clarity:note-edit-line',
+              auth: 'UserEdit',
               onClick: handleEdit.bind(null, record),
               tooltip: '修改',
             },
             {
               icon: 'ant-design:security-scan-outlined',
+              auth: 'UserResetPwd',
               popConfirm: {
-                title: '是否重置密码',
+                title: '是否重置密码?',
                 confirm: resetPassword.bind(null, record),
               },
               tooltip: '重置密码',
@@ -81,19 +82,37 @@
             },
             {
               icon: 'ant-design:logout-outlined',
+              auth: 'UserLogOut',
               color: 'error',
               popConfirm: {
-                title: '是否确认注销',
+                title: '是否确认注销?',
                 confirm: handleLogOut.bind(null, record),
               },
               tooltip: '注销',
               disabled: record.status !== 1 || record.username === 'admin',
+            },
+            {
+              icon: 'ant-design:delete-outlined',
+              auth: 'UserDel',
+              color: 'error',
+              popConfirm: {
+                title: '是否确认删除?',
+                confirm: handleRemove.bind(null, record),
+              },
+              tooltip: '删除',
+              disabled: record.status !== 4 || record.username === 'admin',
             },
           ]"
         />
       </template>
     </BasicTable>
     <UserModel @register="registerModal" @success="handleSuccess" />
+    <ImpModal
+      title="用户导入"
+      :download-model-api="impTemplate"
+      :upload-api="impExcel"
+      @register="registerImpModal"
+    />
   </PageWrapper>
 </template>
 <script lang="ts">
@@ -105,17 +124,19 @@
     lockUser,
     unlockUser,
     logOutUser,
-    exportExcel,
+    impTemplate,
+    impExcel,
+    expExcel,
+    removeUser,
   } from '@/api/system/user';
   import { PageWrapper } from '@/components/Page';
   import { useModal } from '@/components/Modal';
   import UserModel from './UserModal.vue';
+  import ImpModal from '@/views/component/imp/ImpModal.vue';
   import { columns, searchFormSchema } from './user.data';
-  import { useGo } from '@/hooks/web/usePage';
   import { usePermission } from '@/hooks/web/usePermission';
   import { Tag, Space } from 'ant-design-vue';
   import { useMessage } from '@/hooks/web/useMessage';
-  import Icon from '@/components/Icon/Icon.vue';
   import { downloadByData } from '@/utils/file/download';
   import { UserQuery } from '@/api/system/model/userModel';
 
@@ -126,12 +147,12 @@
 
   export default defineComponent({
     name: 'AccountManagement',
-    components: { Icon, BasicTable, PageWrapper, UserModel, TableAction, Tag, Space },
+    components: { BasicTable, PageWrapper, UserModel, ImpModal, TableAction, Tag, Space },
     setup() {
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('UserSelect');
-      const go = useGo();
       const [registerModal, { openModal }] = useModal();
+      const [registerImpModal, { openModal: openImpModal }] = useModal();
       const searchInfo = reactive<Recordable>({});
       const [registerTable, { reload, getSelectRows, getSelectRowKeys, getForm }] = useTable({
         title: '用户列表',
@@ -187,7 +208,6 @@
       }
 
       function handleEdit(record: Recordable) {
-        console.log(record);
         openModal(true, {
           record,
           isUpdate: true,
@@ -206,8 +226,15 @@
         });
       }
 
+      function handleRemove(record: Recordable) {
+        removeUser([record.username]).then(() => {
+          reload();
+        });
+      }
+
       const lockLoading = ref<Boolean>(false);
       const unLockLoading = ref<Boolean>(false);
+      const exportLoding = ref<Boolean>(false);
 
       async function handleBatch(type: Action) {
         const selectRows = getSelectRows();
@@ -244,17 +271,6 @@
         reload();
       }
 
-      function handleSelect(deptId = '') {
-        searchInfo.deptId = deptId;
-        reload();
-      }
-
-      function handleView(record: Recordable) {
-        go(`/system/user/userDetail/${record.username}`);
-      }
-
-      const exportLoding = ref<Boolean>(false);
-
       function handleExport() {
         exportLoding.value = true;
         // 是否有选中，优先下载选中数据
@@ -267,7 +283,7 @@
           const { getFieldsValue } = getForm();
           params = getFieldsValue() as UserQuery;
         }
-        exportExcel(params)
+        expExcel(params)
           .then((res) => {
             // 提取文件名
             let fileName = decodeURI(res.headers['content-disposition'].split('filename=')[1]);
@@ -278,6 +294,10 @@
           });
       }
 
+      function handleImp() {
+        openImpModal(true);
+      }
+
       return {
         registerTable,
         registerModal,
@@ -286,9 +306,8 @@
         resetPassword,
         handleBatch,
         handleLogOut,
+        handleRemove,
         handleSuccess,
-        handleSelect,
-        handleView,
         searchInfo,
         hasPermission,
         Action,
@@ -296,6 +315,10 @@
         exportLoding,
         lockLoading,
         unLockLoading,
+        registerImpModal,
+        handleImp,
+        impTemplate,
+        impExcel,
       };
     },
   });

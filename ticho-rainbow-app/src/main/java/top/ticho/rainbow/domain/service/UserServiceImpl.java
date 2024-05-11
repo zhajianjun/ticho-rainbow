@@ -5,6 +5,7 @@ import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -28,6 +29,7 @@ import top.ticho.boot.view.exception.BizException;
 import top.ticho.boot.view.util.Assert;
 import top.ticho.boot.web.file.BaseMultPartFile;
 import top.ticho.boot.web.util.CloudIdUtil;
+import top.ticho.boot.web.util.SpringContext;
 import top.ticho.boot.web.util.valid.ValidGroup;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.FileInfoService;
@@ -41,6 +43,7 @@ import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.core.component.cache.SpringCacheTemplate;
 import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.core.constant.CommConst;
 import top.ticho.rainbow.infrastructure.core.constant.DictConst;
 import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
 import top.ticho.rainbow.infrastructure.core.enums.UserStatus;
@@ -49,6 +52,7 @@ import top.ticho.rainbow.infrastructure.core.util.UserUtil;
 import top.ticho.rainbow.infrastructure.entity.FileInfo;
 import top.ticho.rainbow.infrastructure.entity.Role;
 import top.ticho.rainbow.infrastructure.entity.User;
+import top.ticho.rainbow.infrastructure.entity.UserRole;
 import top.ticho.rainbow.interfaces.assembler.FileInfoAssembler;
 import top.ticho.rainbow.interfaces.assembler.RoleAssembler;
 import top.ticho.rainbow.interfaces.assembler.UserAssembler;
@@ -167,6 +171,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void signUpEmailSend(ImgCodeEmailDTO imgCodeEmailDTO) {
         // 图片验证码校验
         ValidUtil.valid(imgCodeEmailDTO);
@@ -191,7 +196,8 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         mailContent.setSubject("注册");
         mailContent.setContent(template.render());
         mailContent.setInlines(Collections.singletonList(mailInines));
-        emailRepository.sendMail(mailContent);
+        boolean sendMail = emailRepository.sendMail(mailContent);
+        Assert.isTrue(sendMail, "发送邮件失败");
     }
 
     @Override
@@ -223,6 +229,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String resetPasswordEmailSend(ImgCodeEmailDTO imgCodeEmailDTO) {
         ValidUtil.valid(imgCodeEmailDTO);
         imgCodeValid(imgCodeEmailDTO);
@@ -246,7 +253,8 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         mailContent.setSubject("重置密码");
         mailContent.setContent(template.render());
         mailContent.setInlines(Collections.singletonList(mailInines));
-        emailRepository.sendMail(mailContent);
+        boolean sendMail = emailRepository.sendMail(mailContent);
+        Assert.isTrue(sendMail, "发送邮件失败");
         return dbUser.getUsername();
     }
 
@@ -283,7 +291,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         Assert.isTrue(!SecurityConst.ADMIN.equals(username), BizErrCode.FAIL, "管理员账户无法重置密码");
         UserDTO dbUser = getInfoByUsername(username);
         Assert.isNotNull(dbUser, "用户不存在");
-        String encodedPasswordNew = passwordEncoder.encode("123456");
+        String encodedPasswordNew = passwordEncoder.encode(CommConst.DEFAULT_PASSWORD);
         User user = new User();
         user.setId(dbUser.getId());
         user.setUsername(dbUser.getUsername());
@@ -438,23 +446,102 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void remove(List<String> usernames) {
+        Assert.isNotEmpty(usernames, "用户名不能为空");
+        usernames.forEach(this::remove);
+    }
+
+    public void remove(String username) {
+        Assert.isNotBlank(username, "用户名不能为空");
+        User user = userRepository.getByUsername(username);
+        Assert.isNotNull(user, BizErrCode.FAIL, "删除失败,用户不存在");
+        Assert.isTrue(Objects.equals(UserStatus.LOG_OUT.code(), user.getStatus()), BizErrCode.FAIL, "删除失败,非注销用户");
+        boolean removeUser = userRepository.removeByUsername(username);
+        userRoleRepository.removeByUserId(user.getId());
+        Assert.isNotNull(removeUser, BizErrCode.FAIL, "删除失败");
+    }
+
+    @Override
     public void impTemplate() throws IOException {
         String sheetName = "用户信息";
         String fileName = "用户信息模板-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
-        ExcelHandle.writeEmptyToResponseBatch(fileName, sheetName, UserExp.class, response);
+        ExcelHandle.writeEmptyToResponseBatch(fileName, sheetName, UserImp.class, response);
     }
 
     @Override
     public void impExcel(MultipartFile file) throws IOException {
-        String sheetName = "用户信息";
-        String fileName = "用户信息模板-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
-        ExcelHandle.readAndWriteToResponse(this::readAndWrite, file, fileName, sheetName, UserImp.class, UserExp.class, response);
+        String sheetName = "导入结果";
+        String fileName = StrUtil.format("{}-导入结果", file.getOriginalFilename());
+        Role guestRole = roleRepository.getGuestRole();
+        Assert.isNotNull(guestRole, "默认角色不存在，请联系管理员进行处理");
+        UserServiceImpl bean = SpringContext.getBean(this.getClass());
+        Map<String, Integer> valueMap = dictTemplate.getValueMap(DictConst.SEX, NumberUtil::parseInt);
+        ExcelHandle.readAndWriteToResponse((x, y)-> bean.readAndWrite(x, y, guestRole, valueMap), file, fileName, sheetName, UserImp.class, UserExp.class, response);
     }
 
-    public void readAndWrite(List<UserImp> userImps, Consumer<UserImp> errHandle) {
+    @Transactional(rollbackFor = Exception.class)
+    public void readAndWrite(List<UserImp> userImps, Consumer<UserImp> errHandle, Role guestRole, Map<String, Integer> valueMap) {
+        List<User> users = new ArrayList<>();
+        List<UserRole> userRoles = new ArrayList<>();
         for (UserImp userImp : userImps) {
-            // TODO excel导出
+            UserAccountQuery userQuery = new UserAccountQuery();
+            userQuery.setUsername(userImp.getUsername());
+            userQuery.setEmail(userImp.getEmail());
+            userQuery.setMobile(userImp.getMobile());
+            String errorMsg = checkImp(userQuery);
+            if (Objects.nonNull(errorMsg)) {
+                userImp.setMessage(errorMsg);
+                errHandle.accept(userImp);
+                continue;
+            }
+            userImp.setMessage("导入成功");
+            User user = UserAssembler.INSTANCE.impToEntity(userImp);
+            user.setId(CloudIdUtil.getId());
+            user.setPassword(passwordEncoder.encode(CommConst.DEFAULT_PASSWORD));
+            user.setStatus(UserStatus.NORMAL.code());
+            user.setSex(valueMap.get(userImp.getSexName()));
+            users.add(user);
+            UserRole userRole = new UserRole();
+            userRole.setUserId(user.getId());
+            userRole.setRoleId(guestRole.getId());
+            userRoles.add(userRole);
         }
+        userRepository.saveBatch(users);
+        userRoleRepository.saveBatch(userRoles);
+    }
+
+    /**
+     * 保存或者修改用户信息重复数据判断，用户名称、邮箱、手机号保证其唯一性
+     *
+     * @param userAccountQuery 用户登录账号信息
+     */
+    private String checkImp(UserAccountQuery userAccountQuery) {
+        String username = userAccountQuery.getUsername();
+        String email = userAccountQuery.getEmail();
+        String mobile = userAccountQuery.getMobile();
+        List<User> users = userRepository.getByAccount(userAccountQuery);
+        boolean usernameNotBlank = StrUtil.isNotBlank(username);
+        boolean emailNotBlank = StrUtil.isNotBlank(email);
+        boolean mobileNotBlank = StrUtil.isNotBlank(mobile);
+        for (User item : users) {
+            String itemUsername = item.getUsername();
+            String itemMobile = item.getMobile();
+            String itemEmail = item.getEmail();
+            // 用户名重复判断
+            if (usernameNotBlank && Objects.equals(username, itemUsername)) {
+                return "该用户名已经存在";
+            }
+            // 邮箱重复判断
+            if (emailNotBlank && Objects.equals(email, itemEmail)) {
+                return "该邮箱已经存在";
+            }
+            // 手机号码重复判断
+            if (mobileNotBlank && Objects.equals(mobile, itemMobile)) {
+                return "该手机号已经存在";
+            }
+        }
+        return null;
     }
 
     @Override
@@ -527,6 +614,9 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         List<User> users = userRepository.getByAccount(userAccountQuery);
         boolean isUpdate = Objects.nonNull(updateId);
         User user = null;
+        boolean usernameNotBlank = StrUtil.isNotBlank(username);
+        boolean emailNotBlank = StrUtil.isNotBlank(email);
+        boolean mobileNotBlank = StrUtil.isNotBlank(mobile);
         for (User item : users) {
             Long itemId = item.getId();
             if (isUpdate) {
@@ -539,11 +629,17 @@ public class UserServiceImpl extends AuthHandle implements UserService {
             String itemMobile = item.getMobile();
             String itemEmail = item.getEmail();
             // 用户名重复判断
-            Assert.isTrue(!Objects.equals(username, itemUsername), BizErrCode.FAIL, "该用户名已经存在");
-            // 手机号码重复判断
-            Assert.isTrue(!Objects.equals(mobile, itemMobile), BizErrCode.FAIL, "该手机号已经存在");
+            if (usernameNotBlank) {
+                Assert.isTrue(!Objects.equals(username, itemUsername), BizErrCode.FAIL, "该用户名已经存在");
+            }
             // 邮箱重复判断
-            Assert.isTrue(!Objects.equals(email, itemEmail), BizErrCode.FAIL, "该邮箱已经存在");
+            if (emailNotBlank) {
+                Assert.isTrue(!Objects.equals(email, itemEmail), BizErrCode.FAIL, "该邮箱已经存在");
+            }
+            // 手机号码重复判断
+            if (mobileNotBlank) {
+                Assert.isTrue(!Objects.equals(mobile, itemMobile), BizErrCode.FAIL, "该手机号已经存在");
+            }
         }
         return user;
     }

@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.ticho.boot.datasource.service.impl.RootServiceImpl;
+import top.ticho.boot.web.util.SpringContext;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.entity.UserRole;
@@ -43,13 +44,25 @@ public class UserRoleRepositoryImpl extends RootServiceImpl<UserRoleMapper, User
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(value = CacheConst.USER_ROLE_INFO, key = "#userId")
     public void removeAndSave(Long userId, Collection<Long> roleIds) {
         if (Objects.isNull(userId)) {
             return;
         }
+        UserRoleRepositoryImpl bean = SpringContext.getBean(this.getClass());
+        bean.removeByUserId(userId);
+        if (CollUtil.isEmpty(roleIds)) {
+            return;
+        }
+        saveUserRoles(userId, roleIds);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveUserRoles(Long userId, Collection<Long> roleIds) {
+        if (Objects.isNull(userId)) {
+            return;
+        }
         // @formatter:off
-        removeByUserId(userId);
         if (CollUtil.isEmpty(roleIds)) {
             return;
         }
@@ -61,13 +74,6 @@ public class UserRoleRepositoryImpl extends RootServiceImpl<UserRoleMapper, User
         // @formatter:on
     }
 
-    private UserRole convertToUserRole(Long userId, Long roleId) {
-        UserRole userRole = new UserRole();
-        userRole.setUserId(userId);
-        userRole.setRoleId(roleId);
-        return userRole;
-    }
-
     @Override
     public boolean existsByRoleIds(Collection<Long> roleIds) {
         LambdaQueryWrapper<UserRole> wrapper = Wrappers.lambdaQuery();
@@ -76,13 +82,21 @@ public class UserRoleRepositoryImpl extends RootServiceImpl<UserRoleMapper, User
         return !list(wrapper).isEmpty();
     }
 
-    public void removeByUserId(Long userId) {
+    @CacheEvict(value = CacheConst.USER_ROLE_INFO, key = "#userId")
+    public boolean removeByUserId(Long userId) {
         if (Objects.isNull(userId)) {
-            return;
+            return false;
         }
         LambdaQueryWrapper<UserRole> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(UserRole::getUserId, userId);
-        remove(wrapper);
+        return remove(wrapper);
+    }
+
+    private UserRole convertToUserRole(Long userId, Long roleId) {
+        UserRole userRole = new UserRole();
+        userRole.setUserId(userId);
+        userRole.setRoleId(roleId);
+        return userRole;
     }
 
 }

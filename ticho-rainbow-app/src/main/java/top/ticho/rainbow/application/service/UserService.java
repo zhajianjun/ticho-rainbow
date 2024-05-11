@@ -156,19 +156,24 @@ public interface UserService {
     void bindRole(UserRoleDTO userRoleDTO);
 
     /**
-     * 锁定账户
+     * 锁定用户
      */
     void lock(List<String> usernames);
 
     /**
-     * 解锁账户
+     * 解锁用户
      */
     void unLock(List<String> usernames);
 
     /**
-     * 注销账户
+     * 注销用户
      */
     void logOut(List<String> usernames);
+
+    /**
+     * 删除用户
+     */
+    void remove(List<String> username);
 
     /**
      * 导入模板下载

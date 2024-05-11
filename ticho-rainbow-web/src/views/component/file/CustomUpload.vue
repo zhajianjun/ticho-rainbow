@@ -40,7 +40,7 @@
   import { useI18n } from '@/hooks/web/useI18n';
   import { isArray } from '@/utils/is';
   import CustomUploadModal from './CustomUploadModal.vue';
-  import { FileItem } from '@/components/Upload/src/types/typing';
+  import { FileItem } from './typing';
 
   defineOptions({ name: 'BasicUpload' });
 
