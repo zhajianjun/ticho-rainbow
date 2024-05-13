@@ -57,7 +57,7 @@
     },
   });
 
-  const [registerModal, { closeModal }] = useModalInner(async () => {});
+  const [registerModal, { closeModal, changeOkLoading }] = useModalInner(async () => {});
 
   async function downlodModel() {
     const { downloadModelApi } = props;
@@ -90,6 +90,7 @@
   };
 
   async function handleSubmit() {
+    changeOkLoading(true);
     let files = unref(filesRef);
     if (!files || files.length === 0) {
       return;
@@ -111,6 +112,8 @@
       filesRef.value = [];
     } catch (e: any) {
       console.log(e);
+    } finally {
+      changeOkLoading(false);
     }
   }
 

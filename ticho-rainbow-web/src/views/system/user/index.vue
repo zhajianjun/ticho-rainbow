@@ -112,6 +112,7 @@
       :download-model-api="impTemplate"
       :upload-api="impExcel"
       @register="registerImpModal"
+      @success="handleImpSuccess"
     />
   </PageWrapper>
 </template>
@@ -298,6 +299,10 @@
         openImpModal(true);
       }
 
+      function handleImpSuccess() {
+        reload();
+      }
+
       return {
         registerTable,
         registerModal,
@@ -319,6 +324,7 @@
         handleImp,
         impTemplate,
         impExcel,
+        handleImpSuccess,
       };
     },
   });
