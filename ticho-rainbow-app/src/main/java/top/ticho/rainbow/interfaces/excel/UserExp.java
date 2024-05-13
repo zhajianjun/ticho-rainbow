@@ -98,6 +98,11 @@ public class UserExp implements Serializable {
     @ExcelProperty(value = "状态")
     private String statusName;
 
+    /** 备注信息 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "备注信息")
+    private String remark;
+
     /** 创建人 */
     @ColumnWidth(20)
     @ExcelProperty(value = "创建人")

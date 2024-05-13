@@ -1,11 +1,13 @@
 package top.ticho.rainbow.interfaces.query;
 
-import java.io.Serializable;
-import top.ticho.boot.view.core.BasePageQuery;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import top.ticho.boot.view.core.BasePageQuery;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * 字典查询条件
@@ -18,6 +20,10 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "字典查询条件")
 public class DictQuery extends BasePageQuery implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    /** 主键编号列表 */
+    @ApiModelProperty(value = "主键编号列表", position = 9)
+    private List<Long> ids;
 
     /** 主键编号 */
     @ApiModelProperty(value = "主键编号", position = 10)

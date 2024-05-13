@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,10 +18,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.core.Result;
+import top.ticho.boot.web.annotation.View;
 import top.ticho.rainbow.application.service.DictService;
 import top.ticho.rainbow.interfaces.dto.DictDTO;
 import top.ticho.rainbow.interfaces.query.DictQuery;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -67,7 +70,7 @@ public class DictController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:dict:getById')")
-    @ApiOperation(value = "主键查询字典")
+    @ApiOperation(value = "查询字典")
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
@@ -76,10 +79,10 @@ public class DictController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:dict:page')")
-    @ApiOperation(value = "分页查询字典")
+    @ApiOperation(value = "查询所有字典(分页)")
     @ApiOperationSupport(order = 50)
-    @GetMapping("page")
-    public Result<PageResult<DictDTO>> page(DictQuery query) {
+    @PostMapping("page")
+    public Result<PageResult<DictDTO>> page(@RequestBody DictQuery query) {
         return Result.ok(dictService.page(query));
     }
 
@@ -97,6 +100,15 @@ public class DictController {
     @GetMapping("flush")
     public Result<List<DictDTO>> flush() {
         return Result.ok(dictService.flush());
+    }
+
+    @View(ignore = true)
+    @PreAuthorize("@perm.hasPerms('system:dict:expExcel')")
+    @ApiOperation(value = "导出字典", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ApiOperationSupport(order = 100)
+    @PostMapping("expExcel")
+    public void expExcel(@RequestBody DictQuery query) throws IOException {
+        dictService.expExcel(query);
     }
 
 }

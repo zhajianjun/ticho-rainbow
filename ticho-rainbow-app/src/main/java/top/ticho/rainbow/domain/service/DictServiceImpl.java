@@ -1,6 +1,8 @@
 package top.ticho.rainbow.domain.service;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -13,21 +15,32 @@ import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.enums.BizErrCode;
 import top.ticho.boot.view.util.Assert;
 import top.ticho.boot.web.util.CloudIdUtil;
+import top.ticho.boot.web.util.SpringContext;
 import top.ticho.boot.web.util.valid.ValidGroup;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.DictService;
+import top.ticho.rainbow.domain.handle.DictTemplate;
 import top.ticho.rainbow.domain.repository.DictLabelRepository;
 import top.ticho.rainbow.domain.repository.DictRepository;
+import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.core.constant.DictConst;
 import top.ticho.rainbow.infrastructure.entity.Dict;
 import top.ticho.rainbow.infrastructure.entity.DictLabel;
 import top.ticho.rainbow.interfaces.assembler.DictAssembler;
 import top.ticho.rainbow.interfaces.assembler.DictLabelAssembler;
 import top.ticho.rainbow.interfaces.dto.DictDTO;
 import top.ticho.rainbow.interfaces.dto.DictLabelDTO;
+import top.ticho.rainbow.interfaces.excel.DictExp;
 import top.ticho.rainbow.interfaces.query.DictLabelQuery;
 import top.ticho.rainbow.interfaces.query.DictQuery;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -54,6 +67,11 @@ public class DictServiceImpl implements DictService {
 
     @Autowired
     private CacheManager cacheManager;
+
+    @Resource
+    private HttpServletResponse response;
+
+    // @formatter:off
 
     @Override
     public void save(DictDTO dictDTO) {
@@ -116,7 +134,6 @@ public class DictServiceImpl implements DictService {
 
     @Override
     public PageResult<DictDTO> page(DictQuery query) {
-        // @formatter:off
         query.checkPage();
         Page<Dict> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
         dictRepository.list(query);
@@ -125,13 +142,11 @@ public class DictServiceImpl implements DictService {
             .map(DictAssembler.INSTANCE::entityToDto)
             .collect(Collectors.toList());
         return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), dictDTOS);
-        // @formatter:on
     }
 
     @Override
     @Cacheable(value = CacheConst.COMMON, key = "'ticho-rainbow:dict:list'")
     public List<DictDTO> list() {
-        // @formatter:off
         DictQuery dictQuery = new DictQuery();
         dictQuery.setStatus(1);
         List<Dict> dicts = dictRepository.list(dictQuery);
@@ -158,7 +173,6 @@ public class DictServiceImpl implements DictService {
                 x.setDetails(dictLabelDTOS);
             })
             .collect(Collectors.toList());
-        // @formatter:on
     }
 
     public List<DictDTO> flush() {
@@ -168,6 +182,35 @@ public class DictServiceImpl implements DictService {
         }
         DictServiceImpl bean = SpringUtil.getBean(this.getClass());
         return bean.list();
+    }
+
+    @Override
+    public void expExcel(DictQuery query) throws IOException {
+        String sheetName = "字典信息";
+        String fileName = "字典信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
+        DictTemplate dictTemplate = SpringContext.getBean(DictTemplate.class);
+        Map<Integer, String> labelMap = dictTemplate.getLabelMap(DictConst.COMMON_STATUS, NumberUtil::parseInt);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, DictExp.class, response);
+    }
+
+    private Collection<DictExp> excelExpHandle(DictQuery query, Map<Integer, String> labelMap) {
+        query.checkPage();
+        Page<Dict> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
+        dictRepository.list(query);
+        return page.getResult()
+            .stream()
+            .map(x -> {
+                String statusName = labelMap.get(x.getStatus());
+                List<DictLabel> labels = dictLabelRepository.getByCode(x.getCode());
+                return labels
+                    .stream()
+                    .map(DictLabelAssembler.INSTANCE::entityToExp)
+                    .peek(y -> y.setName(x.getName()))
+                    .peek(y -> y.setStatusName(statusName))
+                    .collect(Collectors.toList());
+            })
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
     }
 
 }

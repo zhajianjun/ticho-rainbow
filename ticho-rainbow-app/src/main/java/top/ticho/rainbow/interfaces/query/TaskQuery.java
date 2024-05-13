@@ -1,13 +1,15 @@
 package top.ticho.rainbow.interfaces.query;
 
-import java.io.Serializable;
-import top.ticho.boot.view.core.BasePageQuery;
-import java.time.LocalDateTime;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import top.ticho.boot.view.core.BasePageQuery;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 计划任务信息查询条件
@@ -20,6 +22,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @ApiModel(value = "计划任务信息查询条件")
 public class TaskQuery extends BasePageQuery implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    /** 主键编号列表 */
+    @ApiModelProperty(value = "主键编号列表", position = 9)
+    private List<Long> ids;
 
     /** 任务ID */
     @ApiModelProperty(value = "任务ID", position = 10)

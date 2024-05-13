@@ -1,5 +1,6 @@
 package top.ticho.rainbow.infrastructure.repository;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -28,6 +29,7 @@ public class TaskLogRepositoryImpl extends RootServiceImpl<TaskLogMapper, TaskLo
     public List<TaskLog> list(TaskLogQuery query) {
         // @formatter:off
         LambdaQueryWrapper<TaskLog> wrapper = Wrappers.lambdaQuery();
+        wrapper.in(CollUtil.isNotEmpty(query.getIds()), TaskLog::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), TaskLog::getId, query.getId());
         wrapper.eq(Objects.nonNull(query.getTaskId()), TaskLog::getTaskId, query.getTaskId());
         wrapper.like(StrUtil.isNotBlank(query.getContent()), TaskLog::getContent, query.getContent());

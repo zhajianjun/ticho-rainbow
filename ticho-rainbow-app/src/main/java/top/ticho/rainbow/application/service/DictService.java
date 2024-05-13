@@ -2,9 +2,14 @@ package top.ticho.rainbow.application.service;
 
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.rainbow.interfaces.dto.DictDTO;
+import top.ticho.rainbow.interfaces.dto.DictLabelDTO;
 import top.ticho.rainbow.interfaces.query.DictQuery;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * 字典 服务接口
@@ -60,5 +65,11 @@ public interface DictService {
      */
     List<DictDTO> flush();
 
+    /**
+     * 导出字典信息
+     *
+     * @param query 查询条件
+     */
+    void expExcel(DictQuery query) throws IOException;
 }
 

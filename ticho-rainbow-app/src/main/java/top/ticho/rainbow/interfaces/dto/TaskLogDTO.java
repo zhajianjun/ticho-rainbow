@@ -63,8 +63,8 @@ public class TaskLogDTO implements Serializable {
     @ApiModelProperty(value = "链路id", position = 110)
     private String traceId;
 
-    /** 任务状态;1-执行成功,0-执行异常 */
-    @ApiModelProperty(value = "任务状态;1-执行成功,0-执行异常", position = 120)
+    /** 执行状态;1-执行成功,0-执行异常 */
+    @ApiModelProperty(value = "执行状态;1-执行成功,0-执行异常", position = 120)
     private Integer status;
 
     /** 操作人 */

@@ -9,8 +9,11 @@ export interface UserLoginDTO {
 }
 
 export interface UserQuery {
+  /** 当前页码 */
   pageNum: number;
+  /** 页面大小 */
   pageSize: number;
+  /** 主键编号列表 */
   ids: string[];
   id: string;
   username: string;
@@ -22,7 +25,6 @@ export interface UserQuery {
   lastTime: string;
   status: number;
   remark: string;
-  systemIds: string[];
 }
 
 export interface UserRoleMenuDtlDTO {

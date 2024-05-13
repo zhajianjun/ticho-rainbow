@@ -4,7 +4,7 @@
       <template #toolbar>
         <a-button
           type="primary"
-          v-auth="'UserAdd'"
+          v-auth="'RoleAdd'"
           preIcon="ant-design:plus-outlined"
           @click="handleCreate"
         >
@@ -13,7 +13,7 @@
         <a-button
           type="primary"
           ghost
-          v-auth="'UserExport'"
+          v-auth="'RoleExport'"
           preIcon="ant-design:download-outlined"
           :loading="exportLoding"
           @click="handleExport"
@@ -56,6 +56,7 @@
   import { usePermission } from '@/hooks/web/usePermission';
   import { downloadByData } from '@/utils/file/download';
   import { RoleQuery } from '@/api/system/model/roleModel';
+  import { useMessage } from '@/hooks/web/useMessage';
 
   export default defineComponent({
     name: 'RoleManagement',
@@ -131,6 +132,7 @@
       }
 
       const exportLoding = ref<Boolean>(false);
+      const { createMessage } = useMessage();
 
       function handleExport() {
         exportLoding.value = true;
@@ -149,6 +151,7 @@
             // 提取文件名
             let fileName = decodeURI(res.headers['content-disposition'].split('filename=')[1]);
             downloadByData(res.data, fileName);
+            createMessage.info(`导出成功, ${fileName}已下载`);
           })
           .finally(() => {
             exportLoding.value = false;

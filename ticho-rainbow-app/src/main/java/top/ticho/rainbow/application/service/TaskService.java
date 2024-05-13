@@ -4,39 +4,40 @@ import top.ticho.boot.view.core.PageResult;
 import top.ticho.rainbow.interfaces.dto.TaskDTO;
 import top.ticho.rainbow.interfaces.query.TaskQuery;
 
+import java.io.IOException;
 import java.util.List;
 
 
 /**
- * 定时任务调度 服务接口
+ * 计划任务 服务接口
  *
  * @author zhajianjun
  * @date 2024-03-23 23:38
  */
 public interface TaskService {
     /**
-     * 保存定时任务调度
+     * 保存计划任务
      *
-     * @param taskDTO 定时任务调度DTO 对象
+     * @param taskDTO 计划任务DTO 对象
      */
     void save(TaskDTO taskDTO);
 
     /**
-     * 删除定时任务调度
+     * 删除计划任务
      *
      * @param id 主键
      */
     void remove(Long id);
 
     /**
-     * 修改定时任务调度
+     * 修改计划任务
      *
-     * @param taskDTO 定时任务调度DTO 对象
+     * @param taskDTO 计划任务DTO 对象
      */
     void update(TaskDTO taskDTO);
 
     /**
-     * 执行一次定时任务调度
+     * 执行一次计划任务
      *
      * @param id    主键
      * @param param 任务参数
@@ -44,14 +45,14 @@ public interface TaskService {
     void runOnce(Long id, String param);
 
     /**
-     * 暂停定时任务调度
+     * 暂停计划任务
      *
      * @param id 主键
      */
     void pause(Long id);
 
     /**
-     * 恢复定时任务调度
+     * 恢复计划任务
      *
      * @param id 主键
      */
@@ -68,7 +69,7 @@ public interface TaskService {
 
 
     /**
-     * 根据id查询定时任务调度
+     * 根据id查询计划任务
      *
      * @param id 主键
      * @return {@link TaskDTO}
@@ -76,7 +77,7 @@ public interface TaskService {
     TaskDTO getById(Long id);
 
     /**
-     * 分页查询定时任务调度列表
+     * 分页查询计划任务列表
      *
      * @param query 查询
      * @return {@link PageResult}<{@link TaskDTO}>
@@ -84,12 +85,19 @@ public interface TaskService {
     PageResult<TaskDTO> page(TaskQuery query);
 
     /**
-     * 分页查询定时任务调度列表
+     * 分页查询计划任务列表
      *
      * @param query 查询
      * @return {@link PageResult}<{@link TaskDTO}>
      */
     List<TaskDTO> list(TaskQuery query);
+
+    /**
+     * 导出计划任务
+     *
+     * @param query 查询条件
+     */
+    void expExcel(TaskQuery query) throws IOException;
 
 }
 

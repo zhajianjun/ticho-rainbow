@@ -20,6 +20,12 @@ export interface DictDTO {
 }
 
 export interface DictQuery {
+  /** 当前页码 */
+  pageNum: number;
+  /** 页面大小 */
+  pageSize: number;
+  /** 主键编号列表 */
+  ids: string[];
   /** 主键编号 */
   id: string;
   /** 字典编码 */

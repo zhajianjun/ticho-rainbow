@@ -4,6 +4,7 @@ import top.ticho.rainbow.infrastructure.entity.TaskLog;
 import top.ticho.rainbow.interfaces.dto.TaskLogDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import top.ticho.rainbow.interfaces.excel.TaskLogExp;
 
 /**
  * 计划任务日志信息 转换
@@ -31,4 +32,5 @@ public interface TaskLogAssembler {
      */
     TaskLogDTO entityToDto(TaskLog entity);
 
+    TaskLogExp entityToExp(TaskLog entity);
 }

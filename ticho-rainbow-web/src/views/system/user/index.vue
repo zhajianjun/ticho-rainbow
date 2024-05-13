@@ -236,6 +236,7 @@
       const lockLoading = ref<Boolean>(false);
       const unLockLoading = ref<Boolean>(false);
       const exportLoding = ref<Boolean>(false);
+      const { createMessage } = useMessage();
 
       async function handleBatch(type: Action) {
         const selectRows = getSelectRows();
@@ -289,6 +290,7 @@
             // 提取文件名
             let fileName = decodeURI(res.headers['content-disposition'].split('filename=')[1]);
             downloadByData(res.data, fileName);
+            createMessage.info(`导出成功, ${fileName}已下载`);
           })
           .finally(() => {
             exportLoding.value = false;
@@ -314,7 +316,6 @@
         handleRemove,
         handleSuccess,
         searchInfo,
-        hasPermission,
         Action,
         handleExport,
         exportLoding,

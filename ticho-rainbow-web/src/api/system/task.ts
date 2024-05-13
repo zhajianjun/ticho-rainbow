@@ -1,5 +1,6 @@
 import { defHttp } from '@/utils/http/axios';
 import { TaskDTO, TaskQuery } from './model/taskModel';
+import { RetryRequest } from '#/axios';
 
 enum Api {
   Task = '/task',
@@ -8,6 +9,7 @@ enum Api {
   RunOnceTask = '/task/runOnce',
   PauseTask = '/task/pause',
   ResumeTask = '/task/resume',
+  Export = '/task/expExcel',
 }
 
 export function saveTask(params: TaskDTO) {
@@ -27,7 +29,7 @@ export function modifyTask(params: TaskDTO) {
 }
 
 export function taskPage(params?: TaskQuery) {
-  return defHttp.get<TaskDTO[]>({ url: Api.TaskPage, params }, { errorMessageMode: 'none' });
+  return defHttp.post<TaskDTO[]>({ url: Api.TaskPage, params }, { errorMessageMode: 'none' });
 }
 
 export function taskList(params?: TaskQuery) {
@@ -49,4 +51,15 @@ export function pauseTask(id: string) {
 export function resumeTask(id: string) {
   const params = { id: id };
   return defHttp.get<any>({ url: Api.ResumeTask, params }, { errorMessageMode: 'message' });
+}
+
+export function expExcel(params?: TaskQuery) {
+  return defHttp.post<any>(
+    { url: Api.Export, params, responseType: 'blob' },
+    {
+      errorMessageMode: 'message',
+      isReturnNativeResponse: true,
+      retryRequest: { isOpenRetry: false } as RetryRequest,
+    },
+  );
 }

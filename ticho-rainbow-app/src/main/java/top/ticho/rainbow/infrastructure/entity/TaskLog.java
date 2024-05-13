@@ -58,7 +58,7 @@ public class TaskLog extends Model<TaskLog> implements Serializable {
     /** 链路id */
     private String traceId;
 
-    /** 任务状态;1-执行成功,0-执行异常 */
+    /** 执行状态;1-执行成功,0-执行异常 */
     private Integer status;
 
     /** 操作人 */

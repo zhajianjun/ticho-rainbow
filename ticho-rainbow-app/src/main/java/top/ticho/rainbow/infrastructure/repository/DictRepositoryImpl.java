@@ -1,5 +1,6 @@
 package top.ticho.rainbow.infrastructure.repository;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -28,6 +29,7 @@ public class DictRepositoryImpl extends RootServiceImpl<DictMapper, Dict> implem
     public List<Dict> list(DictQuery query) {
         // @formatter:off
         LambdaQueryWrapper<Dict> wrapper = Wrappers.lambdaQuery();
+        wrapper.in(CollUtil.isNotEmpty(query.getIds()), Dict::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), Dict::getId, query.getId());
         wrapper.like(StrUtil.isNotBlank(query.getCode()), Dict::getCode, query.getCode());
         wrapper.like(StrUtil.isNotBlank(query.getName()), Dict::getName, query.getName());

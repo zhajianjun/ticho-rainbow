@@ -24,6 +24,12 @@ export interface TaskDTO {
 }
 
 export interface TaskQuery {
+  /** 当前页码 */
+  pageNum: number;
+  /** 页面大小 */
+  pageSize: number;
+  /** 主键编号列表 */
+  ids: string[];
   /** 任务ID */
   id: string;
   /** 任务名称 */
@@ -44,8 +50,4 @@ export interface TaskQuery {
   createBy: string;
   /** 创建时间 */
   createTime: string;
-  /** 修改人 */
-  updateBy: string;
-  /** 修改时间 */
-  updateTime: string;
 }

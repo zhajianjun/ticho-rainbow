@@ -67,6 +67,8 @@ public class RoleServiceImpl extends AuthHandle implements RoleService {
     @Resource
     private HttpServletResponse response;
 
+    // @formatter:off
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void save(RoleDTO roleDTO) {
@@ -139,7 +141,6 @@ public class RoleServiceImpl extends AuthHandle implements RoleService {
 
     @Override
     public PageResult<RoleDTO> page(RoleQuery query) {
-        // @formatter:off
         query.checkPage();
         Page<Role> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
         roleRepository.list(query);
@@ -148,28 +149,23 @@ public class RoleServiceImpl extends AuthHandle implements RoleService {
             .map(RoleAssembler.INSTANCE::entityToDto)
             .collect(Collectors.toList());
         return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), roleDTOs);
-        // @formatter:on
     }
 
     @Override
     public List<RoleDTO> list(RoleQuery query) {
-        // @formatter:off
         List<Role> list = roleRepository.list(query);
         return list
             .stream()
             .map(RoleAssembler.INSTANCE::entityToDto)
             .collect(Collectors.toList());
-        // @formatter:on
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void bindMenu(RoleMenuDTO roleMenuDTO) {
-        // @formatter:off
         ValidUtil.valid(roleMenuDTO);
         // 删除角色绑定的菜单
         roleMenuRepository.removeAndSave(roleMenuDTO.getRoleId(), roleMenuDTO.getMenuIds());
-        // @formatter:on
     }
 
     @Override
@@ -192,9 +188,9 @@ public class RoleServiceImpl extends AuthHandle implements RoleService {
         return page.getResult()
             .stream()
             .map(x-> {
-                RoleExp userExp = RoleAssembler.INSTANCE.entityToExp(x);
-                userExp.setStatusName(labelMap.get(x.getStatus()));
-                return userExp;
+                RoleExp roleExp = RoleAssembler.INSTANCE.entityToExp(x);
+                roleExp.setStatusName(labelMap.get(x.getStatus()));
+                return roleExp;
             })
             .collect(Collectors.toList());
     }

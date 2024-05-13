@@ -24,7 +24,7 @@ import java.util.List;
 public class UserQuery extends BasePageQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** 主键编号 */
+    /** 主键编号列表 */
     @ApiModelProperty(value = "主键编号列表", position = 9)
     private List<Long> ids;
 

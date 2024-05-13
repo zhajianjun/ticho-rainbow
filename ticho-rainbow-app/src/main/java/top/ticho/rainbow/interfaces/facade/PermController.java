@@ -31,7 +31,7 @@ public class PermController {
     private CacheHandle cacheHandle;
 
     @PreAuthorize("@perm.hasPerms('system:perm:list')")
-    @ApiOperation(value = "查询所有权限标识信息")
+    @ApiOperation(value = "查询所有权限标识")
     @ApiOperationSupport(order = 60)
     @GetMapping("list")
     public Result<List<PermDTO>> listAll() {

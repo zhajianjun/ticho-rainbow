@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import top.ticho.rainbow.infrastructure.entity.DictLabel;
 import top.ticho.rainbow.interfaces.dto.DictLabelDTO;
+import top.ticho.rainbow.interfaces.excel.DictExp;
 
 /**
  * 字典标签 转换
@@ -30,5 +31,8 @@ public interface DictLabelAssembler {
      * @return {@link DictLabelDTO}
      */
     DictLabelDTO entityToDto(DictLabel entity);
+
+
+    DictExp entityToExp(DictLabel entity);
 
 }

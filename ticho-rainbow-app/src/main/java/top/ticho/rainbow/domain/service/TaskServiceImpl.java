@@ -1,13 +1,12 @@
 package top.ticho.rainbow.domain.service;
 
-import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.ticho.boot.json.util.JsonUtil;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.enums.BizErrCode;
 import top.ticho.boot.view.util.Assert;
@@ -15,23 +14,34 @@ import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.boot.web.util.valid.ValidGroup;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.TaskService;
+import top.ticho.rainbow.domain.handle.DictTemplate;
 import top.ticho.rainbow.domain.repository.TaskRepository;
 import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
 import top.ticho.rainbow.infrastructure.core.component.TaskTemplate;
+import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
+import top.ticho.rainbow.infrastructure.core.constant.DictConst;
 import top.ticho.rainbow.infrastructure.entity.Task;
 import top.ticho.rainbow.interfaces.assembler.TaskAssembler;
 import top.ticho.rainbow.interfaces.dto.TaskDTO;
+import top.ticho.rainbow.interfaces.excel.TaskExp;
 import top.ticho.rainbow.interfaces.query.TaskQuery;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * 计划任务信息 服务实现
+ * 计划任务 服务实现
  *
  * @author zhajianjun
  * @date 2024-03-23 23:38
@@ -48,6 +58,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private TaskTemplate taskTemplate;
+
+    @Autowired
+    private DictTemplate dictTemplate;
+
+    @Resource
+    private HttpServletResponse response;
 
     // @formatter:off
 
@@ -214,4 +230,28 @@ public class TaskServiceImpl implements TaskService {
         .map(TaskAssembler.INSTANCE::entityToDto)
         .collect(Collectors.toList());
     }
+
+    @Override
+    public void expExcel(TaskQuery query) throws IOException {
+        String sheetName = "计划任务";
+        String fileName = "计划任务导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
+        Map<String, String> labelMap = dictTemplate.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.PLAN_TASK);
+        ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, TaskExp.class, response);
+    }
+
+    private Collection<TaskExp> excelExpHandle(TaskQuery query, Map<String, String> labelMap) {
+        query.checkPage();
+        Page<Task> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
+        taskRepository.list(query);
+        return page.getResult()
+            .stream()
+            .map(x-> {
+                TaskExp taskExp = TaskAssembler.INSTANCE.entityToExp(x);
+                taskExp.setStatusName(labelMap.get(DictConst.COMMON_STATUS + x.getStatus()));
+                taskExp.setContent(labelMap.get(DictConst.PLAN_TASK + x.getContent()));
+                return taskExp;
+            })
+            .collect(Collectors.toList());
+    }
+
 }

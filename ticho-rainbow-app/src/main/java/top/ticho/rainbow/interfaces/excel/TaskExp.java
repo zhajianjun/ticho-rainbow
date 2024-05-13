@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 角色信息导出
+ * 计划任务导出
  *
  * @author zhajianjun
  * @date 2024-05-13 18:00
@@ -23,22 +23,32 @@ import java.time.LocalDateTime;
 @HeadFontStyle(fontHeightInPoints = 12)
 @HeadStyle(fillForegroundColor = 1, leftBorderColor = 22, rightBorderColor = 22, bottomBorderColor = 57)
 @ContentFontStyle(fontHeightInPoints = 10)
-public class RoleExp implements Serializable {
+public class TaskExp implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** 角色编码 */
+    /** 任务名称 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "角色编码")
-    private String code;
-
-    /** 角色名称 */
-    @ColumnWidth(20)
-    @ExcelProperty(value = "角色名称")
+    @ExcelProperty(value = "任务名称")
     private String name;
 
-    /** 状态;1-正常,0-禁用 */
+    /** 任务类型 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "角色状态")
+    @ExcelProperty(value = "任务类型")
+    private String content;
+
+    /** 执行参数 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "执行参数")
+    private String param;
+
+    /** cron执行表达式 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "cron执行表达式")
+    private String cronExpression;
+
+    /** 任务状态;1-正常,0-停用 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "任务状态")
     private String statusName;
 
     /** 备注信息 */

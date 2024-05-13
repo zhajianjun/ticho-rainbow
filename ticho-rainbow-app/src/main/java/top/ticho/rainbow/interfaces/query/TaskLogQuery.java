@@ -9,18 +9,23 @@ import top.ticho.boot.view.core.BasePageQuery;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
- * 计划任务日志信息查询条件
+ * 计划任务日志查询条件
  *
  * @author zhajianjun
  * @date 2024-05-06 16:41
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "计划任务日志信息查询条件")
+@ApiModel(value = "计划任务日志查询条件")
 public class TaskLogQuery extends BasePageQuery implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    /** 主键编号列表 */
+    @ApiModelProperty(value = "主键编号列表", position = 9)
+    private List<Long> ids;
 
     /** 主键编号 */
     @ApiModelProperty(value = "主键编号", position = 10)
@@ -65,8 +70,8 @@ public class TaskLogQuery extends BasePageQuery implements Serializable {
     @ApiModelProperty(value = "链路id", position = 110)
     private String traceId;
 
-    /** 任务状态;1-执行成功,0-执行异常 */
-    @ApiModelProperty(value = "任务状态;1-执行成功,0-执行异常", position = 120)
+    /** 执行状态;1-执行成功,0-执行异常 */
+    @ApiModelProperty(value = "执行状态;1-执行成功,0-执行异常", position = 120)
     private Integer status;
 
     /** 操作人 */

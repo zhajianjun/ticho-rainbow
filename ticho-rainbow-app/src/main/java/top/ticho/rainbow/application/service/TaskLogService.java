@@ -4,6 +4,8 @@ import top.ticho.boot.view.core.PageResult;
 import top.ticho.rainbow.interfaces.dto.TaskLogDTO;
 import top.ticho.rainbow.interfaces.query.TaskLogQuery;
 
+import java.io.IOException;
+
 
 /**
  * 计划任务日志信息 服务接口
@@ -29,5 +31,11 @@ public interface TaskLogService {
      */
     PageResult<TaskLogDTO> page(TaskLogQuery query);
 
+    /**
+     * 导出计划任务日志
+     *
+     * @param query 查询条件
+     */
+    void expExcel(TaskLogQuery query) throws IOException;
 }
 

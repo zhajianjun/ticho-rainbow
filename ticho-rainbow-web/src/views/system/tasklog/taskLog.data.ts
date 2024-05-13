@@ -92,7 +92,7 @@ export function getTableColumns(): BasicColumn[] {
       width: 80,
     },
     {
-      title: '任务状态',
+      title: '执行状态',
       dataIndex: 'status',
       resizable: true,
       width: 48,
@@ -128,6 +128,15 @@ export function getTableColumns(): BasicColumn[] {
 
 export function getSearchColumns(): FormSchema[] {
   return [
+    {
+      field: `id`,
+      label: `日志编号`,
+      component: 'Input',
+      colProps: { span: 8 },
+      componentProps: {
+        placeholder: '请输入日志编号',
+      },
+    },
     {
       field: `taskId`,
       label: `任务名称`,
@@ -230,11 +239,11 @@ export function getSearchColumns(): FormSchema[] {
     },
     {
       field: `status`,
-      label: `任务状态`,
+      label: `执行状态`,
       component: 'Select',
       componentProps: {
         options: getDictByCode(taskLogStatus),
-        placeholder: '请选择任务状态',
+        placeholder: '请选择执行状态',
       },
       colProps: { span: 8 },
     },
@@ -349,7 +358,7 @@ export function getDescColumns(): DescItem[] {
       },
     },
     {
-      label: '任务状态',
+      label: '执行状态',
       field: 'status',
       labelMinWidth: 60,
       span: 3,

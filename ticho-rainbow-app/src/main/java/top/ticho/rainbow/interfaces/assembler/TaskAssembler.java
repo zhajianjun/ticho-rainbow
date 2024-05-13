@@ -4,6 +4,7 @@ import top.ticho.rainbow.infrastructure.entity.Task;
 import top.ticho.rainbow.interfaces.dto.TaskDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import top.ticho.rainbow.interfaces.excel.TaskExp;
 
 /**
  * 计划任务信息 转换
@@ -31,4 +32,5 @@ public interface TaskAssembler {
      */
     TaskDTO entityToDto(Task entity);
 
+    TaskExp entityToExp(Task entity);
 }

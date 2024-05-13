@@ -12,8 +12,11 @@ export interface RoleDTO {
 }
 
 export interface RoleQuery {
+  /** 当前页码 */
   pageNum: number;
+  /** 页面大小 */
   pageSize: number;
+  /** 主键编号列表 */
   ids: string[];
   /** 主键编号 */
   id: string;

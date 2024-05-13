@@ -106,7 +106,7 @@
       let fileName = decodeURI(res.headers['content-disposition'].split('filename=')[1]);
       downloadByData(res.data, fileName);
       filesRef.value = [];
-      createMessage.info(`导入成功，导入结果${fileName}已下载`);
+      createMessage.info(`导入成功, 导入结果${fileName}已下载`);
       emit('success');
       closeModal();
       filesRef.value = [];

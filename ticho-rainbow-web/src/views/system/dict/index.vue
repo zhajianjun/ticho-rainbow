@@ -3,8 +3,33 @@
     <div class="w-1/2">
       <BasicTable @register="registerTable">
         <template #toolbar>
-          <a-button type="primary" v-auth="'DictAdd'" @click="openDictAddModel"> 新增 </a-button>
-          <a-button type="primary" @click="flushDicts"> 刷新缓存 </a-button>
+          <a-button
+            type="primary"
+            v-auth="'DictAdd'"
+            preIcon="ant-design:plus-outlined"
+            @click="openDictAddModel"
+          >
+            新增
+          </a-button>
+          <a-button
+            type="primary"
+            v-auth="'DictFlush'"
+            preIcon="ant-design:sync-outlined"
+            @click="flushDicts"
+          >
+            刷新
+          </a-button>
+          <a-button
+            type="primary"
+            ghost
+            v-auth="'DictExport'"
+            preIcon="ant-design:download-outlined"
+            :loading="exportLoding"
+            @click="handleExport"
+            style="color: #2a7dc9"
+          >
+            导出
+          </a-button>
         </template>
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'code'">
@@ -41,7 +66,12 @@
     <div class="w-1/2 p-4">
       <BasicTable @register="registerDictLabelTable">
         <template #toolbar>
-          <a-button type="primary" v-auth="'DictAdd'" @click="openDictLabelAddModel">
+          <a-button
+            type="primary"
+            v-auth="'DictLabelAdd'"
+            preIcon="ant-design:plus-outlined"
+            @click="openDictLabelAddModel"
+          >
             新增
           </a-button>
         </template>
@@ -83,11 +113,14 @@
     getSearchColumns as getDictSearchColumns,
   } from './dict.data';
   import { getTableColumns as getDictLabelTableColumns } from './dictLabel.data';
-  import { dictPage, delDict } from '@/api/system/dict';
+  import { dictPage, delDict, expExcel } from '@/api/system/dict';
   import { getByCode, delDictLabel } from '@/api/system/dictLabel';
   import { usePermission } from '@/hooks/web/usePermission';
   import { Tag } from 'ant-design-vue';
   import { flushDicts } from '@/store/modules/dict';
+  import { downloadByData } from '@/utils/file/download';
+  import { DictQuery } from '@/api/system/model/dictModel';
+  import { useMessage } from '@/hooks/web/useMessage';
 
   export default defineComponent({
     name: 'DictType',
@@ -122,6 +155,12 @@
           showSubmitButton: showSelect,
           showResetButton: showSelect,
           autoSubmitOnEnter: showSelect,
+          submitButtonOptions: {
+            preIcon: 'ant-design:search-outlined',
+          },
+          resetButtonOptions: {
+            preIcon: 'ant-design:sync-outlined',
+          },
         },
         tableSetting: {
           redo: showSelect,
@@ -140,7 +179,7 @@
         pagination: false,
       });
       const [registerModal, { openModal: openDictModal }] = useModal();
-      const [registerTable, { reload: reloadDict }] = useTable({
+      const [registerTable, { reload: reloadDict, getSelectRowKeys, getForm }] = useTable({
         title: '字典列表',
         api: dictPage,
         afterFetch: (res) => {
@@ -162,6 +201,12 @@
           showSubmitButton: showSelect,
           showResetButton: showSelect,
           autoSubmitOnEnter: showSelect,
+          submitButtonOptions: {
+            preIcon: 'ant-design:search-outlined',
+          },
+          resetButtonOptions: {
+            preIcon: 'ant-design:sync-outlined',
+          },
         },
         tableSetting: {
           redo: showSelect,
@@ -179,7 +224,11 @@
         },
         pagination: {
           simple: false,
-          position: ['bottomLeft'],
+          position: ['bottomCenter'],
+        },
+        showSelectionBar: true,
+        rowSelection: {
+          type: 'checkbox',
         },
       });
 
@@ -240,6 +289,33 @@
         reloadDictLabel();
       }
 
+      const exportLoding = ref<Boolean>(false);
+      const { createMessage } = useMessage();
+
+      function handleExport() {
+        exportLoding.value = true;
+        // 是否有选中，优先下载选中数据
+        const selectRowKeys = getSelectRowKeys();
+        let params: DictQuery;
+        if (selectRowKeys && selectRowKeys.length > 0) {
+          params = { ids: selectRowKeys } as DictQuery;
+        } else {
+          // 获取查询参数
+          const { getFieldsValue } = getForm();
+          params = getFieldsValue() as DictQuery;
+        }
+        expExcel(params)
+          .then((res) => {
+            // 提取文件名
+            let fileName = decodeURI(res.headers['content-disposition'].split('filename=')[1]);
+            downloadByData(res.data, fileName);
+            createMessage.info(`导出成功, ${fileName}已下载`);
+          })
+          .finally(() => {
+            exportLoding.value = false;
+          });
+      }
+
       return {
         registerTable,
         registerModal,
@@ -256,6 +332,8 @@
         handleDict,
         hasPermission,
         flushDicts,
+        handleExport,
+        exportLoding,
       };
     },
   });

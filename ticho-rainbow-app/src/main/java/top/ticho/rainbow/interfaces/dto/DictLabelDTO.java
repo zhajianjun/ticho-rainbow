@@ -31,18 +31,18 @@ public class DictLabelDTO implements Serializable {
     @NotNull(message = "字典编号不能为空", groups = {ValidGroup.Upd.class})
     private Long id;
 
-    /** 字典id */
+    /** 字典编码 */
     @ApiModelProperty(value = "字典编码", position = 30)
     @NotBlank(message = "字典编码不能为空", groups = {ValidGroup.Add.class})
     private String code;
 
-    /** 字典名称 */
+    /** 字典标签 */
     @ApiModelProperty(value = "字典标签", position = 50)
     @NotBlank(message = "字典标签不能为空")
     @Size(max = 50, message = "字典标签最大不能超过50个字符")
     private String label;
 
-    /** 字典编码 */
+    /** 字典值 */
     @ApiModelProperty(value = "字典值", position = 40)
     @NotBlank(message = "字典值不能为空")
     @Size(max = 50, message = "字典值最大不能超过50个字符")

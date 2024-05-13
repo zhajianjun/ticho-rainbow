@@ -142,6 +142,15 @@ export function getTableColumns(): BasicColumn[] {
 export function getSearchColumns(): FormSchema[] {
   return [
     {
+      field: `id`,
+      label: `日志编号`,
+      component: 'Input',
+      colProps: { span: 8 },
+      componentProps: {
+        placeholder: '请输入日志编号',
+      },
+    },
+    {
       field: `name`,
       label: `接口名称`,
       component: 'Input',

@@ -2,7 +2,25 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 新增 </a-button>
+        <a-button
+          type="primary"
+          v-auth="'TaskAdd'"
+          preIcon="ant-design:plus-outlined"
+          @click="handleCreate"
+        >
+          新增
+        </a-button>
+        <a-button
+          type="primary"
+          ghost
+          v-auth="'TaskExport'"
+          preIcon="ant-design:download-outlined"
+          :loading="exportLoding"
+          @click="handleExport"
+          style="color: #2a7dc9"
+        >
+          导出
+        </a-button>
       </template>
       <template #action="{ record }">
         <TableAction
@@ -62,9 +80,12 @@
   import TaskModal from './TaskModal.vue';
   import TaskRunOnce from './TaskRunOnce.vue';
   import { getTableColumns, getSearchColumns } from './task.data';
-  import { taskPage, delTask, pauseTask, resumeTask } from '@/api/system/task';
+  import { taskPage, delTask, pauseTask, resumeTask, expExcel } from '@/api/system/task';
   import { usePermission } from '@/hooks/web/usePermission';
   import { useGo } from '@/hooks/web/usePage';
+  import { useMessage } from '@/hooks/web/useMessage';
+  import { downloadByData } from '@/utils/file/download';
+  import { TaskQuery } from '@/api/system/model/taskModel';
 
   export default defineComponent({
     name: 'Task',
@@ -75,7 +96,7 @@
       let showSelect = hasPermission('TaskSelect');
       const [registerModal, { openModal }] = useModal();
       const [registerRunOnceModal, { openModal: openRunOnceModal }] = useModal();
-      const [registerTable, { reload }] = useTable({
+      const [registerTable, { reload, getSelectRowKeys, getForm }] = useTable({
         title: '计划任务列表',
         api: taskPage,
         rowKey: 'id',
@@ -88,6 +109,12 @@
           showSubmitButton: showSelect,
           showResetButton: showSelect,
           autoSubmitOnEnter: showSelect,
+          submitButtonOptions: {
+            preIcon: 'ant-design:search-outlined',
+          },
+          resetButtonOptions: {
+            preIcon: 'ant-design:sync-outlined',
+          },
         },
         tableSetting: {
           redo: showSelect,
@@ -105,7 +132,11 @@
         },
         pagination: {
           simple: false,
-          position: ['bottomLeft'],
+          position: ['bottomCenter'],
+        },
+        showSelectionBar: true,
+        rowSelection: {
+          type: 'checkbox',
         },
       });
 
@@ -154,6 +185,33 @@
         go(`/system/log/tasklog?taskId=${record.id}`);
       }
 
+      const exportLoding = ref<Boolean>(false);
+      const { createMessage } = useMessage();
+
+      function handleExport() {
+        exportLoding.value = true;
+        // 是否有选中，优先下载选中数据
+        const selectRowKeys = getSelectRowKeys();
+        let params: TaskQuery;
+        if (selectRowKeys && selectRowKeys.length > 0) {
+          params = { ids: selectRowKeys } as TaskQuery;
+        } else {
+          // 获取查询参数
+          const { getFieldsValue } = getForm();
+          params = getFieldsValue() as TaskQuery;
+        }
+        expExcel(params)
+          .then((res) => {
+            // 提取文件名
+            let fileName = decodeURI(res.headers['content-disposition'].split('filename=')[1]);
+            downloadByData(res.data, fileName);
+            createMessage.info(`导出成功, ${fileName}已下载`);
+          })
+          .finally(() => {
+            exportLoding.value = false;
+          });
+      }
+
       return {
         registerTable,
         registerModal,
@@ -168,6 +226,8 @@
         registerRunOnceModal,
         openRunOnceTaskModal,
         goTaskLog,
+        exportLoding,
+        handleExport,
       };
     },
   });
