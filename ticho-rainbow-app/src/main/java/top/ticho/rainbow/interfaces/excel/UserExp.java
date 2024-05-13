@@ -9,10 +9,9 @@ import com.alibaba.excel.annotation.write.style.HeadStyle;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * 用户信息导出
@@ -31,7 +30,6 @@ public class UserExp implements Serializable {
     /** 账户;账户具有唯一性 */
     @ColumnWidth(20)
     @ExcelProperty(value = "用户名")
-    @NotBlank(message = "用户名不能为空")
     private String username;
 
     /** 昵称 */
@@ -78,8 +76,6 @@ public class UserExp implements Serializable {
     /** 邮箱 */
     @ColumnWidth(20)
     @ExcelProperty(value = "邮箱")
-    @NotBlank(message = "邮箱不能为空")
-    @Email(message = "邮箱格式不正确")
     private String email;
 
     /** QQ号码 */
@@ -101,5 +97,27 @@ public class UserExp implements Serializable {
     @ColumnWidth(20)
     @ExcelProperty(value = "状态")
     private String statusName;
+
+    /** 创建人 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "创建人")
+    private String createBy;
+
+    /** 创建时间 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "创建时间")
+    @DateTimeFormat(value = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createTime;
+
+    /** 修改人 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "修改人")
+    private String updateBy;
+
+    /** 修改时间 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "修改时间")
+    @DateTimeFormat(value = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updateTime;
 
 }

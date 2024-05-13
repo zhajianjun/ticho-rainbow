@@ -8,6 +8,7 @@ package top.ticho.rainbow.infrastructure.core.constant;
  */
 public class DictConst {
 
+    public static final String COMMON_STATUS = "commonStatus";
     public static final String USER_STATUS = "userStatus";
     public static final String SEX = "userStatus";
 

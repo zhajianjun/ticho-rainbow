@@ -4,7 +4,9 @@ import {
   RoleMenuBindDTO,
   RoleMenuDtlDTO,
   RoleMenuQueryDTO,
+  RoleQuery,
 } from '@/api/system/model/roleModel';
+import { RetryRequest } from '#/axios';
 
 enum Api {
   Role = '/role',
@@ -13,14 +15,15 @@ enum Api {
   ListRoleMenu = '/role/listRoleMenu',
   BindMenu = '/role/bindMenu',
   UpdateStatus = '/role/updateStatus',
+  Export = '/role/expExcel',
 }
 
-export function rolePage(params?: RoleDTO) {
-  return defHttp.get<RoleDTO>({ url: Api.RolePage, params }, { errorMessageMode: 'none' });
+export function rolePage(params?: RoleQuery) {
+  return defHttp.post<RoleDTO>({ url: Api.RolePage, params }, { errorMessageMode: 'none' });
 }
 
 export function listRoles(params?: RoleDTO) {
-  return defHttp.get<RoleDTO[]>({ url: Api.RoleList, params }, { errorMessageMode: 'none' });
+  return defHttp.post<RoleDTO[]>({ url: Api.RoleList, params }, { errorMessageMode: 'none' });
 }
 
 export function saveRole(params: any) {
@@ -52,4 +55,15 @@ export function listRoleMenu(params?: RoleMenuQueryDTO) {
 
 export function bindMenu(params?: RoleMenuBindDTO) {
   return defHttp.post<any>({ url: Api.BindMenu, params }, { errorMessageMode: 'message' });
+}
+
+export function expExcel(params?: RoleQuery) {
+  return defHttp.post<any>(
+    { url: Api.Export, params, responseType: 'blob' },
+    {
+      errorMessageMode: 'message',
+      isReturnNativeResponse: true,
+      retryRequest: { isOpenRetry: false } as RetryRequest,
+    },
+  );
 }

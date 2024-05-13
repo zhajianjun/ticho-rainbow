@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import top.ticho.boot.web.util.valid.ValidGroup;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,6 +42,7 @@ public class RoleDTO implements Serializable {
 
     /** 状态;1-正常,0-禁用 */
     @ApiModelProperty(value = "状态;1-正常,0-禁用", position = 35)
+    @NotNull(message = "角色状态不能为空")
     private Integer status;
 
     /** 备注信息 */

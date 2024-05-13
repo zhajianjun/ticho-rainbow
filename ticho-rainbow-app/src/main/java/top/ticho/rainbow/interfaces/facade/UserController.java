@@ -46,7 +46,7 @@ public class UserController {
     private UserService userService;
 
     @PreAuthorize("@perm.hasPerms('system:user:save')")
-    @ApiOperation(value = "保存用户信息")
+    @ApiOperation(value = "保存用户")
     @ApiOperationSupport(order = 10)
     @PostMapping
     public Result<Void> save(@RequestBody UserDTO userDTO) {
@@ -55,7 +55,7 @@ public class UserController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:lock')")
-    @ApiOperation(value = "锁定用户信息")
+    @ApiOperation(value = "锁定用户")
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "用户名, 多个用逗号隔开", name = "username", required = true)
     @PostMapping("lock")
@@ -85,7 +85,7 @@ public class UserController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:remove')")
-    @ApiOperation(value = "删除用户信息")
+    @ApiOperation(value = "删除用户")
     @ApiOperationSupport(order = 50)
     @ApiImplicitParam(value = "用户名, 多个用逗号隔开", name = "username", required = true)
     @PostMapping("remove")
@@ -95,7 +95,7 @@ public class UserController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:update')")
-    @ApiOperation(value = "修改用户信息", notes = "修改用户信息")
+    @ApiOperation(value = "修改用户")
     @ApiOperationSupport(order = 60)
     @PutMapping
     public Result<Void> update(@RequestBody UserDTO userDTO) {
@@ -104,7 +104,7 @@ public class UserController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:updateForSelf')")
-    @ApiOperation(value = "修改登录用户信息", notes = "修改登录用户信息")
+    @ApiOperation(value = "修改用户(登录人)")
     @ApiOperationSupport(order = 70)
     @PutMapping("updateForSelf")
     public Result<Void> updateForSelf(@RequestBody UserDTO userDTO) {
@@ -113,7 +113,7 @@ public class UserController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:uploadAvatar')")
-    @ApiOperation(value = "用户头像上传", notes = "用户头像上传")
+    @ApiOperation(value = "上传用户头像")
     @ApiOperationSupport(order = 80)
     @PostMapping("uploadAvatar")
     public Result<String> uploadAvatar(@RequestPart("file") MultipartFile file) {
@@ -121,7 +121,7 @@ public class UserController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:resetPassword')")
-    @ApiOperation(value = "重置用户密码", notes = "重置用户密码")
+    @ApiOperation(value = "重置用户密码")
     @ApiOperationSupport(order = 90)
     @PutMapping("resetPassword")
     public Result<Void> resetPassword(String username) {
@@ -130,7 +130,7 @@ public class UserController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:updatePassword')")
-    @ApiOperation(value = "修改用户密码", notes = "修改用户密码")
+    @ApiOperation(value = "修改用户密码")
     @ApiOperationSupport(order = 100)
     @PutMapping("updatePassword")
     public Result<Void> updatePassword(@RequestBody UserPasswordDTO userDetailDto) {
@@ -139,7 +139,7 @@ public class UserController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:updatePasswordForSelf')")
-    @ApiOperation(value = "修改登录人密码", notes = "修改登录人密码")
+    @ApiOperation(value = "修改用户密码(登录人)")
     @ApiOperationSupport(order = 110)
     @PutMapping("updatePasswordForSelf")
     public Result<Void> updatePasswordForSelf(@RequestBody PasswordDTO passwordDTO) {
@@ -148,7 +148,7 @@ public class UserController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:info')")
-    @ApiOperation(value = "根据用户名查询用户信息")
+    @ApiOperation(value = "查询用户")
     @ApiOperationSupport(order = 120)
     @ApiImplicitParam(value = "用户名", name = "username", required = true)
     @GetMapping("info")
@@ -157,7 +157,7 @@ public class UserController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:infoForSelf')")
-    @ApiOperation(value = "查询登录人用户信息")
+    @ApiOperation(value = "查询用户(登录人)")
     @ApiOperationSupport(order = 130)
     @GetMapping("infoForSelf")
     public Result<UserDTO> info() {
@@ -165,7 +165,7 @@ public class UserController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:detail')")
-    @ApiOperation(value = "查询用户角色菜单权限标识信息")
+    @ApiOperation(value = "查询用户角色菜单权限")
     @ApiOperationSupport(order = 140)
     @GetMapping("detail")
     public Result<UserRoleMenuDtlDTO> detail(String username) {
@@ -173,7 +173,7 @@ public class UserController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:detailForSelf')")
-    @ApiOperation(value = "查询登录人用户角色菜单权限标识信息")
+    @ApiOperation(value = "查询用户角色菜单权限(登录人)")
     @ApiOperationSupport(order = 150)
     @GetMapping("detailForSelf")
     public Result<UserRoleMenuDtlDTO> detailForSelf() {
@@ -181,7 +181,7 @@ public class UserController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:page')")
-    @ApiOperation(value = "分页查询用户信息")
+    @ApiOperation(value = "查询全部用户(分页)")
     @ApiOperationSupport(order = 160)
     @PostMapping("page")
     public Result<PageResult<UserDTO>> page(@RequestBody UserQuery query) {
@@ -189,7 +189,7 @@ public class UserController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:user:bindRole')")
-    @ApiOperation(value = "用户绑定角色信息")
+    @ApiOperation(value = "绑定用户角色")
     @ApiOperationSupport(order = 170)
     @PostMapping("bindRole")
     public Result<Void> bindRole(@RequestBody UserRoleDTO userRoleDTO) {
@@ -199,7 +199,7 @@ public class UserController {
 
     @View(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:user:impTemplate')")
-    @ApiOperation(value = "导入模板下载", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ApiOperation(value = "下载导入模板", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 180)
     @PostMapping("impTemplate")
     public void impTemplate() throws IOException {
@@ -208,7 +208,7 @@ public class UserController {
 
     @View(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:user:impExcel')")
-    @ApiOperation(value = "导入用户信息", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ApiOperation(value = "导入用户", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 190)
     @PostMapping("impExcel")
     public void impExcel(@RequestPart("file") MultipartFile file) throws IOException {
@@ -217,7 +217,7 @@ public class UserController {
 
     @View(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:user:expExcel')")
-    @ApiOperation(value = "导出用户信息", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ApiOperation(value = "导出用户", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 200)
     @PostMapping("expExcel")
     public void expExcel(@RequestBody UserQuery query) throws IOException {

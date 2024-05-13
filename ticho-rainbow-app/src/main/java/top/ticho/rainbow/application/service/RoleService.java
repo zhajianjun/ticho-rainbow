@@ -7,6 +7,7 @@ import top.ticho.rainbow.interfaces.dto.RoleMenuDtlDTO;
 import top.ticho.rainbow.interfaces.query.RoleDtlQuery;
 import top.ticho.rainbow.interfaces.query.RoleQuery;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -84,5 +85,13 @@ public interface RoleService {
      * @return {@link RoleMenuDtlDTO}
      */
     RoleMenuDtlDTO listRoleMenu(RoleDtlQuery roleDtlQuery);
+
+    /**
+     * 导出角色信息
+     *
+     * @param query 查询条件
+     */
+    void expExcel(RoleQuery query) throws IOException;
+
 }
 

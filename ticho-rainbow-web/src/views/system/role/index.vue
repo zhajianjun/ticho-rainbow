@@ -2,7 +2,25 @@
   <div>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" v-auth="'RoleAdd'" @click="handleCreate"> 新增角色 </a-button>
+        <a-button
+          type="primary"
+          v-auth="'UserAdd'"
+          preIcon="ant-design:plus-outlined"
+          @click="handleCreate"
+        >
+          新增
+        </a-button>
+        <a-button
+          type="primary"
+          ghost
+          v-auth="'UserExport'"
+          preIcon="ant-design:download-outlined"
+          :loading="exportLoding"
+          @click="handleExport"
+          style="color: #2a7dc9"
+        >
+          导出
+        </a-button>
       </template>
       <template #action="{ record }">
         <TableAction
@@ -10,12 +28,12 @@
             {
               icon: 'clarity:note-edit-line',
               onClick: handleEdit.bind(null, record),
-              ifShow: hasPermission('RoleEdit'),
+              auth: 'RoleEdit',
             },
             {
               icon: 'ant-design:delete-outlined',
               color: 'error',
-              ifShow: hasPermission('RoleDel'),
+              auth: 'RoleDel',
               popConfirm: {
                 title: '是否确认删除',
                 confirm: handleDelete.bind(null, record),
@@ -29,13 +47,15 @@
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent } from 'vue';
+  import { defineComponent, ref } from 'vue';
   import { BasicTable, useTable, TableAction } from '@/components/Table';
   import { useDrawer } from '@/components/Drawer';
   import RoleDrawer from './RoleDrawer.vue';
   import { columns, searchFormSchema } from './role.data';
-  import { rolePage, delRole } from '@/api/system/role';
+  import { rolePage, delRole, expExcel } from '@/api/system/role';
   import { usePermission } from '@/hooks/web/usePermission';
+  import { downloadByData } from '@/utils/file/download';
+  import { RoleQuery } from '@/api/system/model/roleModel';
 
   export default defineComponent({
     name: 'RoleManagement',
@@ -44,7 +64,7 @@
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('RoleSelect');
       const [registerDrawer, { openDrawer }] = useDrawer();
-      const [registerTable, { reload }] = useTable({
+      const [registerTable, { reload, getSelectRowKeys, getForm }] = useTable({
         title: '角色列表',
         api: rolePage,
         rowKey: 'id',
@@ -56,6 +76,12 @@
           showActionButtonGroup: showSelect,
           showSubmitButton: showSelect,
           showResetButton: showSelect,
+          submitButtonOptions: {
+            preIcon: 'ant-design:search-outlined',
+          },
+          resetButtonOptions: {
+            preIcon: 'ant-design:sync-outlined',
+          },
         },
         tableSetting: {
           redo: showSelect,
@@ -73,7 +99,11 @@
         },
         pagination: {
           simple: false,
-          position: ['bottomLeft'],
+          position: ['bottomCenter'],
+        },
+        showSelectionBar: true,
+        rowSelection: {
+          type: 'checkbox',
         },
       });
 
@@ -100,6 +130,31 @@
         reload();
       }
 
+      const exportLoding = ref<Boolean>(false);
+
+      function handleExport() {
+        exportLoding.value = true;
+        // 是否有选中，优先下载选中数据
+        const selectRowKeys = getSelectRowKeys();
+        let params: RoleQuery;
+        if (selectRowKeys && selectRowKeys.length > 0) {
+          params = { ids: selectRowKeys } as RoleQuery;
+        } else {
+          // 获取查询参数
+          const { getFieldsValue } = getForm();
+          params = getFieldsValue() as RoleQuery;
+        }
+        expExcel(params)
+          .then((res) => {
+            // 提取文件名
+            let fileName = decodeURI(res.headers['content-disposition'].split('filename=')[1]);
+            downloadByData(res.data, fileName);
+          })
+          .finally(() => {
+            exportLoding.value = false;
+          });
+      }
+
       return {
         registerTable,
         registerDrawer,
@@ -108,6 +163,8 @@
         handleDelete,
         handleSuccess,
         hasPermission,
+        exportLoding,
+        handleExport,
       };
     },
   });

@@ -147,7 +147,7 @@
   }
 
   export default defineComponent({
-    name: 'AccountManagement',
+    name: 'UserManagement',
     components: { BasicTable, PageWrapper, UserModel, ImpModal, TableAction, Tag, Space },
     setup() {
       const { hasPermission } = usePermission();

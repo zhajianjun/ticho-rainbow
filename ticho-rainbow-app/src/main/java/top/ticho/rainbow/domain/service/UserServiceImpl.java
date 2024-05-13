@@ -554,7 +554,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     @Override
     public void expExcel(UserQuery query) throws IOException {
         String sheetName = "用户信息";
-        String fileName = "用户信息-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
+        String fileName = "用户信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictTemplate.getLabelMapBatch(DictConst.USER_STATUS, DictConst.SEX);
         ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, UserExp.class, response);
     }

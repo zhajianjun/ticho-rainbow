@@ -61,6 +61,7 @@ public class RoleRepositoryImpl extends RootServiceImpl<RoleMapper, Role> implem
     @Override
     public List<Role> list(RoleQuery query) {
         LambdaQueryWrapper<Role> wrapper = Wrappers.lambdaQuery();
+        wrapper.in(CollUtil.isNotEmpty(query.getIds()), Role::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), Role::getId, query.getId());
         wrapper.like(StrUtil.isNotBlank(query.getCode()), Role::getCode, query.getCode());
         wrapper.like(StrUtil.isNotBlank(query.getName()), Role::getName, query.getName());

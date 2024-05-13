@@ -9,6 +9,7 @@ import top.ticho.boot.view.core.BasePageQuery;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 角色信息查询条件
@@ -21,6 +22,10 @@ import java.time.LocalDateTime;
 @ApiModel(value = "角色信息查询条件")
 public class RoleQuery extends BasePageQuery implements Serializable {
     private static final long serialVersionUID = 1L;
+
+        /** 主键编号 */
+    @ApiModelProperty(value = "主键编号列表", position = 9)
+    private List<Long> ids;
 
     /** 主键编号 */
     @ApiModelProperty(value = "主键编号", position = 10)
@@ -41,31 +46,5 @@ public class RoleQuery extends BasePageQuery implements Serializable {
     /** 备注信息 */
     @ApiModelProperty(value = "备注信息", position = 50)
     private String remark;
-
-    /** 乐观锁;控制版本更改 */
-    @ApiModelProperty(value = "乐观锁;控制版本更改", position = 60)
-    private Long version;
-
-    /** 创建人 */
-    @ApiModelProperty(value = "创建人", position = 70)
-    private String createBy;
-
-    /** 创建时间 */
-    @ApiModelProperty(value = "创建时间", position = 80)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private LocalDateTime createTime;
-
-    /** 修改人 */
-    @ApiModelProperty(value = "修改人", position = 90)
-    private String updateBy;
-
-    /** 修改时间 */
-    @ApiModelProperty(value = "修改时间", position = 100)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private LocalDateTime updateTime;
-
-    /** 删除标识;0-未删除,1-已删除 */
-    @ApiModelProperty(value = "删除标识;0-未删除,1-已删除", position = 110)
-    private Integer isDelete;
 
 }

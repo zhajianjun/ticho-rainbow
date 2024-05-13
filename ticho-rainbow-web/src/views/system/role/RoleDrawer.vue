@@ -8,8 +8,9 @@
     @ok="handleSubmit"
   >
     <BasicForm @register="registerForm">
-      <template #menu="{ model, field }">
+      <template #menuSlot="{ model, field }">
         <BasicTree
+          v-if="model['code'] !== 'admin'"
           v-model:value="model[field]"
           :treeData="treeData"
           :fieldNames="{ title: 'name', key: 'id' }"
@@ -20,6 +21,7 @@
           toolbar
           title="菜单分配"
         />
+        <span v-else> admin具有所有权限 </span>
       </template>
     </BasicForm>
   </BasicDrawer>
@@ -92,7 +94,6 @@
       }
 
       function check(rawVal: any) {
-        console.log(rawVal);
         if (rawVal.checked) {
           checkedKeys.value = rawVal.checked;
         } else {

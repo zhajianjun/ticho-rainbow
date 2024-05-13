@@ -11,6 +11,20 @@ export interface RoleDTO {
   remark: string;
 }
 
+export interface RoleQuery {
+  pageNum: number;
+  pageSize: number;
+  ids: string[];
+  /** 主键编号 */
+  id: string;
+  /** 角色编码 */
+  code: string;
+  /** 角色名称 */
+  name: string;
+  /** 备注信息 */
+  remark: string;
+}
+
 export interface RoleMenuBindDTO {
   /** 角色编号 */
   roleId: string;

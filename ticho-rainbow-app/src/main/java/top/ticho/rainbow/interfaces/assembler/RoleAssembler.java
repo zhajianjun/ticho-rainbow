@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import top.ticho.rainbow.infrastructure.entity.Role;
 import top.ticho.rainbow.interfaces.dto.RoleDTO;
+import top.ticho.rainbow.interfaces.excel.RoleExp;
 
 import java.util.List;
 
@@ -32,5 +33,7 @@ public interface RoleAssembler {
      * @return {@link RoleDTO}
      */
     RoleDTO entityToDto(Role entity);
+
+    RoleExp entityToExp(Role entity);
 
 }

@@ -101,7 +101,7 @@ export const userFormSchema: FormSchema[] = [
       },
     ],
     dynamicDisabled: ({ values }) => {
-      return values.id;
+      return values.id !== null;
     },
   },
   {
@@ -109,7 +109,7 @@ export const userFormSchema: FormSchema[] = [
     label: '密码',
     component: 'InputPassword',
     required: true,
-    ifShow: ({ values }) => !values.id,
+    ifShow: ({ values }) => values.id === null,
   },
   {
     label: '角色',
@@ -162,9 +162,19 @@ export const userFormSchema: FormSchema[] = [
     required: true,
   },
   {
-    label: '备注',
-    field: 'remark',
+    field: `remark`,
+    label: `备注信息`,
     component: 'InputTextArea',
+    defaultValue: '',
+    componentProps: {
+      placeholder: '请输入备注信息',
+      maxlength: 120,
+      showCount: true,
+      rows: 4,
+    },
+    colProps: {
+      span: 24,
+    },
   },
 ];
 
