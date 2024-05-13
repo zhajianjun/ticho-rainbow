@@ -236,7 +236,6 @@
       const lockLoading = ref<Boolean>(false);
       const unLockLoading = ref<Boolean>(false);
       const exportLoding = ref<Boolean>(false);
-      const { createMessage } = useMessage();
 
       async function handleBatch(type: Action) {
         const selectRows = getSelectRows();
