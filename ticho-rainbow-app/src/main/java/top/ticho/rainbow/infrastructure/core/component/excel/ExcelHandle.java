@@ -18,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -49,9 +50,14 @@ public class ExcelHandle {
         BiConsumer<List<M>, Consumer<M>> handlerDataBatch,
         Class<M> claz
     ) throws IOException {
-        ExcelListener<M> readListener = new ExcelListener<>(handlerDataBatch);
+        List<M> allDatas = new ArrayList<>();
+        BiConsumer<List<M>, Consumer<M>> handlerDataBatchProxy = (s, t) -> {
+            handlerDataBatch.accept(s, t);
+            allDatas.addAll(s);
+        };
+        ExcelListener<M> readListener = new ExcelListener<>(handlerDataBatchProxy);
         EasyExcel.read(file.getInputStream(), claz, readListener).sheet().doRead();
-        return readListener.getAllDatas();
+        return allDatas;
     }
 
     /**
@@ -109,11 +115,9 @@ public class ExcelHandle {
         response.setCharacterEncoding("utf-8");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLUtil.encodeAll(fileName + ".xlsx"));
-        try {
-            ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), claz).build();
+        try(ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), claz).build()) {
             WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
             excelWriter.write(datas, writeSheet);
-            excelWriter.close();
         } catch (Exception e) {
             log.error("{}下载失败，{}", sheetName, e.getMessage(), e);
             downloadFileErrRes(response, e.getMessage());

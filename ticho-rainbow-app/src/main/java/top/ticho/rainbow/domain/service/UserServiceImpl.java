@@ -486,6 +486,9 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         List<User> users = new ArrayList<>();
         List<UserRole> userRoles = new ArrayList<>();
         for (UserImp userImp : userImps) {
+            if (userImp.getIsError()) {
+                continue;
+            }
             UserAccountQuery userQuery = new UserAccountQuery();
             userQuery.setUsername(userImp.getUsername());
             userQuery.setEmail(userImp.getEmail());
@@ -507,6 +510,9 @@ public class UserServiceImpl extends AuthHandle implements UserService {
             userRole.setUserId(user.getId());
             userRole.setRoleId(guestRole.getId());
             userRoles.add(userRole);
+        }
+        if (CollUtil.isEmpty(users)) {
+            return;
         }
         userRepository.saveBatch(users);
         userRoleRepository.saveBatch(userRoles);
