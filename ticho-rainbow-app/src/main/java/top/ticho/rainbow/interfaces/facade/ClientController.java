@@ -96,7 +96,7 @@ public class ClientController {
     @View(ignore = true)
     @PreAuthorize("@perm.hasPerms('intranet:client:expExcel')")
     @ApiOperation(value = "导出客户端信息", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    @ApiOperationSupport(order = 30)
+    @ApiOperationSupport(order = 70)
     @PostMapping("expExcel")
     public void expExcel(@RequestBody ClientQuery query) throws IOException {
         clientService.expExcel(query);

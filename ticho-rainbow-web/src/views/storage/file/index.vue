@@ -31,7 +31,7 @@
               tooltip: '下载',
               color: 'success',
               type: 'primary',
-              auth: 'FileContinueUpload',
+              auth: 'FileDownload',
               disabled: record.status !== 1,
               ifShow: record.status !== 3,
             },
@@ -85,7 +85,7 @@
                 confirm: handleDelete.bind(null, record),
               },
               tooltip: '删除',
-              auth: 'FileInfoDel',
+              auth: 'FileDel',
               disabled: record.status !== 99 && record.status !== 3,
             },
           ]"
@@ -129,7 +129,7 @@
     components: { CustomUploadModal, CustomUpload, BasicTable, FileInfoModal, TableAction },
     setup() {
       const { hasPermission } = usePermission();
-      let showSelect = hasPermission('FileInfoSelect');
+      let showSelect = hasPermission('FileSelect');
       const [registerModal, { openModal }] = useModal();
       const [registerTable, { reload, getSelectRowKeys, getForm }] = useTable({
         title: '文件信息列表',

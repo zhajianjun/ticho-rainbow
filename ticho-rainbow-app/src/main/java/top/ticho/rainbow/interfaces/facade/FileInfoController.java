@@ -163,9 +163,9 @@ public class FileInfoController {
     }
 
     @View(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:file:expExcel')")
+    @PreAuthorize("@perm.hasPerms('storage:file:expExcel')")
     @ApiOperation(value = "导出文件信息", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    @ApiOperationSupport(order = 30)
+    @ApiOperationSupport(order = 130)
     @PostMapping("expExcel")
     public void expExcel(@RequestBody FileInfoQuery query) throws IOException {
         fileInfoService.expExcel(query);

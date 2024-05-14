@@ -83,7 +83,7 @@
                 icon: 'clarity:note-edit-line',
                 onClick: openDictLabeEditModel.bind(null, record),
                 tooltip: '修改',
-                auth: 'DictEdit',
+                auth: 'DictLabelEdit',
               },
               {
                 icon: 'ant-design:delete-outlined',
@@ -93,7 +93,7 @@
                   confirm: handleDictLabelDel.bind(null, record),
                 },
                 tooltip: '删除',
-                auth: 'DictDel',
+                auth: 'DictLabelDel',
               },
             ]"
           />
