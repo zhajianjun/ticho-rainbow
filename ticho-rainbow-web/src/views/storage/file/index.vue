@@ -9,6 +9,17 @@
           :multiple="true"
           v-auth="'FileUpload'"
         />
+        <a-button
+          type="primary"
+          ghost
+          v-auth="'FileExport'"
+          preIcon="ant-design:download-outlined"
+          :loading="exportLoding"
+          @click="handleExport"
+          style="color: #2a7dc9"
+        >
+          导出
+        </a-button>
       </template>
       <template #action="{ record }">
         <TableAction
@@ -91,25 +102,27 @@
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent } from 'vue';
-  import { BasicTable, useTable, TableAction } from '@/components/Table';
+  import { defineComponent, ref } from 'vue';
+  import { BasicTable, TableAction, useTable } from '@/components/Table';
   import { useModal } from '@/components/Modal';
   import FileInfoModal from './FileInfoModal.vue';
-  import { getTableColumns, getSearchColumns } from './fileInfo.data';
+  import { getSearchColumns, getTableColumns } from './fileInfo.data';
   import {
+    cancelFileInfo,
+    delFileInfo,
+    disableFileInfo,
+    enableFileInfo,
+    expExcel,
     fileInfoPage,
     getUrl,
-    delFileInfo,
-    enableFileInfo,
-    disableFileInfo,
-    cancelFileInfo,
   } from '@/api/storage/fileInfo';
   import { usePermission } from '@/hooks/web/usePermission';
   import { useMessage } from '@/hooks/web/useMessage';
   import CustomUploadModal from '@/views/component/file/CustomUploadModal.vue';
   import CustomUpload from '@/views/component/file/CustomUpload.vue';
-  import { downloadByUrl } from '@/utils/file/download';
+  import { downloadByData, downloadByUrl } from '@/utils/file/download';
   import { FileItem } from '@/components/Upload/src/types/typing';
+  import { FileInfoQuery } from '@/api/storage/model/fileInfoModel';
 
   export default defineComponent({
     name: 'FileInfo',
@@ -118,7 +131,7 @@
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('FileInfoSelect');
       const [registerModal, { openModal }] = useModal();
-      const [registerTable, { reload }] = useTable({
+      const [registerTable, { reload, getSelectRowKeys, getForm }] = useTable({
         title: '文件信息列表',
         api: fileInfoPage,
         rowKey: 'id',
@@ -131,6 +144,12 @@
           showSubmitButton: showSelect,
           showResetButton: showSelect,
           autoSubmitOnEnter: showSelect,
+          submitButtonOptions: {
+            preIcon: 'ant-design:search-outlined',
+          },
+          resetButtonOptions: {
+            preIcon: 'ant-design:sync-outlined',
+          },
         },
         tableSetting: {
           redo: showSelect,
@@ -147,7 +166,12 @@
           fixed: undefined,
         },
         pagination: {
-          position: ['bottomLeft'],
+          simple: false,
+          position: ['bottomCenter'],
+        },
+        showSelectionBar: true,
+        rowSelection: {
+          type: 'checkbox',
         },
       });
 
@@ -218,6 +242,32 @@
         });
       }
 
+      const exportLoding = ref<Boolean>(false);
+
+      function handleExport() {
+        exportLoding.value = true;
+        // 是否有选中，优先下载选中数据
+        const selectRowKeys = getSelectRowKeys();
+        let params: FileInfoQuery;
+        if (selectRowKeys && selectRowKeys.length > 0) {
+          params = { ids: selectRowKeys } as FileInfoQuery;
+        } else {
+          // 获取查询参数
+          const { getFieldsValue } = getForm();
+          params = getFieldsValue() as FileInfoQuery;
+        }
+        expExcel(params)
+          .then((res) => {
+            // 提取文件名
+            let fileName = decodeURI(res.headers['content-disposition'].split('filename=')[1]);
+            downloadByData(res.data, fileName);
+            createMessage.info(`导出成功, ${fileName}已下载`);
+          })
+          .finally(() => {
+            exportLoding.value = false;
+          });
+      }
+
       return {
         registerTable,
         registerModal,
@@ -232,6 +282,8 @@
         registerUploadModal,
         openUploadModalProxy,
         handleDownload,
+        exportLoding,
+        handleExport,
       };
     },
   });

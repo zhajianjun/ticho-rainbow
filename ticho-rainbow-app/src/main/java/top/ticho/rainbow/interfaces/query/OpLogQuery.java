@@ -9,6 +9,7 @@ import top.ticho.boot.view.core.BasePageQuery;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 日志信息查询条件
@@ -21,6 +22,10 @@ import java.time.LocalDateTime;
 @ApiModel(value = "日志信息查询条件")
 public class OpLogQuery extends BasePageQuery implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    /** 主键编号列表 */
+    @ApiModelProperty(value = "主键编号列表", position = 9)
+    private List<Long> ids;
 
     /** 主键编号 */
     @ApiModelProperty(value = "主键编号", position = 10)

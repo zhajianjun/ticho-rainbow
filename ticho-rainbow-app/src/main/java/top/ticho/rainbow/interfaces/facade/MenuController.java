@@ -39,7 +39,7 @@ public class MenuController {
     private MenuService menuService;
 
     @PreAuthorize("@perm.hasPerms('system:menu:save')")
-    @ApiOperation(value = "保存菜单信息")
+    @ApiOperation(value = "保存菜单")
     @ApiOperationSupport(order = 10)
     @PostMapping
     public Result<Void> save(@RequestBody MenuDTO menuDTO) {
@@ -48,7 +48,7 @@ public class MenuController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:menu:remove')")
-    @ApiOperation(value = "删除菜单信息")
+    @ApiOperation(value = "删除菜单")
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @DeleteMapping
@@ -58,7 +58,7 @@ public class MenuController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:menu:update')")
-    @ApiOperation(value = "修改菜单信息")
+    @ApiOperation(value = "修改菜单")
     @ApiOperationSupport(order = 30)
     @PutMapping
     public Result<Void> update(@RequestBody MenuDTO menuDTO) {
@@ -67,7 +67,7 @@ public class MenuController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:menu:getById')")
-    @ApiOperation(value = "主键查询菜单信息")
+    @ApiOperation(value = "查询菜单")
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
@@ -76,24 +76,24 @@ public class MenuController {
     }
 
     @PreAuthorize("@perm.hasPerms('system:menu:list')")
-    @ApiOperation(value = "查询所有菜单信息")
-    @ApiOperationSupport(order = 80)
+    @ApiOperation(value = "查询所有菜单")
+    @ApiOperationSupport(order = 50)
     @GetMapping("list")
     public Result<List<MenuDtlDTO>> list() {
         return Result.ok(menuService.list());
     }
 
     @PreAuthorize("@perm.hasPerms('system:menu:route')")
-    @ApiOperation(value = "查询登录用户菜单路由信息")
-    @ApiOperationSupport(order = 80)
+    @ApiOperation(value = "查询菜单路由(登录人)")
+    @ApiOperationSupport(order = 60)
     @GetMapping("route")
     public Result<List<RouteDTO>> route() {
         return Result.ok(menuService.route());
     }
 
     @PreAuthorize("@perm.hasPerms('system:menu:getPerms')")
-    @ApiOperation(value = "根据角色编码查询权限编码")
-    @ApiOperationSupport(order = 90)
+    @ApiOperation(value = "查询权限编码")
+    @ApiOperationSupport(order = 70)
     @GetMapping("getPerms")
     public Result<List<String>> getPerms(List<String> roleCodes) {
         return Result.ok(menuService.getPerms(roleCodes));

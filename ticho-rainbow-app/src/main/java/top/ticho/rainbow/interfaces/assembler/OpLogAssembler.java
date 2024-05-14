@@ -6,6 +6,7 @@ import org.mapstruct.factory.Mappers;
 import top.ticho.boot.view.log.HttpLog;
 import top.ticho.rainbow.infrastructure.entity.OpLog;
 import top.ticho.rainbow.interfaces.dto.OpLogDTO;
+import top.ticho.rainbow.interfaces.excel.OpLogExp;
 
 /**
  * 日志信息 转换
@@ -33,5 +34,7 @@ public interface OpLogAssembler {
      * @return {@link OpLogDTO}
      */
     OpLogDTO entityToDto(OpLog entity);
+
+    OpLogExp entityToExp(OpLog opLog);
 
 }

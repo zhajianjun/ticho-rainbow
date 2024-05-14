@@ -2,13 +2,12 @@ package top.ticho.rainbow.interfaces.facade;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
-import org.springframework.security.access.prepost.PreAuthorize;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.core.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,10 +15,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import top.ticho.boot.view.core.PageResult;
+import top.ticho.boot.view.core.Result;
+import top.ticho.boot.web.annotation.View;
 import top.ticho.rainbow.application.service.ClientService;
 import top.ticho.rainbow.interfaces.dto.ClientDTO;
 import top.ticho.rainbow.interfaces.query.ClientQuery;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -38,7 +41,7 @@ public class ClientController {
     private ClientService clientService;
 
     @PreAuthorize("@perm.hasPerms('intranet:client:save')")
-    @ApiOperation(value = "保存客户端信息")
+    @ApiOperation(value = "保存客户端")
     @ApiOperationSupport(order = 10)
     @PostMapping
     public Result<Void> save(@RequestBody ClientDTO clientDTO) {
@@ -47,7 +50,7 @@ public class ClientController {
     }
 
     @PreAuthorize("@perm.hasPerms('intranet:client:remove')")
-    @ApiOperation(value = "删除客户端信息")
+    @ApiOperation(value = "删除客户端")
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @DeleteMapping
@@ -57,7 +60,7 @@ public class ClientController {
     }
 
     @PreAuthorize("@perm.hasPerms('intranet:client:update')")
-    @ApiOperation(value = "修改客户端信息")
+    @ApiOperation(value = "修改客户端")
     @ApiOperationSupport(order = 30)
     @PutMapping
     public Result<Void> update(@RequestBody ClientDTO clientDTO) {
@@ -66,7 +69,7 @@ public class ClientController {
     }
 
     @PreAuthorize("@perm.hasPerms('intranet:client:getById')")
-    @ApiOperation(value = "主键查询客户端信息")
+    @ApiOperation(value = "查询客户端")
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
@@ -75,19 +78,28 @@ public class ClientController {
     }
 
     @PreAuthorize("@perm.hasPerms('intranet:client:page')")
-    @ApiOperation(value = "分页查询客户端信息")
+    @ApiOperation(value = "查询所有客户端(分页)")
     @ApiOperationSupport(order = 50)
-    @GetMapping("page")
-    public Result<PageResult<ClientDTO>> page(ClientQuery query) {
+    @PostMapping("page")
+    public Result<PageResult<ClientDTO>> page(@RequestBody ClientQuery query) {
         return Result.ok(clientService.page(query));
     }
 
     @PreAuthorize("@perm.hasPerms('intranet:client:list')")
-    @ApiOperation(value = "查询客户端信息")
+    @ApiOperation(value = "查询所有客户端")
     @ApiOperationSupport(order = 60)
     @GetMapping("list")
     public Result<List<ClientDTO>> list(ClientQuery query) {
         return Result.ok(clientService.list(query));
+    }
+
+    @View(ignore = true)
+    @PreAuthorize("@perm.hasPerms('intranet:client:expExcel')")
+    @ApiOperation(value = "导出客户端信息", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ApiOperationSupport(order = 30)
+    @PostMapping("expExcel")
+    public void expExcel(@RequestBody ClientQuery query) throws IOException {
+        clientService.expExcel(query);
     }
 
 }

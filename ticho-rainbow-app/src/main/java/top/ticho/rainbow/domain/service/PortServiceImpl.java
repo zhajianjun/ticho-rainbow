@@ -1,5 +1,6 @@
 package top.ticho.rainbow.domain.service;
 
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -11,21 +12,31 @@ import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.boot.web.util.valid.ValidGroup;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.PortService;
+import top.ticho.rainbow.domain.handle.DictTemplate;
 import top.ticho.rainbow.domain.repository.ClientRepository;
 import top.ticho.rainbow.domain.repository.PortRepository;
+import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
+import top.ticho.rainbow.infrastructure.core.constant.DictConst;
 import top.ticho.rainbow.infrastructure.core.enums.ProtocolType;
 import top.ticho.rainbow.infrastructure.entity.Client;
 import top.ticho.rainbow.infrastructure.entity.Port;
 import top.ticho.rainbow.interfaces.assembler.PortAssembler;
 import top.ticho.rainbow.interfaces.dto.PortDTO;
+import top.ticho.rainbow.interfaces.excel.PortExp;
 import top.ticho.rainbow.interfaces.query.PortQuery;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 import top.ticho.tool.intranet.server.entity.PortInfo;
 import top.ticho.tool.intranet.server.handler.AppHandler;
 import top.ticho.tool.intranet.server.handler.ServerHandler;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -46,6 +57,12 @@ public class PortServiceImpl implements PortService {
 
     @Autowired
     private ServerHandler serverHandler;
+
+    @Autowired
+    private DictTemplate dictTemplate;
+
+    @Resource
+    private HttpServletResponse response;
 
     @Override
     public void save(PortDTO portDTO) {
@@ -104,6 +121,40 @@ public class PortServiceImpl implements PortService {
             .collect(Collectors.toList());
         return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), portDTOs);
         // @formatter:on
+    }
+
+    @Override
+    public void expExcel(PortQuery query) throws IOException {
+        String sheetName = "端口信息";
+        String fileName = "端口信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
+        Map<String, String> labelMap = dictTemplate.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.CHANNEL_STATUS, DictConst.HTTP_TYPE);
+        ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, PortExp.class, response);
+    }
+
+    private Collection<PortExp> excelExpHandle(PortQuery query, Map<String, String> labelMap) {
+        query.checkPage();
+        Page<Port> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
+        portRepository.list(query);
+        List<Port> result = page.getResult();
+        List<String> accessKeys = result.stream().map(Port::getAccessKey).collect(Collectors.toList());
+        List<Client> clients = clientRepository.getByAccessKeys(accessKeys);
+        Map<String, String> clientNameMap = clients.stream().collect(Collectors.toMap(Client::getAccessKey, Client::getName, (v1, v2) -> v1));
+        return result
+            .stream()
+            .map(x-> {
+                PortExp portExp = PortAssembler.INSTANCE.entityToExp(x);
+                ClientInfo clientInfo = serverHandler.getClientByAccessKey(x.getAccessKey());
+                int clientChannelStatus = Objects.nonNull(clientInfo) && Objects.nonNull(clientInfo.getChannel()) ? 1 : 0;
+                AppHandler appHandler = serverHandler.getAppHandler();
+                int channelStatus = appHandler.exists(x.getPort()) ? 1 : 0;
+                portExp.setClientName(clientNameMap.get(x.getAccessKey()));
+                portExp.setStatusName(labelMap.get(DictConst.COMMON_STATUS + x.getStatus()));
+                portExp.setTypeName(labelMap.get(DictConst.HTTP_TYPE + x.getType()));
+                portExp.setClientChannelStatusName(labelMap.get(DictConst.CHANNEL_STATUS + clientChannelStatus));
+                portExp.setAppChannelStatusName(labelMap.get(DictConst.CHANNEL_STATUS + channelStatus));
+                return portExp;
+            })
+            .collect(Collectors.toList());
     }
 
     /**

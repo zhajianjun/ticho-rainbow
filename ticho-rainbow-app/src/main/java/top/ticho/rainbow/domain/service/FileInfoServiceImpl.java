@@ -1,5 +1,6 @@
 package top.ticho.rainbow.domain.service;
 
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
@@ -23,11 +24,14 @@ import top.ticho.boot.view.util.Assert;
 import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.FileInfoService;
+import top.ticho.rainbow.domain.handle.DictTemplate;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.infrastructure.config.CacheConfig;
 import top.ticho.rainbow.infrastructure.core.component.cache.CommonCacheTemplate;
 import top.ticho.rainbow.infrastructure.core.component.cache.SpringCacheTemplate;
+import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.core.constant.DictConst;
 import top.ticho.rainbow.infrastructure.core.enums.FileErrCode;
 import top.ticho.rainbow.infrastructure.core.enums.FileInfoStatus;
 import top.ticho.rainbow.infrastructure.core.prop.FileProperty;
@@ -40,6 +44,7 @@ import top.ticho.rainbow.interfaces.dto.ChunkFileDTO;
 import top.ticho.rainbow.interfaces.dto.ChunkMetadataDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoReqDTO;
+import top.ticho.rainbow.interfaces.excel.FileInfoExp;
 import top.ticho.rainbow.interfaces.query.FileInfoQuery;
 
 import javax.annotation.Resource;
@@ -48,7 +53,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -82,6 +91,9 @@ public class FileInfoServiceImpl implements FileInfoService {
 
     @Autowired
     private FileInfoRepository fileInfoRepository;
+
+    @Autowired
+    private DictTemplate dictTemplate;
 
     // @formatter:off
 
@@ -528,6 +540,30 @@ public class FileInfoServiceImpl implements FileInfoService {
             .map(FileInfoAssembler.INSTANCE::entityToDto)
             .collect(Collectors.toList());
         return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), fileInfoDTOs);
+    }
+
+    @Override
+    public void expExcel(FileInfoQuery query)throws IOException {
+        String sheetName = "文件信息";
+        String fileName = "文件信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
+        Map<String, String> labelMap = dictTemplate.getLabelMapBatch(DictConst.FILE_STATUS, DictConst.FILE_STORAGE_TYPE);
+        ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, FileInfoExp.class, response);
+    }
+
+    private Collection<FileInfoExp> excelExpHandle(FileInfoQuery query, Map<String, String> labelMap) {
+        query.checkPage();
+        Page<FileInfo> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
+        fileInfoRepository.list(query);
+        List<FileInfo> result = page.getResult();
+        return result
+            .stream()
+            .map(x-> {
+                FileInfoExp fileInfoExp = FileInfoAssembler.INSTANCE.entityToExp(x);
+                fileInfoExp.setTypeName(labelMap.get(DictConst.FILE_STORAGE_TYPE + x.getType()));
+                fileInfoExp.setStatusName(labelMap.get(DictConst.FILE_STATUS + x.getStatus()));
+                return fileInfoExp;
+            })
+            .collect(Collectors.toList());
     }
 
     /**

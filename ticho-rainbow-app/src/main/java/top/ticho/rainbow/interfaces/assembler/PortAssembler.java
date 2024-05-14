@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import top.ticho.rainbow.infrastructure.entity.Port;
 import top.ticho.rainbow.interfaces.dto.PortDTO;
+import top.ticho.rainbow.interfaces.excel.PortExp;
 import top.ticho.tool.intranet.server.entity.PortInfo;
 
 /**
@@ -40,4 +41,5 @@ public interface PortAssembler {
      */
     PortInfo entityToInfo(Port entity);
 
+    PortExp entityToExp(Port port);
 }

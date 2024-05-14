@@ -14,5 +14,9 @@ public class DictConst {
     public static final String SEX = "userStatus";
     public static final String PLAN_TASK = "planTask";
     public static final String TASK_LOG_STATUS = "taskLogStatus";
+    public static final String FILE_STATUS = "fileStatus";
+    public static final String FILE_STORAGE_TYPE = "fileStorageType";
+    public static final String CHANNEL_STATUS = "channelStatus";
+    public static final String HTTP_TYPE = "httpType";
 
 }

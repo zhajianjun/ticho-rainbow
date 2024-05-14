@@ -67,7 +67,7 @@ export function getTableColumns(): BasicColumn[] {
         if (!value) {
           return value;
         }
-        return Math.floor(toFinite(value) / 1024) + 'kb';
+        return toFinite(value) + 'b';
       },
     },
     {
@@ -153,12 +153,21 @@ export function getSearchColumns(): FormSchema[] {
       },
     },
     {
-      field: `fileName`,
+      field: `originalFileName`,
       label: `文件名`,
       component: 'Input',
       colProps: { span: 8 },
       componentProps: {
         placeholder: '请输入文件名',
+      },
+    },
+    {
+      field: `fileName`,
+      label: `实际文件名`,
+      component: 'Input',
+      colProps: { span: 8 },
+      componentProps: {
+        placeholder: '请输入实际文件名',
       },
     },
     {
@@ -171,12 +180,21 @@ export function getSearchColumns(): FormSchema[] {
       },
     },
     {
-      field: `size`,
-      label: `文件大小;单位字节`,
+      field: `sizeStart`,
+      label: `文件大小起始`,
       component: 'Input',
-      colProps: { span: 8 },
+      colProps: { span: 4 },
       componentProps: {
-        placeholder: '请输入文件大小;单位字节',
+        placeholder: '请输入文件大小起始',
+      },
+    },
+    {
+      field: `sizeEnd`,
+      label: `文件大小结束`,
+      component: 'Input',
+      colProps: { span: 4 },
+      componentProps: {
+        placeholder: '请输入文件大小结束',
       },
     },
     {
@@ -186,15 +204,6 @@ export function getSearchColumns(): FormSchema[] {
       colProps: { span: 8 },
       componentProps: {
         placeholder: '请输入MIME类型',
-      },
-    },
-    {
-      field: `originalFileName`,
-      label: `原始文件名`,
-      component: 'Input',
-      colProps: { span: 8 },
-      componentProps: {
-        placeholder: '请输入原始文件名',
       },
     },
     {

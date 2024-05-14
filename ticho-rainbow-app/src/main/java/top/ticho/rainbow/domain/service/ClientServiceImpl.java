@@ -1,6 +1,7 @@
 package top.ticho.rainbow.domain.service;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.IdUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -12,24 +13,34 @@ import top.ticho.boot.view.util.Assert;
 import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.ClientService;
+import top.ticho.rainbow.domain.handle.DictTemplate;
 import top.ticho.rainbow.domain.repository.ClientRepository;
 import top.ticho.rainbow.domain.repository.PortRepository;
+import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
+import top.ticho.rainbow.infrastructure.core.constant.DictConst;
 import top.ticho.rainbow.infrastructure.entity.Client;
 import top.ticho.rainbow.infrastructure.entity.Port;
 import top.ticho.rainbow.interfaces.assembler.ClientAssembler;
 import top.ticho.rainbow.interfaces.assembler.PortAssembler;
 import top.ticho.rainbow.interfaces.dto.ClientDTO;
+import top.ticho.rainbow.interfaces.excel.ClientExp;
 import top.ticho.rainbow.interfaces.query.ClientQuery;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 import top.ticho.tool.intranet.server.entity.PortInfo;
 import top.ticho.tool.intranet.server.handler.ServerHandler;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -51,6 +62,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     private ServerHandler serverHandler;
+
+    @Autowired
+    private DictTemplate dictTemplate;
+
+    @Resource
+    private HttpServletResponse response;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -149,6 +166,32 @@ public class ClientServiceImpl implements ClientService {
                 })
                 .collect(Collectors.toList());
         // @formatter:on
+    }
+
+    @Override
+    public void expExcel(ClientQuery query) throws IOException {
+        String sheetName = "客户端信息";
+        String fileName = "客户端信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
+        Map<String, String> labelMap = dictTemplate.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.CHANNEL_STATUS);
+        ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, ClientExp.class, response);
+    }
+
+    private Collection<ClientExp> excelExpHandle(ClientQuery query, Map<String, String> labelMap) {
+        query.checkPage();
+        Page<Client> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
+        clientRepository.list(query);
+        List<Client> result = page.getResult();
+        return result
+            .stream()
+            .map(x-> {
+                ClientExp clientExp = ClientAssembler.INSTANCE.entityToExp(x);
+                clientExp.setStatusName(labelMap.get(DictConst.COMMON_STATUS + x.getStatus()));
+                ClientInfo clientInfo = serverHandler.getClientByAccessKey(x.getAccessKey());
+                int channelStatus = Optional.ofNullable(clientInfo).map(ClientInfo::getChannel).isPresent() ? 1 : 0;
+                clientExp.setChannelStatusName(labelMap.get(DictConst.CHANNEL_STATUS + channelStatus));
+                return clientExp;
+            })
+            .collect(Collectors.toList());
     }
 
     public void saveClientInfo(Client client, Client dbClient) {

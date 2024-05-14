@@ -1,5 +1,6 @@
 package top.ticho.rainbow.infrastructure.repository;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -11,6 +12,7 @@ import top.ticho.rainbow.infrastructure.entity.Client;
 import top.ticho.rainbow.infrastructure.mapper.ClientMapper;
 import top.ticho.rainbow.interfaces.query.ClientQuery;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,6 +30,8 @@ public class ClientRepositoryImpl extends RootServiceImpl<ClientMapper, Client> 
     public List<Client> list(ClientQuery query) {
         // @formatter:off
         LambdaQueryWrapper<Client> wrapper = Wrappers.lambdaQuery();
+        wrapper.in(CollUtil.isNotEmpty(query.getIds()), Client::getId, query.getIds());
+        wrapper.eq(Objects.nonNull(query.getId()), Client::getId, query.getId());
         wrapper.like(StrUtil.isNotBlank(query.getAccessKey()), Client::getAccessKey, query.getAccessKey());
         wrapper.like(StrUtil.isNotBlank(query.getName()), Client::getName, query.getName());
         wrapper.eq(Objects.nonNull(query.getStatus()), Client::getStatus, query.getStatus());
@@ -48,6 +52,16 @@ public class ClientRepositoryImpl extends RootServiceImpl<ClientMapper, Client> 
         wrapper.eq(Client::getAccessKey, accessKey);
         wrapper.last("limit 1");
         return getOne(wrapper);
+    }
+
+    @Override
+    public List<Client> getByAccessKeys(List<String> accessKeys) {
+        if (CollUtil.isEmpty(accessKeys)) {
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<Client> wrapper = Wrappers.lambdaQuery();
+        wrapper.in(Client::getAccessKey, accessKeys);
+        return list(wrapper);
     }
 
     @Override

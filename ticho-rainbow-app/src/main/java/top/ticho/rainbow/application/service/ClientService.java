@@ -5,6 +5,7 @@ import top.ticho.rainbow.interfaces.dto.ClientDTO;
 import top.ticho.rainbow.interfaces.query.ClientQuery;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -66,5 +67,11 @@ public interface ClientService {
      */
     List<ClientInfo> listEffectClientInfo();
 
+    /**
+     * 导出客户端信息
+     *
+     * @param query 查询条件
+     */
+    void expExcel(ClientQuery query) throws IOException;
 }
 

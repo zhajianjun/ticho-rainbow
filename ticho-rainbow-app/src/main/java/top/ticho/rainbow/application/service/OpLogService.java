@@ -4,6 +4,8 @@ import top.ticho.boot.view.core.PageResult;
 import top.ticho.rainbow.interfaces.dto.OpLogDTO;
 import top.ticho.rainbow.interfaces.query.OpLogQuery;
 
+import java.io.IOException;
+
 
 /**
  * 日志信息 服务接口
@@ -29,5 +31,11 @@ public interface OpLogService {
      */
     PageResult<OpLogDTO> page(OpLogQuery query);
 
+    /**
+     * 导出操作日志
+     *
+     * @param query 查询条件
+     */
+    void expExcel(OpLogQuery query) throws IOException;
 }
 

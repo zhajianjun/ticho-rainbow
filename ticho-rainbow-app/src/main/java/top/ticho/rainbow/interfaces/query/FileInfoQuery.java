@@ -1,13 +1,15 @@
 package top.ticho.rainbow.interfaces.query;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import top.ticho.boot.view.core.BasePageQuery;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 文件信息查询条件
@@ -20,6 +22,10 @@ import top.ticho.boot.view.core.BasePageQuery;
 @ApiModel(value = "文件信息查询条件")
 public class FileInfoQuery extends BasePageQuery implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    /** 主键编号列表 */
+    @ApiModelProperty(value = "主键编号列表", position = 9)
+    private List<Long> ids;
 
     /** 主键编号 */
     @ApiModelProperty(value = "主键编号", position = 10)
@@ -41,9 +47,13 @@ public class FileInfoQuery extends BasePageQuery implements Serializable {
     @ApiModelProperty(value = "存储路径", position = 50)
     private String path;
 
-    /** 文件大小;单位字节 */
-    @ApiModelProperty(value = "文件大小;单位字节", position = 60)
-    private Long size;
+    /** 文件大小开始 */
+    @ApiModelProperty(value = "文件大小开始", position = 62)
+    private Long sizeStart;
+
+    /** 文件大小结束 */
+    @ApiModelProperty(value = "文件大小结束", position = 64)
+    private Long sizeEnd;
 
     /** MIME类型 */
     @ApiModelProperty(value = "MIME类型", position = 70)

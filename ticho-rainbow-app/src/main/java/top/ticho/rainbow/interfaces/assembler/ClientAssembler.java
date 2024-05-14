@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import top.ticho.rainbow.infrastructure.entity.Client;
 import top.ticho.rainbow.interfaces.dto.ClientDTO;
+import top.ticho.rainbow.interfaces.excel.ClientExp;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 
 /**
@@ -41,4 +42,5 @@ public interface ClientAssembler {
      */
     ClientInfo entityToInfo(Client entity);
 
+    ClientExp entityToExp(Client client);
 }

@@ -18,10 +18,22 @@ export interface ClientDTO {
 }
 
 export interface ClientQuery {
+  /** 当前页码 */
+  pageNum: number;
+  /** 页面大小 */
+  pageSize: number;
+  /** 主键编号列表 */
+  ids: string[];
+  /** 主键编号 */
+  id: string;
   /** 客户端秘钥 */
   accessKey: string;
   /** 客户端名称 */
   name: string;
+  /** 客户端名称 */
+  expireAt: string;
+  /** 客户端名称 */
+  status: number;
   /** 备注信息 */
   remark: string;
 }

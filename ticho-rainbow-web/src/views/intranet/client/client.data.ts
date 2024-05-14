@@ -1,11 +1,12 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
 import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
-import { getDictByCode } from '@/store/modules/dict';
+import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
 import { isNull } from '@/utils/is';
 import { formatToDateTime } from '@/utils/dateUtil';
 
 const commonStatus = 'commonStatus';
+const channelStatus = 'channelStatus';
 
 export function getTableColumns(): BasicColumn[] {
   return [
@@ -53,11 +54,12 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'channelStatus',
       resizable: true,
       width: 50,
-      customRender: ({ record }) => {
-        const isActive = ~~record.channelStatus === 1;
-        const color = isActive ? '#108ee9' : '#f50';
-        const text = isActive ? '已激活' : '未激活';
-        return h(Tag, { color: color }, () => text);
+      customRender({ text }) {
+        const dict = getDictByCodeAndValue(channelStatus, text);
+        if (text === undefined || isNull(text) || isNull(dict)) {
+          return text;
+        }
+        return h(Tag, { color: dict.color }, () => dict.label);
       },
     },
     {

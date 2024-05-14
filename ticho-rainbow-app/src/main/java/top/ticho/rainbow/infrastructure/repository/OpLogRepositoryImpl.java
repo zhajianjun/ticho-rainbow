@@ -1,5 +1,6 @@
 package top.ticho.rainbow.infrastructure.repository;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -28,6 +29,7 @@ public class OpLogRepositoryImpl extends RootServiceImpl<OpLogMapper, OpLog> imp
     public List<OpLog> list(OpLogQuery query) {
         // @formatter:off
         LambdaQueryWrapper<OpLog> wrapper = Wrappers.lambdaQuery();
+        wrapper.in(CollUtil.isNotEmpty(query.getIds()), OpLog::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), OpLog::getId, query.getId());
         wrapper.like(StrUtil.isNotBlank(query.getName()), OpLog::getName, query.getName());
         wrapper.like(StrUtil.isNotBlank(query.getUrl()), OpLog::getUrl, query.getUrl());

@@ -1,11 +1,13 @@
 package top.ticho.rainbow.interfaces.assembler;
 
 import top.ticho.rainbow.infrastructure.entity.FileInfo;
+import top.ticho.rainbow.infrastructure.entity.OpLog;
 import top.ticho.rainbow.interfaces.dto.ChunkCacheDTO;
 import top.ticho.rainbow.interfaces.dto.ChunkMetadataDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import top.ticho.rainbow.interfaces.excel.FileInfoExp;
 
 /**
  * 文件信息 转换
@@ -36,4 +38,6 @@ public interface FileInfoAssembler {
     FileInfo chunkToEntity(ChunkCacheDTO chunkCacheDTO);
 
     ChunkMetadataDTO chunkToMetadata(ChunkCacheDTO chunkCacheDTO);
+
+    FileInfoExp entityToExp(FileInfo fileInfo);
 }

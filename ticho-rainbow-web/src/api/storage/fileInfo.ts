@@ -2,7 +2,7 @@ import { defHttp } from '@/utils/http/axios';
 import { FileInfoDTO, FileInfoQuery } from './model/fileInfoModel';
 import { RetryRequest, UploadFileParams } from '#/axios';
 import { AxiosProgressEvent } from 'axios';
-import {ChunkDTO, ChunkFileDTO, FileInfoReqDTO, UploadApiResult} from './model/uploadModel';
+import { ChunkDTO, ChunkFileDTO, FileInfoReqDTO, UploadApiResult } from './model/uploadModel';
 import { ContentTypeEnum } from '@/enums/httpEnum';
 
 enum Api {
@@ -16,6 +16,7 @@ enum Api {
   CancelFileInfo = '/file/cancel',
   FileInfo = '/file',
   FileInfoPage = '/file/page',
+  Export = '/file/expExcel',
 }
 
 export function upload(
@@ -137,8 +138,19 @@ export function modifyFileInfo(params: FileInfoDTO) {
 }
 
 export function fileInfoPage(params?: FileInfoQuery) {
-  return defHttp.get<FileInfoDTO[]>(
+  return defHttp.post<FileInfoDTO[]>(
     { url: Api.FileInfoPage, params },
     { errorMessageMode: 'none' },
+  );
+}
+
+export function expExcel(params?: FileInfoQuery) {
+  return defHttp.post<any>(
+    { url: Api.Export, params, responseType: 'blob' },
+    {
+      errorMessageMode: 'message',
+      isReturnNativeResponse: true,
+      retryRequest: { isOpenRetry: false } as RetryRequest,
+    },
   );
 }

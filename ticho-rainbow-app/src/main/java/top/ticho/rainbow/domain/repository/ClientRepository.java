@@ -30,6 +30,14 @@ public interface ClientRepository extends RootService<Client> {
      */
     Client getByAccessKey(String accessKey);
 
+    /**
+     * 查询客户端信息列表
+     *
+     * @param accessKeys 客户端秘钥列表
+     * @return {@link List }<{@link Client }>
+     */
+    List<Client> getByAccessKeys(List<String> accessKeys);
+
 
     /**
      * 根据客户端秘钥删除

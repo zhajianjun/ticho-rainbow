@@ -28,6 +28,14 @@ export interface PortDTO {
 }
 
 export interface PortQuery {
+  /** 当前页码 */
+  pageNum: number;
+  /** 页面大小 */
+  pageSize: number;
+  /** 主键编号列表 */
+  ids: string[];
+  /** 主键编号 */
+  id: string;
   /** 客户端秘钥 */
   accessKey: string;
   /** 主机端口 */

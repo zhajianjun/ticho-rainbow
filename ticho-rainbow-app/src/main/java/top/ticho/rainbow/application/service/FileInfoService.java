@@ -8,6 +8,8 @@ import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoReqDTO;
 import top.ticho.rainbow.interfaces.query.FileInfoQuery;
 
+import java.io.IOException;
+
 /**
  * 文件信息 服务接口
  *
@@ -102,6 +104,13 @@ public interface FileInfoService {
      * @return {@link PageResult}<{@link FileInfoDTO}>
      */
     PageResult<FileInfoDTO> page(FileInfoQuery query);
+
+    /**
+     * 导出文件信息
+     *
+     * @param query 查询条件
+     */
+    void expExcel(FileInfoQuery query) throws IOException;
 
 }
 

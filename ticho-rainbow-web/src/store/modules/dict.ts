@@ -142,9 +142,9 @@ export function getDictLabelByCodeAndValue(code: string, value: string | number)
   return dictLable.label;
 }
 
-export async function flushDicts() {
+export function flushDicts() {
   const dictStore = useDictStore();
-  flush().then((res) => {
+  return flush().then((res) => {
     const dictMap: Map<string, Map<string, DictLabelDTO>> = convert(res);
     dictStore.setDicts(dictMap);
   });

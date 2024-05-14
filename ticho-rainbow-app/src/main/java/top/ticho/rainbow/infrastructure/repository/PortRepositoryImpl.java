@@ -35,6 +35,8 @@ public class PortRepositoryImpl extends RootServiceImpl<PortMapper, Port> implem
     public List<Port> list(PortQuery query) {
         // @formatter:off
         LambdaQueryWrapper<Port> wrapper = Wrappers.lambdaQuery();
+        wrapper.in(CollUtil.isNotEmpty(query.getIds()), Port::getId, query.getIds());
+        wrapper.eq(Objects.nonNull(query.getId()), Port::getId, query.getId());
         wrapper.like(StrUtil.isNotBlank(query.getAccessKey()), Port::getAccessKey, query.getAccessKey());
         wrapper.eq(Objects.nonNull(query.getPort()), Port::getPort, query.getPort());
         wrapper.like(StrUtil.isNotBlank(query.getEndpoint()), Port::getEndpoint, query.getEndpoint());

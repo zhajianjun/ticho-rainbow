@@ -58,7 +58,7 @@ public class TaskLogController {
     @View(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:taskLog:expExcel')")
     @ApiOperation(value = "导出计划任务日志", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    @ApiOperationSupport(order = 110)
+    @ApiOperationSupport(order = 30)
     @PostMapping("expExcel")
     public void expExcel(@RequestBody TaskLogQuery query) throws IOException {
         taskLogService.expExcel(query);

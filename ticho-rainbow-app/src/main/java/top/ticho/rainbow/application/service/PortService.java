@@ -4,6 +4,8 @@ import top.ticho.boot.view.core.PageResult;
 import top.ticho.rainbow.interfaces.dto.PortDTO;
 import top.ticho.rainbow.interfaces.query.PortQuery;
 
+import java.io.IOException;
+
 /**
  * 端口信息 服务接口
  *
@@ -48,5 +50,11 @@ public interface PortService {
      */
     PageResult<PortDTO> page(PortQuery query);
 
+    /**
+     * 导出端口信息
+     *
+     * @param query 查询条件
+     */
+    void expExcel(PortQuery query) throws IOException;
 }
 

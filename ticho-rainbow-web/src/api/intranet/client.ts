@@ -1,10 +1,12 @@
 import { defHttp } from '@/utils/http/axios';
 import { ClientDTO, ClientQuery } from './model/clientModel';
+import { RetryRequest } from '#/axios';
 
 enum Api {
   Client = '/client',
   ClientPage = '/client/page',
   ClientAll = '/client/list',
+  Export = '/client/expExcel',
 }
 
 export function saveClient(params: ClientDTO) {
@@ -24,9 +26,20 @@ export function modifyClientStatus(params: ClientDTO) {
 }
 
 export function clientPage(params?: ClientQuery) {
-  return defHttp.get<any>({ url: Api.ClientPage, params }, { errorMessageMode: 'message' });
+  return defHttp.post<any>({ url: Api.ClientPage, params }, { errorMessageMode: 'message' });
 }
 
 export function clientAll(params?: ClientQuery) {
   return defHttp.get<any>({ url: Api.ClientAll, params }, { errorMessageMode: 'message' });
+}
+
+export function expExcel(params?: ClientQuery) {
+  return defHttp.post<any>(
+    { url: Api.Export, params, responseType: 'blob' },
+    {
+      errorMessageMode: 'message',
+      isReturnNativeResponse: true,
+      retryRequest: { isOpenRetry: false } as RetryRequest,
+    },
+  );
 }

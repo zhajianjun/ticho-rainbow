@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.boot.security.annotation.IgnoreJwtCheck;
@@ -26,6 +27,8 @@ import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoReqDTO;
 import top.ticho.rainbow.interfaces.query.FileInfoQuery;
 
+import java.io.IOException;
+
 
 /**
  * 文件 控制器
@@ -35,17 +38,17 @@ import top.ticho.rainbow.interfaces.query.FileInfoQuery;
  */
 @RestController
 @RequestMapping("file")
-@Api(tags = "文件操作")
+@Api(tags = "文件")
 @ApiSort(130)
 public class FileInfoController {
 
-    // @formatter:of
+    // @formatter:off
 
     @Autowired
     private FileInfoService fileInfoService;
 
     @PreAuthorize("@perm.hasPerms('storage:file:upload')")
-    @ApiOperation(value = "文件上传")
+    @ApiOperation(value = "上传文件")
     @ApiOperationSupport(order = 10)
     @PostMapping("upload")
     public Result<FileInfoDTO> upload(FileInfoReqDTO fileInfoReqDTO) {
@@ -53,7 +56,7 @@ public class FileInfoController {
     }
 
     @PreAuthorize("@file_perm.hasPerms('storage:file:uploadChunk')")
-    @ApiOperation(value = "分片文件上传")
+    @ApiOperation(value = "上传分片文件")
     @ApiOperationSupport(order = 20)
     @PostMapping("uploadChunk")
     public Result<ChunkCacheDTO> uploadChunk(ChunkFileDTO chunkFileDTO) {
@@ -61,7 +64,7 @@ public class FileInfoController {
     }
 
     @PreAuthorize("@perm.hasPerms('storage:file:composeChunk')")
-    @ApiOperation(value = "分片文件合并")
+    @ApiOperation(value = "合并分片文件")
     @ApiOperationSupport(order = 30)
     @ApiImplicitParam(value = "分片id", name = "chunkId", required = true)
     @PostMapping("composeChunk")
@@ -71,7 +74,7 @@ public class FileInfoController {
 
     @View(ignore = true)
     @PreAuthorize("@perm.hasPerms('storage:file:downloadById')")
-    @ApiOperation(value = "文件下载", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ApiOperation(value = "下载文件", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "文件id", name = "id", required = true)
     @GetMapping("downloadById")
@@ -81,7 +84,7 @@ public class FileInfoController {
 
     @View(ignore = true)
     @IgnoreJwtCheck
-    @ApiOperation(value = "文件下载(公共)", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ApiOperation(value = "下载文件(公共)", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 50)
     @ApiImplicitParam(value = "签名", name = "sign", required = true)
     @GetMapping("download")
@@ -90,7 +93,7 @@ public class FileInfoController {
     }
 
     @PreAuthorize("@perm.hasPerms('storage:file:getUrl')")
-    @ApiOperation(value = "根据文件id获取下载链接")
+    @ApiOperation(value = "查询下载链接")
     @ApiOperationSupport(order = 60)
     @ApiImplicitParams({
         @ApiImplicitParam(value = "文件id", name = "id", required = true),
@@ -103,7 +106,7 @@ public class FileInfoController {
     }
 
     @PreAuthorize("@perm.hasPerms('storage:file:enable')")
-    @ApiOperation(value = "根据id启用文件")
+    @ApiOperation(value = "启用文件")
     @ApiOperationSupport(order = 70)
     @ApiImplicitParam(value = "文件id", name = "id", required = true)
     @PutMapping("enable")
@@ -143,7 +146,7 @@ public class FileInfoController {
     }
 
     @PreAuthorize("@perm.hasPerms('storage:file:update')")
-    @ApiOperation(value = "修改文件信息")
+    @ApiOperation(value = "修改文件")
     @ApiOperationSupport(order = 110)
     @PutMapping
     public Result<Void> update(FileInfoDTO fileInfoDTO) {
@@ -152,11 +155,20 @@ public class FileInfoController {
     }
 
     @PreAuthorize("@perm.hasPerms('storage:file:page')")
-    @ApiOperation(value = "分页查询文件信息")
+    @ApiOperation(value = "查询所有文件(分页)")
     @ApiOperationSupport(order = 120)
-    @GetMapping("page")
-    public Result<PageResult<FileInfoDTO>> page(FileInfoQuery query) {
+    @PostMapping("page")
+    public Result<PageResult<FileInfoDTO>> page(@RequestBody FileInfoQuery query) {
         return Result.ok(fileInfoService.page(query));
+    }
+
+    @View(ignore = true)
+    @PreAuthorize("@perm.hasPerms('system:file:expExcel')")
+    @ApiOperation(value = "导出文件信息", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ApiOperationSupport(order = 30)
+    @PostMapping("expExcel")
+    public void expExcel(@RequestBody FileInfoQuery query) throws IOException {
+        fileInfoService.expExcel(query);
     }
 
 }

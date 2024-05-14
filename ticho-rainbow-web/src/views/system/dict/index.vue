@@ -15,7 +15,8 @@
             type="primary"
             v-auth="'DictFlush'"
             preIcon="ant-design:sync-outlined"
-            @click="flushDicts"
+            :loading="flushLoading"
+            @click="handleFlush"
           >
             刷新
           </a-button>
@@ -45,7 +46,7 @@
                 icon: 'clarity:note-edit-line',
                 onClick: openDictEditModel.bind(null, record),
                 tooltip: '修改',
-                ifShow: hasPermission('DictEdit'),
+                auth: 'DictEdit',
               },
               {
                 icon: 'ant-design:delete-outlined',
@@ -55,7 +56,7 @@
                   confirm: handleDictDel.bind(null, record),
                 },
                 tooltip: '删除',
-                ifShow: hasPermission('DictDel'),
+                auth: 'DictDel',
               },
             ]"
           />
@@ -82,7 +83,7 @@
                 icon: 'clarity:note-edit-line',
                 onClick: openDictLabeEditModel.bind(null, record),
                 tooltip: '修改',
-                ifShow: hasPermission('DictEdit'),
+                auth: 'DictEdit',
               },
               {
                 icon: 'ant-design:delete-outlined',
@@ -92,7 +93,7 @@
                   confirm: handleDictLabelDel.bind(null, record),
                 },
                 tooltip: '删除',
-                ifShow: hasPermission('DictDel'),
+                auth: 'DictDel',
               },
             ]"
           />
@@ -104,17 +105,17 @@
 </template>
 <script lang="ts">
   import { defineComponent, ref, unref } from 'vue';
-  import { BasicTable, useTable, TableAction } from '@/components/Table';
+  import { BasicTable, TableAction, useTable } from '@/components/Table';
   import { useModal } from '@/components/Modal';
   import DictModal from './DictModal.vue';
   import DictLabelModal from './DictLabelModal.vue';
   import {
-    getTableColumns as getDictTableColumns,
     getSearchColumns as getDictSearchColumns,
+    getTableColumns as getDictTableColumns,
   } from './dict.data';
   import { getTableColumns as getDictLabelTableColumns } from './dictLabel.data';
-  import { dictPage, delDict, expExcel } from '@/api/system/dict';
-  import { getByCode, delDictLabel } from '@/api/system/dictLabel';
+  import { delDict, dictPage, expExcel } from '@/api/system/dict';
+  import { delDictLabel, getByCode } from '@/api/system/dictLabel';
   import { usePermission } from '@/hooks/web/usePermission';
   import { Tag } from 'ant-design-vue';
   import { flushDicts } from '@/store/modules/dict';
@@ -316,6 +317,19 @@
           });
       }
 
+      const flushLoading = ref<Boolean>(false);
+
+      function handleFlush() {
+        flushLoading.value = true;
+        flushDicts()
+          .then(() => {
+            createMessage.info(`刷新成功`);
+          })
+          .finally(() => {
+            flushLoading.value = false;
+          });
+      }
+
       return {
         registerTable,
         registerModal,
@@ -330,8 +344,8 @@
         handleDictLabelDel,
         handleDictLabelSuccess,
         handleDict,
-        hasPermission,
-        flushDicts,
+        flushLoading,
+        handleFlush,
         handleExport,
         exportLoding,
       };
