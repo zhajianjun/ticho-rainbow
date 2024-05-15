@@ -21,6 +21,7 @@ import top.ticho.tool.trace.common.constant.LogConst;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -73,6 +74,10 @@ public class OpLogListen {
         entity.setTraceId(mdcMap.get(LogConst.TRACE_ID_KEY));
         entity.setMdc(JsonUtil.toJsonString(mdcMap));
         entity.setId(CloudIdUtil.getId());
+        Map<String, String> map = JsonUtil.toMap(httpLog.getReqHeaders(), String.class, String.class);
+        String ip = entity.getIp();
+        String realIp = Optional.ofNullable(map.get("Real-Ip")).orElse(ip);
+        entity.setIp(realIp);
         opLogRepository.save(entity);
     }
 

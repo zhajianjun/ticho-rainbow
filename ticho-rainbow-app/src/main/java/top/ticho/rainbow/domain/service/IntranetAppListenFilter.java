@@ -26,20 +26,31 @@ public class IntranetAppListenFilter implements AppListenFilter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
+        // InetSocketAddress localAddress = (InetSocketAddress) ctx.channel().localAddress();
+        // InetSocketAddress remoteAddress = (InetSocketAddress) ctx.channel().remoteAddress();
+        // log.info("{} active {}, ", remoteAddress, localAddress);
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, ByteBuf byteBuf) {
+        // InetSocketAddress localAddress = (InetSocketAddress) ctx.channel().localAddress();
         InetSocketAddress remoteAddress = (InetSocketAddress) ctx.channel().remoteAddress();
         handle(byteBuf, remoteAddress.getHostString());
+        // log.info("{} read from {}, size={}", localAddress, remoteAddress, byteBuf.readableBytes());
     }
 
     @Override
     public void write(ChannelHandlerContext ctx, ByteBuf byteBuf, ChannelPromise channelPromise) {
+        // InetSocketAddress localAddress = (InetSocketAddress) ctx.channel().localAddress();
+        // InetSocketAddress remoteAddress = (InetSocketAddress) ctx.channel().remoteAddress();
+        // log.info("{} write to {}, size={}b", localAddress, remoteAddress, byteBuf.readableBytes());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
+        // InetSocketAddress localAddress = (InetSocketAddress) ctx.channel().localAddress();
+        // InetSocketAddress remoteAddress = (InetSocketAddress) ctx.channel().remoteAddress();
+        // log.info("{} inactive {}", remoteAddress, localAddress);
     }
 
     public void handle(ByteBuf byteBuf, String realIp) {
@@ -47,12 +58,16 @@ public class IntranetAppListenFilter implements AppListenFilter {
         InputStreamReader reader = new InputStreamReader(inputStream);
         BufferedReader br = new BufferedReader(reader);
         String line;
-        byteBuf.clear();
         try {
+            // 读取第一行
             String firstLine = br.readLine();
-            byteBuf.writeBytes((firstLine + "\n").getBytes());
-            if (firstLine.contains("HTTP")) {
-                byteBuf.writeBytes(String.format("X-Real-IP: %s\n", realIp).getBytes());
+            boolean contains = firstLine.contains("HTTP");
+            if (contains) {
+                byteBuf.clear();
+                byteBuf.writeBytes((firstLine + "\n").getBytes());
+                byteBuf.writeBytes(String.format("Real-Ip: %s\n", realIp).getBytes());
+            } else {
+                return;
             }
             while ((line = br.readLine()) != null) {
                 byteBuf.writeBytes((line + "\n").getBytes());
