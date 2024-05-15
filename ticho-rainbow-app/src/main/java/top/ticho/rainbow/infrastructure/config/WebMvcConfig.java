@@ -11,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import top.ticho.rainbow.domain.service.IntranetAppListenFilter;
 import top.ticho.rainbow.infrastructure.core.interceptor.CustomTraceInterceptor;
 import top.ticho.rainbow.infrastructure.core.prop.FileProperty;
 import top.ticho.tool.intranet.prop.ServerProperty;
@@ -44,9 +45,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         String mvcResourcePath = fileProperty.getMvcResourcePath();
         String publicAbsolutePath = fileProperty.getPublicPath();
         log.info("静态文件路径: {}", publicAbsolutePath);
-        registry.addResourceHandler(mvcResourcePath)
-                .addResourceLocations(StrUtil.format("file:{}", publicAbsolutePath));
-	}
+        registry.addResourceHandler(mvcResourcePath).addResourceLocations(StrUtil.format("file:{}", publicAbsolutePath));
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -69,8 +69,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public ServerHandler serverHandler(ServerProperty serverProperty) {
-        return new ServerHandler(serverProperty);
+    public ServerHandler serverHandler(ServerProperty serverProperty, IntranetAppListenFilter appListenFilter) {
+        return new ServerHandler(serverProperty, appListenFilter);
     }
 
 }
