@@ -9,19 +9,19 @@ enum Api {
 }
 
 export function savePort(params: PortDTO) {
-  return defHttp.post<any>({ url: Api.Port, params }, { errorMessageMode: 'message' });
+  return defHttp.post<void>({ url: Api.Port, params }, { errorMessageMode: 'message' });
 }
 
 export function delPort(params: string) {
-  return defHttp.delete<any>({ url: Api.Port + '?id=', params }, { errorMessageMode: 'message' });
+  return defHttp.delete<void>({ url: Api.Port + '?id=', params }, { errorMessageMode: 'message' });
 }
 
 export function modifyPort(params: PortDTO) {
-  return defHttp.put<any>({ url: Api.Port, params }, { errorMessageMode: 'message' });
+  return defHttp.put<void>({ url: Api.Port, params }, { errorMessageMode: 'message' });
 }
 
 export function portPage(params?: PortQuery) {
-  return defHttp.post<any>({ url: Api.PortPage, params }, { errorMessageMode: 'message' });
+  return defHttp.post<PortDTO[]>({ url: Api.PortPage, params }, { errorMessageMode: 'message' });
 }
 
 export function expExcel(params?: PortQuery) {

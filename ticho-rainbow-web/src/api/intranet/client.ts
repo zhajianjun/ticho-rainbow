@@ -10,27 +10,33 @@ enum Api {
 }
 
 export function saveClient(params: ClientDTO) {
-  return defHttp.post<any>({ url: Api.Client, params }, { errorMessageMode: 'message' });
+  return defHttp.post<void>({ url: Api.Client, params }, { errorMessageMode: 'message' });
 }
 
 export function delClient(params: string) {
-  return defHttp.delete<any>({ url: Api.Client + '?id=', params }, { errorMessageMode: 'message' });
+  return defHttp.delete<void>(
+    { url: Api.Client + '?id=', params },
+    { errorMessageMode: 'message' },
+  );
 }
 
 export function modifyClient(params: ClientDTO) {
-  return defHttp.put<any>({ url: Api.Client, params }, { errorMessageMode: 'message' });
+  return defHttp.put<void>({ url: Api.Client, params }, { errorMessageMode: 'message' });
 }
 
 export function modifyClientStatus(params: ClientDTO) {
-  return defHttp.put<any>({ url: Api.Client, params }, { errorMessageMode: 'none' });
+  return defHttp.put<void>({ url: Api.Client, params }, { errorMessageMode: 'none' });
 }
 
 export function clientPage(params?: ClientQuery) {
-  return defHttp.post<any>({ url: Api.ClientPage, params }, { errorMessageMode: 'message' });
+  return defHttp.post<ClientDTO[]>(
+    { url: Api.ClientPage, params },
+    { errorMessageMode: 'message' },
+  );
 }
 
 export function clientAll(params?: ClientQuery) {
-  return defHttp.get<any>({ url: Api.ClientAll, params }, { errorMessageMode: 'message' });
+  return defHttp.get<ClientDTO[]>({ url: Api.ClientAll, params }, { errorMessageMode: 'message' });
 }
 
 export function expExcel(params?: ClientQuery) {

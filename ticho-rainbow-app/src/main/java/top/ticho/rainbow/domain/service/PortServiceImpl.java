@@ -190,8 +190,8 @@ public class PortServiceImpl implements PortService {
 
     public void updatePortInfo(Port oldPort) {
         Port port = portRepository.getById(oldPort.getId());
-        // 端口号不一致时，删除旧的app，再创建新的app
-        if (!Objects.equals(oldPort.getPort(), port.getPort()) && isEnabled(oldPort)) {
+        // 端口号或者客户端地址不一致时，删除旧的app，再创建新的app
+        if ((!Objects.equals(oldPort.getPort(), port.getPort()) || !Objects.equals(oldPort.getEndpoint(), port.getEndpoint())) && isEnabled(oldPort)) {
             serverHandler.deleteApp(oldPort.getAccessKey(), oldPort.getPort());
         }
         AppHandler appHandler = serverHandler.getAppHandler();
