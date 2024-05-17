@@ -80,7 +80,7 @@
             label: {
               show: true,
               formatter: '{c}kb',
-              color: '#FFFFFF',
+              color: '#000000',
             },
           },
           {
@@ -92,7 +92,7 @@
             label: {
               show: true,
               formatter: '{c}kb',
-              color: '#FFFFFF',
+              color: '#000000',
             },
           },
         ],
