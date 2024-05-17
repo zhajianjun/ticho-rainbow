@@ -17,6 +17,7 @@ import top.ticho.tool.intranet.server.entity.AppDataSummary;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 import top.ticho.tool.intranet.server.handler.AppHandler;
 import top.ticho.tool.intranet.server.handler.ServerHandler;
+import top.ticho.tool.intranet.util.IntranetUtil;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -53,7 +54,14 @@ public class FlowMonitorServiceImpl implements FlowMonitorService {
         // 客户端数
         List<Client> clients = clientRepository.list();
         // 激活的客户端数
-        int activeClients = Long.valueOf(clients.stream().filter(x -> clientMap.containsKey(x.getAccessKey())).count()).intValue();
+        long count = clients
+            .stream()
+            .map(x -> clientMap.get(x.getAccessKey()))
+            .filter(Objects::nonNull)
+            .map(ClientInfo::getChannel)
+            .filter(IntranetUtil::isActive)
+            .count();
+        int activeClients = Long.valueOf(count).intValue();
         // 激活的端口号总数
         Set<Integer> portNums = appHandler.getBindPortChannelMap().keySet();
         // 激活的端口流量信息
