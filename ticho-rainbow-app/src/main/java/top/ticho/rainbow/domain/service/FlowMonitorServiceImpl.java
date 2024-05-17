@@ -50,7 +50,9 @@ public class FlowMonitorServiceImpl implements FlowMonitorService {
     public FlowMonitorStatsDTO info() {
         AppHandler appHandler = serverHandler.getAppHandler();
         Map<String, ClientInfo> clientMap = serverHandler.getClientMap();
+        // 客户端数
         List<Client> clients = clientRepository.list();
+        // 激活的客户端数
         int activeClients = Long.valueOf(clients.stream().filter(x -> clientMap.containsKey(x.getAccessKey())).count()).intValue();
         // 激活的端口号总数
         Set<Integer> portNums = appHandler.getBindPortChannelMap().keySet();
@@ -61,7 +63,6 @@ public class FlowMonitorServiceImpl implements FlowMonitorService {
         List<Port> ports = portRepository.list();
         List<FlowMonitorDTO> flowDetails = ports
             .stream()
-            .filter(x-> portNums.contains(x.getPort()))
             .sorted(Comparator.comparing(Port::getSort).thenComparing(Port::getPort))
             .map(x-> convertToFlowMonitor(x, appDataMap.get(x.getPort())))
             .collect(Collectors.toList());

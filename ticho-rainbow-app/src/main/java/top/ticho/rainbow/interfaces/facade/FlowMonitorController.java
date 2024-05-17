@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.boot.view.core.Result;
 import top.ticho.rainbow.application.service.FlowMonitorService;
-import top.ticho.rainbow.interfaces.dto.FlowMonitorDTO;
 import top.ticho.rainbow.interfaces.dto.FlowMonitorStatsDTO;
-
-import java.util.List;
 
 /**
  * 流量监控

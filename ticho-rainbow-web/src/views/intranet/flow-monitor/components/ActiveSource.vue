@@ -8,13 +8,10 @@
   import { Card } from 'ant-design-vue';
   import { useECharts } from '@/hooks/web/useECharts';
   import { dataType } from './type';
+  import { basicProps } from './props';
 
   const props = defineProps({
-    loading: Boolean,
-    title: {
-      type: String as PropType<string>,
-      default: '标题',
-    },
+    ...basicProps,
     color: {
       type: Array as PropType<string[]>,
       default: () => ['#5ab1ef', '#ff0000'],
@@ -26,14 +23,6 @@
         { name: 'B', value: 1 },
       ],
     },
-    width: {
-      type: String as PropType<string>,
-      default: '100%',
-    },
-    height: {
-      type: String as PropType<string>,
-      default: '300px',
-    },
   });
   const chartRef = ref<HTMLDivElement | null>(null);
   const { setOptions } = useECharts(chartRef as Ref<HTMLDivElement>);
@@ -41,7 +30,6 @@
   watch(
     () => props.loading,
     () => {
-      console.log('props.datas', props.loading, props.datas);
       if (props.loading) {
         return;
       }
@@ -50,8 +38,8 @@
           trigger: 'item',
         },
         legend: {
-          bottom: '1%',
-          left: 'center',
+          bottom: '92%',
+          left: '72%',
         },
         series: [
           {
@@ -66,8 +54,10 @@
               borderWidth: 2,
             },
             label: {
-              show: false,
-              position: 'center',
+              show: true,
+              position: 'inner', // 数据会显示在图形上，'center':会显示在圆环的内部
+              color: '#FFFFFF',
+              formatter: '{c}',
             },
             emphasis: {
               label: {
