@@ -1,3 +1,8 @@
+// BRANCH=main
+// APP_VERSION=1.0.0
+// JASYPT_ENCRYPTOR_PASSWORD=
+// RAINBOW_FILE_DOMAIN=http://127.0.0.1:5121/api
+// PROFILES=prod
 def LAST_BUILD_NUMBER = env.BUILD_NUMBER.toInteger() - 1
 pipeline {
     agent any
@@ -88,23 +93,23 @@ pipeline {
           }
         sh "docker run -itd \
             --name ${APP_NAME} \
-            -e PROFILES='dev' \
+            -e PROFILES='${PROFILES}' \
             -e DATASOURCE_URL='${DATASOURCE_URL}' \
             -e DATASOURCE_USERNAME='${DATASOURCE_USERNAME}' \
             -e DATASOURCE_PASSWORD='${DATASOURCE_PASSWORD}' \
-            -e FILE_DOMAIN='${FILE_DOMAIN}' \
+            -e RAINBOW_FILE_DOMAIN='${RAINBOW_FILE_DOMAIN}' \
             -e JASYPT_ENCRYPTOR_PASSWORD='${JASYPT_ENCRYPTOR_PASSWORD}' \
             -p ${APP_PORT}:${APP_PORT} \
             -v ${APP_LOG}:/logs \
             -v ${APP_DATA}:/data \
             --restart always \
             ${IMGAGE_NAME}"
-        // script {
-        //     def result = sh(script: "docker rmi -f ${LAST_IMGAGE_NAME}", returnStatus: true)
-        //     if (result != 0) {
-        //         echo '${LAST_IMGAGE_NAME}镜像不存在'
-        //     }
-        // }
+        script {
+            def result = sh(script: "docker rmi -f ${LAST_IMGAGE_NAME}", returnStatus: true)
+            if (result != 0) {
+                echo '${LAST_IMGAGE_NAME}镜像不存在'
+            }
+        }
       }
     }
   }

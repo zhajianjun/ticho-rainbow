@@ -22,6 +22,8 @@ ${JAVA_OPTS} \
 -Dticho.intranet.server.maxBindPorts="${INTRANET_SERVER_MAX_BIND_PORTS}" \
 -Dticho.mail.enable="${MAIL_ENABLE}" \
 -Dticho.mail.host="${MAIL_HOST}" \
+-Dticho.mail.port="${MAIL_PORT}" \
+-Dticho.mail.sender-name="${MAIL_SENDER_NAME}" \
 -Dticho.mail.username="${MAIL_USERNAME}" \
 -Dticho.mail.password="${MAIL_PASSWORD}" \
 -Dticho.rainbow.file.domain="${RAINBOW_FILE_DOMAIN}" \
