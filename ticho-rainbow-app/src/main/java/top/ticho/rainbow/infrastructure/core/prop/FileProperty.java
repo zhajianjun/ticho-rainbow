@@ -13,7 +13,7 @@ import java.util.Objects;
  * @date 2024-04-22 10:33
  */
 @Data
-@ConfigurationProperties(prefix = "rainbow.file")
+@ConfigurationProperties(prefix = "ticho.rainbow.file")
 @Component
 public class FileProperty {
 

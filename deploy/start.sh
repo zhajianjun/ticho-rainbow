@@ -20,7 +20,15 @@ ${JAVA_OPTS} \
 -Dticho.intranet.server.sslPassword="${INTRANET_SERVER_SSL_PASSWORD}" \
 -Dticho.intranet.server.maxRequests="${INTRANET_SERVER_MAX_REQUESTS}" \
 -Dticho.intranet.server.maxBindPorts="${INTRANET_SERVER_MAX_BIND_PORTS}" \
--Drainbow.file.domain="${FILE_DOMAIN}" \
+-Dticho.mail.enable="${MAIL_ENABLE}" \
+-Dticho.mail.host="${MAIL_HOST}" \
+-Dticho.mail.username="${MAIL_USERNAME}" \
+-Dticho.mail.password="${MAIL_PASSWORD}" \
+-Dticho.rainbow.file.domain="${RAINBOW_FILE_DOMAIN}" \
+-Dticho.rainbow.file.mvc-resource-path="${RAINBOW_MVC_RESOURCE_PATH}" \
+-Dticho.rainbow.file.max-file-size="${RAINBOW_MAX_FILE_SIZE}" \
+-Dticho.rainbow.file.max-part-size="${RAINBOW_MAX_PART_SIZE}" \
+-Dticho.rainbow.file.max-big-file-size="${RAINBOW_MAX_BIG_FILE_SIZE}" \
 -Dspring.profiles.active="${PROFILES}" \
 -jar \
 /app.jar \

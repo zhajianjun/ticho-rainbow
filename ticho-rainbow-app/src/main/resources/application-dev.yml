@@ -22,7 +22,7 @@ ticho:
       - /webjars/**
       - /v2/api-docs
       - /favicon.ico
-      - ${rainbow.file.mvc-resource-path}
+      - ${ticho.rainbow.file.mvc-resource-path}
   cors:
     enable: true
   intranet:
@@ -61,6 +61,14 @@ ticho:
         socketFactoryClass: javax.net.ssl.SSLSocketFactory
         # 表示开启 DEBUG 模式，这样，邮件发送过程的日志会在控制台打印出来，方便排查错误
         debug: false
+  rainbow:
+    file:
+      domain: http://localhost:5122
+      mvc-resource-path: /static/file/**
+      max-file-size: 20MB
+      max-part-size: 10MB
+      max-big-file-size: 1GB
+
 spring:
   quartz:
       # 任务存储类型
@@ -85,11 +93,4 @@ spring:
               threadCount: 10
               threadPriority: 5
               threadsInheritContextClassLoaderOfInitializingThread: true
-rainbow:
-  file:
-    domain: http://localhost:5122
-    mvc-resource-path: /static/file/**
-    max-file-size: 20MB
-    max-part-size: 10MB
-    max-big-file-size: 1GB
 
