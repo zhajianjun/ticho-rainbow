@@ -1,0 +1,33 @@
+version: '3'
+services:
+  ticho-rainbow:
+    image: registry.cn-hangzhou.aliyuncs.com/feature/ticho-rainbow:1.0.0
+    container_name: ${CONTAINER_NAME}
+    restart: always
+    privileged: true
+    environment:
+      TZ: "Asia/Shanghai"
+      DATASOURCE_URL: "jdbc:mysql://127.0.0.1:${MYSQL_PORT}/${PANEL_DB_NAME}?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true"
+      DATASOURCE_USERNAME: ${PANEL_DB_USER}
+      DATASOURCE_PASSWORD: ${PANEL_DB_USER_PASSWORD}
+      INTRANET_SERVER_PORT: ${INTRANET_SERVER_PORT}
+      INTRANET_SERVER_MAX_REQUESTS: ${INTRANET_SERVER_MAX_REQUESTS}
+      INTRANET_SERVER_MAX_BIND_PORTS: ${INTRANET_SERVER_MAX_BIND_PORTS}
+      MAIL_ENABLE: ${MAIL_ENABLE}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_SENDER_NAME: ${MAIL_SENDER_NAME}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      RAINBOW_FILE_DOMAIN: ${RAINBOW_FILE_DOMAIN}
+      RAINBOW_MVC_RESOURCE_PATH: ${RAINBOW_MVC_RESOURCE_PATH}
+      RAINBOW_MAX_FILE_SIZE: ${RAINBOW_MAX_FILE_SIZE}
+      RAINBOW_MAX_PART_SIZE: ${RAINBOW_MAX_PART_SIZE}
+      RAINBOW_MAX_BIG_FILE_SIZE: ${RAINBOW_MAX_BIG_FILE_SIZE}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./logs:/logs
+      - ./:/data
+    network_mode: host
+    labels:
+      createdBy: "Apps"
