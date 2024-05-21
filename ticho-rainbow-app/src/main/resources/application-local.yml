@@ -93,3 +93,14 @@ spring:
               threadCount: 10
               threadPriority: 5
               threadsInheritContextClassLoaderOfInitializingThread: true
+  flyway:
+    # 开启 flyway
+    enabled: true
+    # 是否禁用数据库清理
+    clean-disabled: true
+    # SQL 迁移的编码
+    encoding: UTF-8
+    # 是否在执行迁移时自动调用验证。
+    validate-on-migrate: true
+    # 迁移时发现目标schema非空，而且带有没有元数据的表时，是否自动执行基准迁移，默认false.
+    baseline-on-migrate: true
