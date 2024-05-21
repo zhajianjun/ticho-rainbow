@@ -45,12 +45,12 @@ export function runOnceTask(params) {
 
 export function pauseTask(id: string) {
   const params = { id: id };
-  return defHttp.get<any>({ url: Api.PauseTask, params }, { errorMessageMode: 'message' });
+  return defHttp.get<any>({ url: Api.PauseTask, params }, { errorMessageMode: 'message', successMessageMode: 'message' });
 }
 
 export function resumeTask(id: string) {
   const params = { id: id };
-  return defHttp.get<any>({ url: Api.ResumeTask, params }, { errorMessageMode: 'message' });
+  return defHttp.get<any>({ url: Api.ResumeTask, params }, { errorMessageMode: 'message', successMessageMode: 'message' });
 }
 
 export function expExcel(params?: TaskQuery) {
