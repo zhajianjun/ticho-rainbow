@@ -13,7 +13,7 @@ import top.ticho.boot.view.util.Assert;
 import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.ClientService;
-import top.ticho.rainbow.domain.handle.DictTemplate;
+import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.ClientRepository;
 import top.ticho.rainbow.domain.repository.PortRepository;
 import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
@@ -28,7 +28,6 @@ import top.ticho.rainbow.interfaces.query.ClientQuery;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 import top.ticho.tool.intranet.server.entity.PortInfo;
 import top.ticho.tool.intranet.server.handler.ServerHandler;
-import top.ticho.tool.intranet.util.IntranetUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -65,7 +64,7 @@ public class ClientServiceImpl implements ClientService {
     private ServerHandler serverHandler;
 
     @Autowired
-    private DictTemplate dictTemplate;
+    private DictHandle dictHandle;
 
     @Resource
     private HttpServletResponse response;
@@ -173,7 +172,7 @@ public class ClientServiceImpl implements ClientService {
     public void expExcel(ClientQuery query) throws IOException {
         String sheetName = "客户端信息";
         String fileName = "客户端信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
-        Map<String, String> labelMap = dictTemplate.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.CHANNEL_STATUS);
+        Map<String, String> labelMap = dictHandle.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.CHANNEL_STATUS);
         ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, ClientExp.class, response);
     }
 

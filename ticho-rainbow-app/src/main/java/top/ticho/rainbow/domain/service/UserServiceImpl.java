@@ -34,8 +34,7 @@ import top.ticho.boot.web.util.valid.ValidGroup;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.FileInfoService;
 import top.ticho.rainbow.application.service.UserService;
-import top.ticho.rainbow.domain.handle.AuthHandle;
-import top.ticho.rainbow.domain.handle.DictTemplate;
+import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.EmailRepository;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
@@ -101,7 +100,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class UserServiceImpl extends AuthHandle implements UserService {
+public class UserServiceImpl extends AbstractAuthServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
@@ -128,7 +127,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     private FileInfoService fileInfoService;
 
     @Autowired
-    private DictTemplate dictTemplate;
+    private DictHandle dictHandle;
 
     @Override
     public void imgCode(String imgKey) throws IOException {
@@ -477,7 +476,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
         Role guestRole = roleRepository.getGuestRole();
         Assert.isNotNull(guestRole, "默认角色不存在，请联系管理员进行处理");
         UserServiceImpl bean = SpringContext.getBean(this.getClass());
-        Map<String, Integer> valueMap = dictTemplate.getValueMap(DictConst.SEX, NumberUtil::parseInt);
+        Map<String, Integer> valueMap = dictHandle.getValueMap(DictConst.SEX, NumberUtil::parseInt);
         ExcelHandle.readAndWriteToResponse((x, y)-> bean.readAndWrite(x, y, guestRole, valueMap), file, fileName, sheetName, UserImp.class, response);
     }
 
@@ -555,7 +554,7 @@ public class UserServiceImpl extends AuthHandle implements UserService {
     public void expExcel(UserQuery query) throws IOException {
         String sheetName = "用户信息";
         String fileName = "用户信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
-        Map<String, String> labelMap = dictTemplate.getLabelMapBatch(DictConst.USER_STATUS, DictConst.SEX);
+        Map<String, String> labelMap = dictHandle.getLabelMapBatch(DictConst.USER_STATUS, DictConst.SEX);
         ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, UserExp.class, response);
     }
 

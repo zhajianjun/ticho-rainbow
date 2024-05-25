@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @date 2024-05-10 18:46
  */
 @Component
-public class DictTemplate {
+public class DictHandle {
 
     @Autowired
     private DictService dictService;

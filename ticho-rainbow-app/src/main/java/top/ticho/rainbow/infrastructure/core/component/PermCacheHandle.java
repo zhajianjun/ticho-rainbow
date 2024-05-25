@@ -1,10 +1,11 @@
-package top.ticho.rainbow.domain.handle;
+package top.ticho.rainbow.infrastructure.core.component;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -13,7 +14,6 @@ import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
 import top.ticho.rainbow.interfaces.dto.PermDTO;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -24,25 +24,25 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * 缓存处理
+ * 权限编码缓存处理
  *
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-public class CacheHandle {
+@Component
+public class PermCacheHandle {
 
     private final Map<String, Map<String, String>> MAP = new HashMap<>();
 
-    public List<PermDTO> pushCurrentAppPerms() {
+    public void pushCurrentAppPerms() {
         List<PermDTO> perms = listCurrentAppPerms();
         if (CollUtil.isEmpty(perms)) {
-            return Collections.emptyList();
+            return;
         }
         Map<String, String> map = perms
             .stream()
             .collect(Collectors.toMap(PermDTO::getCode, PermDTO::getName, (v1, v2)-> v1, LinkedHashMap::new));
         MAP.put(SecurityConst.MICRO_REDIS_ALL_PERMS, map);
-        return perms;
     }
 
     public List<PermDTO> listAllAppPerms() {
@@ -54,12 +54,8 @@ public class CacheHandle {
         for (Map.Entry<String, String> entry : permsMap.entrySet()) {
             String entryKey = entry.getKey();
             String[] keys = entryKey.split(":");
-            // String value = entry.getValue();
             PermDTO perm = json;
-            int length = keys.length;
-            for (int i = 0; i < length; i++) {
-                String key = keys[i];
-                boolean isLastKey = i == length - 1;
+            for (String key : keys) {
                 if (Objects.isNull(perm.getChildren())) {
                     perm.setChildren(new ArrayList<>());
                 }
@@ -75,9 +71,6 @@ public class CacheHandle {
                 } else {
                     child = childOpt.get();
                 }
-                // if (isLastKey) {
-                //     child.setValue(entryKey);
-                // }
                 perm = child;
             }
         }

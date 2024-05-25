@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.util.Assert;
 import top.ticho.rainbow.application.service.OpLogService;
-import top.ticho.rainbow.domain.handle.DictTemplate;
+import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.OpLogRepository;
 import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.core.constant.DictConst;
@@ -42,7 +42,7 @@ public class OpLogServiceImpl implements OpLogService {
     private OpLogRepository opLogRepository;
 
     @Autowired
-    private DictTemplate dictTemplate;
+    private DictHandle dictHandle;
 
     @Resource
     private HttpServletResponse response;
@@ -72,7 +72,7 @@ public class OpLogServiceImpl implements OpLogService {
     public void expExcel(OpLogQuery query) throws IOException {
         String sheetName = "操作日志";
         String fileName = "操作日志导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
-        Map<Integer, String> labelMap = dictTemplate.getLabelMap(DictConst.YES_OR_NO, NumberUtil::parseInt);
+        Map<Integer, String> labelMap = dictHandle.getLabelMap(DictConst.YES_OR_NO, NumberUtil::parseInt);
         ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, OpLogExp.class, response);
     }
 

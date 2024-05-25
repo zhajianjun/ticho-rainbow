@@ -14,7 +14,7 @@ import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.boot.web.util.valid.ValidGroup;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.TaskService;
-import top.ticho.rainbow.domain.handle.DictTemplate;
+import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.TaskRepository;
 import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
 import top.ticho.rainbow.infrastructure.core.component.TaskTemplate;
@@ -60,7 +60,7 @@ public class TaskServiceImpl implements TaskService {
     private TaskTemplate taskTemplate;
 
     @Autowired
-    private DictTemplate dictTemplate;
+    private DictHandle dictHandle;
 
     @Resource
     private HttpServletResponse response;
@@ -235,7 +235,7 @@ public class TaskServiceImpl implements TaskService {
     public void expExcel(TaskQuery query) throws IOException {
         String sheetName = "计划任务";
         String fileName = "计划任务导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
-        Map<String, String> labelMap = dictTemplate.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.PLAN_TASK);
+        Map<String, String> labelMap = dictHandle.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.PLAN_TASK);
         ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, TaskExp.class, response);
     }
 

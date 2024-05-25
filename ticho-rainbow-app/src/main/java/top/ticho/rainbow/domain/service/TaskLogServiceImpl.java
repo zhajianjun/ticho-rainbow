@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.util.Assert;
 import top.ticho.rainbow.application.service.TaskLogService;
-import top.ticho.rainbow.domain.handle.DictTemplate;
+import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.rainbow.domain.repository.TaskRepository;
 import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
@@ -44,7 +44,7 @@ public class TaskLogServiceImpl implements TaskLogService {
     private TaskLogRepository taskLogRepository;
 
     @Autowired
-    private DictTemplate dictTemplate;
+    private DictHandle dictHandle;
 
     @Resource
     private HttpServletResponse response;
@@ -77,7 +77,7 @@ public class TaskLogServiceImpl implements TaskLogService {
     public void expExcel(TaskLogQuery query) throws IOException {
         String sheetName = "计划任务日志";
         String fileName = "计划任务日志导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
-        Map<String, String> labelMap = dictTemplate.getLabelMapBatch(DictConst.TASK_LOG_STATUS, DictConst.PLAN_TASK, DictConst.YES_OR_NO);
+        Map<String, String> labelMap = dictHandle.getLabelMapBatch(DictConst.TASK_LOG_STATUS, DictConst.PLAN_TASK, DictConst.YES_OR_NO);
         ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, TaskLogExp.class, response);
     }
 

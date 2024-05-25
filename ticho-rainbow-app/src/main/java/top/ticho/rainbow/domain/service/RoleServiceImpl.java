@@ -12,8 +12,7 @@ import top.ticho.boot.view.enums.BizErrCode;
 import top.ticho.boot.view.util.Assert;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.RoleService;
-import top.ticho.rainbow.domain.handle.AuthHandle;
-import top.ticho.rainbow.domain.handle.DictTemplate;
+import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.RoleMenuRepository;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
@@ -50,7 +49,7 @@ import java.util.stream.Collectors;
  * @date 2024-01-08 20:30
  */
 @Service
-public class RoleServiceImpl extends AuthHandle implements RoleService {
+public class RoleServiceImpl extends AbstractAuthServiceImpl implements RoleService {
 
     @Autowired
     private RoleRepository roleRepository;
@@ -62,7 +61,7 @@ public class RoleServiceImpl extends AuthHandle implements RoleService {
     private UserRoleRepository userRoleRepository;
 
     @Autowired
-    private DictTemplate dictTemplate;
+    private DictHandle dictHandle;
 
     @Resource
     private HttpServletResponse response;
@@ -177,7 +176,7 @@ public class RoleServiceImpl extends AuthHandle implements RoleService {
     public void expExcel(RoleQuery query) throws IOException {
         String sheetName = "角色信息";
         String fileName = "角色信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
-        Map<Integer, String> labelMap = dictTemplate.getLabelMap(DictConst.COMMON_STATUS, NumberUtil::parseInt);
+        Map<Integer, String> labelMap = dictHandle.getLabelMap(DictConst.COMMON_STATUS, NumberUtil::parseInt);
         ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, RoleExp.class, response);
     }
 

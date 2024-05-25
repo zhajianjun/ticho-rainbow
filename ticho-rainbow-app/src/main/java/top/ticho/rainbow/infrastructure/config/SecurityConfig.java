@@ -5,8 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import top.ticho.boot.security.handle.jwt.JwtSigner;
 import top.ticho.boot.security.prop.BaseOauthProperty;
-import top.ticho.rainbow.domain.handle.CacheHandle;
-import top.ticho.rainbow.infrastructure.core.component.PermRedisCacheEvent;
 
 /**
  * @author zhajianjun
@@ -18,17 +16,7 @@ public class SecurityConfig {
     @Bean
     @ConditionalOnBean(BaseOauthProperty.class)
     public JwtSigner jwtSigner() {
-        return new JwtSigner("intranet");
-    }
-
-    @Bean
-    public CacheHandle permHandle() {
-        return new CacheHandle();
-    }
-
-    @Bean
-    public PermRedisCacheEvent permRedisCacheEvent(CacheHandle cacheHandle) {
-        return new PermRedisCacheEvent(cacheHandle);
+        return new JwtSigner("rainbow");
     }
 
 }

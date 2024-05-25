@@ -7,7 +7,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import top.ticho.boot.security.auth.PermissionService;
 import top.ticho.boot.security.constant.BaseOAuth2Const;
-import top.ticho.rainbow.domain.handle.AuthHandle;
+import top.ticho.rainbow.domain.service.AbstractAuthServiceImpl;
 import top.ticho.rainbow.infrastructure.core.constant.CommConst;
 import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
 import top.ticho.rainbow.infrastructure.core.enums.UserStatus;
@@ -30,7 +30,7 @@ import java.util.Objects;
 @Slf4j
 @Service(CommConst.PERM_KEY)
 @Order(1)
-public class DefaultPermissionServiceImpl extends AuthHandle implements PermissionService {
+public class DefaultPermissionServiceImpl extends AbstractAuthServiceImpl implements PermissionService {
 
     @Resource
     private HttpServletRequest request;

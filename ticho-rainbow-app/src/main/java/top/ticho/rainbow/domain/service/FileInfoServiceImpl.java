@@ -24,7 +24,7 @@ import top.ticho.boot.view.util.Assert;
 import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.FileInfoService;
-import top.ticho.rainbow.domain.handle.DictTemplate;
+import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.infrastructure.config.CacheConfig;
 import top.ticho.rainbow.infrastructure.core.component.cache.CommonCacheTemplate;
@@ -93,7 +93,7 @@ public class FileInfoServiceImpl implements FileInfoService {
     private FileInfoRepository fileInfoRepository;
 
     @Autowired
-    private DictTemplate dictTemplate;
+    private DictHandle dictHandle;
 
     // @formatter:off
 
@@ -546,7 +546,7 @@ public class FileInfoServiceImpl implements FileInfoService {
     public void expExcel(FileInfoQuery query)throws IOException {
         String sheetName = "文件信息";
         String fileName = "文件信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
-        Map<String, String> labelMap = dictTemplate.getLabelMapBatch(DictConst.FILE_STATUS, DictConst.FILE_STORAGE_TYPE);
+        Map<String, String> labelMap = dictHandle.getLabelMapBatch(DictConst.FILE_STATUS, DictConst.FILE_STORAGE_TYPE);
         ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, FileInfoExp.class, response);
     }
 

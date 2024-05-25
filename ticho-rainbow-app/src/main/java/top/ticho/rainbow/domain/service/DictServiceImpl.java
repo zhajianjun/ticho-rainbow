@@ -19,7 +19,7 @@ import top.ticho.boot.web.util.SpringContext;
 import top.ticho.boot.web.util.valid.ValidGroup;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.service.DictService;
-import top.ticho.rainbow.domain.handle.DictTemplate;
+import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.DictLabelRepository;
 import top.ticho.rainbow.domain.repository.DictRepository;
 import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
@@ -188,8 +188,8 @@ public class DictServiceImpl implements DictService {
     public void expExcel(DictQuery query) throws IOException {
         String sheetName = "字典信息";
         String fileName = "字典信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
-        DictTemplate dictTemplate = SpringContext.getBean(DictTemplate.class);
-        Map<Integer, String> labelMap = dictTemplate.getLabelMap(DictConst.COMMON_STATUS, NumberUtil::parseInt);
+        DictHandle dictHandle = SpringContext.getBean(DictHandle.class);
+        Map<Integer, String> labelMap = dictHandle.getLabelMap(DictConst.COMMON_STATUS, NumberUtil::parseInt);
         ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, DictExp.class, response);
     }
 

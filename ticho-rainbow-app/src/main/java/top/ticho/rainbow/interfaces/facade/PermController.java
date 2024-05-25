@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.boot.view.core.Result;
-import top.ticho.rainbow.domain.handle.CacheHandle;
+import top.ticho.rainbow.infrastructure.core.component.PermCacheHandle;
 import top.ticho.rainbow.interfaces.dto.PermDTO;
 
 import java.util.List;
@@ -28,14 +28,14 @@ import java.util.List;
 public class PermController {
 
     @Autowired
-    private CacheHandle cacheHandle;
+    private PermCacheHandle permCacheHandle;
 
     @PreAuthorize("@perm.hasPerms('system:perm:list')")
     @ApiOperation(value = "查询所有权限标识")
     @ApiOperationSupport(order = 60)
     @GetMapping("list")
     public Result<List<PermDTO>> listAll() {
-        return Result.ok(cacheHandle.listAllAppPerms());
+        return Result.ok(permCacheHandle.listAllAppPerms());
     }
 
 }

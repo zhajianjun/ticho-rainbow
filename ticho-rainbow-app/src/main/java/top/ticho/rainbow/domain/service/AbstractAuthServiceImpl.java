@@ -1,4 +1,4 @@
-package top.ticho.rainbow.domain.handle;
+package top.ticho.rainbow.domain.service;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
@@ -40,12 +40,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- *
+ * 权限服务抽象类
  *
  * @author zhajianjun
 * @date 2023-12-17 08:30
  */
-public class AuthHandle {
+public abstract class AbstractAuthServiceImpl {
 
     @Autowired
     private UserRepository userRepository;
