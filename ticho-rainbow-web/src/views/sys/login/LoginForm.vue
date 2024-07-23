@@ -25,7 +25,7 @@
         class="fix-auto-fill"
       />
     </FormItem>
-    <FormItem name="imgCode" class="enter-x fix-auto-fill">
+    <FormItem name="imgCode" class="enter-x img-fill">
       <Input
         class="rainbow"
         size="large"
@@ -190,9 +190,7 @@
   }
 </script>
 <style lang="less">
-  .fix-auto-fill {
-    width: 428px;
-
+  .img-fill {
     .ant-input-group-addon {
       padding-right: 0;
       border: none;
