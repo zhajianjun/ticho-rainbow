@@ -152,7 +152,7 @@
   function handleBeforeUpload(file: File) {
     if (props.size && file.size > 1024 * 1024 * props.size) {
       emit('uploadError', { msg: t('component.cropper.imageTooBig') });
-      return;
+      return false;
     }
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -190,7 +190,7 @@
       try {
         setModalProps({ confirmLoading: true });
         const result = await uploadApi({ name: 'file', file: blob, filename });
-        emit('uploadSuccess', { source: previewSource.value, data: result });
+        emit('uploadSuccess', { source: previewSource.value, data: result.url });
         closeModal();
       } finally {
         setModalProps({ confirmLoading: false });

@@ -71,7 +71,7 @@
   const props = defineProps({
     ...basicProps,
     previewFileList: {
-      type: Array as PropType<string[]>,
+      type: Array as PropType<string[] | any[]>,
       default: () => [],
     },
   });
@@ -257,7 +257,7 @@
     for (const item of fileListRef.value) {
       const { status, response } = item;
       if (status === UploadResultStatus.SUCCESS && response) {
-        fileList.push(response.data);
+        fileList.push(response.url);
       }
     }
     // 存在一个上传成功的即可保存

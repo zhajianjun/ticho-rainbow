@@ -22,7 +22,6 @@
         visibilityToggle
         v-model:value="formData.password"
         :placeholder="t('sys.login.password')"
-        class="fix-auto-fill"
       />
     </FormItem>
     <FormItem name="imgCode" class="enter-x img-fill">
@@ -38,7 +37,7 @@
       </Input>
     </FormItem>
 
-    <ARow class="enter-x" :gutter="[16, 16]">
+    <ARow class="enter-x">
       <ACol :span="12">
         <FormItem>
           <!-- No logic, you need to deal with it yourself -->
@@ -199,7 +198,7 @@
         margin: 0 0 0 0;
         padding: 0 0 0 0;
         border-radius: 8px;
-        width: 120px;
+        width: 102px;
         height: 40px;
         border: 1px solid #d4d4d4;
       }

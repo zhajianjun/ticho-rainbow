@@ -36,6 +36,7 @@
 
   const { prefixCls } = useDesign('app-logo');
   const { getCollapsedShowTitle } = useMenuSetting();
+  const userStore = useUserStore();
   const { title } = useGlobSetting();
   const go = useGo();
 
@@ -53,7 +54,7 @@
   ]);
 
   function goHome() {
-    go(PageEnum.BASE_HOME);
+    go(userStore.getUserInfo.homePath || PageEnum.BASE_HOME);
   }
 </script>
 <style lang="less" scoped>
