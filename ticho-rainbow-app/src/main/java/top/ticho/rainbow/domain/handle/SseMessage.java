@@ -14,8 +14,8 @@ import lombok.Data;
 @ApiModel(value = "sse消息")
 public class SseMessage<T> {
 
-    @ApiModelProperty(value = "类型", position = 10)
-    private SseEvent sseEvent;
+    @ApiModelProperty(value = " 事件类型", position = 10)
+    private SseEvent event;
 
     @ApiModelProperty(value = "数据", position = 20)
     private T data;
@@ -23,7 +23,7 @@ public class SseMessage<T> {
     public static <T> SseMessage<T> of(SseEvent sseEvent, T data) {
         SseMessage<T> message = new SseMessage<>();
         message.setData(data);
-        message.setSseEvent(sseEvent);
+        message.setEvent(sseEvent);
         return message;
     }
 

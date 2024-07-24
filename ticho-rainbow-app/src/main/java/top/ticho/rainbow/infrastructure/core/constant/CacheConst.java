@@ -24,4 +24,6 @@ public class CacheConst {
 
     public static final String UPLOAD_CHUNK = "ticho-rainbow:upload_chunk";
 
+    public static final String SSE = "ticho-rainbow:sse";
+
 }

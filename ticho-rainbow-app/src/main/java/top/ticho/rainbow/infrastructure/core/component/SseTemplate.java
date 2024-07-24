@@ -13,6 +13,8 @@ import top.ticho.boot.view.exception.BizException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Sse模板工具
@@ -75,6 +77,19 @@ public class SseTemplate {
      */
     public void sendMessage(String id, Object message) {
         sendMessage(id, message, sseEmitterMap.get(id));
+    }
+
+    /**
+     * 灵活发送消息给指定某些客户端
+     */
+    public void sendMessageCondition(Predicate<String> idCheck, Function<String, String> messageHandle) {
+        for (Map.Entry<String, SseEmitter> entry : sseEmitterMap.entrySet()) {
+            if (!idCheck.test(entry.getKey())) {
+                continue;
+            }
+            String message = messageHandle.apply(entry.getKey());
+            sendMessage(entry.getKey(), message, entry.getValue());
+        }
     }
 
     /**
