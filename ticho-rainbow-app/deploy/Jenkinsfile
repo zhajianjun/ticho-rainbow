@@ -7,12 +7,8 @@ def LAST_BUILD_NUMBER = env.BUILD_NUMBER.toInteger() - 1
 pipeline {
     agent any
   environment {
-    APP_NAME = "ticho-rainbow-all"
-    APP_FRONT_MODULE = "ticho-rainbow-web"
-    APP_BACKEND_MODULE = "ticho-rainbow-app"
-    APP_PORT = "5121"
-    APP_LOG = "/data/logs"
-    APP_DATA = "/data"
+    APP_NAME = "ticho-rainbow-app"
+    APP_PORT = "5122"
     DATASOURCE_URL = "jdbc:mysql://192.168.243.138:10032/ticho_rainbow?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true"
     DATASOURCE_USERNAME = "ENC(8yUwi7gFsHhtfKcuEHa6Kg==)"
     DATASOURCE_PASSWORD = "ENC(7xqTr9Bm6d2RCeaWdwMGlugy9f3P9sAK)"
@@ -20,8 +16,6 @@ pipeline {
     REGISTRY = "registry.cn-hangzhou.aliyuncs.com"
     IMGAGE_NAME = "${REGISTRY}/ticho/${APP_NAME}:${APP_VERSION}"
     DOCKFILE = "deploy/Dockerfile"
-    JRE_PATH = "/var/jenkins_home/jdk/jdk8/jre"
-    PNPM_STORE = "/var/jenkins_home/pnpm"
     MAVEN_HOME = '/var/jenkins_home/maven/maven3.9.6'
     MAVEN_XML =  '/var/jenkins_home/maven/setting.xml'
     JAVA_HOME = '/var/jenkins_home/jdk/jdk8'
@@ -41,20 +35,7 @@ pipeline {
       }
     }
 
-    stage("前端应用编译") {
-      steps {
-        nodejs('node18.12.0'){
-            sh "npm cache clean --force"
-            sh "npm config set strict-ssl false"
-            sh "npm config set registry https://registry.npm.taobao.org"
-            sh "npm install pnpm@9.0.4 -g"
-            sh "pnpm config set store-dir ${PNPM_STORE}"
-            sh "cd ${APP_FRONT_MODULE} && pnpm install && pnpm build && tar -zcvf dist.tar.gz dist && rm -rf ./node_modules"
-        }
-      }
-    }
-
-    stage("后端应用编译") {
+    stage("应用编译") {
       steps {
         sh "mvn -U -s ${MAVEN_XML}  -Dmaven.test.skip=true clean package -P rdc"
       }
@@ -69,7 +50,6 @@ pipeline {
 
     stage("构建容器镜像") {
       steps {
-        sh "mkdir -p ./jre && cp -r ${JRE_PATH} ./"
         sh "docker build -f ${DOCKFILE} -t ${IMGAGE_NAME} ."
       }
     }
@@ -100,8 +80,7 @@ pipeline {
             -e RAINBOW_FILE_DOMAIN='${RAINBOW_FILE_DOMAIN}' \
             -e JASYPT_ENCRYPTOR_PASSWORD='${JASYPT_ENCRYPTOR_PASSWORD}' \
             -p ${APP_PORT}:${APP_PORT} \
-            -v ${APP_LOG}:/logs \
-            -v ${APP_DATA}:/data \
+            -v /data:/data \
             --restart always \
             ${IMGAGE_NAME}"
         script {

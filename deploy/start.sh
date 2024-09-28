@@ -6,7 +6,7 @@ echo "web 项目开始启动"
 nohup \
 /jre/bin/java \
 ${JAVA_OPTS} \
--XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/heapdump.hprof \
+-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data/heapdump.hprof \
 -Dfile.encoding=UTF-8 \
 -Djasypt.encryptor.password="${JASYPT_ENCRYPTOR_PASSWORD}" \
 -Dserver.port="${SERVER_PORT}" \
@@ -33,7 +33,7 @@ ${JAVA_OPTS} \
 -Dticho.rainbow.file.max-big-file-size="${RAINBOW_MAX_BIG_FILE_SIZE}" \
 -Dspring.profiles.active="${PROFILES}" \
 -jar \
-/app.jar \
+/data/app.jar \
 >/dev/null 2>&1 &
 echo "web 项目启动成功"
 

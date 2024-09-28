@@ -1,7 +1,7 @@
 version: '3'
 services:
   ticho-rainbow:
-    image: registry.cn-hangzhou.aliyuncs.com/ticho/ticho-rainbow-all:1.0.0
+    image: registry.cn-hangzhou.aliyuncs.com/ticho/ticho-rainbow-app:1.0.0
     container_name: ${CONTAINER_NAME}
     restart: always
     privileged: true

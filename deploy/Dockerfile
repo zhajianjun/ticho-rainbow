@@ -32,7 +32,7 @@ ENV TZ=Asia/Shanghai
 ENV LANG C.UTF-8
 ENV JAVA_OPTS="-Xms256m -Xmx512m -Xmn170m"
 
-VOLUME /tmp
+WORKDIR /data
 COPY ./jre /jre
 COPY ./ticho-rainbow-app/target/*.jar app.jar
 COPY ./ticho-rainbow-web/dist /usr/share/nginx/html
