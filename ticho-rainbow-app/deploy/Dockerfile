@@ -33,7 +33,7 @@ ENV LANG C.UTF-8
 ENV JAVA_OPTS="-Xms256m -Xmx512m -Xmn170m"
 
 WORKDIR /data
-COPY target/*.jar app.jar
+COPY ./ticho-rainbow-app/target/*.jar app.jar
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENTRYPOINT java \
 ${JAVA_OPTS} \

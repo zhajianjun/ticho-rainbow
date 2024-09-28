@@ -11,8 +11,6 @@ pipeline {
     APP_FRONT_MODULE = "ticho-rainbow-web"
     APP_BACKEND_MODULE = "ticho-rainbow-app"
     APP_PORT = "5121"
-    APP_LOG = "/data/logs"
-    APP_DATA = "/data"
     DATASOURCE_URL = "jdbc:mysql://192.168.243.138:10032/ticho_rainbow?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true"
     DATASOURCE_USERNAME = "ENC(8yUwi7gFsHhtfKcuEHa6Kg==)"
     DATASOURCE_PASSWORD = "ENC(7xqTr9Bm6d2RCeaWdwMGlugy9f3P9sAK)"
@@ -100,8 +98,7 @@ pipeline {
             -e RAINBOW_FILE_DOMAIN='${RAINBOW_FILE_DOMAIN}' \
             -e JASYPT_ENCRYPTOR_PASSWORD='${JASYPT_ENCRYPTOR_PASSWORD}' \
             -p ${APP_PORT}:${APP_PORT} \
-            -v ${APP_LOG}:/logs \
-            -v ${APP_DATA}:/data \
+            -v /data:/data \
             --restart always \
             ${IMGAGE_NAME}"
         script {

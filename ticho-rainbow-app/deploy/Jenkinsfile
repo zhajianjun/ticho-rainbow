@@ -15,7 +15,7 @@ pipeline {
     GIT_URL = "https://gitee.com/zhajianjun/ticho-rainbow.git"
     REGISTRY = "registry.cn-hangzhou.aliyuncs.com"
     IMGAGE_NAME = "${REGISTRY}/ticho/${APP_NAME}:${APP_VERSION}"
-    DOCKFILE = "deploy/Dockerfile"
+    DOCKFILE = "${APP_NAME}/deploy/Dockerfile"
     MAVEN_HOME = '/var/jenkins_home/maven/maven3.9.6'
     MAVEN_XML =  '/var/jenkins_home/maven/setting.xml'
     JAVA_HOME = '/var/jenkins_home/jdk/jdk8'
@@ -44,7 +44,6 @@ pipeline {
     stage("应用制品") {
       steps {
         archiveArtifacts "**/target/*.jar"
-        archiveArtifacts "**/dist.tar.gz"
       }
     }
 
