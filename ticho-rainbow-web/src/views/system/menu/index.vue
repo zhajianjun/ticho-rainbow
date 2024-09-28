@@ -105,10 +105,7 @@
           slots: { customRender: 'action' },
           fixed: undefined,
         },
-        pagination: {
-          simple: false,
-          position: ['bottomCenter'],
-        },
+        pagination: false,
         // rowSelection: {
         //   type: 'radio',
         //   onSelect: onSelect,
