@@ -1,4 +1,4 @@
-FROM openjdk:8-jre-alpine
+FROM frolvlad/alpine-java:jdk8-slim
 MAINTAINER zhajianjun '1019319473@qq.com'
 # 暴露端口
 EXPOSE 5122
@@ -35,7 +35,6 @@ ENV JAVA_OPTS="-Xms256m -Xmx512m -Xmn170m"
 WORKDIR /data
 COPY ./ticho-rainbow-app/target/*.jar app.jar
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN apk add --update font-adobe-100dpi ttf-dejavu fontconfig
 ENTRYPOINT java \
 ${JAVA_OPTS} \
 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data/heapdump.hprof \
