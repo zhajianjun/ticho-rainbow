@@ -6,7 +6,6 @@ import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentFontStyle;
 import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import com.alibaba.excel.annotation.write.style.HeadStyle;
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

@@ -165,6 +165,7 @@ export function getModalFormColumns(): FormSchema[] {
       componentProps: {
         placeholder: '请输入过期时间',
         showTime: true,
+        valueFormat: 'YYYY-MM-DD HH:mm:ss',
       },
       colProps: {
         span: 24,

@@ -1,10 +1,10 @@
 package top.ticho.rainbow.domain.service;
 
 import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.util.Assert;
@@ -48,21 +48,18 @@ import java.util.stream.Collectors;
  */
 @Service
 public class PortServiceImpl implements PortService {
-
-    @Autowired
+    @Resource
     private PortRepository portRepository;
-
-    @Autowired
+    @Resource
     private ClientRepository clientRepository;
-
-    @Autowired
+    @Resource
     private ServerHandler serverHandler;
-
-    @Autowired
+    @Resource
     private DictHandle dictHandle;
-
     @Resource
     private HttpServletResponse response;
+
+    // @formatter:off
 
     @Override
     public void save(PortDTO portDTO) {
@@ -128,7 +125,7 @@ public class PortServiceImpl implements PortService {
         String sheetName = "端口信息";
         String fileName = "端口信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictHandle.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.CHANNEL_STATUS, DictConst.HTTP_TYPE);
-        ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, PortExp.class, response);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, PortExp.class, response);
     }
 
     private Collection<PortExp> excelExpHandle(PortQuery query, Map<String, String> labelMap) {
@@ -169,6 +166,7 @@ public class PortServiceImpl implements PortService {
         boolean isHttps = ProtocolType.HTTPS.compareTo(ProtocolType.getByCode(portDTO.getType())) == 0;
         if (isHttps) {
             Assert.isNotBlank(domain, "Https域名不能为空");
+            Assert.isTrue(ReUtil.isMatch("^([a-z0-9-]+\\.)+[a-z]{2,}(/\\S*)?$", domain), "域名格式不正确");
         }
         if (StrUtil.isNotBlank(domain)) {
             Port dbPortByDomain = portRepository.getByDomainExcludeId(portDTO.getId(), domain);

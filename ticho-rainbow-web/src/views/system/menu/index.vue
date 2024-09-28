@@ -92,7 +92,6 @@
         },
         isTreeTable: true,
         immediate: showSelect,
-        pagination: false,
         striped: true,
         showTableSetting: true,
         canColDrag: true,
@@ -108,7 +107,7 @@
         },
         pagination: {
           simple: false,
-          position: ['bottomLeft'],
+          position: ['bottomCenter'],
         },
         // rowSelection: {
         //   type: 'radio',

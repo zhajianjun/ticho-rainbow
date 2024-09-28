@@ -269,6 +269,7 @@ export function getModalFormColumns(): FormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入域名',
+        defaultValue: null,
       },
       colProps: {
         span: 24,
@@ -312,6 +313,7 @@ export function getModalFormColumns(): FormSchema[] {
       componentProps: {
         placeholder: '请输入过期时间',
         showTime: true,
+        valueFormat: 'YYYY-MM-DD HH:mm:ss',
       },
       colProps: {
         span: 24,
