@@ -1,10 +1,10 @@
 package top.ticho.rainbow.infrastructure.config;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import cn.hutool.core.util.IdUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import top.ticho.boot.security.handle.jwt.JwtSigner;
-import top.ticho.boot.security.prop.BaseOauthProperty;
 
 /**
  * @author zhajianjun
@@ -14,9 +14,9 @@ import top.ticho.boot.security.prop.BaseOauthProperty;
 public class SecurityConfig {
 
     @Bean
-    @ConditionalOnBean(BaseOauthProperty.class)
+    @Primary
     public JwtSigner jwtSigner() {
-        return new JwtSigner("rainbow");
+        return new JwtSigner(IdUtil.fastSimpleUUID());
     }
 
 }
