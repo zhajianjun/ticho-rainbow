@@ -15,7 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
-import top.ticho.boot.json.util.JsonUtil;
+import top.ticho.tool.json.util.JsonUtil;
 import top.ticho.boot.view.core.PageResult;
 import top.ticho.boot.view.enums.BizErrCode;
 import top.ticho.boot.view.enums.HttpErrCode;

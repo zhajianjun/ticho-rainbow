@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import top.ticho.boot.json.util.JsonUtil;
+import top.ticho.tool.json.util.JsonUtil;
 import top.ticho.boot.mail.component.MailContent;
 import top.ticho.boot.mail.component.MailInines;
 import top.ticho.boot.view.core.PageResult;

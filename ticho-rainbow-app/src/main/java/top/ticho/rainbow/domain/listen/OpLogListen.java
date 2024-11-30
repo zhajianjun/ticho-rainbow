@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
-import top.ticho.boot.json.util.JsonUtil;
+import top.ticho.tool.json.util.JsonUtil;
 import top.ticho.boot.log.event.WebLogEvent;
 import top.ticho.boot.view.log.HttpLog;
 import top.ticho.boot.web.util.CloudIdUtil;

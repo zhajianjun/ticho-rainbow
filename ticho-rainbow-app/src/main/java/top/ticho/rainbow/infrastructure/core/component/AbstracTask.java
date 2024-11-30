@@ -15,7 +15,7 @@ import org.slf4j.MDC;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.quartz.QuartzJobBean;
-import top.ticho.boot.json.util.JsonUtil;
+import top.ticho.tool.json.util.JsonUtil;
 import top.ticho.boot.view.util.Assert;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.rainbow.infrastructure.core.constant.CommConst;

@@ -9,7 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
-import top.ticho.boot.json.util.JsonUtil;
+import top.ticho.tool.json.util.JsonUtil;
 import top.ticho.boot.view.core.BasePageQuery;
 import top.ticho.boot.view.core.Result;
 

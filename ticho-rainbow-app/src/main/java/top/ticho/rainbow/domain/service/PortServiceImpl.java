@@ -59,8 +59,6 @@ public class PortServiceImpl implements PortService {
     @Resource
     private HttpServletResponse response;
 
-    // @formatter:off
-
     @Override
     public void save(PortDTO portDTO) {
         ValidUtil.valid(portDTO);
@@ -71,7 +69,6 @@ public class PortServiceImpl implements PortService {
         Assert.isTrue(portRepository.save(port), "保存失败");
         savePortInfo(portDTO.getPort());
     }
-
 
     @Override
     public void removeById(Long id) {
@@ -138,7 +135,7 @@ public class PortServiceImpl implements PortService {
         Map<String, String> clientNameMap = clients.stream().collect(Collectors.toMap(Client::getAccessKey, Client::getName, (v1, v2) -> v1));
         return result
             .stream()
-            .map(x-> {
+            .map(x -> {
                 PortExp portExp = PortAssembler.INSTANCE.entityToExp(x);
                 ClientInfo clientInfo = serverHandler.getClientByAccessKey(x.getAccessKey());
                 int clientChannelStatus = Objects.nonNull(clientInfo) && Objects.nonNull(clientInfo.getChannel()) ? 1 : 0;
