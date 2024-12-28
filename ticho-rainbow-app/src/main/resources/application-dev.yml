@@ -61,6 +61,8 @@ ticho:
         socketFactoryClass: javax.net.ssl.SSLSocketFactory
         # 表示开启 DEBUG 模式，这样，邮件发送过程的日志会在控制台打印出来，方便排查错误
         debug: false
+  dict:
+    enable: true
   rainbow:
     file:
       domain: http://localhost:5122
@@ -71,28 +73,28 @@ ticho:
 
 spring:
   quartz:
-      # 任务存储类型
-      job-store-type: memory
-      # 关闭时等待任务完成
-      wait-for-jobs-to-complete-on-shutdown: false
-      # 是否覆盖已有的任务
-      overwrite-existing-jobs: true
-      # 是否自动启动计划程序
-      auto-startup: true
-      # 延迟启动
-      startup-delay: 0s
-      properties:
-        org:
-          quartz:
-            scheduler:
-              # 调度器实例名称
-              instanceName: RainbowTask
-            # 线程池配置
-            threadPool:
-              class: org.quartz.simpl.SimpleThreadPool
-              threadCount: 10
-              threadPriority: 5
-              threadsInheritContextClassLoaderOfInitializingThread: true
+    # 任务存储类型
+    job-store-type: memory
+    # 关闭时等待任务完成
+    wait-for-jobs-to-complete-on-shutdown: false
+    # 是否覆盖已有的任务
+    overwrite-existing-jobs: true
+    # 是否自动启动计划程序
+    auto-startup: true
+    # 延迟启动
+    startup-delay: 0s
+    properties:
+      org:
+        quartz:
+          scheduler:
+            # 调度器实例名称
+            instanceName: RainbowTask
+          # 线程池配置
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 10
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
   flyway:
     # 开启 flyway
     enabled: true

@@ -67,7 +67,6 @@ public class RoleMenuRepositoryImpl extends RootServiceImpl<RoleMenuMapper, Role
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = CacheConst.ROLE_MENU_INFO, key = "#roleId")
     public void removeAndSave(Long roleId, Collection<Long> menuIds) {
-        // @formatter:off
         if (Objects.isNull(roleId)) {
             return;
         }
@@ -83,7 +82,6 @@ public class RoleMenuRepositoryImpl extends RootServiceImpl<RoleMenuMapper, Role
             .map(x -> convertToRoleMenu(roleId, x))
             .collect(Collectors.toList());
         saveBatch(roleMenus);
-        // @formatter:on
     }
 
     private RoleMenu convertToRoleMenu(Long roleId, Long x) {

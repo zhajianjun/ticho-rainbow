@@ -55,7 +55,7 @@ public class SpringCacheTemplate {
 
     public long size(String name) {
         return getOptCache(name)
-            .map(x-> (CaffeineCache) x)
+            .map(x -> (CaffeineCache) x)
             .map(CaffeineCache::getNativeCache)
             .map(com.github.benmanes.caffeine.cache.Cache::estimatedSize)
             .orElse(0L);

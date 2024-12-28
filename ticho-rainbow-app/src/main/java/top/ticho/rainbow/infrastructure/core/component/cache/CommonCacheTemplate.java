@@ -46,9 +46,8 @@ public class CommonCacheTemplate<T> {
         BiConsumer<String, T> cacheRemoveConsumer,
         Executor executor
     ) {
-        // @formatter:off
-        Caffeine<String, T>  stringTCaffeine = Caffeine.newBuilder()
-            //初始容量
+        Caffeine<String, T> stringTCaffeine = Caffeine.newBuilder()
+            // 初始容量
             .initialCapacity(16)
             // 最大长度
             .maximumSize(50)

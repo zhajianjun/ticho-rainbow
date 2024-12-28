@@ -14,10 +14,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.Result;
-import top.ticho.rainbow.application.service.DictLabelService;
+import top.ticho.boot.view.core.TiResult;
+import top.ticho.rainbow.application.system.service.DictLabelService;
 import top.ticho.rainbow.interfaces.dto.DictLabelDTO;
-import top.ticho.rainbow.interfaces.dto.DictDTO;
 
 import java.util.List;
 
@@ -40,9 +39,9 @@ public class DictLabelController {
     @ApiOperation(value = "保存字典标签")
     @ApiOperationSupport(order = 10)
     @PostMapping
-    public Result<Void> save(@RequestBody DictLabelDTO dictLabelDTO) {
+    public TiResult<Void> save(@RequestBody DictLabelDTO dictLabelDTO) {
         dictLabelService.save(dictLabelDTO);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:dictLabel:remove')")
@@ -50,18 +49,18 @@ public class DictLabelController {
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @DeleteMapping
-    public Result<Void> remove(Long id) {
+    public TiResult<Void> remove(Long id) {
         dictLabelService.removeById(id);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:dictLabel:update')")
     @ApiOperation(value = "修改字典标签")
     @ApiOperationSupport(order = 30)
     @PutMapping
-    public Result<Void> update(@RequestBody DictLabelDTO dictLabelDTO) {
+    public TiResult<Void> update(@RequestBody DictLabelDTO dictLabelDTO) {
         dictLabelService.updateById(dictLabelDTO);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:dictLabel:getByCode')")
@@ -69,8 +68,8 @@ public class DictLabelController {
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "字典编码", name = "code", required = true)
     @GetMapping
-    public Result<List<DictLabelDTO>> getByCode(String code) {
-        return Result.ok(dictLabelService.getByCode(code));
+    public TiResult<List<DictLabelDTO>> getByCode(String code) {
+        return TiResult.ok(dictLabelService.getByCode(code));
     }
 
 }

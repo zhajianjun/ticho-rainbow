@@ -28,7 +28,6 @@ public class ClientRepositoryImpl extends RootServiceImpl<ClientMapper, Client> 
 
     @Override
     public List<Client> list(ClientQuery query) {
-        // @formatter:off
         LambdaQueryWrapper<Client> wrapper = Wrappers.lambdaQuery();
         wrapper.in(CollUtil.isNotEmpty(query.getIds()), Client::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), Client::getId, query.getId());
@@ -40,7 +39,6 @@ public class ClientRepositoryImpl extends RootServiceImpl<ClientMapper, Client> 
         wrapper.orderByAsc(Client::getSort);
         wrapper.orderByDesc(Client::getId);
         return list(wrapper);
-        // @formatter:on
     }
 
     @Override

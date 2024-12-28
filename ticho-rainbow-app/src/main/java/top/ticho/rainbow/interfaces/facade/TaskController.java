@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.core.Result;
+import top.ticho.boot.view.core.TiPageResult;
+import top.ticho.boot.view.core.TiResult;
 import top.ticho.boot.web.annotation.View;
-import top.ticho.rainbow.application.service.TaskService;
+import top.ticho.rainbow.application.task.TaskService;
 import top.ticho.rainbow.interfaces.dto.TaskDTO;
 import top.ticho.rainbow.interfaces.query.TaskQuery;
 
@@ -45,9 +45,9 @@ public class TaskController {
     @ApiOperation(value = "保存计划任务")
     @ApiOperationSupport(order = 10)
     @PostMapping
-    public Result<Void> save(@RequestBody TaskDTO taskDTO) {
+    public TiResult<Void> save(@RequestBody TaskDTO taskDTO) {
         taskService.save(taskDTO);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:task:remove')")
@@ -55,45 +55,45 @@ public class TaskController {
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @DeleteMapping
-    public Result<Void> remove(Long id) {
+    public TiResult<Void> remove(Long id) {
         taskService.remove(id);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:task:update')")
     @ApiOperation(value = "修改计划任务")
     @ApiOperationSupport(order = 30)
     @PutMapping
-    public Result<Void> update(@RequestBody TaskDTO taskDTO) {
+    public TiResult<Void> update(@RequestBody TaskDTO taskDTO) {
         taskService.update(taskDTO);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:task:runOnce')")
     @ApiOperation(value = "执行一次计划任务")
     @ApiOperationSupport(order = 40)
     @GetMapping("runOnce")
-    public Result<Void> runOnce(Long id, String param) {
+    public TiResult<Void> runOnce(Long id, String param) {
         taskService.runOnce(id, param);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:task:pause')")
     @ApiOperation(value = "暂停计划任务")
     @ApiOperationSupport(order = 50)
     @GetMapping("pause")
-    public Result<Void> pause(Long id) {
+    public TiResult<Void> pause(Long id) {
         taskService.pause(id);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:task:resume')")
     @ApiOperation(value = "恢复计划任务")
     @ApiOperationSupport(order = 60)
     @GetMapping("resume")
-    public Result<Void> resume(Long id) {
+    public TiResult<Void> resume(Long id) {
         taskService.resume(id);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:task:getRecentCronTime')")
@@ -101,8 +101,8 @@ public class TaskController {
     @ApiOperationSupport(order = 70)
     @ApiImplicitParam(value = "编号", name = "cronExpression", required = true)
     @GetMapping("getRecentCronTime")
-    public Result<List<String>> getRecentCronTime(String cronExpression, Integer num) {
-        return Result.ok(taskService.getRecentCronTime(cronExpression, num));
+    public TiResult<List<String>> getRecentCronTime(String cronExpression, Integer num) {
+        return TiResult.ok(taskService.getRecentCronTime(cronExpression, num));
     }
 
     @PreAuthorize("@perm.hasPerms('system:task:getById')")
@@ -110,24 +110,24 @@ public class TaskController {
     @ApiOperationSupport(order = 80)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
-    public Result<TaskDTO> getById(Long id) {
-        return Result.ok(taskService.getById(id));
+    public TiResult<TaskDTO> getById(Long id) {
+        return TiResult.ok(taskService.getById(id));
     }
 
     @PreAuthorize("@perm.hasPerms('system:task:page')")
     @ApiOperation(value = "查询所有计划任务(分页)")
     @ApiOperationSupport(order = 90)
     @PostMapping("page")
-    public Result<PageResult<TaskDTO>> page(@RequestBody TaskQuery query) {
-        return Result.ok(taskService.page(query));
+    public TiResult<TiPageResult<TaskDTO>> page(@RequestBody TaskQuery query) {
+        return TiResult.ok(taskService.page(query));
     }
 
     @PreAuthorize("@perm.hasPerms('system:task:list')")
     @ApiOperation(value = "查询所有计划任务")
     @ApiOperationSupport(order = 100)
     @GetMapping("list")
-    public Result<List<TaskDTO>> list(TaskQuery query) {
-        return Result.ok(taskService.list(query));
+    public TiResult<List<TaskDTO>> list(TaskQuery query) {
+        return TiResult.ok(taskService.list(query));
     }
 
     @View(ignore = true)

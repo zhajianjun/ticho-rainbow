@@ -8,7 +8,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import top.ticho.boot.view.exception.BizException;
+import top.ticho.boot.view.exception.TiBizException;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -47,7 +47,7 @@ public class SseTemplate {
     public SseEmitter connect(String id) {
         SseEmitter oldEmitter = sseEmitterMap.get(id);
         if (oldEmitter != null) {
-            oldEmitter.completeWithError(new BizException(StrUtil.format("sse[{}] repeat connect", id)));
+            oldEmitter.completeWithError(new TiBizException(StrUtil.format("sse[{}] repeat connect", id)));
         }
         // 设置过期时间0-不过期,默认值位30秒
         SseEmitter sseEmitter = new SseEmitterUTF8(0L);

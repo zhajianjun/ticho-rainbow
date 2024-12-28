@@ -15,12 +15,12 @@ import org.slf4j.MDC;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.quartz.QuartzJobBean;
-import top.ticho.tool.json.util.JsonUtil;
-import top.ticho.boot.view.util.Assert;
+import top.ticho.boot.view.util.TiAssert;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.rainbow.infrastructure.core.constant.CommConst;
 import top.ticho.rainbow.infrastructure.core.util.UserUtil;
 import top.ticho.rainbow.infrastructure.entity.TaskLog;
+import top.ticho.tool.json.util.JsonUtil;
 import top.ticho.tool.trace.common.bean.TraceInfo;
 import top.ticho.tool.trace.common.constant.LogConst;
 import top.ticho.tool.trace.common.prop.TraceProperty;
@@ -43,8 +43,6 @@ import java.util.Optional;
  */
 @Slf4j
 public abstract class AbstracTask<T> extends QuartzJobBean {
-
-    // @formatter:off
 
     @Resource
     private Environment environment;
@@ -74,7 +72,7 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
             return null;
         }
         T taskParamObj = getTaskParam(taskParam);
-        Assert.isNotNull(taskParamObj, "任务参数异常");
+        TiAssert.isNotNull(taskParamObj, "任务参数异常");
         return taskParamObj;
     }
 

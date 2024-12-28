@@ -11,14 +11,14 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.enums.BizErrCode;
-import top.ticho.boot.view.util.Assert;
+import top.ticho.boot.view.core.TiPageResult;
+import top.ticho.boot.view.enums.TiBizErrCode;
+import top.ticho.boot.view.util.TiAssert;
 import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.boot.web.util.SpringContext;
 import top.ticho.boot.web.util.valid.ValidGroup;
 import top.ticho.boot.web.util.valid.ValidUtil;
-import top.ticho.rainbow.application.service.DictService;
+import top.ticho.rainbow.application.system.service.DictService;
 import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.DictLabelRepository;
 import top.ticho.rainbow.domain.repository.DictRepository;
@@ -71,14 +71,13 @@ public class DictServiceImpl implements DictService {
     @Resource
     private HttpServletResponse response;
 
-    // @formatter:off
 
     @Override
     public void save(DictDTO dictDTO) {
         ValidUtil.valid(dictDTO, ValidGroup.Add.class);
         Dict dict = DictAssembler.INSTANCE.dtoToEntity(dictDTO);
         Dict dbDict = dictRepository.getByCodeExcludeId(dict.getCode(), null);
-        Assert.isNull(dbDict, BizErrCode.FAIL, "保存失败，字典已存在");
+        TiAssert.isNull(dbDict, TiBizErrCode.FAIL, "保存失败，字典已存在");
         Integer isSys = Optional.ofNullable(dict.getIsSys()).orElse(0);
         Integer status = Optional.ofNullable(dict.getStatus()).orElse(1);
         dict.setId(CloudIdUtil.getId());
@@ -88,29 +87,29 @@ public class DictServiceImpl implements DictService {
         if (Objects.equals(dict.getIsSys(), 1)) {
             dict.setStatus(1);
         }
-        Assert.isTrue(dictRepository.save(dict), BizErrCode.FAIL, "保存失败");
+        TiAssert.isTrue(dictRepository.save(dict), TiBizErrCode.FAIL, "保存失败");
     }
 
     @Override
     public void removeById(Long id) {
-        Assert.isNotEmpty(id, BizErrCode.PARAM_ERROR, "编号不能为空");
+        TiAssert.isNotEmpty(id, TiBizErrCode.PARAM_ERROR, "编号不能为空");
         Dict dbDict = dictRepository.getById(id);
-        Assert.isNotNull(dbDict, BizErrCode.FAIL, "删除失败，字典不存在");
-        Assert.isTrue(!Objects.equals(dbDict.getIsSys(), 1), BizErrCode.PARAM_ERROR, "系统字典无法删除");
+        TiAssert.isNotNull(dbDict, TiBizErrCode.FAIL, "删除失败，字典不存在");
+        TiAssert.isTrue(!Objects.equals(dbDict.getIsSys(), 1), TiBizErrCode.PARAM_ERROR, "系统字典无法删除");
         boolean existsDict = dictLabelRepository.existsByCode(dbDict.getCode());
-        Assert.isTrue(!existsDict, BizErrCode.PARAM_ERROR, "删除失败，请先删除所有字典标签");
-        Assert.isTrue(dictRepository.removeById(id), BizErrCode.FAIL, "删除失败");
+        TiAssert.isTrue(!existsDict, TiBizErrCode.PARAM_ERROR, "删除失败，请先删除所有字典标签");
+        TiAssert.isTrue(dictRepository.removeById(id), TiBizErrCode.FAIL, "删除失败");
     }
 
     @Override
     public void updateById(DictDTO dictDTO) {
         ValidUtil.valid(dictDTO, ValidGroup.Upd.class);
         Dict dbDict = dictRepository.getById(dictDTO.getId());
-        Assert.isNotNull(dbDict, BizErrCode.FAIL, "修改失败，字典不存在");
+        TiAssert.isNotNull(dbDict, TiBizErrCode.FAIL, "修改失败，字典不存在");
         // 非系统字典修改
         if (!Objects.equals(dbDict.getIsSys(), 1)) {
             Dict repeatDict = dictRepository.getByCodeExcludeId(dictDTO.getCode(), dictDTO.getId());
-            Assert.isNull(repeatDict, "修改失败，字典已存在");
+            TiAssert.isNull(repeatDict, "修改失败，字典已存在");
             // 非系统字典修改为系统字典时
             if (Objects.equals(dictDTO.getIsSys(), 1)) {
                 dictDTO.setStatus(1);
@@ -123,7 +122,7 @@ public class DictServiceImpl implements DictService {
         // 不可修改code
         dictDTO.setCode(null);
         Dict dict = DictAssembler.INSTANCE.dtoToEntity(dictDTO);
-        Assert.isTrue(dictRepository.updateById(dict), BizErrCode.FAIL, "修改失败");
+        TiAssert.isTrue(dictRepository.updateById(dict), TiBizErrCode.FAIL, "修改失败");
     }
 
     @Override
@@ -133,7 +132,7 @@ public class DictServiceImpl implements DictService {
     }
 
     @Override
-    public PageResult<DictDTO> page(DictQuery query) {
+    public TiPageResult<DictDTO> page(DictQuery query) {
         query.checkPage();
         Page<Dict> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
         dictRepository.list(query);
@@ -141,7 +140,7 @@ public class DictServiceImpl implements DictService {
             .stream()
             .map(DictAssembler.INSTANCE::entityToDto)
             .collect(Collectors.toList());
-        return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), dictDTOS);
+        return new TiPageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), dictDTOS);
     }
 
     @Override
@@ -167,7 +166,7 @@ public class DictServiceImpl implements DictService {
         return dicts
             .stream()
             .map(DictAssembler.INSTANCE::entityToDto)
-            .peek(x-> {
+            .peek(x -> {
                 String code = x.getCode();
                 List<DictLabelDTO> dictLabelDTOS = dictDtoMap.get(code);
                 x.setDetails(dictLabelDTOS);

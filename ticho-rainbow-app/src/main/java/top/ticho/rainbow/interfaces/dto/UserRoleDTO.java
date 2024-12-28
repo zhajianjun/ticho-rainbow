@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -15,7 +14,7 @@ import java.util.List;
  * 用户角色信息DTO
  *
  * @author zhajianjun
-* @date 2023-12-17 08:30
+ * @date 2023-12-17 08:30
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

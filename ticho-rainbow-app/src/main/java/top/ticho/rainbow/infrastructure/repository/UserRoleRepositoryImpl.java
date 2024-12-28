@@ -62,16 +62,14 @@ public class UserRoleRepositoryImpl extends RootServiceImpl<UserRoleMapper, User
         if (Objects.isNull(userId)) {
             return;
         }
-        // @formatter:off
         if (CollUtil.isEmpty(roleIds)) {
             return;
         }
         List<UserRole> userRoles = roleIds
             .stream()
-            .map(x-> convertToUserRole(userId, x))
+            .map(x -> convertToUserRole(userId, x))
             .collect(Collectors.toList());
         saveBatch(userRoles);
-        // @formatter:on
     }
 
     @Override

@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import top.ticho.boot.web.util.TreeUtil;
-import top.ticho.rainbow.application.service.FileInfoService;
+import top.ticho.rainbow.application.storage.service.FileInfoService;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.domain.repository.MenuRepository;
 import top.ticho.rainbow.domain.repository.RoleMenuRepository;
@@ -43,7 +43,7 @@ import java.util.stream.Stream;
  * 权限服务抽象类
  *
  * @author zhajianjun
-* @date 2023-12-17 08:30
+ * @date 2023-12-17 08:30
  */
 public abstract class AbstractAuthServiceImpl {
 
@@ -126,7 +126,7 @@ public abstract class AbstractAuthServiceImpl {
      * 获取状态正常的菜单流
      *
      * @param roleCodes 角色编码
-     * @param map 转换
+     * @param map       转换
      * @return {@link Stream}<{@link T}>
      */
     public <T> Stream<T> getMenusByRoleCodes(List<String> roleCodes, Function<Menu, T> map) {
@@ -137,7 +137,7 @@ public abstract class AbstractAuthServiceImpl {
         List<Role> roles = roleRepository.listByCodes(roleCodes);
         List<Long> roleIds = roles
             .stream()
-            .filter(x-> Objects.equals(1, x.getStatus()))
+            .filter(x -> Objects.equals(1, x.getStatus()))
             .map(Role::getId)
             .collect(Collectors.toList());
         if (CollUtil.isEmpty(roleIds)) {
@@ -156,14 +156,13 @@ public abstract class AbstractAuthServiceImpl {
         List<Menu> menus = menuRepository.cacheList();
         return menus
             .stream()
-            .filter(x-> menuIds.contains(x.getId()))
-            .filter(x-> Objects.equals(1, x.getStatus()))
+            .filter(x -> menuIds.contains(x.getId()))
+            .filter(x -> Objects.equals(1, x.getStatus()))
             .map(map)
             .filter(Objects::nonNull);
     }
 
     public List<String> getPerms(List<String> roleCodes) {
-        // @formatter:off
         if (CollUtil.isEmpty(roleCodes)) {
             return Collections.emptyList();
         }
@@ -174,17 +173,16 @@ public abstract class AbstractAuthServiceImpl {
             return menu.getPerms();
         };
         return getMenusByRoleCodes(roleCodes, identity)
-            .map(x-> x.split(","))
+            .map(x -> x.split(","))
             .flatMap(Arrays::stream)
             .collect(Collectors.toList());
-        // @formatter:on
     }
 
     /**
      * 合并菜单按角色id
      *
-     * @param roleIds 角色id列表
-     * @param showAll 显示所有信息，匹配到的信息，设置匹配字段checkbox=true
+     * @param roleIds    角色id列表
+     * @param showAll    显示所有信息，匹配到的信息，设置匹配字段checkbox=true
      * @param treeHandle 是否进行树化
      * @return {@link RoleMenuDtlDTO}
      */
@@ -199,7 +197,6 @@ public abstract class AbstractAuthServiceImpl {
     }
 
     private RoleMenuDtlDTO getRoleMenuDtl(List<Role> roles, boolean showAll, boolean treeHandle) {
-        // @formatter:off
         RoleMenuDtlDTO roleMenuDtlDTO = new RoleMenuDtlDTO();
         List<Long> roleIds = roles.stream().map(Role::getId).collect(Collectors.toList());
         roleMenuDtlDTO.setRoleIds(roleIds);
@@ -228,7 +225,7 @@ public abstract class AbstractAuthServiceImpl {
         // 菜单信息过滤规则
         Predicate<MenuDtlDTO> menuFilter = x -> menuIds.contains(x.getId());
         // 菜单信息操作
-        Consumer<MenuDtlDTO> menuPeek = x-> {
+        Consumer<MenuDtlDTO> menuPeek = x -> {
             x.setCheckbox(true);
             perms.addAll(x.getPerms());
         };
@@ -254,17 +251,15 @@ public abstract class AbstractAuthServiceImpl {
         roleMenuDtlDTO.setMenuIds(menuIds);
         roleMenuDtlDTO.setPerms(perms);
         return roleMenuDtlDTO;
-        // @formatter:on
     }
 
-    // @formatter:off
 
     /**
      * 菜单信息转换、过滤、执行规则信息
      *
-     * @param menus 菜单
+     * @param menus  菜单
      * @param filter 过滤规则
-     * @param peek 执行规则
+     * @param peek   执行规则
      * @return {@link List}<{@link MenuDtlDTO}>
      */
     public List<MenuDtlDTO> getMenuDtls(List<Menu> menus, Predicate<MenuDtlDTO> filter, Consumer<MenuDtlDTO> peek) {
@@ -283,6 +278,5 @@ public abstract class AbstractAuthServiceImpl {
             .collect(Collectors.toList());
     }
 
-    // @formatter:on
 
 }

@@ -27,7 +27,6 @@ public class TaskLogRepositoryImpl extends RootServiceImpl<TaskLogMapper, TaskLo
 
     @Override
     public List<TaskLog> list(TaskLogQuery query) {
-        // @formatter:off
         LambdaQueryWrapper<TaskLog> wrapper = Wrappers.lambdaQuery();
         wrapper.in(CollUtil.isNotEmpty(query.getIds()), TaskLog::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), TaskLog::getId, query.getId());
@@ -55,7 +54,6 @@ public class TaskLogRepositoryImpl extends RootServiceImpl<TaskLogMapper, TaskLo
         wrapper.like(StrUtil.isNotBlank(query.getErrMessage()), TaskLog::getErrMessage, query.getErrMessage());
         wrapper.orderByDesc(TaskLog::getId);
         return list(wrapper);
-        // @formatter:on
     }
 
 }

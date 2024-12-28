@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.core.Result;
+import top.ticho.boot.view.core.TiPageResult;
+import top.ticho.boot.view.core.TiResult;
 import top.ticho.boot.web.annotation.View;
-import top.ticho.rainbow.application.service.DictService;
+import top.ticho.rainbow.application.system.service.DictService;
 import top.ticho.rainbow.interfaces.dto.DictDTO;
 import top.ticho.rainbow.interfaces.query.DictQuery;
 
@@ -45,9 +45,9 @@ public class DictController {
     @ApiOperation(value = "保存字典")
     @ApiOperationSupport(order = 10)
     @PostMapping
-    public Result<Void> save(@RequestBody DictDTO dictDTO) {
+    public TiResult<Void> save(@RequestBody DictDTO dictDTO) {
         dictService.save(dictDTO);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:dict:remove')")
@@ -55,18 +55,18 @@ public class DictController {
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @DeleteMapping
-    public Result<Void> removeById(@RequestParam("id") Long id) {
+    public TiResult<Void> removeById(@RequestParam("id") Long id) {
         dictService.removeById(id);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:dict:update')")
     @ApiOperation(value = "修改字典")
     @ApiOperationSupport(order = 30)
     @PutMapping
-    public Result<Void> update(@RequestBody DictDTO dictDTO) {
+    public TiResult<Void> update(@RequestBody DictDTO dictDTO) {
         dictService.updateById(dictDTO);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:dict:getById')")
@@ -74,32 +74,32 @@ public class DictController {
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
-    public Result<DictDTO> getById(@RequestParam("id") Long id) {
-        return Result.ok(dictService.getById(id));
+    public TiResult<DictDTO> getById(@RequestParam("id") Long id) {
+        return TiResult.ok(dictService.getById(id));
     }
 
     @PreAuthorize("@perm.hasPerms('system:dict:page')")
     @ApiOperation(value = "查询所有字典(分页)")
     @ApiOperationSupport(order = 50)
     @PostMapping("page")
-    public Result<PageResult<DictDTO>> page(@RequestBody DictQuery query) {
-        return Result.ok(dictService.page(query));
+    public TiResult<TiPageResult<DictDTO>> page(@RequestBody DictQuery query) {
+        return TiResult.ok(dictService.page(query));
     }
 
     @PreAuthorize("@perm.hasPerms('system:dict:list')")
     @ApiOperation(value = "查询所有有效字典")
     @ApiOperationSupport(order = 60)
     @GetMapping("list")
-    public Result<List<DictDTO>> list() {
-        return Result.ok(dictService.list());
+    public TiResult<List<DictDTO>> list() {
+        return TiResult.ok(dictService.list());
     }
 
     @PreAuthorize("@perm.hasPerms('system:dict:flush')")
     @ApiOperation(value = "刷新所有有效字典")
     @ApiOperationSupport(order = 70)
     @GetMapping("flush")
-    public Result<List<DictDTO>> flush() {
-        return Result.ok(dictService.flush());
+    public TiResult<List<DictDTO>> flush() {
+        return TiResult.ok(dictService.flush());
     }
 
     @View(ignore = true)

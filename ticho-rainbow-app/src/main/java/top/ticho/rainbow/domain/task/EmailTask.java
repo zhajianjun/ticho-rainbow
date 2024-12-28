@@ -4,7 +4,7 @@ import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.ticho.boot.mail.component.MailContent;
-import top.ticho.boot.view.util.Assert;
+import top.ticho.boot.view.util.TiAssert;
 import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.domain.repository.EmailRepository;
 import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
@@ -32,7 +32,7 @@ public class EmailTask extends AbstracTask<MailContentDTO> {
         mailContent.setContent(taskParam.getContent());
         mailContent.setCc(taskParam.getCc());
         boolean sendMail = emailRepository.sendMail(mailContent);
-        Assert.isTrue(sendMail, "发送邮件失败");
+        TiAssert.isTrue(sendMail, "发送邮件失败");
     }
 
     @Override

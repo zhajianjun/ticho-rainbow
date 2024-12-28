@@ -1,7 +1,7 @@
 package top.ticho.rainbow.infrastructure.mapper;
 
-import top.ticho.boot.datasource.mapper.RootMapper;
 import org.springframework.stereotype.Repository;
+import top.ticho.boot.datasource.mapper.RootMapper;
 import top.ticho.rainbow.infrastructure.entity.Client;
 
 

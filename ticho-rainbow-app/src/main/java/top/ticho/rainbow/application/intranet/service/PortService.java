@@ -1,6 +1,6 @@
-package top.ticho.rainbow.application.service;
+package top.ticho.rainbow.application.intranet.service;
 
-import top.ticho.boot.view.core.PageResult;
+import top.ticho.boot.view.core.TiPageResult;
 import top.ticho.rainbow.interfaces.dto.PortDTO;
 import top.ticho.rainbow.interfaces.query.PortQuery;
 
@@ -46,9 +46,9 @@ public interface PortService {
      * 分页查询端口信息列表
      *
      * @param query 查询
-     * @return {@link PageResult}<{@link PortDTO}>
+     * @return {@link TiPageResult}<{@link PortDTO}>
      */
-    PageResult<PortDTO> page(PortQuery query);
+    TiPageResult<PortDTO> page(PortQuery query);
 
     /**
      * 导出端口信息

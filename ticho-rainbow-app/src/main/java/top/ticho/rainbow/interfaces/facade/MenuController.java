@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.Result;
-import top.ticho.rainbow.application.service.MenuService;
+import top.ticho.boot.view.core.TiResult;
+import top.ticho.rainbow.application.system.service.MenuService;
 import top.ticho.rainbow.interfaces.dto.MenuDTO;
 import top.ticho.rainbow.interfaces.dto.MenuDtlDTO;
 import top.ticho.rainbow.interfaces.dto.RouteDTO;
@@ -42,9 +42,9 @@ public class MenuController {
     @ApiOperation(value = "保存菜单")
     @ApiOperationSupport(order = 10)
     @PostMapping
-    public Result<Void> save(@RequestBody MenuDTO menuDTO) {
+    public TiResult<Void> save(@RequestBody MenuDTO menuDTO) {
         menuService.save(menuDTO);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:menu:remove')")
@@ -52,18 +52,18 @@ public class MenuController {
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @DeleteMapping
-    public Result<Void> remove(@RequestParam("id") Long id) {
+    public TiResult<Void> remove(@RequestParam("id") Long id) {
         menuService.removeById(id);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:menu:update')")
     @ApiOperation(value = "修改菜单")
     @ApiOperationSupport(order = 30)
     @PutMapping
-    public Result<Void> update(@RequestBody MenuDTO menuDTO) {
+    public TiResult<Void> update(@RequestBody MenuDTO menuDTO) {
         menuService.updateById(menuDTO);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:menu:getById')")
@@ -71,32 +71,32 @@ public class MenuController {
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
-    public Result<MenuDTO> getById(@RequestParam("id") Long id) {
-        return Result.ok(menuService.getById(id));
+    public TiResult<MenuDTO> getById(@RequestParam("id") Long id) {
+        return TiResult.ok(menuService.getById(id));
     }
 
     @PreAuthorize("@perm.hasPerms('system:menu:list')")
     @ApiOperation(value = "查询所有菜单")
     @ApiOperationSupport(order = 50)
     @GetMapping("list")
-    public Result<List<MenuDtlDTO>> list() {
-        return Result.ok(menuService.list());
+    public TiResult<List<MenuDtlDTO>> list() {
+        return TiResult.ok(menuService.list());
     }
 
     @PreAuthorize("@perm.hasPerms('system:menu:route')")
     @ApiOperation(value = "查询菜单路由(登录人)")
     @ApiOperationSupport(order = 60)
     @GetMapping("route")
-    public Result<List<RouteDTO>> route() {
-        return Result.ok(menuService.route());
+    public TiResult<List<RouteDTO>> route() {
+        return TiResult.ok(menuService.route());
     }
 
     @PreAuthorize("@perm.hasPerms('system:menu:getPerms')")
     @ApiOperation(value = "查询权限编码")
     @ApiOperationSupport(order = 70)
     @GetMapping("getPerms")
-    public Result<List<String>> getPerms(List<String> roleCodes) {
-        return Result.ok(menuService.getPerms(roleCodes));
+    public TiResult<List<String>> getPerms(List<String> roleCodes) {
+        return TiResult.ok(menuService.getPerms(roleCodes));
     }
 
 }

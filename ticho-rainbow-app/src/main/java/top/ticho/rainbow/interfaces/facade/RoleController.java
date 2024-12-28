@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.boot.security.annotation.IgnoreJwtCheck;
 import top.ticho.boot.security.annotation.IgnoreType;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.core.Result;
+import top.ticho.boot.view.core.TiPageResult;
+import top.ticho.boot.view.core.TiResult;
 import top.ticho.boot.web.annotation.View;
-import top.ticho.rainbow.application.service.RoleService;
+import top.ticho.rainbow.application.system.service.RoleService;
 import top.ticho.rainbow.interfaces.dto.RoleDTO;
 import top.ticho.rainbow.interfaces.dto.RoleMenuDTO;
 import top.ticho.rainbow.interfaces.dto.RoleMenuDtlDTO;
@@ -51,9 +51,9 @@ public class RoleController {
     @ApiOperation(value = "保存角色")
     @ApiOperationSupport(order = 10)
     @PostMapping
-    public Result<Void> save(@RequestBody RoleDTO roleDTO) {
+    public TiResult<Void> save(@RequestBody RoleDTO roleDTO) {
         roleService.save(roleDTO);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:role:remove')")
@@ -61,27 +61,27 @@ public class RoleController {
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @DeleteMapping
-    public Result<Void> remove(@RequestParam("id") Long id) {
+    public TiResult<Void> remove(@RequestParam("id") Long id) {
         roleService.removeById(id);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:role:update')")
     @ApiOperation(value = "修改角色")
     @ApiOperationSupport(order = 30)
     @PutMapping
-    public Result<Void> update(@RequestBody RoleDTO roleDTO) {
+    public TiResult<Void> update(@RequestBody RoleDTO roleDTO) {
         roleService.updateById(roleDTO);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:role:updateStatus')")
     @ApiOperation(value = "修改角色状态")
     @ApiOperationSupport(order = 40)
     @PutMapping("updateStatus")
-    public Result<Void> updateStatus(@RequestBody RoleDTO roleDTO) {
+    public TiResult<Void> updateStatus(@RequestBody RoleDTO roleDTO) {
         roleService.updateStatus(roleDTO.getId(), roleDTO.getStatus());
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('system:role:getById')")
@@ -89,33 +89,33 @@ public class RoleController {
     @ApiOperationSupport(order = 50)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
-    public Result<RoleDTO> getById(@RequestParam("id") Serializable id) {
-        return Result.ok(roleService.getById(id));
+    public TiResult<RoleDTO> getById(@RequestParam("id") Serializable id) {
+        return TiResult.ok(roleService.getById(id));
     }
 
     @PreAuthorize("@perm.hasPerms('system:role:page')")
     @ApiOperation(value = "查询全部角色(分页)")
     @ApiOperationSupport(order = 60)
     @PostMapping("page")
-    public Result<PageResult<RoleDTO>> page(@RequestBody RoleQuery query) {
-        return Result.ok(roleService.page(query));
+    public TiResult<TiPageResult<RoleDTO>> page(@RequestBody RoleQuery query) {
+        return TiResult.ok(roleService.page(query));
     }
 
     @PreAuthorize("@perm.hasPerms('system:role:list')")
     @ApiOperation(value = "查询全部角色")
     @ApiOperationSupport(order = 70)
     @PostMapping("list")
-    public Result<List<RoleDTO>> list(@RequestBody RoleQuery query) {
-        return Result.ok(roleService.list(query));
+    public TiResult<List<RoleDTO>> list(@RequestBody RoleQuery query) {
+        return TiResult.ok(roleService.list(query));
     }
 
     @PreAuthorize("@perm.hasPerms('system:role:bindMenu')")
     @ApiOperation(value = "绑定角色菜单")
     @ApiOperationSupport(order = 80)
     @PostMapping("bindMenu")
-    public Result<Void> bindMenu(@RequestBody RoleMenuDTO roleMenuDTO) {
+    public TiResult<Void> bindMenu(@RequestBody RoleMenuDTO roleMenuDTO) {
         roleService.bindMenu(roleMenuDTO);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @IgnoreJwtCheck(IgnoreType.INNER)
@@ -123,8 +123,8 @@ public class RoleController {
     @ApiOperation(value = "查询角色菜单")
     @ApiOperationSupport(order = 90)
     @PostMapping("listRoleMenu")
-    public Result<RoleMenuDtlDTO> listRoleMenu(@RequestBody RoleDtlQuery roleDtlQuery) {
-        return Result.ok(roleService.listRoleMenu(roleDtlQuery));
+    public TiResult<RoleMenuDtlDTO> listRoleMenu(@RequestBody RoleDtlQuery roleDtlQuery) {
+        return TiResult.ok(roleService.listRoleMenu(roleDtlQuery));
     }
 
     @View(ignore = true)

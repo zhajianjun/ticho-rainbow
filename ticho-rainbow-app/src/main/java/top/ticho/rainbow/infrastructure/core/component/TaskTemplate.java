@@ -48,7 +48,6 @@ public class TaskTemplate {
 
     private Scheduler scheduler;
 
-    // @formatter:off
 
     /**
      * 新增定时任务
@@ -229,8 +228,8 @@ public class TaskTemplate {
     /**
      * 删除定时任务
      *
-     * @param jobName      任务名称
-     * @param jobGroup     任务组
+     * @param jobName  任务名称
+     * @param jobGroup 任务组
      */
     public boolean deleteJob(String jobName, String jobGroup) {
         try {
@@ -304,7 +303,7 @@ public class TaskTemplate {
             List<Date> dates = TriggerUtils.computeFireTimes(cronTriggerImpl, null, numTimes);
             return dates
                 .stream()
-                .map(date-> DateUtil.format(date, DatePattern.NORM_DATETIME_FORMAT))
+                .map(date -> DateUtil.format(date, DatePattern.NORM_DATETIME_FORMAT))
                 .collect(Collectors.toList());
         } catch (ParseException e) {
             log.error("获取近{}次的执行时间失败: {}", numTimes, e.getMessage(), e);

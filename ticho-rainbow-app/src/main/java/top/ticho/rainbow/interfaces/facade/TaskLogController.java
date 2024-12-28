@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.core.Result;
+import top.ticho.boot.view.core.TiPageResult;
+import top.ticho.boot.view.core.TiResult;
 import top.ticho.boot.web.annotation.View;
-import top.ticho.rainbow.application.service.TaskLogService;
+import top.ticho.rainbow.application.system.service.TaskLogService;
 import top.ticho.rainbow.interfaces.dto.TaskLogDTO;
 import top.ticho.rainbow.interfaces.query.TaskLogQuery;
 
@@ -43,16 +43,16 @@ public class TaskLogController {
     @ApiOperationSupport(order = 10)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
-    public Result<TaskLogDTO> getById(Long id) {
-        return Result.ok(taskLogService.getById(id));
+    public TiResult<TaskLogDTO> getById(Long id) {
+        return TiResult.ok(taskLogService.getById(id));
     }
 
     @PreAuthorize("@perm.hasPerms('system:taskLog:page')")
     @ApiOperation(value = "查询计划任务日志(分页)")
     @ApiOperationSupport(order = 20)
     @PostMapping("page")
-    public Result<PageResult<TaskLogDTO>> page(@RequestBody TaskLogQuery query) {
-        return Result.ok(taskLogService.page(query));
+    public TiResult<TiPageResult<TaskLogDTO>> page(@RequestBody TaskLogQuery query) {
+        return TiResult.ok(taskLogService.page(query));
     }
 
     @View(ignore = true)

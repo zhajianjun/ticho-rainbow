@@ -1,6 +1,6 @@
 import { defHttp } from '@/utils/http/axios';
 import { DictDTO, DictQuery } from './model/dictModel';
-import { PageResult } from '@/api/system/model/baseModel';
+import { TiPageResult } from '@/api/system/model/baseModel';
 import { RetryRequest } from '#/axios';
 
 enum Api {
@@ -28,7 +28,7 @@ export function modifyDict(params: DictDTO) {
 }
 
 export function dictPage(params?: DictQuery) {
-  return defHttp.post<PageResult<DictDTO>>(
+  return defHttp.post<TiPageResult<DictDTO>>(
     { url: Api.DictPage, params },
     { errorMessageMode: 'none' },
   );

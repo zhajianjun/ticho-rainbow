@@ -6,12 +6,12 @@ import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.util.Assert;
+import top.ticho.boot.view.core.TiPageResult;
+import top.ticho.boot.view.util.TiAssert;
 import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.boot.web.util.valid.ValidGroup;
 import top.ticho.boot.web.util.valid.ValidUtil;
-import top.ticho.rainbow.application.service.PortService;
+import top.ticho.rainbow.application.intranet.service.PortService;
 import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.ClientRepository;
 import top.ticho.rainbow.domain.repository.PortRepository;
@@ -66,16 +66,16 @@ public class PortServiceImpl implements PortService {
         check(portDTO);
         Port port = PortAssembler.INSTANCE.dtoToEntity(portDTO);
         port.setId(CloudIdUtil.getId());
-        Assert.isTrue(portRepository.save(port), "保存失败");
+        TiAssert.isTrue(portRepository.save(port), "保存失败");
         savePortInfo(portDTO.getPort());
     }
 
     @Override
     public void removeById(Long id) {
-        Assert.isNotNull(id, "编号不能为空");
+        TiAssert.isNotNull(id, "编号不能为空");
         Port dbPort = portRepository.getById(id);
-        Assert.isNotNull(dbPort, "删除失败，数据不存在");
-        Assert.isTrue(portRepository.removeById(id), "删除失败");
+        TiAssert.isNotNull(dbPort, "删除失败，数据不存在");
+        TiAssert.isTrue(portRepository.removeById(id), "删除失败");
         serverHandler.deleteApp(dbPort.getAccessKey(), dbPort.getPort());
 
     }
@@ -84,18 +84,18 @@ public class PortServiceImpl implements PortService {
     public void updateById(PortDTO portDTO) {
         ValidUtil.valid(portDTO, ValidGroup.Upd.class);
         Port dbPort = portRepository.getById(portDTO.getId());
-        Assert.isNotNull(dbPort, "修改失败，数据不存在");
+        TiAssert.isNotNull(dbPort, "修改失败，数据不存在");
         // accessKey不可修改
         portDTO.setAccessKey(dbPort.getAccessKey());
         check(portDTO);
         Port port = PortAssembler.INSTANCE.dtoToEntity(portDTO);
-        Assert.isTrue(portRepository.updateById(port), "修改失败");
+        TiAssert.isTrue(portRepository.updateById(port), "修改失败");
         updatePortInfo(dbPort);
     }
 
     @Override
     public PortDTO getById(Long id) {
-        Assert.isNotNull(id, "编号不能为空");
+        TiAssert.isNotNull(id, "编号不能为空");
         Port port = portRepository.getById(id);
         PortDTO portDTO = PortAssembler.INSTANCE.entityToDto(port);
         fillChannelStatus(portDTO);
@@ -103,8 +103,7 @@ public class PortServiceImpl implements PortService {
     }
 
     @Override
-    public PageResult<PortDTO> page(PortQuery query) {
-        // @formatter:off
+    public TiPageResult<PortDTO> page(PortQuery query) {
         query.checkPage();
         Page<Port> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
         portRepository.list(query);
@@ -113,8 +112,7 @@ public class PortServiceImpl implements PortService {
             .map(PortAssembler.INSTANCE::entityToDto)
             .peek(this::fillChannelStatus)
             .collect(Collectors.toList());
-        return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), portDTOs);
-        // @formatter:on
+        return new TiPageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), portDTOs);
     }
 
     @Override
@@ -156,18 +154,18 @@ public class PortServiceImpl implements PortService {
      */
     public void check(PortDTO portDTO) {
         Client client = clientRepository.getByAccessKey(portDTO.getAccessKey());
-        Assert.isNotNull(client, "客户端信息不存在");
+        TiAssert.isNotNull(client, "客户端信息不存在");
         Port dbPortByNum = portRepository.getByPortExcludeId(portDTO.getId(), portDTO.getPort());
-        Assert.isNull(dbPortByNum, "端口已存在");
+        TiAssert.isNull(dbPortByNum, "端口已存在");
         String domain = portDTO.getDomain();
         boolean isHttps = ProtocolType.HTTPS.compareTo(ProtocolType.getByCode(portDTO.getType())) == 0;
         if (isHttps) {
-            Assert.isNotBlank(domain, "Https域名不能为空");
-            Assert.isTrue(ReUtil.isMatch("^([a-z0-9-]+\\.)+[a-z]{2,}(/\\S*)?$", domain), "域名格式不正确");
+            TiAssert.isNotBlank(domain, "Https域名不能为空");
+            TiAssert.isTrue(ReUtil.isMatch("^([a-z0-9-]+\\.)+[a-z]{2,}(/\\S*)?$", domain), "域名格式不正确");
         }
         if (StrUtil.isNotBlank(domain)) {
             Port dbPortByDomain = portRepository.getByDomainExcludeId(portDTO.getId(), domain);
-            Assert.isNull(dbPortByDomain, "域名已存在");
+            TiAssert.isNull(dbPortByDomain, "域名已存在");
         }
     }
 

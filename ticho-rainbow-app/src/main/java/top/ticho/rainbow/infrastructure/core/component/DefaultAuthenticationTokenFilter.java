@@ -22,11 +22,10 @@ public class DefaultAuthenticationTokenFilter extends AbstractAuthTokenFilter<Se
 
     @Override
     public SecurityUser convert(Map<String, Object> decodeAndVerify) {
-        // @formatter:off
         String username = Optional.ofNullable(decodeAndVerify.get(BaseSecurityConst.USERNAME))
             .map(Object::toString)
             .orElse(null);
-        List<String> authorities = Optional.ofNullable(decodeAndVerify.get(BaseSecurityConst.AUTHORITIES)).map(x-> Convert.toList(String.class, x)).orElse(null);
+        List<String> authorities = Optional.ofNullable(decodeAndVerify.get(BaseSecurityConst.AUTHORITIES)).map(x -> Convert.toList(String.class, x)).orElse(null);
         Integer status = Optional.ofNullable(decodeAndVerify.get("status"))
             .map(Convert::toInt)
             .orElse(null);
@@ -35,7 +34,6 @@ public class DefaultAuthenticationTokenFilter extends AbstractAuthTokenFilter<Se
         user.setRoles(authorities);
         user.setStatus(status);
         return user;
-        // @formatter:on
     }
 
 }

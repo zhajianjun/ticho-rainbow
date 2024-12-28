@@ -1,25 +1,19 @@
 package top.ticho.rainbow.infrastructure.config;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.RemovalCause;
-import com.github.benmanes.caffeine.cache.RemovalListener;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.caffeine.CaffeineCache;
-import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.lang.NonNull;
+import top.ticho.boot.cache.config.TiCache;
+import top.ticho.boot.cache.config.TiCacheBatch;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 缓存配置
@@ -30,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @EnableCaching
 public class CacheConfig {
-    private final SimpleCacheManager cacheManager = new SimpleCacheManager();
 
     // 定义cache名称、超时时长（秒）、最大容量
     @Getter
@@ -70,46 +63,32 @@ public class CacheConfig {
         private final int maxSize;
     }
 
-    // 创建基于Caffeine的Cache Manager
     @Bean
-    @Primary
-    public CacheManager caffeineCacheManager() {
-        // @formatter:off
-        List<CaffeineCache> caches = new ArrayList<>();
-        for(CacheEnum c : CacheEnum.values()){
-            Caffeine<Object,Object> builder = Caffeine.newBuilder()
-                .recordStats()
-                .maximumSize(c.getMaxSize())
-                .removalListener(new DefaultRemovalListener(c.getKey()));
-            if (c.getExpireStrategy() == 2) {
-                builder.expireAfterAccess(c.getTtl(), TimeUnit.SECONDS);
-            } else {
-                builder.expireAfterWrite(c.getTtl(), TimeUnit.SECONDS);
+    public TiCacheBatch tiCacheBatch() {
+        return new TiCacheBatch() {
+            @Override
+            public List<TiCache> getTiCaches() {
+                CacheEnum[] values = CacheEnum.values();
+                return Arrays.stream(values)
+                    .map(cacheEnum -> new TiCache() {
+                        @Override
+                        public String getName() {
+                            return cacheEnum.getKey();
+                        }
+
+                        @Override
+                        public int getMaxSize() {
+                            return cacheEnum.getMaxSize();
+                        }
+
+                        @Override
+                        public int getTtl() {
+                            return cacheEnum.getTtl();
+                        }
+                    })
+                    .collect(Collectors.toList());
             }
-            Cache<Object, Object> build = builder.build();
-            CaffeineCache caffeineCache = new CaffeineCache(c.getKey(), build);
-            caches.add(caffeineCache);
-        }
-        cacheManager.setCaches(caches);
-        return cacheManager;
-        // @formatter:on
-    }
-
-    @Bean
-    public CacheManager getCacheManager() {
-        return cacheManager;
-    }
-
-    @Slf4j
-    @AllArgsConstructor
-    static class DefaultRemovalListener implements RemovalListener<Object, Object> {
-
-        private final String name;
-
-        @Override
-        public void onRemoval(Object key, Object value, @NonNull RemovalCause cause) {
-            log.info("缓存{}移除监听, 移除的key = {}, cause = {}", name, key, cause);
-        }
+        };
     }
 
 }

@@ -1,6 +1,6 @@
-package top.ticho.rainbow.application.service;
+package top.ticho.rainbow.application.task;
 
-import top.ticho.boot.view.core.PageResult;
+import top.ticho.boot.view.core.TiPageResult;
 import top.ticho.rainbow.interfaces.dto.TaskDTO;
 import top.ticho.rainbow.interfaces.query.TaskQuery;
 
@@ -80,15 +80,15 @@ public interface TaskService {
      * 分页查询计划任务列表
      *
      * @param query 查询
-     * @return {@link PageResult}<{@link TaskDTO}>
+     * @return {@link TiPageResult}<{@link TaskDTO}>
      */
-    PageResult<TaskDTO> page(TaskQuery query);
+    TiPageResult<TaskDTO> page(TaskQuery query);
 
     /**
      * 分页查询计划任务列表
      *
      * @param query 查询
-     * @return {@link PageResult}<{@link TaskDTO}>
+     * @return {@link TiPageResult}<{@link TaskDTO}>
      */
     List<TaskDTO> list(TaskQuery query);
 

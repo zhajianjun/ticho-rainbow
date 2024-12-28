@@ -27,7 +27,6 @@ public class OpLogRepositoryImpl extends RootServiceImpl<OpLogMapper, OpLog> imp
 
     @Override
     public List<OpLog> list(OpLogQuery query) {
-        // @formatter:off
         LambdaQueryWrapper<OpLog> wrapper = Wrappers.lambdaQuery();
         wrapper.in(CollUtil.isNotEmpty(query.getIds()), OpLog::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), OpLog::getId, query.getId());
@@ -55,7 +54,6 @@ public class OpLogRepositoryImpl extends RootServiceImpl<OpLogMapper, OpLog> imp
         wrapper.like(StrUtil.isNotBlank(query.getErrMessage()), OpLog::getErrMessage, query.getErrMessage());
         wrapper.orderByDesc(OpLog::getId);
         return list(wrapper);
-        // @formatter:on
     }
 
 }

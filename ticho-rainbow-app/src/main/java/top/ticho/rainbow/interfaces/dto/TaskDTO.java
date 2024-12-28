@@ -1,16 +1,16 @@
 package top.ticho.rainbow.interfaces.dto;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import top.ticho.boot.web.util.valid.ValidGroup;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 计划任务信息DTO

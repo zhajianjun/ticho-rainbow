@@ -15,7 +15,7 @@ import java.util.List;
  * 菜单功能号详情信息
  *
  * @author zhajianjun
-* @date 2023-12-17 08:30
+ * @date 2023-12-17 08:30
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

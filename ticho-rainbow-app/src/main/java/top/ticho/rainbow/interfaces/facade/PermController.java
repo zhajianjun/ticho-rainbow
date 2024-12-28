@@ -9,7 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.Result;
+import top.ticho.boot.view.core.TiResult;
 import top.ticho.rainbow.infrastructure.core.component.PermCacheHandle;
 import top.ticho.rainbow.interfaces.dto.PermDTO;
 
@@ -34,8 +34,8 @@ public class PermController {
     @ApiOperation(value = "查询所有权限标识")
     @ApiOperationSupport(order = 60)
     @GetMapping("list")
-    public Result<List<PermDTO>> listAll() {
-        return Result.ok(permCacheHandle.listAllAppPerms());
+    public TiResult<List<PermDTO>> listAll() {
+        return TiResult.ok(permCacheHandle.listAllAppPerms());
     }
 
 }

@@ -41,7 +41,7 @@ public class PermCacheHandle {
         }
         Map<String, String> map = perms
             .stream()
-            .collect(Collectors.toMap(PermDTO::getCode, PermDTO::getName, (v1, v2)-> v1, LinkedHashMap::new));
+            .collect(Collectors.toMap(PermDTO::getCode, PermDTO::getName, (v1, v2) -> v1, LinkedHashMap::new));
         MAP.put(SecurityConst.MICRO_REDIS_ALL_PERMS, map);
     }
 
@@ -87,7 +87,6 @@ public class PermCacheHandle {
      * @return {@link List}<{@link PermDTO}>
      */
     public List<PermDTO> listCurrentAppPerms() {
-        // @formatter:off
         RequestMappingHandlerMapping mapping = SpringContext.getBean(RequestMappingHandlerMapping.class);
         // 获取url与类和方法的对应信息
         Map<RequestMappingInfo, HandlerMethod> map = mapping.getHandlerMethods();

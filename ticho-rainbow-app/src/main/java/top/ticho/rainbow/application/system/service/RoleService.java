@@ -1,6 +1,6 @@
-package top.ticho.rainbow.application.service;
+package top.ticho.rainbow.application.system.service;
 
-import top.ticho.boot.view.core.PageResult;
+import top.ticho.boot.view.core.TiPageResult;
 import top.ticho.rainbow.interfaces.dto.RoleDTO;
 import top.ticho.rainbow.interfaces.dto.RoleMenuDTO;
 import top.ticho.rainbow.interfaces.dto.RoleMenuDtlDTO;
@@ -59,15 +59,15 @@ public interface RoleService {
      * 分页查询角色信息列表
      *
      * @param query 查询
-     * @return {@link PageResult}<{@link RoleDTO}>
+     * @return {@link TiPageResult}<{@link RoleDTO}>
      */
-    PageResult<RoleDTO> page(RoleQuery query);
+    TiPageResult<RoleDTO> page(RoleQuery query);
 
     /**
      * 查询角色信息列表
      *
      * @param query 查询
-     * @return {@link PageResult}<{@link RoleDTO}>
+     * @return {@link TiPageResult}<{@link RoleDTO}>
      */
     List<RoleDTO> list(RoleQuery query);
 

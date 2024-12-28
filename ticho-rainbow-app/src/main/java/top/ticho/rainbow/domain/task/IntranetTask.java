@@ -3,7 +3,7 @@ package top.ticho.rainbow.domain.task;
 import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import top.ticho.rainbow.application.service.ClientService;
+import top.ticho.rainbow.application.intranet.service.ClientService;
 import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 import top.ticho.tool.intranet.server.handler.ServerHandler;

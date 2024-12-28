@@ -1,9 +1,9 @@
 package top.ticho.rainbow.interfaces.assembler;
 
-import top.ticho.rainbow.infrastructure.entity.TaskLog;
-import top.ticho.rainbow.interfaces.dto.TaskLogDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import top.ticho.rainbow.infrastructure.entity.TaskLog;
+import top.ticho.rainbow.interfaces.dto.TaskLogDTO;
 import top.ticho.rainbow.interfaces.excel.TaskLogExp;
 
 /**

@@ -29,7 +29,6 @@ public class FileInfoRepositoryImpl extends RootServiceImpl<FileInfoMapper, File
 
     @Override
     public List<FileInfo> list(FileInfoQuery query) {
-        // @formatter:off
         LambdaQueryWrapper<FileInfo> wrapper = Wrappers.lambdaQuery();
         wrapper.in(CollUtil.isNotEmpty(query.getIds()), FileInfo::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), FileInfo::getId, query.getId());
@@ -55,7 +54,6 @@ public class FileInfoRepositoryImpl extends RootServiceImpl<FileInfoMapper, File
         }
         wrapper.orderByDesc(FileInfo::getId);
         return list(wrapper);
-        // @formatter:on
     }
 
     @Override

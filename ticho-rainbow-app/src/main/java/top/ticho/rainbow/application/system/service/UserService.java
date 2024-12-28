@@ -1,7 +1,7 @@
-package top.ticho.rainbow.application.service;
+package top.ticho.rainbow.application.system.service;
 
 import org.springframework.web.multipart.MultipartFile;
-import top.ticho.boot.view.core.PageResult;
+import top.ticho.boot.view.core.TiPageResult;
 import top.ticho.rainbow.interfaces.dto.ImgCodeDTO;
 import top.ticho.rainbow.interfaces.dto.ImgCodeEmailDTO;
 import top.ticho.rainbow.interfaces.dto.PasswordDTO;
@@ -144,9 +144,9 @@ public interface UserService {
      * 分页查询用户信息列表
      *
      * @param query 查询
-     * @return {@link PageResult}<{@link UserDTO}>
+     * @return {@link TiPageResult}<{@link UserDTO}>
      */
-    PageResult<UserDTO> page(UserQuery query);
+    TiPageResult<UserDTO> page(UserQuery query);
 
     /**
      * 绑定角色

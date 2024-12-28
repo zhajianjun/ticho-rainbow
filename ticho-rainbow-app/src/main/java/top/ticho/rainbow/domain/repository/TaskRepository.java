@@ -26,7 +26,7 @@ public interface TaskRepository extends RootService<Task> {
     /**
      * 更新状态 (批量)
      *
-     * @param ids 编号列表
+     * @param ids    编号列表
      * @param status 状态
      * @return boolean
      */

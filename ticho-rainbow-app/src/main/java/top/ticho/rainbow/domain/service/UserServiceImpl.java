@@ -19,21 +19,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import top.ticho.tool.json.util.JsonUtil;
 import top.ticho.boot.mail.component.MailContent;
 import top.ticho.boot.mail.component.MailInines;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.core.Result;
-import top.ticho.boot.view.enums.BizErrCode;
-import top.ticho.boot.view.exception.BizException;
-import top.ticho.boot.view.util.Assert;
+import top.ticho.boot.view.core.TiPageResult;
+import top.ticho.boot.view.core.TiResult;
+import top.ticho.boot.view.enums.TiBizErrCode;
+import top.ticho.boot.view.exception.TiBizException;
+import top.ticho.boot.view.util.TiAssert;
 import top.ticho.boot.web.file.BaseMultPartFile;
 import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.boot.web.util.SpringContext;
 import top.ticho.boot.web.util.valid.ValidGroup;
 import top.ticho.boot.web.util.valid.ValidUtil;
-import top.ticho.rainbow.application.service.FileInfoService;
-import top.ticho.rainbow.application.service.UserService;
+import top.ticho.rainbow.application.storage.service.FileInfoService;
+import top.ticho.rainbow.application.system.service.UserService;
 import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.EmailRepository;
 import top.ticho.rainbow.domain.repository.RoleRepository;
@@ -72,6 +71,7 @@ import top.ticho.rainbow.interfaces.excel.UserImp;
 import top.ticho.rainbow.interfaces.excel.UserImpModel;
 import top.ticho.rainbow.interfaces.query.UserAccountQuery;
 import top.ticho.rainbow.interfaces.query.UserQuery;
+import top.ticho.tool.json.util.JsonUtil;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
@@ -136,7 +136,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         response.setDateHeader("Expires", 0);
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         try (OutputStream out = response.getOutputStream()) {
-            Assert.isNotBlank(imgKey, "验证码秘钥不能为空");
+            TiAssert.isNotBlank(imgKey, "验证码秘钥不能为空");
             LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
             gifCaptcha.createCode();
             String code = gifCaptcha.getCode();
@@ -146,13 +146,13 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         } catch (Exception e) {
             log.error("获取验证码失败，error {}", e.getMessage(), e);
             String message = e.getMessage();
-            int code = BizErrCode.FAIL.getCode();
-            if (e instanceof BizException) {
-                BizException bizException = ((BizException) e);
-                code = bizException.getCode();
-                message = bizException.getMsg();
+            int code = TiBizErrCode.FAIL.getCode();
+            if (e instanceof TiBizException) {
+                TiBizException TiBizException = ((TiBizException) e);
+                code = TiBizException.getCode();
+                message = TiBizException.getMsg();
             }
-            Result<String> result = Result.of(code, message, null);
+            TiResult<String> result = TiResult.of(code, message, null);
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setContentType("application/json");
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
@@ -165,9 +165,9 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         String imgCode = imgCodeDTO.getImgCode();
         String key = imgCodeDTO.getImgKey();
         String cacheImgCode = springCacheTemplate.get(CacheConst.VERIFY_CODE, key, String.class);
-        Assert.isNotBlank(cacheImgCode, "验证码已过期");
+        TiAssert.isNotBlank(cacheImgCode, "验证码已过期");
         springCacheTemplate.evict(CacheConst.VERIFY_CODE, key);
-        Assert.isTrue(imgCode.equalsIgnoreCase(cacheImgCode), "验证码不正确");
+        TiAssert.isTrue(imgCode.equalsIgnoreCase(cacheImgCode), "验证码不正确");
     }
 
     @Override
@@ -179,9 +179,9 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         // 发送邮箱验证码
         String email = imgCodeEmailDTO.getEmail();
         User dbUser = userRepository.getByEmail(email);
-        Assert.isNull(dbUser, "用户已存在");
+        TiAssert.isNull(dbUser, "用户已存在");
         String code = springCacheTemplate.get(CacheConst.SIGN_UP_CODE, email, String.class);
-        Assert.isBlank(code, "验证码已发送，请稍后再试");
+        TiAssert.isBlank(code, "验证码已发送，请稍后再试");
         LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
         gifCaptcha.createCode();
         code = gifCaptcha.getCode();
@@ -197,7 +197,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         mailContent.setContent(template.render());
         mailContent.setInlines(Collections.singletonList(mailInines));
         boolean sendMail = emailRepository.sendMail(mailContent);
-        Assert.isTrue(sendMail, "发送邮件失败");
+        TiAssert.isTrue(sendMail, "发送邮件失败");
     }
 
     @Override
@@ -206,9 +206,9 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         ValidUtil.valid(userSignUpOrResetDTO);
         String email = userSignUpOrResetDTO.getEmail();
         String cacheEmailCode = springCacheTemplate.get(CacheConst.SIGN_UP_CODE, email, String.class);
-        Assert.isNotBlank(cacheEmailCode, "验证码已过期");
+        TiAssert.isNotBlank(cacheEmailCode, "验证码已过期");
         springCacheTemplate.evict(CacheConst.SIGN_UP_CODE, email);
-        Assert.isTrue(userSignUpOrResetDTO.getEmailCode().equalsIgnoreCase(cacheEmailCode), "验证码不正确");
+        TiAssert.isTrue(userSignUpOrResetDTO.getEmailCode().equalsIgnoreCase(cacheEmailCode), "验证码不正确");
         String username = userSignUpOrResetDTO.getUsername();
         String password = userSignUpOrResetDTO.getPassword();
         User user = new User();
@@ -220,9 +220,9 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         UserAccountQuery accountDTO = UserAssembler.INSTANCE.entityToAccount(user);
         preCheckRepeatUser(accountDTO, null);
         user.setNickname(username);
-        Assert.isTrue(userRepository.save(user), BizErrCode.FAIL, "注册失败");
+        TiAssert.isTrue(userRepository.save(user), TiBizErrCode.FAIL, "注册失败");
         Role guestRole = roleRepository.getGuestRole();
-        Assert.isNotNull(guestRole, "默认角色不存在，请联系管理员进行处理");
+        TiAssert.isNotNull(guestRole, "默认角色不存在，请联系管理员进行处理");
         userRoleRepository.removeAndSave(user.getId(), Collections.singletonList(guestRole.getId()));
         // 返回登录使用参数
         return getUserLoginDTO(username);
@@ -236,9 +236,9 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         // 发送邮箱验证码
         String email = imgCodeEmailDTO.getEmail();
         User dbUser = userRepository.getByEmail(email);
-        Assert.isNotNull(dbUser, "用户不存在");
+        TiAssert.isNotNull(dbUser, "用户不存在");
         String code = springCacheTemplate.get(CacheConst.RESET_PASSWORD_CODE, email, String.class);
-        Assert.isBlank(code, "验证码已发送，请稍后再试");
+        TiAssert.isBlank(code, "验证码已发送，请稍后再试");
         LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
         gifCaptcha.createCode();
         code = gifCaptcha.getCode();
@@ -254,7 +254,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         mailContent.setContent(template.render());
         mailContent.setInlines(Collections.singletonList(mailInines));
         boolean sendMail = emailRepository.sendMail(mailContent);
-        Assert.isTrue(sendMail, "发送邮件失败");
+        TiAssert.isTrue(sendMail, "发送邮件失败");
         return dbUser.getUsername();
     }
 
@@ -263,14 +263,16 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         ValidUtil.valid(userSignUpOrResetDTO);
         String email = userSignUpOrResetDTO.getEmail();
         String cacheEmailCode = springCacheTemplate.get(CacheConst.RESET_PASSWORD_CODE, email, String.class);
-        Assert.isNotBlank(cacheEmailCode, "验证码已过期");
+        TiAssert.isNotBlank(cacheEmailCode, "验证码已过期");
         springCacheTemplate.evict(CacheConst.RESET_PASSWORD_CODE, email);
-        Assert.isTrue(userSignUpOrResetDTO.getEmailCode().equalsIgnoreCase(cacheEmailCode), "验证码不正确");
+        TiAssert.isTrue(userSignUpOrResetDTO.getEmailCode().equalsIgnoreCase(cacheEmailCode), "验证码不正确");
         User dbUser = userRepository.getByEmail(email);
-        Assert.isNotNull(dbUser, BizErrCode.FAIL, () -> {
-            log.info("重置用户{}密码失败，用户不存在", email);
-            return "重置失败";
-        });
+        TiAssert.isNotNull(
+            dbUser, TiBizErrCode.FAIL, () -> {
+                log.info("重置用户{}密码失败，用户不存在", email);
+                return "重置失败";
+            }
+        );
         String username = dbUser.getUsername();
         String encodedPasswordNew = passwordEncoder.encode(userSignUpOrResetDTO.getPassword());
         User user = new User();
@@ -279,7 +281,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         user.setPassword(encodedPasswordNew);
         // 更新密码
         boolean update = userRepository.updateById(user);
-        Assert.isTrue(update, BizErrCode.FAIL, "更新密码失败");
+        TiAssert.isTrue(update, TiBizErrCode.FAIL, "更新密码失败");
         // 返回登录使用参数
         return getUserLoginDTO(username);
     }
@@ -287,16 +289,16 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
     @Override
     public void resetPassword(String username) {
         boolean admin = UserUtil.isAdmin();
-        Assert.isTrue(admin, BizErrCode.FAIL, "无管理员操作权限");
-        Assert.isTrue(!SecurityConst.ADMIN.equals(username), BizErrCode.FAIL, "管理员账户无法重置密码");
+        TiAssert.isTrue(admin, TiBizErrCode.FAIL, "无管理员操作权限");
+        TiAssert.isTrue(!SecurityConst.ADMIN.equals(username), TiBizErrCode.FAIL, "管理员账户无法重置密码");
         UserDTO dbUser = getInfoByUsername(username);
-        Assert.isNotNull(dbUser, "用户不存在");
+        TiAssert.isNotNull(dbUser, "用户不存在");
         String encodedPasswordNew = passwordEncoder.encode(CommConst.DEFAULT_PASSWORD);
         User user = new User();
         user.setId(dbUser.getId());
         user.setUsername(dbUser.getUsername());
         user.setPassword(encodedPasswordNew);
-        Assert.isTrue(userRepository.updateById(user), BizErrCode.FAIL, "重置密码失败");
+        TiAssert.isTrue(userRepository.updateById(user), TiBizErrCode.FAIL, "重置密码失败");
     }
 
     /**
@@ -324,7 +326,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         User user = UserAssembler.INSTANCE.dtoToEntity(userDTO);
         UserAccountQuery accountDTO = UserAssembler.INSTANCE.entityToAccount(user);
         preCheckRepeatUser(accountDTO, null);
-        Assert.isTrue(userRepository.save(user), BizErrCode.FAIL, "保存失败");
+        TiAssert.isTrue(userRepository.save(user), TiBizErrCode.FAIL, "保存失败");
         if (CollUtil.isEmpty(userDTO.getRoleIds())) {
             return;
         }
@@ -341,7 +343,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         User dbUser = preCheckRepeatUser(accountDTO, userDTO.getId());
         // 用户名不能修改
         user.setUsername(dbUser.getUsername());
-        Assert.isTrue(userRepository.updateById(user), BizErrCode.FAIL, "修改失败");
+        TiAssert.isTrue(userRepository.updateById(user), TiBizErrCode.FAIL, "修改失败");
         if (CollUtil.isEmpty(userDTO.getRoleIds())) {
             return;
         }
@@ -352,7 +354,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
     @Transactional(rollbackFor = Exception.class)
     public void updateForSelf(UserDTO userDTO) {
         User dbUser = userRepository.getByUsername(UserUtil.getCurrentUsername());
-        Assert.isNotNull(dbUser, BizErrCode.FAIL, "修改失败, 用户不存在");
+        TiAssert.isNotNull(dbUser, TiBizErrCode.FAIL, "修改失败, 用户不存在");
         userDTO.setId(dbUser.getId());
         update(userDTO);
     }
@@ -361,7 +363,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
     @Transactional(rollbackFor = Exception.class)
     public String uploadAvatar(MultipartFile file) {
         User dbUser = userRepository.getByUsername(UserUtil.getCurrentUsername());
-        Assert.isNotNull(dbUser, BizErrCode.FAIL, "头像上传失败, 用户不存在");
+        TiAssert.isNotNull(dbUser, TiBizErrCode.FAIL, "头像上传失败, 用户不存在");
         FileInfoReqDTO fileInfoReqDTO = new FileInfoReqDTO();
         fileInfoReqDTO.setFile(file);
         fileInfoReqDTO.setType(1);
@@ -391,8 +393,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
     }
 
     @Override
-    public PageResult<UserDTO> page(UserQuery query) {
-        // @formatter:off
+    public TiPageResult<UserDTO> page(UserQuery query) {
         query.checkPage();
         Page<User> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
         userRepository.list(query);
@@ -401,65 +402,62 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
             .map(UserAssembler.INSTANCE::entityToDto)
             .collect(Collectors.toList());
         setRoles(userDTOs);
-        return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), userDTOs);
-        // @formatter:on
+        return new TiPageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), userDTOs);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void bindRole(UserRoleDTO userRoleDTO) {
-        // @formatter:off
         ValidUtil.valid(userRoleDTO);
         Long userId = userRoleDTO.getUserId();
         List<Long> roleIds = Optional.ofNullable(userRoleDTO.getRoleIds()).orElseGet(ArrayList::new);
         userRoleRepository.removeAndSave(userId, roleIds);
-        // @formatter:on
     }
 
     @Override
     public void lock(List<String> usernames) {
-        Assert.isNotEmpty(usernames, "用户名不能为空");
-        Assert.isTrue(!usernames.contains(SecurityConst.ADMIN), BizErrCode.FAIL, "管理员账户无法锁定");
+        TiAssert.isNotEmpty(usernames, "用户名不能为空");
+        TiAssert.isTrue(!usernames.contains(SecurityConst.ADMIN), TiBizErrCode.FAIL, "管理员账户无法锁定");
         // 正常状态才能锁定
         List<Integer> eqDbStatus = Collections.singletonList(UserStatus.NORMAL.code());
         Integer count = userRepository.updateStatus(usernames, UserStatus.LOCKED.code(), eqDbStatus, null);
-        Assert.isTrue(count > 0, BizErrCode.FAIL, "无可锁定用户");
+        TiAssert.isTrue(count > 0, TiBizErrCode.FAIL, "无可锁定用户");
     }
 
     @Override
     public void unLock(List<String> usernames) {
-        Assert.isNotEmpty(usernames, "用户名不能为空");
+        TiAssert.isNotEmpty(usernames, "用户名不能为空");
         // 锁定状态才能解锁
         List<Integer> eqDbStatus = Collections.singletonList(UserStatus.LOCKED.code());
         Integer count = userRepository.updateStatus(usernames, UserStatus.NORMAL.code(), eqDbStatus, null);
-        Assert.isTrue(count > 0, BizErrCode.FAIL, "无可解锁用户");
+        TiAssert.isTrue(count > 0, TiBizErrCode.FAIL, "无可解锁用户");
     }
 
     @Override
     public void logOut(List<String> usernames) {
-        Assert.isNotEmpty(usernames, "用户名不能为空");
-        Assert.isTrue(!usernames.contains(SecurityConst.ADMIN), BizErrCode.FAIL, "管理员账户无法注销");
+        TiAssert.isNotEmpty(usernames, "用户名不能为空");
+        TiAssert.isTrue(!usernames.contains(SecurityConst.ADMIN), TiBizErrCode.FAIL, "管理员账户无法注销");
         // 正常状态才能注销
         List<Integer> eqDbStatus = Collections.singletonList(UserStatus.NORMAL.code());
         Integer count = userRepository.updateStatus(usernames, UserStatus.LOG_OUT.code(), eqDbStatus, null);
-        Assert.isTrue(count > 0, BizErrCode.FAIL, "无可注销用户");
+        TiAssert.isTrue(count > 0, TiBizErrCode.FAIL, "无可注销用户");
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void remove(List<String> usernames) {
-        Assert.isNotEmpty(usernames, "用户名不能为空");
+        TiAssert.isNotEmpty(usernames, "用户名不能为空");
         usernames.forEach(this::remove);
     }
 
     public void remove(String username) {
-        Assert.isNotBlank(username, "用户名不能为空");
+        TiAssert.isNotBlank(username, "用户名不能为空");
         User user = userRepository.getByUsername(username);
-        Assert.isNotNull(user, BizErrCode.FAIL, "删除失败,用户不存在");
-        Assert.isTrue(Objects.equals(UserStatus.LOG_OUT.code(), user.getStatus()), BizErrCode.FAIL, "删除失败,非注销用户");
+        TiAssert.isNotNull(user, TiBizErrCode.FAIL, "删除失败,用户不存在");
+        TiAssert.isTrue(Objects.equals(UserStatus.LOG_OUT.code(), user.getStatus()), TiBizErrCode.FAIL, "删除失败,非注销用户");
         boolean removeUser = userRepository.removeByUsername(username);
         userRoleRepository.removeByUserId(user.getId());
-        Assert.isNotNull(removeUser, BizErrCode.FAIL, "删除失败");
+        TiAssert.isNotNull(removeUser, TiBizErrCode.FAIL, "删除失败");
     }
 
     @Override
@@ -474,10 +472,10 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         String sheetName = "导入结果";
         String fileName = StrUtil.format("{}-导入结果", file.getOriginalFilename());
         Role guestRole = roleRepository.getGuestRole();
-        Assert.isNotNull(guestRole, "默认角色不存在，请联系管理员进行处理");
+        TiAssert.isNotNull(guestRole, "默认角色不存在，请联系管理员进行处理");
         UserServiceImpl bean = SpringContext.getBean(this.getClass());
         Map<String, Integer> valueMap = dictHandle.getValueMap(DictConst.SEX, NumberUtil::parseInt);
-        ExcelHandle.readAndWriteToResponse((x, y)-> bean.readAndWrite(x, y, guestRole, valueMap), file, fileName, sheetName, UserImp.class, response);
+        ExcelHandle.readAndWriteToResponse((x, y) -> bean.readAndWrite(x, y, guestRole, valueMap), file, fileName, sheetName, UserImp.class, response);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -555,7 +553,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         String sheetName = "用户信息";
         String fileName = "用户信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictHandle.getLabelMapBatch(DictConst.USER_STATUS, DictConst.SEX);
-        ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, UserExp.class, response);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, UserExp.class, response);
     }
 
     private Collection<UserExp> excelExpHandle(UserQuery query, Map<String, String> labelMap) {
@@ -564,7 +562,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         userRepository.list(query);
         return page.getResult()
             .stream()
-            .map(x-> {
+            .map(x -> {
                 UserExp userExp = UserAssembler.INSTANCE.entityToExp(x);
                 userExp.setStatusName(labelMap.get(DictConst.USER_STATUS + x.getStatus()));
                 userExp.setSexName(labelMap.get(DictConst.SEX + x.getSex()));
@@ -577,11 +575,11 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
     public void updatePassword(UserPasswordDTO userPasswordDTO) {
         ValidUtil.valid(userPasswordDTO);
         User dbUser = userRepository.getByUsername(userPasswordDTO.getUsername());
-        Assert.isNotEmpty(dbUser, BizErrCode.FAIL, "用户不存在");
+        TiAssert.isNotEmpty(dbUser, TiBizErrCode.FAIL, "用户不存在");
         SecurityUser loginUser = UserUtil.getCurrentUser();
         // 非管理员用户，只能修改自己的用户
         if (!UserUtil.isAdmin(loginUser)) {
-            Assert.isTrue(UserUtil.isSelf(dbUser, loginUser), BizErrCode.FAIL, "只能修改自己的密码");
+            TiAssert.isTrue(UserUtil.isSelf(dbUser, loginUser), TiBizErrCode.FAIL, "只能修改自己的密码");
         }
         updatePassword(userPasswordDTO, dbUser);
     }
@@ -591,13 +589,13 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         ValidUtil.valid(passwordDTO);
         SecurityUser loginUser = UserUtil.getCurrentUser();
         User dbUser = userRepository.getByUsername(loginUser.getUsername());
-        Assert.isNotEmpty(dbUser, BizErrCode.FAIL, "用户不存在");
+        TiAssert.isNotEmpty(dbUser, TiBizErrCode.FAIL, "用户不存在");
         updatePassword(passwordDTO, dbUser);
     }
 
     private void updatePassword(PasswordDTO passwordDTO, User dbUser) {
         boolean matches = passwordEncoder.matches(passwordDTO.getPassword(), dbUser.getPassword());
-        Assert.isTrue(matches, BizErrCode.FAIL, "密码错误");
+        TiAssert.isTrue(matches, TiBizErrCode.FAIL, "密码错误");
         String encodedPasswordNew = passwordEncoder.encode(passwordDTO.getNewPassword());
         User user = new User();
         user.setId(dbUser.getId());
@@ -605,7 +603,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         user.setPassword(encodedPasswordNew);
         // 更新密码
         boolean update = userRepository.updateById(user);
-        Assert.isTrue(update, BizErrCode.FAIL, "更新密码失败");
+        TiAssert.isTrue(update, TiBizErrCode.FAIL, "更新密码失败");
     }
 
     /**
@@ -636,28 +634,27 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
             String itemEmail = item.getEmail();
             // 用户名重复判断
             if (usernameNotBlank) {
-                Assert.isTrue(!Objects.equals(username, itemUsername), BizErrCode.FAIL, "该用户名已经存在");
+                TiAssert.isTrue(!Objects.equals(username, itemUsername), TiBizErrCode.FAIL, "该用户名已经存在");
             }
             // 邮箱重复判断
             if (emailNotBlank) {
-                Assert.isTrue(!Objects.equals(email, itemEmail), BizErrCode.FAIL, "该邮箱已经存在");
+                TiAssert.isTrue(!Objects.equals(email, itemEmail), TiBizErrCode.FAIL, "该邮箱已经存在");
             }
             // 手机号码重复判断
             if (mobileNotBlank) {
-                Assert.isTrue(!Objects.equals(mobile, itemMobile), BizErrCode.FAIL, "该手机号已经存在");
+                TiAssert.isTrue(!Objects.equals(mobile, itemMobile), TiBizErrCode.FAIL, "该手机号已经存在");
             }
         }
         return user;
     }
 
     public void setRoles(List<UserDTO> userDtos) {
-        // @formatter:off
         if (CollUtil.isEmpty(userDtos)) {
             return;
         }
         Map<Long, List<Long>> userRoleIdsMap = userDtos
             .stream()
-            .collect(Collectors.toMap(UserDTO::getId, x-> userRoleRepository.listByUserId(x.getId())));
+            .collect(Collectors.toMap(UserDTO::getId, x -> userRoleRepository.listByUserId(x.getId())));
         List<Long> roleIds = userRoleIdsMap.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
         List<Role> roles = roleRepository.listByIds(roleIds);
         Map<Long, Role> roleMap = roles
@@ -669,13 +666,12 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
                 .orElseGet(ArrayList::new);
             List<RoleDTO> roleDTOS = itemRoleIds
                 .stream()
-                .map(x-> RoleAssembler.INSTANCE.entityToDto(roleMap.get(x)))
+                .map(x -> RoleAssembler.INSTANCE.entityToDto(roleMap.get(x)))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
             userDto.setRoleIds(itemRoleIds);
             userDto.setRoles(roleDTOS);
         }
-        // @formatter:on
     }
 
 }

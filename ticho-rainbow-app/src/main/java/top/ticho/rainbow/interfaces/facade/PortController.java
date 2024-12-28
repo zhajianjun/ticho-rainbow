@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.core.Result;
+import top.ticho.boot.view.core.TiPageResult;
+import top.ticho.boot.view.core.TiResult;
 import top.ticho.boot.web.annotation.View;
-import top.ticho.rainbow.application.service.PortService;
+import top.ticho.rainbow.application.intranet.service.PortService;
 import top.ticho.rainbow.interfaces.dto.PortDTO;
 import top.ticho.rainbow.interfaces.query.PortQuery;
 
@@ -43,9 +43,9 @@ public class PortController {
     @ApiOperation(value = "保存端口")
     @ApiOperationSupport(order = 10)
     @PostMapping
-    public Result<Void> save(@RequestBody PortDTO portDTO) {
+    public TiResult<Void> save(@RequestBody PortDTO portDTO) {
         portService.save(portDTO);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('intranet:port:remove')")
@@ -53,18 +53,18 @@ public class PortController {
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @DeleteMapping
-    public Result<Void> remove(Long id) {
+    public TiResult<Void> remove(Long id) {
         portService.removeById(id);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('intranet:port:update')")
     @ApiOperation(value = "修改端口")
     @ApiOperationSupport(order = 30)
     @PutMapping
-    public Result<Void> update(@RequestBody PortDTO portDTO) {
+    public TiResult<Void> update(@RequestBody PortDTO portDTO) {
         portService.updateById(portDTO);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('intranet:port:getById')")
@@ -72,16 +72,16 @@ public class PortController {
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
-    public Result<PortDTO> getById(Long id) {
-        return Result.ok(portService.getById(id));
+    public TiResult<PortDTO> getById(Long id) {
+        return TiResult.ok(portService.getById(id));
     }
 
     @PreAuthorize("@perm.hasPerms('intranet:port:page')")
     @ApiOperation(value = "查询所有端口(分页)")
     @ApiOperationSupport(order = 50)
     @PostMapping("page")
-    public Result<PageResult<PortDTO>> page(@RequestBody PortQuery query) {
-        return Result.ok(portService.page(query));
+    public TiResult<TiPageResult<PortDTO>> page(@RequestBody PortQuery query) {
+        return TiResult.ok(portService.page(query));
     }
 
     @View(ignore = true)

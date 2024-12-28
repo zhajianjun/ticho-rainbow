@@ -10,7 +10,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import top.ticho.boot.datasource.service.impl.RootServiceImpl;
-import top.ticho.boot.view.util.Assert;
+import top.ticho.boot.view.util.TiAssert;
 import top.ticho.boot.web.util.SpringContext;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
@@ -100,7 +100,7 @@ public class UserRepositoryImpl extends RootServiceImpl<UserMapper, User> implem
     @CacheEvict(value = CacheConst.USER_INFO, key = "#user.username")
     public boolean updateById(User user) {
         // 为了保证缓存，用户名不能为空
-        Assert.isNotBlank(user.getUsername(), "用户名不能为空");
+        TiAssert.isNotBlank(user.getUsername(), "用户名不能为空");
         return super.updateById(user);
     }
 
@@ -132,7 +132,6 @@ public class UserRepositoryImpl extends RootServiceImpl<UserMapper, User> implem
 
     @Override
     public List<User> getByAccount(UserAccountQuery userAccountQuery) {
-        // @formatter:off
         String username = userAccountQuery.getUsername();
         String email = userAccountQuery.getEmail();
         String mobile = userAccountQuery.getMobile();
@@ -143,14 +142,13 @@ public class UserRepositoryImpl extends RootServiceImpl<UserMapper, User> implem
         LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
         wrapper
             .eq(CollUtil.isNotEmpty(status), User::getStatus, status)
-            .and(x->
+            .and(x ->
                 x.eq(StrUtil.isNotBlank(username), User::getUsername, username)
-                 .or()
-                 .eq(StrUtil.isNotBlank(email), User::getEmail, email)
-                 .or()
-                 .eq(StrUtil.isNotBlank(mobile), User::getMobile, mobile)
+                    .or()
+                    .eq(StrUtil.isNotBlank(email), User::getEmail, email)
+                    .or()
+                    .eq(StrUtil.isNotBlank(mobile), User::getMobile, mobile)
             );
-        // @formatter:on
         return list(wrapper);
     }
 

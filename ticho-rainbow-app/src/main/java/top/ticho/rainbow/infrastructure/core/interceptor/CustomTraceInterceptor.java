@@ -1,8 +1,6 @@
 package top.ticho.rainbow.infrastructure.core.interceptor;
 
-import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.lang.NonNull;
@@ -11,11 +9,9 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import top.ticho.rainbow.infrastructure.core.util.UserUtil;
 import top.ticho.tool.trace.common.prop.TraceProperty;
-import top.ticho.tool.trace.core.util.BeetlUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
 
 /**
  * 自定义链路拦截器

@@ -8,8 +8,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import top.ticho.boot.security.constant.BaseSecurityConst;
 import top.ticho.boot.security.handle.load.LoadUserService;
-import top.ticho.boot.view.enums.HttpErrCode;
-import top.ticho.boot.view.util.Assert;
+import top.ticho.boot.view.enums.TiHttpErrCode;
+import top.ticho.boot.view.util.TiAssert;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
@@ -42,20 +42,18 @@ public class DefaultUsernameLoadUserService implements LoadUserService {
 
     @Override
     public SecurityUser load(String account) {
-        // @formatter:off
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (requestAttributes == null) {
             return null;
         }
         // 用户信息校验
         User user = userRepository.getCacheByUsername(account);
-        Assert.isNotNull(user, HttpErrCode.NOT_LOGIN, "用户或者密码不正确");
+        TiAssert.isNotNull(user, TiHttpErrCode.NOT_LOGIN, "用户或者密码不正确");
         Integer status = user.getStatus();
         String message = UserStatus.getByCode(status);
         boolean normal = Objects.equals(status, UserStatus.NORMAL.code());
-        Assert.isTrue(normal, HttpErrCode.NOT_LOGIN, String.format("用户%s", message));
+        TiAssert.isTrue(normal, TiHttpErrCode.NOT_LOGIN, String.format("用户%s", message));
         return getSecurityUser(user);
-        // @formatter:on
     }
 
     private SecurityUser getSecurityUser(User user) {

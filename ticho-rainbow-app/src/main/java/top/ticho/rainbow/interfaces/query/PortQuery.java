@@ -5,8 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.ticho.boot.view.core.BasePageQuery;
+import top.ticho.boot.view.core.TiPageQuery;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "端口信息查询条件")
-public class PortQuery extends BasePageQuery implements Serializable {
+public class PortQuery extends TiPageQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /** 主键编号列表 */
@@ -46,6 +47,11 @@ public class PortQuery extends BasePageQuery implements Serializable {
     /** 域名 */
     @ApiModelProperty(value = "域名", position = 50)
     private String domain;
+
+    /** 状态;1-启用,0-停用 */
+    @ApiModelProperty(value = "状态;1-启用,0-停用", position = 55)
+    @NotNull(message = "是否开启不能为空")
+    private Integer status;
 
     /** 过期时间 */
     @ApiModelProperty(value = "过期时间", position = 60)

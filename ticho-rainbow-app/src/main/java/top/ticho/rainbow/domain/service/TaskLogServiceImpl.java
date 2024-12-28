@@ -5,9 +5,9 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.util.Assert;
-import top.ticho.rainbow.application.service.TaskLogService;
+import top.ticho.boot.view.core.TiPageResult;
+import top.ticho.boot.view.util.TiAssert;
+import top.ticho.rainbow.application.system.service.TaskLogService;
 import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.rainbow.domain.repository.TaskRepository;
@@ -54,14 +54,13 @@ public class TaskLogServiceImpl implements TaskLogService {
 
     @Override
     public TaskLogDTO getById(Long id) {
-        Assert.isNotNull(id, "编号不能为空");
+        TiAssert.isNotNull(id, "编号不能为空");
         TaskLog taskLog = taskLogRepository.getById(id);
         return TaskLogAssembler.INSTANCE.entityToDto(taskLog);
     }
 
     @Override
-    public PageResult<TaskLogDTO> page(TaskLogQuery query) {
-        // @formatter:off
+    public TiPageResult<TaskLogDTO> page(TaskLogQuery query) {
         query.checkPage();
         Page<TaskLog> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
         taskLogRepository.list(query);
@@ -69,8 +68,7 @@ public class TaskLogServiceImpl implements TaskLogService {
             .stream()
             .map(TaskLogAssembler.INSTANCE::entityToDto)
             .collect(Collectors.toList());
-        return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), taskLogDTOs);
-        // @formatter:on
+        return new TiPageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), taskLogDTOs);
     }
 
     @Override
@@ -78,7 +76,7 @@ public class TaskLogServiceImpl implements TaskLogService {
         String sheetName = "计划任务日志";
         String fileName = "计划任务日志导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictHandle.getLabelMapBatch(DictConst.TASK_LOG_STATUS, DictConst.PLAN_TASK, DictConst.YES_OR_NO);
-        ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, TaskLogExp.class, response);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, TaskLogExp.class, response);
     }
 
     private Collection<TaskLogExp> excelExpHandle(TaskLogQuery query, Map<String, String> labelMap) {
@@ -90,7 +88,7 @@ public class TaskLogServiceImpl implements TaskLogService {
         Map<Long, String> taskMap = getTaskNameMap(taskIds);
         return result
             .stream()
-            .map(x-> {
+            .map(x -> {
                 TaskLogExp taskLogExp = TaskLogAssembler.INSTANCE.entityToExp(x);
                 taskLogExp.setName(taskMap.get(x.getTaskId()));
                 taskLogExp.setStatusName(labelMap.get(DictConst.TASK_LOG_STATUS + x.getStatus()));

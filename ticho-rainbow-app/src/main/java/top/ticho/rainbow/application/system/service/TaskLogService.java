@@ -1,6 +1,6 @@
-package top.ticho.rainbow.application.service;
+package top.ticho.rainbow.application.system.service;
 
-import top.ticho.boot.view.core.PageResult;
+import top.ticho.boot.view.core.TiPageResult;
 import top.ticho.rainbow.interfaces.dto.TaskLogDTO;
 import top.ticho.rainbow.interfaces.query.TaskLogQuery;
 
@@ -27,9 +27,9 @@ public interface TaskLogService {
      * 分页查询计划任务日志信息列表
      *
      * @param query 查询
-     * @return {@link PageResult}<{@link TaskLogDTO}>
+     * @return {@link TiPageResult}<{@link TaskLogDTO}>
      */
-    PageResult<TaskLogDTO> page(TaskLogQuery query);
+    TiPageResult<TaskLogDTO> page(TaskLogQuery query);
 
     /**
      * 导出计划任务日志

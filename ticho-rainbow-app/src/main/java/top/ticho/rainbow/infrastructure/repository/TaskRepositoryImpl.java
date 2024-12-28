@@ -29,7 +29,6 @@ public class TaskRepositoryImpl extends RootServiceImpl<TaskMapper, Task> implem
 
     @Override
     public List<Task> list(TaskQuery query) {
-        // @formatter:off
         LambdaQueryWrapper<Task> wrapper = Wrappers.lambdaQuery();
         wrapper.in(CollUtil.isNotEmpty(query.getIds()), Task::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), Task::getId, query.getId());
@@ -42,7 +41,6 @@ public class TaskRepositoryImpl extends RootServiceImpl<TaskMapper, Task> implem
         wrapper.eq(StrUtil.isNotBlank(query.getCreateBy()), Task::getCreateBy, query.getCreateBy());
         wrapper.eq(Objects.nonNull(query.getCreateTime()), Task::getCreateTime, query.getCreateTime());
         return list(wrapper);
-        // @formatter:on
     }
 
     @Override

@@ -1,6 +1,6 @@
-package top.ticho.rainbow.application.service;
+package top.ticho.rainbow.application.storage.service;
 
-import top.ticho.boot.view.core.PageResult;
+import top.ticho.boot.view.core.TiPageResult;
 import top.ticho.rainbow.infrastructure.entity.FileInfo;
 import top.ticho.rainbow.interfaces.dto.ChunkCacheDTO;
 import top.ticho.rainbow.interfaces.dto.ChunkFileDTO;
@@ -101,9 +101,9 @@ public interface FileInfoService {
      * 分页查询文件信息列表
      *
      * @param query 查询
-     * @return {@link PageResult}<{@link FileInfoDTO}>
+     * @return {@link TiPageResult}<{@link FileInfoDTO}>
      */
-    PageResult<FileInfoDTO> page(FileInfoQuery query);
+    TiPageResult<FileInfoDTO> page(FileInfoQuery query);
 
     /**
      * 导出文件信息

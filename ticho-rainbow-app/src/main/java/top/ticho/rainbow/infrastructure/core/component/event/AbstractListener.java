@@ -14,9 +14,9 @@ public abstract class AbstractListener<M> implements EventHandler<ContextEvent<M
     /**
      * 事件消费
      *
-     * @param contextEvent      事件
-     * @param sequence   序列
-     * @param endOfBatch 是否达到批次大小或者到达批次末尾
+     * @param contextEvent 事件
+     * @param sequence     序列
+     * @param endOfBatch   是否达到批次大小或者到达批次末尾
      */
     @Override
     public void onEvent(ContextEvent<M> contextEvent, long sequence, boolean endOfBatch) {

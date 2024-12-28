@@ -6,8 +6,6 @@ import top.ticho.rainbow.infrastructure.entity.Role;
 import top.ticho.rainbow.interfaces.dto.RoleDTO;
 import top.ticho.rainbow.interfaces.excel.RoleExp;
 
-import java.util.List;
-
 /**
  * 角色信息 转换
  *

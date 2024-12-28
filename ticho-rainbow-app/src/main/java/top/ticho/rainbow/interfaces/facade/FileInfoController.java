@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.boot.security.annotation.IgnoreJwtCheck;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.core.Result;
+import top.ticho.boot.view.core.TiPageResult;
+import top.ticho.boot.view.core.TiResult;
 import top.ticho.boot.web.annotation.View;
-import top.ticho.rainbow.application.service.FileInfoService;
+import top.ticho.rainbow.application.storage.service.FileInfoService;
 import top.ticho.rainbow.interfaces.dto.ChunkCacheDTO;
 import top.ticho.rainbow.interfaces.dto.ChunkFileDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
@@ -42,7 +42,6 @@ import java.io.IOException;
 @ApiSort(130)
 public class FileInfoController {
 
-    // @formatter:off
 
     @Autowired
     private FileInfoService fileInfoService;
@@ -51,16 +50,16 @@ public class FileInfoController {
     @ApiOperation(value = "上传文件")
     @ApiOperationSupport(order = 10)
     @PostMapping("upload")
-    public Result<FileInfoDTO> upload(FileInfoReqDTO fileInfoReqDTO) {
-        return Result.ok(fileInfoService.upload(fileInfoReqDTO));
+    public TiResult<FileInfoDTO> upload(FileInfoReqDTO fileInfoReqDTO) {
+        return TiResult.ok(fileInfoService.upload(fileInfoReqDTO));
     }
 
     @PreAuthorize("@file_perm.hasPerms('storage:file:uploadChunk')")
     @ApiOperation(value = "上传分片文件")
     @ApiOperationSupport(order = 20)
     @PostMapping("uploadChunk")
-    public Result<ChunkCacheDTO> uploadChunk(ChunkFileDTO chunkFileDTO) {
-        return Result.ok(fileInfoService.uploadChunk(chunkFileDTO));
+    public TiResult<ChunkCacheDTO> uploadChunk(ChunkFileDTO chunkFileDTO) {
+        return TiResult.ok(fileInfoService.uploadChunk(chunkFileDTO));
     }
 
     @PreAuthorize("@perm.hasPerms('storage:file:composeChunk')")
@@ -68,8 +67,8 @@ public class FileInfoController {
     @ApiOperationSupport(order = 30)
     @ApiImplicitParam(value = "分片id", name = "chunkId", required = true)
     @PostMapping("composeChunk")
-    public Result<FileInfoDTO> composeChunk(String chunkId) {
-        return Result.ok(fileInfoService.composeChunk(chunkId));
+    public TiResult<FileInfoDTO> composeChunk(String chunkId) {
+        return TiResult.ok(fileInfoService.composeChunk(chunkId));
     }
 
     @View(ignore = true)
@@ -101,8 +100,8 @@ public class FileInfoController {
         @ApiImplicitParam(value = "是否限制", name = "limit"),
     })
     @GetMapping("getUrl")
-    public Result<String> getUrl(Long id, Long expire, Boolean limit) {
-        return Result.ok(fileInfoService.getUrl(id, expire, limit));
+    public TiResult<String> getUrl(Long id, Long expire, Boolean limit) {
+        return TiResult.ok(fileInfoService.getUrl(id, expire, limit));
     }
 
     @PreAuthorize("@perm.hasPerms('storage:file:enable')")
@@ -110,9 +109,9 @@ public class FileInfoController {
     @ApiOperationSupport(order = 70)
     @ApiImplicitParam(value = "文件id", name = "id", required = true)
     @PutMapping("enable")
-    public Result<Void> enable(Long id) {
+    public TiResult<Void> enable(Long id) {
         fileInfoService.enable(id);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('storage:file:disable')")
@@ -120,9 +119,9 @@ public class FileInfoController {
     @ApiOperationSupport(order = 80)
     @ApiImplicitParam(value = "文件id", name = "id", required = true)
     @PutMapping("disable")
-    public Result<Void> disable(Long id) {
+    public TiResult<Void> disable(Long id) {
         fileInfoService.disable(id);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('storage:file:cancel')")
@@ -130,9 +129,9 @@ public class FileInfoController {
     @ApiOperationSupport(order = 90)
     @ApiImplicitParam(value = "文件id", name = "id", required = true)
     @PutMapping("cancel")
-    public Result<Void> cancel(Long id) {
+    public TiResult<Void> cancel(Long id) {
         fileInfoService.cancel(id);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('storage:file:delete')")
@@ -140,26 +139,26 @@ public class FileInfoController {
     @ApiOperationSupport(order = 100)
     @ApiImplicitParam(value = "文件id", name = "id", required = true)
     @DeleteMapping
-    public Result<Void> delete(Long id) {
+    public TiResult<Void> delete(Long id) {
         fileInfoService.delete(id);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('storage:file:update')")
     @ApiOperation(value = "修改文件")
     @ApiOperationSupport(order = 110)
     @PutMapping
-    public Result<Void> update(FileInfoDTO fileInfoDTO) {
+    public TiResult<Void> update(FileInfoDTO fileInfoDTO) {
         fileInfoService.update(fileInfoDTO);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('storage:file:page')")
     @ApiOperation(value = "查询所有文件(分页)")
     @ApiOperationSupport(order = 120)
     @PostMapping("page")
-    public Result<PageResult<FileInfoDTO>> page(@RequestBody FileInfoQuery query) {
-        return Result.ok(fileInfoService.page(query));
+    public TiResult<TiPageResult<FileInfoDTO>> page(@RequestBody FileInfoQuery query) {
+        return TiResult.ok(fileInfoService.page(query));
     }
 
     @View(ignore = true)

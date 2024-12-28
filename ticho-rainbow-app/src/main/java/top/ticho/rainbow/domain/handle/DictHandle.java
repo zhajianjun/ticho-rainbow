@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import top.ticho.rainbow.application.service.DictService;
+import top.ticho.rainbow.application.system.service.DictService;
 import top.ticho.rainbow.interfaces.dto.DictDTO;
 import top.ticho.rainbow.interfaces.dto.DictLabelDTO;
 
@@ -55,7 +55,7 @@ public class DictHandle {
             return Collections.emptyMap();
         }
         List<DictDTO> list = dictService.list();
-        return convertMap(list, x-> Objects.equals(x.getCode(), code), x-> keyConvert.apply(x.getValue()), DictLabelDTO::getLabel);
+        return convertMap(list, x -> Objects.equals(x.getCode(), code), x -> keyConvert.apply(x.getValue()), DictLabelDTO::getLabel);
     }
 
     /**
@@ -84,7 +84,7 @@ public class DictHandle {
             return Collections.emptyMap();
         }
         List<DictDTO> list = dictService.list();
-        return convertMap(list, x-> codes.contains(x.getCode()),x -> x.getCode() + x.getValue(), DictLabelDTO::getLabel);
+        return convertMap(list, x -> codes.contains(x.getCode()), x -> x.getCode() + x.getValue(), DictLabelDTO::getLabel);
     }
 
     /**
@@ -115,7 +115,7 @@ public class DictHandle {
             return Collections.emptyMap();
         }
         List<DictDTO> list = dictService.list();
-        return convertMap(list, x-> Objects.equals(x.getCode(), code), DictLabelDTO::getLabel, x-> valueConvert.apply(x.getValue()));
+        return convertMap(list, x -> Objects.equals(x.getCode(), code), DictLabelDTO::getLabel, x -> valueConvert.apply(x.getValue()));
     }
 
     /**
@@ -156,7 +156,7 @@ public class DictHandle {
             return Collections.emptyMap();
         }
         List<DictDTO> list = dictService.list();
-        return convertMap(list, x-> codes.contains(x.getCode()),x -> x.getCode() + x.getLabel(), x-> valueConvert.apply(x.getValue()));
+        return convertMap(list, x -> codes.contains(x.getCode()), x -> x.getCode() + x.getLabel(), x -> valueConvert.apply(x.getValue()));
     }
 
     private <T, K> Map<T, K> convertMap(List<DictDTO> list, Predicate<DictDTO> filter, Function<DictLabelDTO, T> keyFunc, Function<DictLabelDTO, K> valueFunc) {

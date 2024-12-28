@@ -3,7 +3,7 @@ package top.ticho.rainbow.interfaces.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.ticho.boot.view.core.BaseSecurityUser;
+import top.ticho.boot.view.core.TiSecurityUser;
 
 /**
  * 用户信息
@@ -13,7 +13,7 @@ import top.ticho.boot.view.core.BaseSecurityUser;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class SecurityUser extends BaseSecurityUser implements UserHelper {
+public class SecurityUser extends TiSecurityUser implements UserHelper {
 
     @ApiModelProperty(value = "账户", position = 20)
     private String username;

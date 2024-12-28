@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.ticho.boot.view.core.BasePageQuery;
+import top.ticho.boot.view.core.TiPageQuery;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "菜单信息查询条件")
-public class MenuQuery extends BasePageQuery implements Serializable {
+public class MenuQuery extends TiPageQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /** 主键编号 */

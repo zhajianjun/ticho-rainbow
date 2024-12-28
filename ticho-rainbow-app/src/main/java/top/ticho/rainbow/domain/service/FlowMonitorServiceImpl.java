@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
-import top.ticho.rainbow.application.service.FlowMonitorService;
+import top.ticho.rainbow.application.intranet.service.FlowMonitorService;
 import top.ticho.rainbow.domain.repository.ClientRepository;
 import top.ticho.rainbow.domain.repository.PortRepository;
 import top.ticho.rainbow.infrastructure.entity.Client;
@@ -72,7 +72,7 @@ public class FlowMonitorServiceImpl implements FlowMonitorService {
         List<FlowMonitorDTO> flowDetails = ports
             .stream()
             .sorted(Comparator.comparing(Port::getSort).thenComparing(Port::getPort))
-            .map(x-> convertToFlowMonitor(x, appDataMap.get(x.getPort())))
+            .map(x -> convertToFlowMonitor(x, appDataMap.get(x.getPort())))
             .collect(Collectors.toList());
         FlowMonitorStatsDTO flowMonitorStatsDTO = new FlowMonitorStatsDTO();
         flowMonitorStatsDTO.setClients(clients.size());

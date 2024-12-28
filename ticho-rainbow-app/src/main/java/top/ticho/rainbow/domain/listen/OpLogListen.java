@@ -9,13 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
-import top.ticho.tool.json.util.JsonUtil;
 import top.ticho.boot.log.event.WebLogEvent;
-import top.ticho.boot.view.log.HttpLog;
+import top.ticho.boot.view.log.TiHttpLog;
 import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.rainbow.domain.repository.OpLogRepository;
 import top.ticho.rainbow.infrastructure.entity.OpLog;
 import top.ticho.rainbow.interfaces.assembler.OpLogAssembler;
+import top.ticho.tool.json.util.JsonUtil;
 import top.ticho.tool.trace.common.constant.LogConst;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class OpLogListen {
     @Async("asyncTaskExecutor")
     @EventListener(value = WebLogEvent.class)
     public void logEventHandle(WebLogEvent webLogEvent) {
-        HttpLog httpLog = webLogEvent.getHttpLog();
+        TiHttpLog httpLog = webLogEvent.getTiHttpLog();
         OpLog entity = OpLogAssembler.INSTANCE.toEntity(httpLog);
         if (Objects.isNull(entity)) {
             return;

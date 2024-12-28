@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import top.ticho.boot.security.dto.LoginRequest;
 import top.ticho.boot.security.dto.Oauth2AccessToken;
 import top.ticho.boot.security.handle.BaseLoginUserHandle;
-import top.ticho.boot.view.core.BaseSecurityUser;
+import top.ticho.boot.view.core.TiSecurityUser;
 import top.ticho.boot.web.util.valid.ValidUtil;
-import top.ticho.rainbow.application.service.UserService;
+import top.ticho.rainbow.application.system.service.UserService;
 import top.ticho.rainbow.interfaces.dto.UserLoginDTO;
 
 /**
@@ -29,7 +29,7 @@ public class DefaultLoginUserHandle extends BaseLoginUserHandle {
         }
         String account = loginRequest.getUsername();
         String credentials = loginRequest.getPassword();
-        BaseSecurityUser baseSecurityUser = this.checkPassword(account, credentials);
+        TiSecurityUser baseSecurityUser = this.checkPassword(account, credentials);
         return this.getOauth2TokenAndSetAuthentication(baseSecurityUser);
     }
 

@@ -73,7 +73,6 @@ public class RoleRepositoryImpl extends RootServiceImpl<RoleMapper, Role> implem
 
     @Override
     public List<Role> listByCodes(List<String> codes) {
-        // @formatter:off
         if (CollUtil.isEmpty(codes)) {
             return Collections.emptyList();
         }
@@ -81,9 +80,8 @@ public class RoleRepositoryImpl extends RootServiceImpl<RoleMapper, Role> implem
         List<Role> list = bean.cacheList();
         return list
             .stream()
-            .filter(x-> codes.contains(x.getCode()))
+            .filter(x -> codes.contains(x.getCode()))
             .collect(Collectors.toList());
-        // @formatter:on
     }
 
     @Override
@@ -109,7 +107,7 @@ public class RoleRepositoryImpl extends RootServiceImpl<RoleMapper, Role> implem
         List<Role> list = bean.cacheList();
         return list
             .stream()
-            .filter(x-> ids.contains(x.getId()))
+            .filter(x -> ids.contains(x.getId()))
             .collect(Collectors.toList());
     }
 

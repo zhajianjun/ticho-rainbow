@@ -1,6 +1,6 @@
-package top.ticho.rainbow.application.service;
+package top.ticho.rainbow.application.intranet.service;
 
-import top.ticho.boot.view.core.PageResult;
+import top.ticho.boot.view.core.TiPageResult;
 import top.ticho.rainbow.interfaces.dto.ClientDTO;
 import top.ticho.rainbow.interfaces.query.ClientQuery;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
@@ -48,9 +48,9 @@ public interface ClientService {
      * 分页查询客户端信息列表
      *
      * @param query 查询
-     * @return {@link PageResult}<{@link ClientDTO}>
+     * @return {@link TiPageResult}<{@link ClientDTO}>
      */
-    PageResult<ClientDTO> page(ClientQuery query);
+    TiPageResult<ClientDTO> page(ClientQuery query);
 
     /**
      * 查询客户端信息列表

@@ -6,9 +6,9 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.util.Assert;
-import top.ticho.rainbow.application.service.OpLogService;
+import top.ticho.boot.view.core.TiPageResult;
+import top.ticho.boot.view.util.TiAssert;
+import top.ticho.rainbow.application.system.service.OpLogService;
 import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.OpLogRepository;
 import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
@@ -49,14 +49,13 @@ public class OpLogServiceImpl implements OpLogService {
 
     @Override
     public OpLogDTO getById(Long id) {
-        Assert.isNotNull(id, "编号不能为空");
+        TiAssert.isNotNull(id, "编号不能为空");
         OpLog opLog = opLogRepository.getById(id);
         return OpLogAssembler.INSTANCE.entityToDto(opLog);
     }
 
     @Override
-    public PageResult<OpLogDTO> page(OpLogQuery query) {
-        // @formatter:off
+    public TiPageResult<OpLogDTO> page(OpLogQuery query) {
         query.checkPage();
         Page<OpLog> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
         opLogRepository.list(query);
@@ -64,8 +63,7 @@ public class OpLogServiceImpl implements OpLogService {
             .stream()
             .map(OpLogAssembler.INSTANCE::entityToDto)
             .collect(Collectors.toList());
-        return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), opLogDTOs);
-        // @formatter:on
+        return new TiPageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), opLogDTOs);
     }
 
     @Override
@@ -73,7 +71,7 @@ public class OpLogServiceImpl implements OpLogService {
         String sheetName = "操作日志";
         String fileName = "操作日志导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<Integer, String> labelMap = dictHandle.getLabelMap(DictConst.YES_OR_NO, NumberUtil::parseInt);
-        ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, OpLogExp.class, response);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, OpLogExp.class, response);
     }
 
     private Collection<OpLogExp> excelExpHandle(OpLogQuery query, Map<Integer, String> labelMap) {
@@ -83,7 +81,7 @@ public class OpLogServiceImpl implements OpLogService {
         List<OpLog> result = page.getResult();
         return result
             .stream()
-            .map(x-> {
+            .map(x -> {
                 OpLogExp opLogExp = OpLogAssembler.INSTANCE.entityToExp(x);
                 opLogExp.setIsErrName(labelMap.get(x.getIsErr()));
                 return opLogExp;

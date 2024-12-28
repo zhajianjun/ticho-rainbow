@@ -7,8 +7,8 @@ import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.util.ListUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import top.ticho.tool.json.util.JsonUtil;
 import top.ticho.boot.web.util.valid.ValidUtil;
+import top.ticho.tool.json.util.JsonUtil;
 
 import javax.validation.ConstraintViolation;
 import java.util.List;
@@ -122,13 +122,11 @@ public class ExcelListener<M extends ExcelBaseImp> implements ReadListener<M> {
      * 校验数据
      */
     public String validData(M data) {
-        // @formatter:off
         // 默认校验
         if (!defaultValid) {
             return null;
         }
         return valid(data, delimiter);
-        // @formatter:on
     }
 
     /**
@@ -139,14 +137,12 @@ public class ExcelListener<M extends ExcelBaseImp> implements ReadListener<M> {
      * @return {@link String}
      */
     public String valid(Object data, String delimiter) {
-        // @formatter:off
         Set<ConstraintViolation<Object>> validate = ValidUtil.VALIDATOR_DEFAULT.validate(data);
         return validate
             .stream()
             .map(ConstraintViolation::getMessage)
             .sorted()
             .collect(Collectors.joining(delimiter));
-        // @formatter:on
     }
 
 }

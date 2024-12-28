@@ -9,9 +9,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import top.ticho.boot.log.interceptor.WebLogInterceptor;
-import top.ticho.boot.view.core.Result;
-import top.ticho.boot.view.enums.HttpErrCode;
-import top.ticho.boot.view.log.HttpLog;
+import top.ticho.boot.view.core.TiResult;
+import top.ticho.boot.view.enums.TiHttpErrCode;
+import top.ticho.boot.view.log.TiHttpLog;
 import top.ticho.boot.web.handle.BaseResponseHandle;
 
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +32,7 @@ public class CustomResponseHandle {
     private BaseResponseHandle baseResponseHandle;
 
     public void prefix(Exception ex) {
-        HttpLog httpLog = WebLogInterceptor.logInfo();
+        TiHttpLog httpLog = WebLogInterceptor.logInfo();
         if (Objects.nonNull(httpLog)) {
             String errorMsg = ExceptionUtil.stacktraceToString(ex);
             httpLog.setErrMessage(errorMsg);
@@ -43,9 +43,9 @@ public class CustomResponseHandle {
      * 权限不足处理
      */
     @ExceptionHandler(AccessDeniedException.class)
-    public Result<String> accessDeniedException(AccessDeniedException ex, HttpServletResponse res) {
+    public TiResult<String> accessDeniedException(AccessDeniedException ex, HttpServletResponse res) {
         prefix(ex);
-        Result<String> result = Result.of(HttpErrCode.ACCESS_DENIED);
+        TiResult<String> result = TiResult.of(TiHttpErrCode.ACCESS_DENIED);
         res.setStatus(result.getCode());
         log.error("catch error\t{}", ex.getMessage(), ex);
         return result;
@@ -55,9 +55,9 @@ public class CustomResponseHandle {
      * 数据库异常处理
      */
     @ExceptionHandler(DataAccessException.class)
-    public Result<String> dataAccessException(DataAccessException ex, HttpServletResponse res) {
+    public TiResult<String> dataAccessException(DataAccessException ex, HttpServletResponse res) {
         prefix(ex);
-        Result<String> result = Result.of(HttpErrCode.FAIL);
+        TiResult<String> result = TiResult.of(TiHttpErrCode.FAIL);
         result.setMsg("数据库异常");
         res.setStatus(result.getCode());
         log.error("catch error\t{}", ex.getMessage(), ex);
@@ -65,7 +65,7 @@ public class CustomResponseHandle {
     }
 
     @ExceptionHandler(Exception.class)
-    public Result<String> exception(Exception ex, HttpServletResponse res) {
+    public TiResult<String> exception(Exception ex, HttpServletResponse res) {
         prefix(ex);
         return baseResponseHandle.exception(ex, res);
     }

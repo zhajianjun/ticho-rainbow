@@ -1,15 +1,11 @@
-package top.ticho.rainbow.application.service;
+package top.ticho.rainbow.application.system.service;
 
-import top.ticho.boot.view.core.PageResult;
+import top.ticho.boot.view.core.TiPageResult;
 import top.ticho.rainbow.interfaces.dto.DictDTO;
-import top.ticho.rainbow.interfaces.dto.DictLabelDTO;
 import top.ticho.rainbow.interfaces.query.DictQuery;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * 字典 服务接口
@@ -51,9 +47,9 @@ public interface DictService {
      * 分页查询字典列表
      *
      * @param query 查询
-     * @return {@link PageResult}<{@link DictDTO}>
+     * @return {@link TiPageResult}<{@link DictDTO}>
      */
-    PageResult<DictDTO> page(DictQuery query);
+    TiPageResult<DictDTO> page(DictQuery query);
 
     /**
      * 查询所有有效字典

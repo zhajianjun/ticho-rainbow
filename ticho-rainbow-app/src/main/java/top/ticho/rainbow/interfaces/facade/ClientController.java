@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.core.Result;
+import top.ticho.boot.view.core.TiPageResult;
+import top.ticho.boot.view.core.TiResult;
 import top.ticho.boot.web.annotation.View;
-import top.ticho.rainbow.application.service.ClientService;
+import top.ticho.rainbow.application.intranet.service.ClientService;
 import top.ticho.rainbow.interfaces.dto.ClientDTO;
 import top.ticho.rainbow.interfaces.query.ClientQuery;
 
@@ -44,9 +44,9 @@ public class ClientController {
     @ApiOperation(value = "保存客户端")
     @ApiOperationSupport(order = 10)
     @PostMapping
-    public Result<Void> save(@RequestBody ClientDTO clientDTO) {
+    public TiResult<Void> save(@RequestBody ClientDTO clientDTO) {
         clientService.save(clientDTO);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('intranet:client:remove')")
@@ -54,18 +54,18 @@ public class ClientController {
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @DeleteMapping
-    public Result<Void> remove(Long id) {
+    public TiResult<Void> remove(Long id) {
         clientService.removeById(id);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('intranet:client:update')")
     @ApiOperation(value = "修改客户端")
     @ApiOperationSupport(order = 30)
     @PutMapping
-    public Result<Void> update(@RequestBody ClientDTO clientDTO) {
+    public TiResult<Void> update(@RequestBody ClientDTO clientDTO) {
         clientService.updateById(clientDTO);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @PreAuthorize("@perm.hasPerms('intranet:client:getById')")
@@ -73,24 +73,24 @@ public class ClientController {
     @ApiOperationSupport(order = 40)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
-    public Result<ClientDTO> getById(Long id) {
-        return Result.ok(clientService.getById(id));
+    public TiResult<ClientDTO> getById(Long id) {
+        return TiResult.ok(clientService.getById(id));
     }
 
     @PreAuthorize("@perm.hasPerms('intranet:client:page')")
     @ApiOperation(value = "查询所有客户端(分页)")
     @ApiOperationSupport(order = 50)
     @PostMapping("page")
-    public Result<PageResult<ClientDTO>> page(@RequestBody ClientQuery query) {
-        return Result.ok(clientService.page(query));
+    public TiResult<TiPageResult<ClientDTO>> page(@RequestBody ClientQuery query) {
+        return TiResult.ok(clientService.page(query));
     }
 
     @PreAuthorize("@perm.hasPerms('intranet:client:list')")
     @ApiOperation(value = "查询所有客户端")
     @ApiOperationSupport(order = 60)
     @GetMapping("list")
-    public Result<List<ClientDTO>> list(ClientQuery query) {
-        return Result.ok(clientService.list(query));
+    public TiResult<List<ClientDTO>> list(ClientQuery query) {
+        return TiResult.ok(clientService.list(query));
     }
 
     @View(ignore = true)

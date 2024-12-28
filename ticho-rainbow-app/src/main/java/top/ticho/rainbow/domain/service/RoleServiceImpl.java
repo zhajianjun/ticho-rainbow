@@ -7,11 +7,11 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.enums.BizErrCode;
-import top.ticho.boot.view.util.Assert;
+import top.ticho.boot.view.core.TiPageResult;
+import top.ticho.boot.view.enums.TiBizErrCode;
+import top.ticho.boot.view.util.TiAssert;
 import top.ticho.boot.web.util.valid.ValidUtil;
-import top.ticho.rainbow.application.service.RoleService;
+import top.ticho.rainbow.application.system.service.RoleService;
 import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.RoleMenuRepository;
 import top.ticho.rainbow.domain.repository.RoleRepository;
@@ -66,15 +66,14 @@ public class RoleServiceImpl extends AbstractAuthServiceImpl implements RoleServ
     @Resource
     private HttpServletResponse response;
 
-    // @formatter:off
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void save(RoleDTO roleDTO) {
         Role role = RoleAssembler.INSTANCE.dtoToEntity(roleDTO);
         Role dbDictType = roleRepository.getByCodeExcludeId(role.getCode(), null);
-        Assert.isNull(dbDictType, BizErrCode.FAIL, "保存失败，角色已存在");
-        Assert.isTrue(roleRepository.save(role), BizErrCode.FAIL, "保存失败");
+        TiAssert.isNull(dbDictType, TiBizErrCode.FAIL, "保存失败，角色已存在");
+        TiAssert.isTrue(roleRepository.save(role), TiBizErrCode.FAIL, "保存失败");
         List<Long> menuIds = roleDTO.getMenuIds();
         RoleMenuDTO roleMenuDTO = new RoleMenuDTO();
         roleMenuDTO.setRoleId(role.getId());
@@ -87,13 +86,13 @@ public class RoleServiceImpl extends AbstractAuthServiceImpl implements RoleServ
     public void removeById(Long id) {
         List<Long> roleIds = Collections.singletonList(id);
         boolean userRoleExists = userRoleRepository.existsByRoleIds(roleIds);
-        Assert.isTrue(!userRoleExists, BizErrCode.FAIL, "删除失败,请解绑所有的用户角色");
+        TiAssert.isTrue(!userRoleExists, TiBizErrCode.FAIL, "删除失败,请解绑所有的用户角色");
         boolean roleMenuExists = roleMenuRepository.existsByRoleIds(roleIds);
-        Assert.isTrue(!roleMenuExists, BizErrCode.FAIL, "删除失败,请解绑所有的角色菜单");
+        TiAssert.isTrue(!roleMenuExists, TiBizErrCode.FAIL, "删除失败,请解绑所有的角色菜单");
         Role dbRole = roleRepository.getById(id);
-        Assert.isNotNull(dbRole, BizErrCode.FAIL, "删除失败，角色不存在");
-        Assert.isNotNull(Objects.equals(SecurityConst.ADMIN, dbRole.getCode()), BizErrCode.FAIL, "管理员角色不可删除");
-        Assert.isTrue(roleRepository.removeById(id), BizErrCode.FAIL, "删除失败");
+        TiAssert.isNotNull(dbRole, TiBizErrCode.FAIL, "删除失败，角色不存在");
+        TiAssert.isNotNull(Objects.equals(SecurityConst.ADMIN, dbRole.getCode()), TiBizErrCode.FAIL, "管理员角色不可删除");
+        TiAssert.isTrue(roleRepository.removeById(id), TiBizErrCode.FAIL, "删除失败");
     }
 
     @Override
@@ -101,7 +100,7 @@ public class RoleServiceImpl extends AbstractAuthServiceImpl implements RoleServ
     public void updateById(RoleDTO roleDTO) {
         Role role = RoleAssembler.INSTANCE.dtoToEntity(roleDTO);
         Role repeatRole = roleRepository.getByCodeExcludeId(role.getCode(), role.getId());
-        Assert.isNull(repeatRole, BizErrCode.FAIL, "修改失败，角色已存在");
+        TiAssert.isNull(repeatRole, TiBizErrCode.FAIL, "修改失败，角色已存在");
         Role dbRole = roleRepository.getById(role.getId());
         // 角色编码不能修改
         role.setCode(dbRole.getCode());
@@ -109,7 +108,7 @@ public class RoleServiceImpl extends AbstractAuthServiceImpl implements RoleServ
         if (Objects.equals(SecurityConst.ADMIN, dbRole.getCode())) {
             role.setStatus(CommonStatus.NORMAL.code());
         }
-        Assert.isTrue(roleRepository.updateById(role), BizErrCode.FAIL, "修改失败");
+        TiAssert.isTrue(roleRepository.updateById(role), TiBizErrCode.FAIL, "修改失败");
         List<Long> menuIds = roleDTO.getMenuIds();
         RoleMenuDTO roleMenuDTO = new RoleMenuDTO();
         roleMenuDTO.setRoleId(role.getId());
@@ -120,7 +119,7 @@ public class RoleServiceImpl extends AbstractAuthServiceImpl implements RoleServ
     @Override
     public void updateStatus(Long id, Integer status) {
         Role dbRole = roleRepository.getById(id);
-        Assert.isNotNull(dbRole, BizErrCode.FAIL, "修改失败，角色不存在");
+        TiAssert.isNotNull(dbRole, TiBizErrCode.FAIL, "修改失败，角色不存在");
         Role role = new Role();
         role.setId(id);
         // 管理员角色一定是正常状态
@@ -139,7 +138,7 @@ public class RoleServiceImpl extends AbstractAuthServiceImpl implements RoleServ
     }
 
     @Override
-    public PageResult<RoleDTO> page(RoleQuery query) {
+    public TiPageResult<RoleDTO> page(RoleQuery query) {
         query.checkPage();
         Page<Role> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
         roleRepository.list(query);
@@ -147,7 +146,7 @@ public class RoleServiceImpl extends AbstractAuthServiceImpl implements RoleServ
             .stream()
             .map(RoleAssembler.INSTANCE::entityToDto)
             .collect(Collectors.toList());
-        return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), roleDTOs);
+        return new TiPageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), roleDTOs);
     }
 
     @Override
@@ -177,7 +176,7 @@ public class RoleServiceImpl extends AbstractAuthServiceImpl implements RoleServ
         String sheetName = "角色信息";
         String fileName = "角色信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<Integer, String> labelMap = dictHandle.getLabelMap(DictConst.COMMON_STATUS, NumberUtil::parseInt);
-        ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, RoleExp.class, response);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, RoleExp.class, response);
     }
 
     private Collection<RoleExp> excelExpHandle(RoleQuery query, Map<Integer, String> labelMap) {
@@ -186,7 +185,7 @@ public class RoleServiceImpl extends AbstractAuthServiceImpl implements RoleServ
         roleRepository.list(query);
         return page.getResult()
             .stream()
-            .map(x-> {
+            .map(x -> {
                 RoleExp roleExp = RoleAssembler.INSTANCE.entityToExp(x);
                 roleExp.setStatusName(labelMap.get(x.getStatus()));
                 return roleExp;

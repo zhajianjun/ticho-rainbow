@@ -6,7 +6,7 @@ import org.beetl.core.GroupTemplate;
 import org.beetl.core.ResourceLoader;
 import org.beetl.core.resource.ClasspathResourceLoader;
 import org.beetl.core.resource.StringTemplateResourceLoader;
-import top.ticho.boot.view.exception.BizException;
+import top.ticho.boot.view.exception.TiBizException;
 
 import java.io.IOException;
 
@@ -59,7 +59,7 @@ public class BeetlUtil {
         } catch (IOException e) {
             String message = "获取beetl默认配置对象失败！";
             log.error(message, e);
-            throw new BizException(message);
+            throw new TiBizException(message);
         }
     }
 

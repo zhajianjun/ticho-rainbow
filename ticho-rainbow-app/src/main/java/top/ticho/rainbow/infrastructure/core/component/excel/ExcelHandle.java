@@ -9,9 +9,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
+import top.ticho.boot.view.core.TiPageQuery;
+import top.ticho.boot.view.core.TiResult;
 import top.ticho.tool.json.util.JsonUtil;
-import top.ticho.boot.view.core.BasePageQuery;
-import top.ticho.boot.view.core.Result;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
@@ -40,9 +40,9 @@ public class ExcelHandle {
     /**
      * 读取excel
      *
-     * @param file 文件
+     * @param file             文件
      * @param handlerDataBatch 对读取的数据处理的逻辑
-     * @param claz excel读取类
+     * @param claz             excel读取类
      * @return {@link List}<{@link M}> 读取数据
      */
     public static <M extends ExcelBaseImp> List<M> read(
@@ -115,7 +115,7 @@ public class ExcelHandle {
         response.setCharacterEncoding("utf-8");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLUtil.encodeAll(fileName + ".xlsx"));
-        try(ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), claz).build()) {
+        try (ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), claz).build()) {
             WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
             excelWriter.write(datas, writeSheet);
         } catch (Exception e) {
@@ -134,7 +134,7 @@ public class ExcelHandle {
      * @param claz             excel类
      * @param response         HttpServletResponse
      */
-    public static <Q extends BasePageQuery, R> void writeToResponseBatch(
+    public static <Q extends TiPageQuery, R> void writeToResponseBatch(
         Function<Q, Collection<R>> handlerDataBatch,
         Q query,
         String fileName,
@@ -148,10 +148,10 @@ public class ExcelHandle {
     /**
      * 空数据写入HttpServletResponse
      *
-     * @param fileName         文件名称
-     * @param sheetName        sheetName
-     * @param claz             excel类
-     * @param response         HttpServletResponse
+     * @param fileName  文件名称
+     * @param sheetName sheetName
+     * @param claz      excel类
+     * @param response  HttpServletResponse
      */
     public static <R> void writeEmptyToResponseBatch(
         String fileName,
@@ -174,7 +174,7 @@ public class ExcelHandle {
      * @param maxTotal         最大数量
      * @param response         HttpServletResponse
      */
-    public static <Q extends BasePageQuery, R> void writeToResponseBatch(
+    public static <Q extends TiPageQuery, R> void writeToResponseBatch(
         Function<Q, Collection<R>> handlerDataBatch,
         Q query,
         String fileName,
@@ -184,10 +184,10 @@ public class ExcelHandle {
         Long maxTotal,
         HttpServletResponse response
     ) throws IOException {
-        if (batchSize == null || batchSize <=0) {
+        if (batchSize == null || batchSize <= 0) {
             batchSize = 50;
         }
-        if (maxTotal == null || maxTotal <=0) {
+        if (maxTotal == null || maxTotal <= 0) {
             maxTotal = 10000L;
         }
         if (sheetName == null || sheetName.isEmpty()) {
@@ -197,7 +197,7 @@ public class ExcelHandle {
         response.setCharacterEncoding("utf-8");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLUtil.encodeAll(fileName + ".xlsx"));
-        try(ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), claz).build()) {
+        try (ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), claz).build()) {
             WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
             long total = 0;
             if (query == null) {
@@ -217,11 +217,11 @@ public class ExcelHandle {
                 total = total + apply.size();
                 // 最大数量保护，防止死循环
                 if (total > maxTotal) {
-                     break;
+                    break;
                 }
                 // 当每页条数等于 Integer.MAX_VALUE 打断循环
                 if (Objects.equals(query.getPageSize(), Integer.MAX_VALUE)) {
-                     break;
+                    break;
                 }
                 query.setPageNum(query.getPageNum() + 1);
             }
@@ -234,9 +234,9 @@ public class ExcelHandle {
     /**
      * 读取excel,把结果写入到新的excel中
      *
-     * @param file 文件
+     * @param file             文件
      * @param handlerDataBatch 对读取的数据处理的逻辑
-     * @param claz excel导入类
+     * @param claz             excel导入类
      */
     public static <M extends ExcelBaseImp> void readAndWriteToResponse(
         BiConsumer<List<M>, Consumer<M>> handlerDataBatch,
@@ -275,7 +275,7 @@ public class ExcelHandle {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("utf-8");
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        Result<String> fail = Result.of(500, "下载文件失败，" + errMsg);
+        TiResult<String> fail = TiResult.of(500, "下载文件失败，" + errMsg);
         PrintWriter writer = response.getWriter();
         writer.println(JsonUtil.toJsonString(fail));
     }

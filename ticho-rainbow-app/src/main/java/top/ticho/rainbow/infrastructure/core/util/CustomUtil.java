@@ -26,14 +26,15 @@ public class CustomUtil {
         Field[] declaredFields = classz.getDeclaredFields();
         StringJoiner joiner = new StringJoiner("\n");
         joiner.add("export function getModalFormColumns(): FormSchema[] {\n" +
-                "  return [");
+            "  return [");
         for (Field declaredField : declaredFields) {
             ApiModelProperty annotation = declaredField.getAnnotation(ApiModelProperty.class);
             if (annotation == null) {
                 continue;
             }
             String name = declaredField.getName();
-            joiner.add(StrUtil.format("    {\n" +
+            joiner.add(StrUtil.format(
+                "    {\n" +
                     "      field: `{}`,\n" +
                     "      label: `{}`,\n" +
                     "      component: 'Input',\n" +
@@ -43,10 +44,11 @@ public class CustomUtil {
                     "      colProps: {\n" +
                     "        span: 24,\n" +
                     "      },\n" +
-                    "    },", name, annotation.value(), annotation.value()));
+                    "    },", name, annotation.value(), annotation.value()
+            ));
         }
         joiner.add("  ];\n" +
-                "}");
+            "}");
         System.out.println(joiner);
     }
 
@@ -54,22 +56,24 @@ public class CustomUtil {
         Field[] declaredFields = classz.getDeclaredFields();
         StringJoiner joiner = new StringJoiner("\n");
         joiner.add("export function getTableColumns(): BasicColumn[] {\n" +
-                "  return [");
+            "  return [");
         for (Field declaredField : declaredFields) {
             ApiModelProperty annotation = declaredField.getAnnotation(ApiModelProperty.class);
             if (annotation == null) {
                 continue;
             }
             String name = declaredField.getName();
-            joiner.add(StrUtil.format("    {\n" +
+            joiner.add(StrUtil.format(
+                "    {\n" +
                     "      title: '{}',\n" +
                     "      dataIndex: '{}',\n" +
                     "      resizable: true,\n" +
                     "      width: 150,\n" +
-                    "    },", annotation.value(), name));
+                    "    },", annotation.value(), name
+            ));
         }
         joiner.add("  ];\n" +
-                "}");
+            "}");
         System.out.println(joiner);
     }
 
@@ -77,16 +81,17 @@ public class CustomUtil {
         Field[] declaredFields = classz.getDeclaredFields();
         StringJoiner joiner = new StringJoiner("\n");
         joiner.add("export function getSearchColumns(): Partial<FormProps> {\n" +
-                "  return {\n" +
-                "    labelWidth: 100,\n" +
-                "    schemas: [");
+            "  return {\n" +
+            "    labelWidth: 100,\n" +
+            "    schemas: [");
         for (Field declaredField : declaredFields) {
             ApiModelProperty annotation = declaredField.getAnnotation(ApiModelProperty.class);
             if (annotation == null) {
                 continue;
             }
             String name = declaredField.getName();
-            joiner.add(StrUtil.format("      {\n" +
+            joiner.add(StrUtil.format(
+                "      {\n" +
                     "        field: `{}`,\n" +
                     "        label: `{}`,\n" +
                     "        component: 'Input',\n" +
@@ -97,11 +102,12 @@ public class CustomUtil {
                     "        componentProps: {\n" +
                     "          placeholder: '请输入{}',\n" +
                     "        },\n" +
-                    "      },", name, annotation.value(), annotation.value()));
+                    "      },", name, annotation.value(), annotation.value()
+            ));
         }
         joiner.add("    ],\n" +
-                "  };\n" +
-                "}");
+            "  };\n" +
+            "}");
         System.out.println(joiner);
     }
 

@@ -16,10 +16,10 @@ import top.ticho.boot.security.annotation.IgnoreJwtCheck;
 import top.ticho.boot.security.constant.BaseOAuth2Const;
 import top.ticho.boot.security.dto.Oauth2AccessToken;
 import top.ticho.boot.security.handle.LoginUserHandle;
-import top.ticho.boot.view.core.Result;
+import top.ticho.boot.view.core.TiResult;
 import top.ticho.boot.web.annotation.View;
 import top.ticho.boot.web.util.valid.ValidUtil;
-import top.ticho.rainbow.application.service.UserService;
+import top.ticho.rainbow.application.system.service.UserService;
 import top.ticho.rainbow.interfaces.dto.ImgCodeEmailDTO;
 import top.ticho.rainbow.interfaces.dto.UserLoginDTO;
 import top.ticho.rainbow.interfaces.dto.UserSignUpOrResetDTO;
@@ -49,33 +49,33 @@ public class OauthController {
     @ApiOperation("注册邮箱发送")
     @ApiOperationSupport(order = 10)
     @PostMapping("signUpEmailSend")
-    public Result<Void> signUpEmailSend(@RequestBody ImgCodeEmailDTO imgCodeEmailDTO) {
+    public TiResult<Void> signUpEmailSend(@RequestBody ImgCodeEmailDTO imgCodeEmailDTO) {
         userService.signUpEmailSend(imgCodeEmailDTO);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @IgnoreJwtCheck
     @ApiOperation("注册")
     @ApiOperationSupport(order = 20)
     @PostMapping("signUp")
-    public Result<UserLoginDTO> signUp(@RequestBody UserSignUpOrResetDTO userSignUpOrResetDTO) {
-        return Result.ok(userService.signUp(userSignUpOrResetDTO));
+    public TiResult<UserLoginDTO> signUp(@RequestBody UserSignUpOrResetDTO userSignUpOrResetDTO) {
+        return TiResult.ok(userService.signUp(userSignUpOrResetDTO));
     }
 
     @IgnoreJwtCheck
     @ApiOperation(value = "重置邮箱验证码发送")
     @ApiOperationSupport(order = 30)
     @PostMapping("resetPasswordEmailSend")
-    public Result<String> resetPasswordEmailSend(@RequestBody ImgCodeEmailDTO imgCodeEmailDTO) {
-        return Result.ok(userService.resetPasswordEmailSend(imgCodeEmailDTO));
+    public TiResult<String> resetPasswordEmailSend(@RequestBody ImgCodeEmailDTO imgCodeEmailDTO) {
+        return TiResult.ok(userService.resetPasswordEmailSend(imgCodeEmailDTO));
     }
 
     @IgnoreJwtCheck
     @ApiOperation(value = "重置用户密码")
     @ApiOperationSupport(order = 40)
     @PostMapping("resetPassword")
-    public Result<UserLoginDTO> resetPassword(@RequestBody UserSignUpOrResetDTO userSignUpOrResetDTO) {
-        return Result.ok(userService.resetPassword(userSignUpOrResetDTO));
+    public TiResult<UserLoginDTO> resetPassword(@RequestBody UserSignUpOrResetDTO userSignUpOrResetDTO) {
+        return TiResult.ok(userService.resetPassword(userSignUpOrResetDTO));
     }
 
     @IgnoreJwtCheck
@@ -91,31 +91,31 @@ public class OauthController {
     @ApiOperation("登录")
     @ApiOperationSupport(order = 60)
     @PostMapping("token")
-    public Result<Oauth2AccessToken> token(UserLoginDTO userLoginDTO) {
+    public TiResult<Oauth2AccessToken> token(UserLoginDTO userLoginDTO) {
         ValidUtil.valid(userLoginDTO);
-        return Result.ok(loginUserHandle.token(userLoginDTO));
+        return TiResult.ok(loginUserHandle.token(userLoginDTO));
     }
 
     @IgnoreJwtCheck
     @ApiOperation("刷新token")
     @ApiOperationSupport(order = 70)
     @PostMapping("refreshToken")
-    public Result<Oauth2AccessToken> refreshToken(String refreshToken) {
-        return Result.ok(loginUserHandle.refreshToken(refreshToken));
+    public TiResult<Oauth2AccessToken> refreshToken(String refreshToken) {
+        return TiResult.ok(loginUserHandle.refreshToken(refreshToken));
     }
 
     @ApiOperation(value = "token信息查询")
     @ApiOperationSupport(order = 80)
     @GetMapping
-    public Result<Principal> principal() {
-        return Result.ok(SecurityContextHolder.getContext().getAuthentication());
+    public TiResult<Principal> principal() {
+        return TiResult.ok(SecurityContextHolder.getContext().getAuthentication());
     }
 
     @ApiOperation("获取公钥")
     @ApiOperationSupport(order = 90)
     @GetMapping("publicKey")
-    public Result<String> publicKey() {
-        return Result.ok(loginUserHandle.publicKey());
+    public TiResult<String> publicKey() {
+        return TiResult.ok(loginUserHandle.publicKey());
     }
 
 }

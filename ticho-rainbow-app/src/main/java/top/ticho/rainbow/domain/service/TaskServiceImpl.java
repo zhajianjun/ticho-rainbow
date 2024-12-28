@@ -7,13 +7,13 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.enums.BizErrCode;
-import top.ticho.boot.view.util.Assert;
+import top.ticho.boot.view.core.TiPageResult;
+import top.ticho.boot.view.enums.TiBizErrCode;
+import top.ticho.boot.view.util.TiAssert;
 import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.boot.web.util.valid.ValidGroup;
 import top.ticho.boot.web.util.valid.ValidUtil;
-import top.ticho.rainbow.application.service.TaskService;
+import top.ticho.rainbow.application.task.TaskService;
 import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.TaskRepository;
 import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
@@ -65,7 +65,6 @@ public class TaskServiceImpl implements TaskService {
     @Resource
     private HttpServletResponse response;
 
-    // @formatter:off
 
     @PostConstruct
     public void init() {
@@ -94,10 +93,10 @@ public class TaskServiceImpl implements TaskService {
         ValidUtil.valid(taskDTO);
         Task task = TaskAssembler.INSTANCE.dtoToEntity(taskDTO);
         task.setId(CloudIdUtil.getId());
-        Assert.isTrue(taskRepository.save(task), BizErrCode.FAIL, "保存失败");
+        TiAssert.isTrue(taskRepository.save(task), TiBizErrCode.FAIL, "保存失败");
         check(task);
         boolean addedJob = taskTemplate.addJob(task.getId().toString(), DEFAULT_JOB_GROUP, task.getContent(), task.getCronExpression(), task.getName(), task.getParam());
-        Assert.isTrue(addedJob, BizErrCode.FAIL, "添加任务失败");
+        TiAssert.isTrue(addedJob, TiBizErrCode.FAIL, "添加任务失败");
         if (Objects.equals(task.getStatus(), 1)) {
             taskTemplate.resumeJob(task.getId().toString(), DEFAULT_JOB_GROUP);
         } else {
@@ -107,28 +106,28 @@ public class TaskServiceImpl implements TaskService {
 
     private void check(Task task) {
         boolean valid = TaskTemplate.isValid(task.getCronExpression());
-        Assert.isTrue(valid, BizErrCode.FAIL, "cron表达式不正确");
-        Optional<AbstracTask<?>>  abstracTaskOpt = abstracTasks
+        TiAssert.isTrue(valid, TiBizErrCode.FAIL, "cron表达式不正确");
+        Optional<AbstracTask<?>> abstracTaskOpt = abstracTasks
             .stream()
             .filter(x -> Objects.equals(x.getClass().getName(), task.getContent()))
             .findFirst();
         if (!abstracTaskOpt.isPresent()) {
-             Assert.cast(BizErrCode.PARAM_ERROR, "执行类不存在");
+            TiAssert.cast(TiBizErrCode.PARAM_ERROR, "执行类不存在");
         }
         AbstracTask<?> abstracTask = abstracTaskOpt.get();
         String param = task.getParam();
         if (StrUtil.isNotBlank(param)) {
             Object taskParam = abstracTask.getTaskParam(param);
-            Assert.isNotNull(taskParam, BizErrCode.FAIL, "参数格式不正确");
+            TiAssert.isNotNull(taskParam, TiBizErrCode.FAIL, "参数格式不正确");
         }
     }
 
     @Override
     public void remove(Long id) {
-        Assert.isNotNull(id, "编号不能为空");
-        Assert.isTrue(taskRepository.removeById(id), BizErrCode.FAIL, "删除失败");
+        TiAssert.isNotNull(id, "编号不能为空");
+        TiAssert.isTrue(taskRepository.removeById(id), TiBizErrCode.FAIL, "删除失败");
         boolean deleteJob = taskTemplate.deleteJob(id.toString(), DEFAULT_JOB_GROUP);
-        Assert.isTrue(deleteJob, BizErrCode.FAIL, "删除任务失败");
+        TiAssert.isTrue(deleteJob, TiBizErrCode.FAIL, "删除任务失败");
     }
 
     @Override
@@ -137,16 +136,16 @@ public class TaskServiceImpl implements TaskService {
         ValidUtil.valid(taskDTO, ValidGroup.Upd.class);
         Task task = TaskAssembler.INSTANCE.dtoToEntity(taskDTO);
         check(task);
-        Assert.isTrue(taskRepository.updateById(task), BizErrCode.FAIL, "修改失败");
+        TiAssert.isTrue(taskRepository.updateById(task), TiBizErrCode.FAIL, "修改失败");
         boolean exists = taskTemplate.checkExists(task.getId().toString(), DEFAULT_JOB_GROUP);
         if (exists) {
             boolean deleteJob = taskTemplate.deleteJob(task.getId().toString(), DEFAULT_JOB_GROUP);
-            Assert.isTrue(deleteJob, BizErrCode.FAIL, "删除任务失败");
+            TiAssert.isTrue(deleteJob, TiBizErrCode.FAIL, "删除任务失败");
         }
         Task dbTask = taskRepository.getById(task.getId());
         Integer status = dbTask.getStatus();
         boolean addedJob = taskTemplate.addJob(task.getId().toString(), DEFAULT_JOB_GROUP, task.getContent(), task.getCronExpression(), task.getName(), task.getParam());
-        Assert.isTrue(addedJob, BizErrCode.FAIL, "添加任务失败");
+        TiAssert.isTrue(addedJob, TiBizErrCode.FAIL, "添加任务失败");
         if (Objects.equals(status, 1)) {
             taskTemplate.resumeJob(task.getId().toString(), DEFAULT_JOB_GROUP);
         }
@@ -154,64 +153,63 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void runOnce(Long id, String param) {
-        Assert.isNotNull(id, "编号不能为空");
+        TiAssert.isNotNull(id, "编号不能为空");
         Task task = taskRepository.getById(id);
-        Assert.isNotNull(task, BizErrCode.FAIL, "任务不存在");
+        TiAssert.isNotNull(task, TiBizErrCode.FAIL, "任务不存在");
         boolean exists = taskTemplate.checkExists(task.getId().toString(), DEFAULT_JOB_GROUP);
-        Assert.isTrue(exists, BizErrCode.FAIL, "任务不存在");
+        TiAssert.isTrue(exists, TiBizErrCode.FAIL, "任务不存在");
         check(task);
         boolean runJob = taskTemplate.runOnce(task.getId().toString(), DEFAULT_JOB_GROUP, param);
-        Assert.isTrue(runJob, BizErrCode.FAIL, "立即执行任务失败");
+        TiAssert.isTrue(runJob, TiBizErrCode.FAIL, "立即执行任务失败");
     }
 
     @Override
     public void pause(Long id) {
-        Assert.isNotNull(id, "编号不能为空");
+        TiAssert.isNotNull(id, "编号不能为空");
         Task task = taskRepository.getById(id);
-        Assert.isNotNull(task, BizErrCode.FAIL, "任务不存在");
+        TiAssert.isNotNull(task, TiBizErrCode.FAIL, "任务不存在");
         Integer status = task.getStatus();
-        Assert.isTrue(Objects.equals(status, 1), BizErrCode.FAIL, "任务未启动");
+        TiAssert.isTrue(Objects.equals(status, 1), TiBizErrCode.FAIL, "任务未启动");
         boolean exists = taskTemplate.checkExists(id.toString(), DEFAULT_JOB_GROUP);
         boolean updated = taskRepository.updateStatusBatch(Collections.singletonList(id), 0);
-        Assert.isTrue(updated, BizErrCode.FAIL, "暂停任务失败");
-        Assert.isTrue(exists, BizErrCode.FAIL, "任务不存在");
+        TiAssert.isTrue(updated, TiBizErrCode.FAIL, "暂停任务失败");
+        TiAssert.isTrue(exists, TiBizErrCode.FAIL, "任务不存在");
         boolean pauseJob = taskTemplate.pauseJob(id.toString(), DEFAULT_JOB_GROUP);
-        Assert.isTrue(pauseJob, BizErrCode.FAIL, "暂停任务失败");
+        TiAssert.isTrue(pauseJob, TiBizErrCode.FAIL, "暂停任务失败");
     }
 
     @Override
     public void resume(Long id) {
-        Assert.isNotNull(id, "编号不能为空");
+        TiAssert.isNotNull(id, "编号不能为空");
         Task task = taskRepository.getById(id);
-        Assert.isNotNull(task, BizErrCode.FAIL, "任务不存在");
+        TiAssert.isNotNull(task, TiBizErrCode.FAIL, "任务不存在");
         Integer status = task.getStatus();
-        Assert.isTrue(Objects.equals(status, 0), BizErrCode.FAIL, "任务已启动");
+        TiAssert.isTrue(Objects.equals(status, 0), TiBizErrCode.FAIL, "任务已启动");
         boolean updated = taskRepository.updateStatusBatch(Collections.singletonList(id), 1);
-        Assert.isTrue(updated, BizErrCode.FAIL, "恢复任务失败");
+        TiAssert.isTrue(updated, TiBizErrCode.FAIL, "恢复任务失败");
         boolean exists = taskTemplate.checkExists(id.toString(), DEFAULT_JOB_GROUP);
-        Assert.isTrue(exists, BizErrCode.FAIL, "任务不存在");
+        TiAssert.isTrue(exists, TiBizErrCode.FAIL, "任务不存在");
         boolean resumeJob = taskTemplate.resumeJob(id.toString(), DEFAULT_JOB_GROUP);
-        Assert.isTrue(resumeJob, BizErrCode.FAIL, "恢复任务失败");
+        TiAssert.isTrue(resumeJob, TiBizErrCode.FAIL, "恢复任务失败");
     }
 
     @Override
     public List<String> getRecentCronTime(String cronExpression, Integer num) {
         num = Optional.ofNullable(num).orElse(10);
-        Assert.isTrue(num > 0, BizErrCode.FAIL, "查询数量必须大于0");
-        Assert.isTrue(TaskTemplate.isValid(cronExpression), BizErrCode.FAIL, "cron表达式不合法");
+        TiAssert.isTrue(num > 0, TiBizErrCode.FAIL, "查询数量必须大于0");
+        TiAssert.isTrue(TaskTemplate.isValid(cronExpression), TiBizErrCode.FAIL, "cron表达式不合法");
         return TaskTemplate.getRecentCronTime(cronExpression, num);
     }
 
     @Override
     public TaskDTO getById(Long id) {
-        Assert.isNotNull(id, "编号不能为空");
+        TiAssert.isNotNull(id, "编号不能为空");
         Task task = taskRepository.getById(id);
         return TaskAssembler.INSTANCE.entityToDto(task);
     }
 
     @Override
-    public PageResult<TaskDTO> page(TaskQuery query) {
-        // @formatter:off
+    public TiPageResult<TaskDTO> page(TaskQuery query) {
         query.checkPage();
         Page<Task> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
         taskRepository.list(query);
@@ -219,16 +217,15 @@ public class TaskServiceImpl implements TaskService {
             .stream()
             .map(TaskAssembler.INSTANCE::entityToDto)
             .collect(Collectors.toList());
-        return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), taskDTOs);
-        // @formatter:on
+        return new TiPageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), taskDTOs);
     }
 
     @Override
     public List<TaskDTO> list(TaskQuery query) {
         List<Task> list = taskRepository.list(query);
         return list.stream()
-        .map(TaskAssembler.INSTANCE::entityToDto)
-        .collect(Collectors.toList());
+            .map(TaskAssembler.INSTANCE::entityToDto)
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -236,7 +233,7 @@ public class TaskServiceImpl implements TaskService {
         String sheetName = "计划任务";
         String fileName = "计划任务导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictHandle.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.PLAN_TASK);
-        ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, TaskExp.class, response);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, TaskExp.class, response);
     }
 
     private Collection<TaskExp> excelExpHandle(TaskQuery query, Map<String, String> labelMap) {
@@ -245,7 +242,7 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.list(query);
         return page.getResult()
             .stream()
-            .map(x-> {
+            .map(x -> {
                 TaskExp taskExp = TaskAssembler.INSTANCE.entityToExp(x);
                 taskExp.setStatusName(labelMap.get(DictConst.COMMON_STATUS + x.getStatus()));
                 taskExp.setContent(labelMap.get(DictConst.PLAN_TASK + x.getContent()));

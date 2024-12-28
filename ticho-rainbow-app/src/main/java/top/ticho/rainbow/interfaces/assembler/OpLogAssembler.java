@@ -3,7 +3,7 @@ package top.ticho.rainbow.interfaces.assembler;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-import top.ticho.boot.view.log.HttpLog;
+import top.ticho.boot.view.log.TiHttpLog;
 import top.ticho.rainbow.infrastructure.entity.OpLog;
 import top.ticho.rainbow.interfaces.dto.OpLogDTO;
 import top.ticho.rainbow.interfaces.excel.OpLogExp;
@@ -25,7 +25,7 @@ public interface OpLogAssembler {
      * @return {@link OpLog}
      */
     @Mapping(ignore = true, target = "createTime")
-    OpLog toEntity(HttpLog httpLog);
+    OpLog toEntity(TiHttpLog httpLog);
 
     /**
      * 日志信息DTO

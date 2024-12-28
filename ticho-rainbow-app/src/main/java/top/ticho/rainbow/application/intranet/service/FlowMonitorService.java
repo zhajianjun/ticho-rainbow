@@ -1,4 +1,4 @@
-package top.ticho.rainbow.application.service;
+package top.ticho.rainbow.application.intranet.service;
 
 import top.ticho.rainbow.interfaces.dto.FlowMonitorStatsDTO;
 

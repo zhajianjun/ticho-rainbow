@@ -1,9 +1,9 @@
 package top.ticho.rainbow.infrastructure.core.component;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import top.ticho.boot.security.util.BaseUserUtil;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
+import top.ticho.boot.security.util.BaseUserUtil;
 
 import java.time.LocalDateTime;
 

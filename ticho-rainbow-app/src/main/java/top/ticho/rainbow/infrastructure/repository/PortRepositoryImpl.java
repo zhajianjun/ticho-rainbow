@@ -33,13 +33,13 @@ public class PortRepositoryImpl extends RootServiceImpl<PortMapper, Port> implem
 
     @Override
     public List<Port> list(PortQuery query) {
-        // @formatter:off
         LambdaQueryWrapper<Port> wrapper = Wrappers.lambdaQuery();
         wrapper.in(CollUtil.isNotEmpty(query.getIds()), Port::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), Port::getId, query.getId());
         wrapper.like(StrUtil.isNotBlank(query.getAccessKey()), Port::getAccessKey, query.getAccessKey());
         wrapper.eq(Objects.nonNull(query.getPort()), Port::getPort, query.getPort());
         wrapper.like(StrUtil.isNotBlank(query.getEndpoint()), Port::getEndpoint, query.getEndpoint());
+        wrapper.eq(Objects.nonNull(query.getStatus()), Port::getStatus, query.getStatus());
         wrapper.like(StrUtil.isNotBlank(query.getDomain()), Port::getDomain, query.getDomain());
         wrapper.eq(Objects.nonNull(query.getType()), Port::getType, query.getType());
         wrapper.ge(Objects.nonNull(query.getExpireAt()), Port::getExpireAt, query.getExpireAt());
@@ -47,7 +47,6 @@ public class PortRepositoryImpl extends RootServiceImpl<PortMapper, Port> implem
         wrapper.orderByAsc(Port::getSort);
         wrapper.orderByAsc(Port::getPort);
         return list(wrapper);
-        // @formatter:on
     }
 
     @Override
@@ -88,7 +87,6 @@ public class PortRepositoryImpl extends RootServiceImpl<PortMapper, Port> implem
 
     @Override
     public <T> Map<String, List<T>> listAndGroupByAccessKey(Collection<String> accessKeys, Function<Port, T> function, Predicate<Port> filter) {
-        // @formatter:off
         if (Objects.isNull(function) || Objects.isNull(filter)) {
             return Collections.emptyMap();
         }
@@ -96,7 +94,6 @@ public class PortRepositoryImpl extends RootServiceImpl<PortMapper, Port> implem
             .stream()
             .filter(filter)
             .collect(Collectors.groupingBy(Port::getAccessKey, Collectors.mapping(function, Collectors.toList())));
-        // @formatter:on
     }
 
 

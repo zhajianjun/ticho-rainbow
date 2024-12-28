@@ -1,6 +1,6 @@
-package top.ticho.rainbow.application.service;
+package top.ticho.rainbow.application.system.service;
 
-import top.ticho.boot.view.core.PageResult;
+import top.ticho.boot.view.core.TiPageResult;
 import top.ticho.rainbow.interfaces.dto.OpLogDTO;
 import top.ticho.rainbow.interfaces.query.OpLogQuery;
 
@@ -27,9 +27,9 @@ public interface OpLogService {
      * 分页查询日志信息列表
      *
      * @param query 查询
-     * @return {@link PageResult}<{@link OpLogDTO}>
+     * @return {@link TiPageResult}<{@link OpLogDTO}>
      */
-    PageResult<OpLogDTO> page(OpLogQuery query);
+    TiPageResult<OpLogDTO> page(OpLogQuery query);
 
     /**
      * 导出操作日志

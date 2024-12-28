@@ -27,7 +27,6 @@ public class DictRepositoryImpl extends RootServiceImpl<DictMapper, Dict> implem
 
     @Override
     public List<Dict> list(DictQuery query) {
-        // @formatter:off
         LambdaQueryWrapper<Dict> wrapper = Wrappers.lambdaQuery();
         wrapper.in(CollUtil.isNotEmpty(query.getIds()), Dict::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), Dict::getId, query.getId());
@@ -38,7 +37,6 @@ public class DictRepositoryImpl extends RootServiceImpl<DictMapper, Dict> implem
         wrapper.like(StrUtil.isNotBlank(query.getRemark()), Dict::getRemark, query.getRemark());
         wrapper.orderByDesc(Dict::getId);
         return list(wrapper);
-        // @formatter:on
     }
 
     @Override

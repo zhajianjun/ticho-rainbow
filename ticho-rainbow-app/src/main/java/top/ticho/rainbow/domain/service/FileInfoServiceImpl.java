@@ -15,15 +15,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
-import top.ticho.tool.json.util.JsonUtil;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.enums.BizErrCode;
-import top.ticho.boot.view.enums.HttpErrCode;
-import top.ticho.boot.view.exception.BizException;
-import top.ticho.boot.view.util.Assert;
+import top.ticho.boot.view.core.TiPageResult;
+import top.ticho.boot.view.enums.TiBizErrCode;
+import top.ticho.boot.view.enums.TiHttpErrCode;
+import top.ticho.boot.view.exception.TiBizException;
+import top.ticho.boot.view.util.TiAssert;
 import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.boot.web.util.valid.ValidUtil;
-import top.ticho.rainbow.application.service.FileInfoService;
+import top.ticho.rainbow.application.storage.service.FileInfoService;
 import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.infrastructure.config.CacheConfig;
@@ -46,6 +45,7 @@ import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoReqDTO;
 import top.ticho.rainbow.interfaces.excel.FileInfoExp;
 import top.ticho.rainbow.interfaces.query.FileInfoQuery;
+import top.ticho.tool.json.util.JsonUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -95,7 +95,6 @@ public class FileInfoServiceImpl implements FileInfoService {
     @Autowired
     private DictHandle dictHandle;
 
-    // @formatter:off
 
     @Override
     public FileInfoDTO upload(FileInfoReqDTO fileInfoReqDTO) {
@@ -105,7 +104,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         // 原始文件名，logo.svg
         String originalFileName = file.getOriginalFilename();
         DataSize fileSize = fileProperty.getMaxFileSize();
-        Assert.isTrue(file.getSize() <= fileSize.toBytes(), FileErrCode.FILE_SIZE_TO_LARGER, "文件大小不能超出" + fileSize.toMegabytes() + "MB");
+        TiAssert.isTrue(file.getSize() <= fileSize.toBytes(), FileErrCode.FILE_SIZE_TO_LARGER, "文件大小不能超出" + fileSize.toMegabytes() + "MB");
         // 主文件名 logo.svg -> logo
         String mainName = FileNameUtil.mainName(originalFileName);
         // 后缀名 svg
@@ -116,7 +115,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         String relativePath = Optional.ofNullable(fileInfoReqDTO.getRelativePath())
             .filter(StrUtil::isNotBlank)
             // 去除两边的斜杠
-            .map(x-> StrUtil.strip(x, "/"))
+            .map(x -> StrUtil.strip(x, "/"))
             .map(s -> s + File.separator + fileName)
             .orElse(fileName);
         FileInfo fileInfo = new FileInfo();
@@ -135,7 +134,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         try {
             FileUtil.writeBytes(file.getBytes(), absolutePath);
         } catch (IOException e) {
-            throw new BizException(HttpErrCode.FAIL, "文件上传失败");
+            throw new TiBizException(TiHttpErrCode.FAIL, "文件上传失败");
         }
         fileInfoRepository.save(fileInfo);
         return FileInfoAssembler.INSTANCE.entityToDto(fileInfo);
@@ -144,43 +143,43 @@ public class FileInfoServiceImpl implements FileInfoService {
     @Override
     public void update(FileInfoDTO fileInfoDTO) {
         FileInfo fileInfo = FileInfoAssembler.INSTANCE.dtoToEntity(fileInfoDTO);
-        Assert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST, "文件不存在");
-        Assert.isTrue(fileInfoRepository.updateById(fileInfo), BizErrCode.FAIL, "修改失败");
+        TiAssert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST, "文件不存在");
+        TiAssert.isTrue(fileInfoRepository.updateById(fileInfo), TiBizErrCode.FAIL, "修改失败");
     }
 
     @Override
     public void enable(Long id) {
-        Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
+        TiAssert.isNotNull(id, TiBizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
         boolean enable = fileInfoRepository.enable(id);
-        Assert.isTrue(enable, BizErrCode.FAIL, "启用失败");
+        TiAssert.isTrue(enable, TiBizErrCode.FAIL, "启用失败");
     }
 
     @Override
     public void disable(Long id) {
-        Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
+        TiAssert.isNotNull(id, TiBizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
         boolean enable = fileInfoRepository.disable(id);
-        Assert.isTrue(enable, BizErrCode.FAIL, "停用失败");
+        TiAssert.isTrue(enable, TiBizErrCode.FAIL, "停用失败");
     }
 
     @Override
     public void cancel(Long id) {
-        Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
+        TiAssert.isNotNull(id, TiBizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
         boolean enable = fileInfoRepository.cancel(id);
-        Assert.isTrue(enable, BizErrCode.FAIL, "作废失败");
+        TiAssert.isTrue(enable, TiBizErrCode.FAIL, "作废失败");
     }
 
     @Override
     public void delete(Long id) {
-        Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
+        TiAssert.isNotNull(id, TiBizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
         FileInfo dbFileInfo = fileInfoRepository.getById(id);
-        Assert.isNotNull(dbFileInfo, FileErrCode.FILE_NOT_EXIST, "删除失败, 文件信息不存在");
+        TiAssert.isNotNull(dbFileInfo, FileErrCode.FILE_NOT_EXIST, "删除失败, 文件信息不存在");
         boolean isCancel = Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CANCE.code());
         boolean isChunk = Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CHUNK.code());
-        Assert.isTrue(isCancel || isChunk, "删除失败, 分片或者作废状态文件才能删除");
+        TiAssert.isTrue(isCancel || isChunk, "删除失败, 分片或者作废状态文件才能删除");
         String path;
         if (Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CHUNK.code())) {
             boolean isUploadChunkIng = springCacheTemplate.contain(CacheConst.UPLOAD_CHUNK, dbFileInfo.getChunkId());
-            Assert.isTrue(!isUploadChunkIng, "删除失败, 分片文件正在上传中");
+            TiAssert.isTrue(!isUploadChunkIng, "删除失败, 分片文件正在上传中");
             ChunkMetadataDTO metadata = JsonUtil.toJavaObject(dbFileInfo.getChunkMetadata(), ChunkMetadataDTO.class);
             path = metadata.getChunkDirPath();
         } else {
@@ -193,19 +192,19 @@ public class FileInfoServiceImpl implements FileInfoService {
 
     @Override
     public void downloadById(Long id) {
-        Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
+        TiAssert.isNotNull(id, TiBizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
         FileInfo fileInfo = fileInfoRepository.getById(id);
-        Assert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST);
+        TiAssert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST);
         boolean normal = Objects.equals(fileInfo.getStatus(), FileInfoStatus.NORMAL.code());
-        Assert.isTrue(normal, FileErrCode.FILE_STATUS_ERROR);
+        TiAssert.isTrue(normal, FileErrCode.FILE_STATUS_ERROR);
         download(fileInfo);
     }
 
     @Override
     public void download(String sign) {
-        Assert.isNotBlank(sign, BizErrCode.PARAM_ERROR, "sign不能为空");
+        TiAssert.isNotBlank(sign, TiBizErrCode.PARAM_ERROR, "sign不能为空");
         FileCache fileCache = fileUrlCacheTemplate.get(sign);
-        Assert.isNotNull(fileCache, FileErrCode.FILE_NOT_EXIST);
+        TiAssert.isNotNull(fileCache, FileErrCode.FILE_NOT_EXIST);
         FileInfo fileInfo = fileCache.getFileInfo();
         if (Boolean.TRUE.equals(fileCache.getLimit())) {
             fileCache.setLimited(true);
@@ -227,23 +226,23 @@ public class FileInfoServiceImpl implements FileInfoService {
             IoUtil.copy(Files.newInputStream(file.toPath()), response.getOutputStream(), 1024);
         } catch (Exception e) {
             log.error("文件下载失败，{}", e.getMessage(), e);
-            throw new BizException(FileErrCode.DOWNLOAD_ERROR);
+            throw new TiBizException(FileErrCode.DOWNLOAD_ERROR);
         }
     }
 
     private File getFile(FileInfo fileInfo) {
         String absolutePath = getAbsolutePath(fileInfo.getType(), fileInfo.getPath());
         File file = new File(absolutePath);
-        Assert.isTrue(FileUtil.exist(file), FileErrCode.FILE_NOT_EXIST);
+        TiAssert.isTrue(FileUtil.exist(file), FileErrCode.FILE_NOT_EXIST);
         return file;
     }
 
     @Override
     public String getUrl(Long id, Long expire, Boolean limit) {
-        Assert.isNotNull(id, BizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
+        TiAssert.isNotNull(id, TiBizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
         long seconds = TimeUnit.DAYS.toSeconds(7);
         if (expire != null) {
-            Assert.isTrue(expire <= seconds, BizErrCode.PARAM_ERROR, "过期时间最长为7天");
+            TiAssert.isTrue(expire <= seconds, TiBizErrCode.PARAM_ERROR, "过期时间最长为7天");
         } else {
             expire = seconds;
         }
@@ -252,7 +251,7 @@ public class FileInfoServiceImpl implements FileInfoService {
     }
 
     public String getUrl(FileInfo fileInfo, Long expire, Boolean limit) {
-        Assert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST);
+        TiAssert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST);
         boolean normal = Objects.equals(fileInfo.getStatus(), FileInfoStatus.NORMAL.code());
         if (!normal) {
             return null;
@@ -284,18 +283,18 @@ public class FileInfoServiceImpl implements FileInfoService {
         MultipartFile chunkfile = chunkFileDTO.getChunkfile();
         DataSize maxFileSize = fileProperty.getMaxPartSize();
         Integer index = chunkFileDTO.getIndex();
-        Assert.isTrue(chunkfile.getSize() <= maxFileSize.toBytes(), FileErrCode.FILE_SIZE_TO_LARGER, "分片文件大小不能超出" + maxFileSize.toMegabytes() + "MB");
+        TiAssert.isTrue(chunkfile.getSize() <= maxFileSize.toBytes(), FileErrCode.FILE_SIZE_TO_LARGER, "分片文件大小不能超出" + maxFileSize.toMegabytes() + "MB");
         // 相对路径处理
         String relativePath = Optional.ofNullable(chunkFileDTO.getRelativePath())
             .filter(StrUtil::isNotBlank)
             // 去除两边的斜杠
-            .map(x-> StrUtil.strip(x, "/"))
+            .map(x -> StrUtil.strip(x, "/"))
             .orElse(null);
         chunkFileDTO.setRelativePath(relativePath);
         ChunkCacheDTO chunkCacheDTO = getChunkSafe(chunkFileDTO);
         ConcurrentSkipListSet<Integer> indexs = chunkCacheDTO.getIndexs();
         AtomicInteger uploadedChunkCount = chunkCacheDTO.getUploadedChunkCount();
-        Assert.isTrue(index + 1 <= chunkFileDTO.getChunkCount(), "索引超出分片数量大小");
+        TiAssert.isTrue(index + 1 <= chunkFileDTO.getChunkCount(), "索引超出分片数量大小");
         if (indexs.contains(index)) {
             log.info("分片文件已上传");
             return chunkCacheDTO;
@@ -304,10 +303,10 @@ public class FileInfoServiceImpl implements FileInfoService {
         try {
             File chunkFile = new File(chunkFilePath);
             if (!chunkFile.exists()) {
-               FileUtil.writeBytes(chunkfile.getBytes(), chunkFile);
+                FileUtil.writeBytes(chunkfile.getBytes(), chunkFile);
             }
         } catch (IOException e) {
-            throw new BizException(HttpErrCode.FAIL, "文件上传失败");
+            throw new TiBizException(TiHttpErrCode.FAIL, "文件上传失败");
         }
         log.info("{}分片文件{}，分片id={}，index={}上传成功", chunkFileDTO.getFileName(), chunkfile.getOriginalFilename(), chunkFileDTO.getChunkId(), index);
         indexs.add(index);
@@ -343,10 +342,10 @@ public class FileInfoServiceImpl implements FileInfoService {
             FileInfo dbFileInfo = fileInfoRepository.getByChunkId(chunkId);
             // 缓存不存在，非续传则转换参数为分片信息
             if (!isContinued) {
-                Assert.isNull(dbFileInfo, "上传失败, 文件已存在");
+                TiAssert.isNull(dbFileInfo, "上传失败, 文件已存在");
                 DataSize maxBigFileSize = fileProperty.getMaxBigFileSize();
                 boolean match = chunkFileDTO.getFileSize() <= maxBigFileSize.toBytes();
-                Assert.isTrue(match, BizErrCode.PARAM_ERROR, "文件大小不能超出" + maxBigFileSize.toMegabytes() + "MB");
+                TiAssert.isTrue(match, TiBizErrCode.PARAM_ERROR, "文件大小不能超出" + maxBigFileSize.toMegabytes() + "MB");
                 // 分片文件信息转换缓存信息
                 chunkCacheDTO = chunkFileConvertCache(chunkFileDTO);
                 // 保存数据库
@@ -355,9 +354,9 @@ public class FileInfoServiceImpl implements FileInfoService {
                 saveChunkCache(chunkCacheDTO);
                 return chunkCacheDTO;
             }
-            Assert.isNotNull(dbFileInfo, "续传失败, 分片文件信息不存在");
-            Assert.isTrue(Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CHUNK.code()), BizErrCode.PARAM_ERROR, "分片文件状态才可进行续传");
-            Assert.isTrue(Objects.equals(dbFileInfo.getMd5(), chunkFileDTO.getMd5()), BizErrCode.PARAM_ERROR, "分片文件md5不一致");
+            TiAssert.isNotNull(dbFileInfo, "续传失败, 分片文件信息不存在");
+            TiAssert.isTrue(Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CHUNK.code()), TiBizErrCode.PARAM_ERROR, "分片文件状态才可进行续传");
+            TiAssert.isTrue(Objects.equals(dbFileInfo.getMd5(), chunkFileDTO.getMd5()), TiBizErrCode.PARAM_ERROR, "分片文件md5不一致");
             // 数据库存在则转换分片信息
             chunkCacheDTO = fileInfoConvertCache(dbFileInfo);
             // 保存缓存
@@ -369,7 +368,7 @@ public class FileInfoServiceImpl implements FileInfoService {
     private void saveChunkCache(ChunkCacheDTO chunkCacheDTO) {
         // 上传队列大小限制
         long size = springCacheTemplate.size(CacheConst.UPLOAD_CHUNK);
-        Assert.isTrue(size + 1 <= CacheConfig.CacheEnum.UPLOAD_CHUNK.getMaxSize(), BizErrCode.PARAM_ERROR, "分片文件上传数量超过限制");
+        TiAssert.isTrue(size + 1 <= CacheConfig.CacheEnum.UPLOAD_CHUNK.getMaxSize(), TiBizErrCode.PARAM_ERROR, "分片文件上传数量超过限制");
         springCacheTemplate.put(CacheConst.UPLOAD_CHUNK, chunkCacheDTO.getChunkId(), chunkCacheDTO);
     }
 
@@ -470,18 +469,18 @@ public class FileInfoServiceImpl implements FileInfoService {
 
     @Override
     public FileInfoDTO composeChunk(String chunkId) {
-        Assert.isNotBlank(chunkId, "分片id不能为空");
+        TiAssert.isNotBlank(chunkId, "分片id不能为空");
         ChunkCacheDTO chunkCacheDTO = springCacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkCacheDTO.class);
-        Assert.isNotNull(chunkCacheDTO, "分片文件不存在");
+        TiAssert.isNotNull(chunkCacheDTO, "分片文件不存在");
         ConcurrentSkipListSet<Integer> indexs = Optional.ofNullable(chunkCacheDTO.getIndexs()).orElseGet(ConcurrentSkipListSet::new);
         AtomicInteger uploadedChunkCountAto = chunkCacheDTO.getUploadedChunkCount();
         Integer chunkCount = chunkCacheDTO.getChunkCount();
         int size = indexs.size();
         int uploadedChunkCount = uploadedChunkCountAto.get();
-        Assert.isTrue(size == uploadedChunkCount && size == chunkCount , "分片文件上传数量与分片数量不一致");
+        TiAssert.isTrue(size == uploadedChunkCount && size == chunkCount, "分片文件上传数量与分片数量不一致");
         // 分片上传是否完成
         boolean complete = Boolean.TRUE.equals(chunkCacheDTO.getComplete());
-        Assert.isTrue(complete, "分片文件未全部上传");
+        TiAssert.isTrue(complete, "分片文件未全部上传");
         String chunkFileDirPath = getAbsolutePath(chunkCacheDTO.getType(), chunkCacheDTO.getChunkDirPath());
         String filePath = getAbsolutePath(chunkCacheDTO.getType(), chunkCacheDTO.getRelativeFullPath());
         try {
@@ -504,8 +503,8 @@ public class FileInfoServiceImpl implements FileInfoService {
             fileInfo.setStatus(FileInfoStatus.NORMAL.code());
             fileInfoRepository.updateById(fileInfo);
         } catch (IOException e) {
-            throw new BizException(HttpErrCode.FAIL, "文件合并失败");
-        } finally{
+            throw new TiBizException(TiHttpErrCode.FAIL, "文件合并失败");
+        } finally {
             // 清除缓存
             springCacheTemplate.evict(CacheConst.UPLOAD_CHUNK, chunkId);
             moveToTmp(chunkCacheDTO.getType(), chunkCacheDTO.getChunkDirPath());
@@ -531,7 +530,7 @@ public class FileInfoServiceImpl implements FileInfoService {
     }
 
     @Override
-    public PageResult<FileInfoDTO> page(FileInfoQuery query) {
+    public TiPageResult<FileInfoDTO> page(FileInfoQuery query) {
         query.checkPage();
         Page<FileInfo> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
         fileInfoRepository.list(query);
@@ -539,15 +538,15 @@ public class FileInfoServiceImpl implements FileInfoService {
             .stream()
             .map(FileInfoAssembler.INSTANCE::entityToDto)
             .collect(Collectors.toList());
-        return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), fileInfoDTOs);
+        return new TiPageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), fileInfoDTOs);
     }
 
     @Override
-    public void expExcel(FileInfoQuery query)throws IOException {
+    public void expExcel(FileInfoQuery query) throws IOException {
         String sheetName = "文件信息";
         String fileName = "文件信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictHandle.getLabelMapBatch(DictConst.FILE_STATUS, DictConst.FILE_STORAGE_TYPE);
-        ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, FileInfoExp.class, response);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, FileInfoExp.class, response);
     }
 
     private Collection<FileInfoExp> excelExpHandle(FileInfoQuery query, Map<String, String> labelMap) {
@@ -557,7 +556,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         List<FileInfo> result = page.getResult();
         return result
             .stream()
-            .map(x-> {
+            .map(x -> {
                 FileInfoExp fileInfoExp = FileInfoAssembler.INSTANCE.entityToExp(x);
                 fileInfoExp.setTypeName(labelMap.get(DictConst.FILE_STORAGE_TYPE + x.getType()));
                 fileInfoExp.setStatusName(labelMap.get(DictConst.FILE_STATUS + x.getStatus()));

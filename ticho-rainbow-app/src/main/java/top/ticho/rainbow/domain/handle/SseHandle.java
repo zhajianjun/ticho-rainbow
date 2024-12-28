@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import top.ticho.boot.view.util.Assert;
+import top.ticho.boot.view.util.TiAssert;
 import top.ticho.rainbow.infrastructure.core.component.SseTemplate;
 import top.ticho.rainbow.infrastructure.core.component.cache.SpringCacheTemplate;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
@@ -37,7 +37,7 @@ public class SseHandle {
     }
 
     public SseEmitter connect(String id) {
-        Assert.isTrue(springCacheTemplate.contain(CacheConst.SSE, id), "权限不足");
+        TiAssert.isTrue(springCacheTemplate.contain(CacheConst.SSE, id), "权限不足");
         springCacheTemplate.evict(CacheConst.SSE, id);
         return sseTemplate.connect(id);
     }

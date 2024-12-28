@@ -8,11 +8,11 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.util.Assert;
+import top.ticho.boot.view.core.TiPageResult;
+import top.ticho.boot.view.util.TiAssert;
 import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.boot.web.util.valid.ValidUtil;
-import top.ticho.rainbow.application.service.ClientService;
+import top.ticho.rainbow.application.intranet.service.ClientService;
 import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.ClientRepository;
 import top.ticho.rainbow.domain.repository.PortRepository;
@@ -56,16 +56,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     private ClientRepository clientRepository;
-
     @Autowired
     private PortRepository portRepository;
-
     @Autowired
     private ServerHandler serverHandler;
-
     @Autowired
     private DictHandle dictHandle;
-
     @Resource
     private HttpServletResponse response;
 
@@ -76,7 +72,7 @@ public class ClientServiceImpl implements ClientService {
         Client client = ClientAssembler.INSTANCE.dtoToEntity(clientDTO);
         clientDTO.setId(CloudIdUtil.getId());
         clientDTO.setAccessKey(IdUtil.fastSimpleUUID());
-        Assert.isTrue(clientRepository.save(client), "保存失败");
+        TiAssert.isTrue(clientRepository.save(client), "保存失败");
         saveClientInfo(client, null);
     }
 
@@ -84,21 +80,20 @@ public class ClientServiceImpl implements ClientService {
     @Transactional(rollbackFor = Exception.class)
     public void removeById(Long id) {
         Client dbClient = clientRepository.getById(id);
-        Assert.isNotNull(dbClient, "删除失败，数据不存在");
-        Assert.isTrue(clientRepository.removeById(id), "删除失败");
+        TiAssert.isNotNull(dbClient, "删除失败，数据不存在");
+        TiAssert.isTrue(clientRepository.removeById(id), "删除失败");
         String accessKey = dbClient.getAccessKey();
         clientRepository.removeByAccessKey(accessKey);
         serverHandler.deleteClient(accessKey);
-
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateById(ClientDTO clientDTO) {
         Client dbClient = clientRepository.getById(clientDTO.getId());
-        Assert.isNotNull(dbClient, "修改失败，数据不存在");
+        TiAssert.isNotNull(dbClient, "修改失败，数据不存在");
         Client client = ClientAssembler.INSTANCE.dtoToEntity(clientDTO);
-        Assert.isTrue(clientRepository.updateById(client), "修改失败");
+        TiAssert.isTrue(clientRepository.updateById(client), "修改失败");
         client.setAccessKey(dbClient.getAccessKey());
         if (client.getExpireAt() == null) {
             client.setExpireAt(dbClient.getExpireAt());
@@ -108,7 +103,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientDTO getById(Long id) {
-        Assert.isNotNull(id, "编号不能为空");
+        TiAssert.isNotNull(id, "编号不能为空");
         Client client = clientRepository.getById(id);
         ClientDTO clientDTO = ClientAssembler.INSTANCE.entityToDto(client);
         fillChannelStatus(clientDTO);
@@ -116,8 +111,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public PageResult<ClientDTO> page(ClientQuery query) {
-        // @formatter:off
+    public TiPageResult<ClientDTO> page(ClientQuery query) {
         query.checkPage();
         Page<Client> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
         clientRepository.list(query);
@@ -126,23 +120,19 @@ public class ClientServiceImpl implements ClientService {
             .map(ClientAssembler.INSTANCE::entityToDto)
             .peek(this::fillChannelStatus)
             .collect(Collectors.toList());
-        return new PageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), clientDTOs);
-        // @formatter:on
+        return new TiPageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), clientDTOs);
     }
 
     @Override
     public List<ClientDTO> list(ClientQuery query) {
-        // @formatter:off
         return clientRepository.list(query)
             .stream()
             .map(ClientAssembler.INSTANCE::entityToDto)
             .peek(this::fillChannelStatus)
             .collect(Collectors.toList());
-        // @formatter:on
     }
 
     public List<ClientInfo> listEffectClientInfo() {
-        // @formatter:off
         ClientQuery clientQuery = new ClientQuery();
         clientQuery.setStatus(1);
         clientQuery.setExpireAt(LocalDateTime.now());
@@ -151,21 +141,22 @@ public class ClientServiceImpl implements ClientService {
         Predicate<Port> filter = x -> Objects.equals(x.getStatus(), 1) && LocalDateTime.now().isBefore(x.getExpireAt());
         Map<String, List<PortInfo>> protMap = portRepository.listAndGroupByAccessKey(accessKeys, PortAssembler.INSTANCE::entityToInfo, filter);
         return clients
-                .stream()
-                .map(ClientAssembler.INSTANCE::entityToInfo)
-                .peek(x-> {
-                    String accessKey = x.getAccessKey();
-                    List<PortInfo> portInfos = protMap.get(accessKey);
-                    if (CollUtil.isEmpty(portInfos)) {
-                        return;
-                    }
-                    Map<Integer, PortInfo> portInfoMap = portInfos
-                        .stream()
-                        .collect(Collectors.toMap(PortInfo::getPort, Function.identity(), (v1, v2) -> v1, LinkedHashMap::new));
-                    x.setPortMap(portInfoMap);
-                })
-                .collect(Collectors.toList());
-        // @formatter:on
+            .stream()
+            .map(ClientAssembler.INSTANCE::entityToInfo)
+            .peek(x -> setPortMap(x, protMap))
+            .collect(Collectors.toList());
+    }
+
+    private void setPortMap(ClientInfo clientInfo, Map<String, List<PortInfo>> protMap) {
+        String accessKey = clientInfo.getAccessKey();
+        List<PortInfo> portInfos = protMap.get(accessKey);
+        if (CollUtil.isEmpty(portInfos)) {
+            return;
+        }
+        Map<Integer, PortInfo> portInfoMap = portInfos
+            .stream()
+            .collect(Collectors.toMap(PortInfo::getPort, Function.identity(), (v1, v2) -> v1, LinkedHashMap::new));
+        clientInfo.setPortMap(portInfoMap);
     }
 
     @Override
@@ -173,7 +164,7 @@ public class ClientServiceImpl implements ClientService {
         String sheetName = "客户端信息";
         String fileName = "客户端信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictHandle.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.CHANNEL_STATUS);
-        ExcelHandle.writeToResponseBatch(x-> this.excelExpHandle(x, labelMap), query, fileName, sheetName, ClientExp.class, response);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, ClientExp.class, response);
     }
 
     private Collection<ClientExp> excelExpHandle(ClientQuery query, Map<String, String> labelMap) {
@@ -183,7 +174,7 @@ public class ClientServiceImpl implements ClientService {
         List<Client> result = page.getResult();
         return result
             .stream()
-            .map(x-> {
+            .map(x -> {
                 ClientExp clientExp = ClientAssembler.INSTANCE.entityToExp(x);
                 clientExp.setStatusName(labelMap.get(DictConst.COMMON_STATUS + x.getStatus()));
                 ClientInfo clientInfo = serverHandler.getClientByAccessKey(x.getAccessKey());

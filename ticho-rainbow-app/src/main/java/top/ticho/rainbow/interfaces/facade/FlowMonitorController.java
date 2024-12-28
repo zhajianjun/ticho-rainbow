@@ -9,8 +9,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.Result;
-import top.ticho.rainbow.application.service.FlowMonitorService;
+import top.ticho.boot.view.core.TiResult;
+import top.ticho.rainbow.application.intranet.service.FlowMonitorService;
 import top.ticho.rainbow.interfaces.dto.FlowMonitorStatsDTO;
 
 /**
@@ -32,8 +32,8 @@ public class FlowMonitorController {
     @ApiOperation(value = "查询流量监控")
     @ApiOperationSupport(order = 10)
     @GetMapping("info")
-    public Result<FlowMonitorStatsDTO> info() {
-        return Result.ok(flowMonitorService.info());
+    public TiResult<FlowMonitorStatsDTO> info() {
+        return TiResult.ok(flowMonitorService.info());
     }
 
 }

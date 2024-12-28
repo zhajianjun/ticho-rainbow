@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.Result;
+import top.ticho.boot.view.core.TiResult;
 
 /**
  * 工具
@@ -34,8 +34,8 @@ public class ToolController {
     @ApiOperationSupport(order = 10)
     @ApiImplicitParam(value = "加密信息", name = "message", required = true)
     @GetMapping("encrypt")
-    public Result<String> encrypt(@RequestParam("message") String message) {
-        return Result.ok(stringEncryptor.encrypt(message));
+    public TiResult<String> encrypt(@RequestParam("message") String message) {
+        return TiResult.ok(stringEncryptor.encrypt(message));
     }
 
     @PreAuthorize("@perm.hasPerms('system:tool:decrypt')")
@@ -43,8 +43,8 @@ public class ToolController {
     @ApiOperationSupport(order = 20)
     @ApiImplicitParam(value = "解密信息", name = "message", required = true)
     @GetMapping("decrypt")
-    public Result<String> decrypt(@RequestParam("message") String message) {
-        return Result.ok(stringEncryptor.decrypt(message));
+    public TiResult<String> decrypt(@RequestParam("message") String message) {
+        return TiResult.ok(stringEncryptor.decrypt(message));
     }
 
 }

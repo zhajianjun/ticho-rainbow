@@ -13,10 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.PageResult;
-import top.ticho.boot.view.core.Result;
-import top.ticho.boot.web.annotation.View;
-import top.ticho.rainbow.application.service.OpLogService;
+import top.ticho.boot.view.core.TiPageResult;
+import top.ticho.boot.view.core.TiResult;
+import top.ticho.rainbow.application.system.service.OpLogService;
 import top.ticho.rainbow.interfaces.dto.OpLogDTO;
 import top.ticho.rainbow.interfaces.query.OpLogQuery;
 
@@ -43,19 +42,18 @@ public class OpLogController {
     @ApiOperationSupport(order = 10)
     @ApiImplicitParam(value = "编号", name = "id", required = true)
     @GetMapping
-    public Result<OpLogDTO> getById(Long id) {
-        return Result.ok(opLogService.getById(id));
+    public TiResult<OpLogDTO> getById(Long id) {
+        return TiResult.ok(opLogService.getById(id));
     }
 
     @PreAuthorize("@perm.hasPerms('system:opLog:page')")
     @ApiOperation(value = "查询全部操作日志(分页)")
     @ApiOperationSupport(order = 20)
     @PostMapping("page")
-    public Result<PageResult<OpLogDTO>> page(@RequestBody OpLogQuery query) {
-        return Result.ok(opLogService.page(query));
+    public TiResult<TiPageResult<OpLogDTO>> page(@RequestBody OpLogQuery query) {
+        return TiResult.ok(opLogService.page(query));
     }
 
-    @View(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:opLog:expExcel')")
     @ApiOperation(value = "导出操作日志", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 30)

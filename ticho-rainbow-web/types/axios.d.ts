@@ -35,7 +35,7 @@ export interface RetryRequest {
   count: number;
   waitTime: number;
 }
-export interface Result<T = any> {
+export interface TiResult<T = any> {
   code: number;
   type: 'success' | 'error' | 'warning';
   msg: string;

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import top.ticho.boot.security.annotation.IgnoreJwtCheck;
-import top.ticho.boot.view.core.Result;
+import top.ticho.boot.view.core.TiResult;
 import top.ticho.boot.web.annotation.View;
 import top.ticho.rainbow.domain.handle.SseEvent;
 import top.ticho.rainbow.domain.handle.SseHandle;
@@ -35,8 +35,8 @@ public class SseController {
     @ApiOperation(value = "sign")
     @ApiOperationSupport(order = 10)
     @GetMapping("sign")
-    public Result<String> sign() {
-        return Result.ok(sseHandle.getSign());
+    public TiResult<String> sign() {
+        return TiResult.ok(sseHandle.getSign());
     }
 
     @IgnoreJwtCheck
@@ -51,17 +51,17 @@ public class SseController {
     @ApiOperation(value = "send")
     @ApiOperationSupport(order = 30)
     @GetMapping("send/{id}")
-    public Result<Void> send(@PathVariable("id") String id, String message) {
+    public TiResult<Void> send(@PathVariable("id") String id, String message) {
         sseHandle.sendMessage(id, SseEvent.HEATBEAT, message);
-        return Result.ok();
+        return TiResult.ok();
     }
 
     @ApiOperation(value = "close")
     @ApiOperationSupport(order = 40)
     @GetMapping("close")
-    public Result<Void> close(String id) {
+    public TiResult<Void> close(String id) {
         sseHandle.close(id);
-        return Result.ok();
+        return TiResult.ok();
     }
 
 }
