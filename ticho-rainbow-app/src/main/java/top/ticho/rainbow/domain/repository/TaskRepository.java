@@ -1,8 +1,8 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.boot.datasource.service.RootService;
 import top.ticho.rainbow.infrastructure.entity.Task;
 import top.ticho.rainbow.interfaces.query.TaskQuery;
+import top.ticho.starter.datasource.service.TiRepository;
 
 import java.util.Collection;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
  * @author zhajianjun
  * @date 2024-03-23 23:38
  */
-public interface TaskRepository extends RootService<Task> {
+public interface TaskRepository extends TiRepository<Task> {
 
     /**
      * 根据条件查询计划任务信息列表

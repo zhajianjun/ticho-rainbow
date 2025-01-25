@@ -6,11 +6,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import top.ticho.rainbow.domain.repository.DictRepository;
 import top.ticho.rainbow.infrastructure.entity.Dict;
 import top.ticho.rainbow.infrastructure.mapper.DictMapper;
 import top.ticho.rainbow.interfaces.query.DictQuery;
+import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +23,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public class DictRepositoryImpl extends RootServiceImpl<DictMapper, Dict> implements DictRepository {
+public class DictRepositoryImpl extends TiRepositoryImpl<DictMapper, Dict> implements DictRepository {
 
     @Override
     public List<Dict> list(DictQuery query) {

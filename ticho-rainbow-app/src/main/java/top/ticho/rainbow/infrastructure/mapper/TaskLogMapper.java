@@ -1,8 +1,8 @@
 package top.ticho.rainbow.infrastructure.mapper;
 
 import org.springframework.stereotype.Repository;
-import top.ticho.boot.datasource.mapper.RootMapper;
 import top.ticho.rainbow.infrastructure.entity.TaskLog;
+import top.ticho.starter.datasource.mapper.TiMapper;
 
 
 /**
@@ -12,6 +12,6 @@ import top.ticho.rainbow.infrastructure.entity.TaskLog;
  * @date 2024-05-06 16:41
  */
 @Repository
-public interface TaskLogMapper extends RootMapper<TaskLog> {
+public interface TaskLogMapper extends TiMapper<TaskLog> {
 
 }

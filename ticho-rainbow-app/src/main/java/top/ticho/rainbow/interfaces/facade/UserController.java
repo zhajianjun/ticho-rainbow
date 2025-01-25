@@ -5,7 +5,6 @@ import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import top.ticho.boot.view.core.TiPageResult;
-import top.ticho.boot.view.core.TiResult;
-import top.ticho.boot.web.annotation.View;
 import top.ticho.rainbow.application.system.service.UserService;
 import top.ticho.rainbow.interfaces.dto.PasswordDTO;
 import top.ticho.rainbow.interfaces.dto.UserDTO;
@@ -26,7 +22,11 @@ import top.ticho.rainbow.interfaces.dto.UserPasswordDTO;
 import top.ticho.rainbow.interfaces.dto.UserRoleDTO;
 import top.ticho.rainbow.interfaces.dto.UserRoleMenuDtlDTO;
 import top.ticho.rainbow.interfaces.query.UserQuery;
+import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.starter.view.core.TiResult;
+import top.ticho.starter.web.annotation.TiView;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 
@@ -42,7 +42,7 @@ import java.util.List;
 @ApiSort(30)
 public class UserController {
 
-    @Autowired
+    @Resource
     private UserService userService;
 
     @PreAuthorize("@perm.hasPerms('system:user:save')")
@@ -197,7 +197,7 @@ public class UserController {
         return TiResult.ok();
     }
 
-    @View(ignore = true)
+    @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:user:impTemplate')")
     @ApiOperation(value = "下载导入模板", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 180)
@@ -206,7 +206,7 @@ public class UserController {
         userService.impTemplate();
     }
 
-    @View(ignore = true)
+    @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:user:impExcel')")
     @ApiOperation(value = "导入用户", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 190)
@@ -215,7 +215,7 @@ public class UserController {
         userService.impExcel(file);
     }
 
-    @View(ignore = true)
+    @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:user:expExcel')")
     @ApiOperation(value = "导出用户", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 200)

@@ -8,7 +8,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import top.ticho.boot.view.exception.TiBizException;
+import top.ticho.starter.view.exception.TiBizException;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;

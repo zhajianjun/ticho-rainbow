@@ -1,7 +1,6 @@
 package top.ticho.rainbow.domain.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
 import top.ticho.rainbow.application.intranet.service.FlowMonitorService;
@@ -19,6 +18,7 @@ import top.ticho.tool.intranet.server.handler.AppHandler;
 import top.ticho.tool.intranet.server.handler.ServerHandler;
 import top.ticho.tool.intranet.util.IntranetUtil;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -38,13 +38,13 @@ import java.util.stream.Collectors;
 @Service
 public class FlowMonitorServiceImpl implements FlowMonitorService {
 
-    @Autowired
+    @Resource
     private ClientRepository clientRepository;
 
-    @Autowired
+    @Resource
     private PortRepository portRepository;
 
-    @Autowired
+    @Resource
     private ServerHandler serverHandler;
 
     @Override

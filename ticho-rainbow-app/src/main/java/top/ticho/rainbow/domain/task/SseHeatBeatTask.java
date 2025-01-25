@@ -1,10 +1,11 @@
 package top.ticho.rainbow.domain.task;
 
 import org.quartz.JobExecutionContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.domain.handle.SseHandle;
 import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
+
+import javax.annotation.Resource;
 
 /**
  * sse心跳
@@ -15,7 +16,7 @@ import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
 @Component
 public class SseHeatBeatTask extends AbstracTask<String> {
 
-    @Autowired
+    @Resource
     private SseHandle sseHandle;
 
     @Override

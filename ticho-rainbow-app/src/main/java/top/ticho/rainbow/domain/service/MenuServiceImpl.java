@@ -2,15 +2,8 @@ package top.ticho.rainbow.domain.service;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.ticho.boot.view.enums.TiBizErrCode;
-import top.ticho.boot.view.util.TiAssert;
-import top.ticho.boot.web.util.CloudIdUtil;
-import top.ticho.boot.web.util.TreeUtil;
-import top.ticho.boot.web.util.valid.ValidGroup;
-import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.system.service.MenuService;
 import top.ticho.rainbow.domain.repository.MenuRepository;
 import top.ticho.rainbow.domain.repository.RoleMenuRepository;
@@ -25,7 +18,14 @@ import top.ticho.rainbow.interfaces.dto.MenuDtlDTO;
 import top.ticho.rainbow.interfaces.dto.RouteDTO;
 import top.ticho.rainbow.interfaces.dto.RouteMetaDTO;
 import top.ticho.rainbow.interfaces.dto.SecurityUser;
+import top.ticho.starter.view.enums.TiBizErrCode;
+import top.ticho.starter.view.util.TiAssert;
+import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.starter.web.util.TiTreeUtil;
+import top.ticho.starter.web.util.valid.TiValidGroup;
+import top.ticho.starter.web.util.valid.TiValidUtil;
 
+import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -44,16 +44,16 @@ import java.util.stream.Collectors;
 @Service
 public class MenuServiceImpl extends AbstractAuthServiceImpl implements MenuService {
 
-    @Autowired
+    @Resource
     private MenuRepository menuRepository;
 
-    @Autowired
+    @Resource
     private RoleMenuRepository roleMenuRepository;
 
     @Override
     public void save(MenuDTO menuDTO) {
-        ValidUtil.valid(menuDTO, ValidGroup.Add.class);
-        menuDTO.setId(CloudIdUtil.getId());
+        TiValidUtil.valid(menuDTO, TiValidGroup.Add.class);
+        menuDTO.setId(TiIdUtil.getId());
         Menu menu = checkAndGetMenu(menuDTO);
         TiAssert.isTrue(menuRepository.save(menu), TiBizErrCode.FAIL, "保存失败");
     }
@@ -70,7 +70,7 @@ public class MenuServiceImpl extends AbstractAuthServiceImpl implements MenuServ
 
     @Override
     public void updateById(MenuDTO menuDTO) {
-        ValidUtil.valid(menuDTO, ValidGroup.Upd.class);
+        TiValidUtil.valid(menuDTO, TiValidGroup.Upd.class);
         Menu dbMenu = menuRepository.getById(menuDTO.getId());
         TiAssert.isTrue(Objects.equals(dbMenu.getParentId(), menuDTO.getParentId()), TiBizErrCode.FAIL, "父节点必须保持一致");
         TiAssert.isTrue(Objects.equals(dbMenu.getType(), menuDTO.getType()), TiBizErrCode.FAIL, "菜单类型不可更改");
@@ -94,7 +94,7 @@ public class MenuServiceImpl extends AbstractAuthServiceImpl implements MenuServ
         }
         // 1-目录，父亲一定是目录，目录和路由的路由地址不能重复
         if (Objects.equals(MenuType.DIR.code(), type)) {
-            ValidUtil.valid(menuDTO, MenuDTO.Dir.class);
+            TiValidUtil.valid(menuDTO, MenuDTO.Dir.class);
             TiAssert.isTrue(Objects.equals(parentType, MenuType.DIR.code()), TiBizErrCode.FAIL, StrUtil.format("{}下不能新建目录", parentTypeName));
             Menu getByTypesAndPath = menuRepository.getByTypesAndPath(MenuType.dirOrMenus(), menuDTO.getPath(), menuDTO.getId());
             // 菜单或路由path不能重复
@@ -108,10 +108,10 @@ public class MenuServiceImpl extends AbstractAuthServiceImpl implements MenuServ
         }
         // 2-菜单，父亲一定是目录，目录和路由的路由地址不能重复
         else if (Objects.equals(MenuType.MENU.code(), type)) {
-            ValidUtil.valid(menuDTO, MenuDTO.Menu.class);
+            TiValidUtil.valid(menuDTO, MenuDTO.Menu.class);
             // 不是外部链接，则组件路径和组件名称不能为空
             if (!Objects.equals(menuDTO.getExtFlag(), 1)) {
-                ValidUtil.valid(menuDTO, MenuDTO.Ext.class);
+                TiValidUtil.valid(menuDTO, MenuDTO.Ext.class);
             }
             if (Objects.equals(menuDTO.getInvisible(), 1)) {
                 menuDTO.setCurrentActiveMenu("");
@@ -126,7 +126,7 @@ public class MenuServiceImpl extends AbstractAuthServiceImpl implements MenuServ
         }
         // 3-按钮，父亲一定是菜单, 组件名称不能重复
         else if (Objects.equals(MenuType.BUTTON.code(), type)) {
-            ValidUtil.valid(menuDTO, MenuDTO.Button.class);
+            TiValidUtil.valid(menuDTO, MenuDTO.Button.class);
             TiAssert.isTrue(Objects.equals(parentType, MenuType.MENU.code()), TiBizErrCode.FAIL, StrUtil.format("{}下不能新建按钮", parentTypeName));
             Menu repeatCompMenu = menuRepository.getByTypesAndComNameExcludeId(Collections.singletonList(MenuType.BUTTON.code()), menuDTO.getComponentName(), menuDTO.getId());
             // 按钮名称不能重复
@@ -156,7 +156,7 @@ public class MenuServiceImpl extends AbstractAuthServiceImpl implements MenuServ
         };
         MenuDtlDTO root = new MenuDtlDTO();
         root.setId(0L);
-        TreeUtil.tree(menuFuncDtls, root, (x, y) -> true, (x, y) -> {}, consumer);
+        TiTreeUtil.tree(menuFuncDtls, root, (x, y) -> true, (x, y) -> {}, consumer);
         return root.getChildren();
     }
 
@@ -193,7 +193,7 @@ public class MenuServiceImpl extends AbstractAuthServiceImpl implements MenuServ
         };
         RouteDTO root = new RouteDTO();
         root.setId(0L);
-        TreeUtil.tree(routes, root, (x, y) -> true, (x, y) -> {}, afterConsumer);
+        TiTreeUtil.tree(routes, root, (x, y) -> true, (x, y) -> {}, afterConsumer);
         return root.getChildren();
     }
 

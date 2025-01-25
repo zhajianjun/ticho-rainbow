@@ -1,11 +1,11 @@
 package top.ticho.rainbow.application.system.service;
 
-import top.ticho.boot.view.core.TiPageResult;
 import top.ticho.rainbow.interfaces.dto.RoleDTO;
 import top.ticho.rainbow.interfaces.dto.RoleMenuDTO;
 import top.ticho.rainbow.interfaces.dto.RoleMenuDtlDTO;
 import top.ticho.rainbow.interfaces.query.RoleDtlQuery;
 import top.ticho.rainbow.interfaces.query.RoleQuery;
+import top.ticho.starter.view.core.TiPageResult;
 
 import java.io.IOException;
 import java.io.Serializable;

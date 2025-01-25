@@ -5,7 +5,6 @@ import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,10 +13,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.TiResult;
 import top.ticho.rainbow.application.system.service.DictLabelService;
 import top.ticho.rainbow.interfaces.dto.DictLabelDTO;
+import top.ticho.starter.view.core.TiResult;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -32,7 +32,7 @@ import java.util.List;
 @ApiSort(80)
 public class DictLabelController {
 
-    @Autowired
+    @Resource
     private DictLabelService dictLabelService;
 
     @PreAuthorize("@perm.hasPerms('system:dictLabel:save')")

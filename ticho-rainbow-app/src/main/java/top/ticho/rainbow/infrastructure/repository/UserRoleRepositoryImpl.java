@@ -8,12 +8,12 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.ticho.boot.datasource.service.impl.RootServiceImpl;
-import top.ticho.boot.web.util.SpringContext;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.entity.UserRole;
 import top.ticho.rainbow.infrastructure.mapper.UserRoleMapper;
+import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
+import top.ticho.starter.web.util.TiSpringUtil;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class UserRoleRepositoryImpl extends RootServiceImpl<UserRoleMapper, UserRole> implements UserRoleRepository {
+public class UserRoleRepositoryImpl extends TiRepositoryImpl<UserRoleMapper, UserRole> implements UserRoleRepository {
 
     @Override
     @Cacheable(value = CacheConst.USER_ROLE_INFO, key = "#userId")
@@ -48,7 +48,7 @@ public class UserRoleRepositoryImpl extends RootServiceImpl<UserRoleMapper, User
         if (Objects.isNull(userId)) {
             return;
         }
-        UserRoleRepositoryImpl bean = SpringContext.getBean(this.getClass());
+        UserRoleRepositoryImpl bean = TiSpringUtil.getBean(this.getClass());
         bean.removeByUserId(userId);
         if (CollUtil.isEmpty(roleIds)) {
             return;

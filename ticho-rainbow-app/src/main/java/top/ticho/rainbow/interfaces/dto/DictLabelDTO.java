@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.ticho.boot.web.util.valid.ValidGroup;
+import top.ticho.starter.web.util.valid.TiValidGroup;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
@@ -28,12 +28,12 @@ public class DictLabelDTO implements Serializable {
 
     /** 主键编号 */
     @ApiModelProperty(value = "主键编号", position = 10)
-    @NotNull(message = "字典编号不能为空", groups = {ValidGroup.Upd.class})
+    @NotNull(message = "字典编号不能为空", groups = {TiValidGroup.Upd.class})
     private Long id;
 
     /** 字典编码 */
     @ApiModelProperty(value = "字典编码", position = 30)
-    @NotBlank(message = "字典编码不能为空", groups = {ValidGroup.Add.class})
+    @NotBlank(message = "字典编码不能为空", groups = {TiValidGroup.Add.class})
     private String code;
 
     /** 字典标签 */

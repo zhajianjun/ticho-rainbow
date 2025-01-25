@@ -1,8 +1,8 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.boot.datasource.service.RootService;
 import top.ticho.rainbow.infrastructure.entity.Port;
 import top.ticho.rainbow.interfaces.query.PortQuery;
+import top.ticho.starter.datasource.service.TiRepository;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.function.Predicate;
  * @author zhajianjun
  * @date 2023-12-17 20:12
  */
-public interface PortRepository extends RootService<Port> {
+public interface PortRepository extends TiRepository<Port> {
 
     /**
      * 根据条件查询端口信息列表

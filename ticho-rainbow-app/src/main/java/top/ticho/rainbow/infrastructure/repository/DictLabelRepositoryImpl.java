@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import top.ticho.rainbow.domain.repository.DictLabelRepository;
 import top.ticho.rainbow.infrastructure.entity.DictLabel;
 import top.ticho.rainbow.infrastructure.mapper.DictLabelMapper;
 import top.ticho.rainbow.interfaces.query.DictLabelQuery;
+import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public class DictLabelRepositoryImpl extends RootServiceImpl<DictLabelMapper, DictLabel> implements DictLabelRepository {
+public class DictLabelRepositoryImpl extends TiRepositoryImpl<DictLabelMapper, DictLabel> implements DictLabelRepository {
 
     @Override
     public List<DictLabel> list(DictLabelQuery query) {

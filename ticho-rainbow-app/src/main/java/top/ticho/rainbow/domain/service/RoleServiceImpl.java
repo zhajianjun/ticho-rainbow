@@ -4,13 +4,8 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.NumberUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.ticho.boot.view.core.TiPageResult;
-import top.ticho.boot.view.enums.TiBizErrCode;
-import top.ticho.boot.view.util.TiAssert;
-import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.system.service.RoleService;
 import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.RoleMenuRepository;
@@ -28,6 +23,10 @@ import top.ticho.rainbow.interfaces.dto.RoleMenuDtlDTO;
 import top.ticho.rainbow.interfaces.excel.RoleExp;
 import top.ticho.rainbow.interfaces.query.RoleDtlQuery;
 import top.ticho.rainbow.interfaces.query.RoleQuery;
+import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.starter.view.enums.TiBizErrCode;
+import top.ticho.starter.view.util.TiAssert;
+import top.ticho.starter.web.util.valid.TiValidUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -51,16 +50,16 @@ import java.util.stream.Collectors;
 @Service
 public class RoleServiceImpl extends AbstractAuthServiceImpl implements RoleService {
 
-    @Autowired
+    @Resource
     private RoleRepository roleRepository;
 
-    @Autowired
+    @Resource
     private RoleMenuRepository roleMenuRepository;
 
-    @Autowired
+    @Resource
     private UserRoleRepository userRoleRepository;
 
-    @Autowired
+    @Resource
     private DictHandle dictHandle;
 
     @Resource
@@ -161,7 +160,7 @@ public class RoleServiceImpl extends AbstractAuthServiceImpl implements RoleServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void bindMenu(RoleMenuDTO roleMenuDTO) {
-        ValidUtil.valid(roleMenuDTO);
+        TiValidUtil.valid(roleMenuDTO);
         // 删除角色绑定的菜单
         roleMenuRepository.removeAndSave(roleMenuDTO.getRoleId(), roleMenuDTO.getMenuIds());
     }

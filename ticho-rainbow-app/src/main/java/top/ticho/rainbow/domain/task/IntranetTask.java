@@ -1,13 +1,13 @@
 package top.ticho.rainbow.domain.task;
 
 import org.quartz.JobExecutionContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.intranet.service.ClientService;
 import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 import top.ticho.tool.intranet.server.handler.ServerHandler;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -19,10 +19,10 @@ import java.util.List;
 @Component
 public class IntranetTask extends AbstracTask<String> {
 
-    @Autowired
+    @Resource
     private ClientService clientService;
 
-    @Autowired
+    @Resource
     private ServerHandler serverHandler;
 
     @Override

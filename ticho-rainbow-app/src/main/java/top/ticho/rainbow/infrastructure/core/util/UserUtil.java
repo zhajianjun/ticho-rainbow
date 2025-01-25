@@ -5,12 +5,12 @@ import cn.hutool.core.util.StrUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.slf4j.MDC;
-import top.ticho.boot.security.util.BaseUserUtil;
 import top.ticho.rainbow.infrastructure.core.constant.CommConst;
 import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
 import top.ticho.rainbow.interfaces.dto.SecurityUser;
 import top.ticho.rainbow.interfaces.dto.UserHelper;
-import top.ticho.tool.trace.core.util.BeetlUtil;
+import top.ticho.starter.security.util.BaseUserUtil;
+import top.ticho.trace.core.util.BeetlUtil;
 
 import java.util.List;
 import java.util.Objects;

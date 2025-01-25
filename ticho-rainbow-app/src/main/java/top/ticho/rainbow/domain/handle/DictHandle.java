@@ -2,12 +2,12 @@ package top.ticho.rainbow.domain.handle;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.system.service.DictService;
 import top.ticho.rainbow.interfaces.dto.DictDTO;
 import top.ticho.rainbow.interfaces.dto.DictLabelDTO;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Component
 public class DictHandle {
 
-    @Autowired
+    @Resource
     private DictService dictService;
 
     /**

@@ -8,9 +8,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.mail.component.MailContent;
-import top.ticho.boot.view.core.TiResult;
 import top.ticho.rainbow.domain.repository.EmailRepository;
+import top.ticho.starter.mail.component.TiMailContent;
+import top.ticho.starter.view.core.TiResult;
 
 import javax.annotation.Resource;
 
@@ -33,7 +33,7 @@ public class EmailController {
     @ApiOperation(value = "邮件发送测试")
     @ApiOperationSupport(order = 10)
     @PostMapping("sendTest")
-    public TiResult<Void> sendTest(MailContent mailContent) {
+    public TiResult<Void> sendTest(TiMailContent mailContent) {
         emailRepository.sendMail(mailContent);
         return TiResult.ok();
     }

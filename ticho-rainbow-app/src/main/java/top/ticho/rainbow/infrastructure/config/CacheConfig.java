@@ -1,18 +1,15 @@
 package top.ticho.rainbow.infrastructure.config;
 
-import com.github.benmanes.caffeine.cache.RemovalCause;
 import lombok.Getter;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import top.ticho.boot.cache.config.TiCache;
-import top.ticho.boot.cache.config.TiCacheBatch;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.entity.FileCache;
+import top.ticho.starter.cache.config.TiCache;
+import top.ticho.starter.cache.config.TiCacheBatch;
 
+import java.time.Duration;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -22,7 +19,6 @@ import java.util.stream.Collectors;
  * @date 2024-01-15 20:00
  */
 @Configuration
-@EnableCaching
 public class CacheConfig {
 
     // 定义cache名称、超时时长（秒）、最大容量
@@ -65,29 +61,62 @@ public class CacheConfig {
 
     @Bean
     public TiCacheBatch tiCacheBatch() {
-        return new TiCacheBatch() {
+        return () -> {
+            CacheEnum[] values = CacheEnum.values();
+            return Arrays.stream(values)
+                .map(cacheEnum -> new TiCache<String, Object>() {
+                    @Override
+                    public String getName() {
+                        return cacheEnum.getKey();
+                    }
+
+                    @Override
+                    public int getMaxSize() {
+                        return cacheEnum.getMaxSize();
+                    }
+
+                    @Override
+                    public int getTtl() {
+                        return cacheEnum.getTtl();
+                    }
+                })
+                .collect(Collectors.toList());
+        };
+    }
+
+    @Bean
+    public TiCache<String, FileCache> fileInfoCache() {
+        return new TiCache<String, FileCache>() {
             @Override
-            public List<TiCache> getTiCaches() {
-                CacheEnum[] values = CacheEnum.values();
-                return Arrays.stream(values)
-                    .map(cacheEnum -> new TiCache() {
-                        @Override
-                        public String getName() {
-                            return cacheEnum.getKey();
-                        }
-
-                        @Override
-                        public int getMaxSize() {
-                            return cacheEnum.getMaxSize();
-                        }
-
-                        @Override
-                        public int getTtl() {
-                            return cacheEnum.getTtl();
-                        }
-                    })
-                    .collect(Collectors.toList());
+            public String getName() {
+                return "";
             }
+
+            @Override
+            public int getMaxSize() {
+                return 1000;
+            }
+
+            @Override
+            public int getTtl() {
+                return 0;
+            }
+
+            @Override
+            public long expireAfterCreate(String key, FileCache value, long currentTime) {
+                return Duration.ofMillis(value.getExpire()).toNanos();
+            }
+
+            @Override
+            public long expireAfterUpdate(String key, FileCache value, long currentTime, long currentDuration) {
+                return Duration.ofMillis(value.getExpire()).toNanos();
+            }
+
+            @Override
+            public long expireAfterRead(String key, FileCache value, long currentTime, long currentDuration) {
+                return Duration.ofMillis(value.getExpire()).toNanos();
+            }
+
         };
     }
 

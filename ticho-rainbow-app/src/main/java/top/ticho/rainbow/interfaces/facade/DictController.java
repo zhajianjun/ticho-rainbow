@@ -5,7 +5,6 @@ import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,13 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.TiPageResult;
-import top.ticho.boot.view.core.TiResult;
-import top.ticho.boot.web.annotation.View;
 import top.ticho.rainbow.application.system.service.DictService;
 import top.ticho.rainbow.interfaces.dto.DictDTO;
 import top.ticho.rainbow.interfaces.query.DictQuery;
+import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.starter.view.core.TiResult;
+import top.ticho.starter.web.annotation.TiView;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 
@@ -38,7 +38,7 @@ import java.util.List;
 @ApiSort(70)
 public class DictController {
 
-    @Autowired
+    @Resource
     private DictService dictService;
 
     @PreAuthorize("@perm.hasPerms('system:dict:save')")
@@ -102,7 +102,7 @@ public class DictController {
         return TiResult.ok(dictService.flush());
     }
 
-    @View(ignore = true)
+    @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:dict:expExcel')")
     @ApiOperation(value = "导出字典", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 100)

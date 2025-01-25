@@ -8,11 +8,11 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import top.ticho.rainbow.domain.repository.RoleMenuRepository;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.entity.RoleMenu;
 import top.ticho.rainbow.infrastructure.mapper.RoleMenuMapper;
+import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class RoleMenuRepositoryImpl extends RootServiceImpl<RoleMenuMapper, RoleMenu> implements RoleMenuRepository {
+public class RoleMenuRepositoryImpl extends TiRepositoryImpl<RoleMenuMapper, RoleMenu> implements RoleMenuRepository {
 
     @Override
     @Cacheable(value = CacheConst.ROLE_MENU_INFO, key = "#roleId")

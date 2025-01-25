@@ -6,7 +6,7 @@ import org.beetl.core.GroupTemplate;
 import org.beetl.core.ResourceLoader;
 import org.beetl.core.resource.ClasspathResourceLoader;
 import org.beetl.core.resource.StringTemplateResourceLoader;
-import top.ticho.boot.view.exception.TiBizException;
+import top.ticho.starter.view.exception.TiBizException;
 
 import java.io.IOException;
 

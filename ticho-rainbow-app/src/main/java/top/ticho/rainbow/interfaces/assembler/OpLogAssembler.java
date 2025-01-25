@@ -3,10 +3,10 @@ package top.ticho.rainbow.interfaces.assembler;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-import top.ticho.boot.view.log.TiHttpLog;
 import top.ticho.rainbow.infrastructure.entity.OpLog;
 import top.ticho.rainbow.interfaces.dto.OpLogDTO;
 import top.ticho.rainbow.interfaces.excel.OpLogExp;
+import top.ticho.starter.view.log.TiHttpLog;
 
 /**
  * 日志信息 转换

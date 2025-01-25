@@ -1,8 +1,8 @@
 package top.ticho.rainbow.infrastructure.mapper;
 
 import org.springframework.stereotype.Repository;
-import top.ticho.boot.datasource.mapper.RootMapper;
 import top.ticho.rainbow.infrastructure.entity.FileInfo;
+import top.ticho.starter.datasource.mapper.TiMapper;
 
 
 /**
@@ -12,6 +12,6 @@ import top.ticho.rainbow.infrastructure.entity.FileInfo;
  * @date 2024-04-23 17:55
  */
 @Repository
-public interface FileInfoMapper extends RootMapper<FileInfo> {
+public interface FileInfoMapper extends TiMapper<FileInfo> {
 
 }

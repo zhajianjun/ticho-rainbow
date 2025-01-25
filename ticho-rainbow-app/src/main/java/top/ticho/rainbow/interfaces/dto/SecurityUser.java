@@ -3,7 +3,7 @@ package top.ticho.rainbow.interfaces.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.ticho.boot.view.core.TiSecurityUser;
+import top.ticho.starter.view.core.TiSecurityUser;
 
 /**
  * 用户信息

@@ -1,14 +1,15 @@
 package top.ticho.rainbow.domain.service.login;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.security.dto.LoginRequest;
-import top.ticho.boot.security.dto.Oauth2AccessToken;
-import top.ticho.boot.security.handle.BaseLoginUserHandle;
-import top.ticho.boot.view.core.TiSecurityUser;
-import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.system.service.UserService;
 import top.ticho.rainbow.interfaces.dto.UserLoginDTO;
+import top.ticho.starter.security.dto.LoginRequest;
+import top.ticho.starter.security.dto.Oauth2AccessToken;
+import top.ticho.starter.security.handle.BaseLoginUserHandle;
+import top.ticho.starter.view.core.TiSecurityUser;
+import top.ticho.starter.web.util.valid.TiValidUtil;
+
+import javax.annotation.Resource;
 
 /**
  * @author zhajianjun
@@ -17,14 +18,14 @@ import top.ticho.rainbow.interfaces.dto.UserLoginDTO;
 @Service
 public class DefaultLoginUserHandle extends BaseLoginUserHandle {
 
-    @Autowired
+    @Resource
     private UserService userService;
 
     @Override
     public Oauth2AccessToken token(LoginRequest loginRequest) {
         if (loginRequest instanceof UserLoginDTO) {
             UserLoginDTO userLogin = (UserLoginDTO) loginRequest;
-            ValidUtil.valid(userLogin);
+            TiValidUtil.valid(userLogin);
             userService.imgCodeValid(userLogin);
         }
         String account = loginRequest.getUsername();

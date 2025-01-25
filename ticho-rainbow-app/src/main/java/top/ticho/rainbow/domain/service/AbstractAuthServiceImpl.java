@@ -2,8 +2,6 @@ package top.ticho.rainbow.domain.service;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import top.ticho.boot.web.util.TreeUtil;
 import top.ticho.rainbow.application.storage.service.FileInfoService;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.domain.repository.MenuRepository;
@@ -25,7 +23,9 @@ import top.ticho.rainbow.interfaces.dto.RoleDTO;
 import top.ticho.rainbow.interfaces.dto.RoleMenuDtlDTO;
 import top.ticho.rainbow.interfaces.dto.UserDTO;
 import top.ticho.rainbow.interfaces.dto.UserRoleMenuDtlDTO;
+import top.ticho.starter.web.util.TiTreeUtil;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,25 +47,25 @@ import java.util.stream.Stream;
  */
 public abstract class AbstractAuthServiceImpl {
 
-    @Autowired
+    @Resource
     private UserRepository userRepository;
 
-    @Autowired
+    @Resource
     private UserRoleRepository userRoleRepository;
 
-    @Autowired
+    @Resource
     private RoleRepository roleRepository;
 
-    @Autowired
+    @Resource
     private RoleMenuRepository roleMenuRepository;
 
-    @Autowired
+    @Resource
     private MenuRepository menuRepository;
 
-    @Autowired
+    @Resource
     private FileInfoRepository fileInfoRepository;
 
-    @Autowired
+    @Resource
     private FileInfoService fileInfoService;
 
     public UserDTO getUser(String username) {
@@ -246,7 +246,7 @@ public abstract class AbstractAuthServiceImpl {
         // 菜单信息规整为树结构
         MenuDtlDTO root = new MenuDtlDTO();
         root.setId(0L);
-        TreeUtil.tree(menuFuncDtls, root);
+        TiTreeUtil.tree(menuFuncDtls, root);
         roleMenuDtlDTO.setMenus(root.getChildren());
         roleMenuDtlDTO.setMenuIds(menuIds);
         roleMenuDtlDTO.setPerms(perms);

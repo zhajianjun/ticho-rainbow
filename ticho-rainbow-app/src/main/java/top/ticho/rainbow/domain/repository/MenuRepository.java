@@ -1,8 +1,8 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.boot.datasource.service.RootService;
 import top.ticho.rainbow.infrastructure.entity.Menu;
 import top.ticho.rainbow.interfaces.query.MenuQuery;
+import top.ticho.starter.datasource.service.TiRepository;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-public interface MenuRepository extends RootService<Menu> {
+public interface MenuRepository extends TiRepository<Menu> {
 
     /**
      * 查询Menu列表

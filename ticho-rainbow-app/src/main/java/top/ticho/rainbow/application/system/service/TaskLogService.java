@@ -1,8 +1,8 @@
 package top.ticho.rainbow.application.system.service;
 
-import top.ticho.boot.view.core.TiPageResult;
 import top.ticho.rainbow.interfaces.dto.TaskLogDTO;
 import top.ticho.rainbow.interfaces.query.TaskLogQuery;
+import top.ticho.starter.view.core.TiPageResult;
 
 import java.io.IOException;
 

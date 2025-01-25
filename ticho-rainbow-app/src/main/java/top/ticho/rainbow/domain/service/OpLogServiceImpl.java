@@ -4,10 +4,7 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.NumberUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.view.core.TiPageResult;
-import top.ticho.boot.view.util.TiAssert;
 import top.ticho.rainbow.application.system.service.OpLogService;
 import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.OpLogRepository;
@@ -18,6 +15,8 @@ import top.ticho.rainbow.interfaces.assembler.OpLogAssembler;
 import top.ticho.rainbow.interfaces.dto.OpLogDTO;
 import top.ticho.rainbow.interfaces.excel.OpLogExp;
 import top.ticho.rainbow.interfaces.query.OpLogQuery;
+import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.starter.view.util.TiAssert;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -38,10 +37,10 @@ import java.util.stream.Collectors;
 @Service
 public class OpLogServiceImpl implements OpLogService {
 
-    @Autowired
+    @Resource
     private OpLogRepository opLogRepository;
 
-    @Autowired
+    @Resource
     private DictHandle dictHandle;
 
     @Resource

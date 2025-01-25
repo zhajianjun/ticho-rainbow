@@ -9,13 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.constant.CommConst;
 import top.ticho.rainbow.infrastructure.entity.Role;
 import top.ticho.rainbow.infrastructure.mapper.RoleMapper;
 import top.ticho.rainbow.interfaces.query.RoleQuery;
+import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class RoleRepositoryImpl extends RootServiceImpl<RoleMapper, Role> implements RoleRepository {
+public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, Role> implements RoleRepository {
 
     @Override
     @Cacheable(value = CacheConst.COMMON, key = "'ticho-rainbow:role:list'", sync = true)

@@ -6,11 +6,6 @@ import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.view.core.TiPageResult;
-import top.ticho.boot.view.util.TiAssert;
-import top.ticho.boot.web.util.CloudIdUtil;
-import top.ticho.boot.web.util.valid.ValidGroup;
-import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.intranet.service.PortService;
 import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.ClientRepository;
@@ -24,6 +19,11 @@ import top.ticho.rainbow.interfaces.assembler.PortAssembler;
 import top.ticho.rainbow.interfaces.dto.PortDTO;
 import top.ticho.rainbow.interfaces.excel.PortExp;
 import top.ticho.rainbow.interfaces.query.PortQuery;
+import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.starter.view.util.TiAssert;
+import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.starter.web.util.valid.TiValidGroup;
+import top.ticho.starter.web.util.valid.TiValidUtil;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 import top.ticho.tool.intranet.server.entity.PortInfo;
 import top.ticho.tool.intranet.server.handler.AppHandler;
@@ -61,11 +61,11 @@ public class PortServiceImpl implements PortService {
 
     @Override
     public void save(PortDTO portDTO) {
-        ValidUtil.valid(portDTO);
+        TiValidUtil.valid(portDTO);
         portDTO.setId(null);
         check(portDTO);
         Port port = PortAssembler.INSTANCE.dtoToEntity(portDTO);
-        port.setId(CloudIdUtil.getId());
+        port.setId(TiIdUtil.getId());
         TiAssert.isTrue(portRepository.save(port), "保存失败");
         savePortInfo(portDTO.getPort());
     }
@@ -82,7 +82,7 @@ public class PortServiceImpl implements PortService {
 
     @Override
     public void updateById(PortDTO portDTO) {
-        ValidUtil.valid(portDTO, ValidGroup.Upd.class);
+        TiValidUtil.valid(portDTO, TiValidGroup.Upd.class);
         Port dbPort = portRepository.getById(portDTO.getId());
         TiAssert.isNotNull(dbPort, "修改失败，数据不存在");
         // accessKey不可修改

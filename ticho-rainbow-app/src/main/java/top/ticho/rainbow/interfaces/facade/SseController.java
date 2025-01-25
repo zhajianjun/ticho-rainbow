@@ -4,18 +4,19 @@ import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import top.ticho.boot.security.annotation.IgnoreJwtCheck;
-import top.ticho.boot.view.core.TiResult;
-import top.ticho.boot.web.annotation.View;
 import top.ticho.rainbow.domain.handle.SseEvent;
 import top.ticho.rainbow.domain.handle.SseHandle;
+import top.ticho.starter.security.annotation.IgnoreJwtCheck;
+import top.ticho.starter.view.core.TiResult;
+import top.ticho.starter.web.annotation.TiView;
+
+import javax.annotation.Resource;
 
 /**
  * sse
@@ -29,7 +30,7 @@ import top.ticho.rainbow.domain.handle.SseHandle;
 @ApiSort(170)
 public class SseController {
 
-    @Autowired
+    @Resource
     private SseHandle sseHandle;
 
     @ApiOperation(value = "sign")
@@ -40,7 +41,7 @@ public class SseController {
     }
 
     @IgnoreJwtCheck
-    @View(ignore = true)
+    @TiView(ignore = true)
     @ApiOperation(value = "connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ApiOperationSupport(order = 20)
     @GetMapping("connect")

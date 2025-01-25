@@ -1,9 +1,9 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.boot.datasource.service.RootService;
 import top.ticho.rainbow.infrastructure.entity.DictLabel;
 import top.ticho.rainbow.infrastructure.entity.Role;
 import top.ticho.rainbow.interfaces.query.RoleQuery;
+import top.ticho.starter.datasource.service.TiRepository;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-public interface RoleRepository extends RootService<Role> {
+public interface RoleRepository extends TiRepository<Role> {
 
     /**
      * 所有角色缓存查询

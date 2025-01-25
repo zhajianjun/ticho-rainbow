@@ -7,12 +7,12 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.infrastructure.core.enums.FileInfoStatus;
 import top.ticho.rainbow.infrastructure.entity.FileInfo;
 import top.ticho.rainbow.infrastructure.mapper.FileInfoMapper;
 import top.ticho.rainbow.interfaces.query.FileInfoQuery;
+import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,7 +25,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public class FileInfoRepositoryImpl extends RootServiceImpl<FileInfoMapper, FileInfo> implements FileInfoRepository {
+public class FileInfoRepositoryImpl extends TiRepositoryImpl<FileInfoMapper, FileInfo> implements FileInfoRepository {
 
     @Override
     public List<FileInfo> list(FileInfoQuery query) {

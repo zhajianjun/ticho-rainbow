@@ -6,11 +6,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import top.ticho.rainbow.domain.repository.OpLogRepository;
 import top.ticho.rainbow.infrastructure.entity.OpLog;
 import top.ticho.rainbow.infrastructure.mapper.OpLogMapper;
 import top.ticho.rainbow.interfaces.query.OpLogQuery;
+import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +23,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public class OpLogRepositoryImpl extends RootServiceImpl<OpLogMapper, OpLog> implements OpLogRepository {
+public class OpLogRepositoryImpl extends TiRepositoryImpl<OpLogMapper, OpLog> implements OpLogRepository {
 
     @Override
     public List<OpLog> list(OpLogQuery query) {

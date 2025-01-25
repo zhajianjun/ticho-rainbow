@@ -7,11 +7,11 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import top.ticho.rainbow.domain.repository.TaskRepository;
 import top.ticho.rainbow.infrastructure.entity.Task;
 import top.ticho.rainbow.infrastructure.mapper.TaskMapper;
 import top.ticho.rainbow.interfaces.query.TaskQuery;
+import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public class TaskRepositoryImpl extends RootServiceImpl<TaskMapper, Task> implements TaskRepository {
+public class TaskRepositoryImpl extends TiRepositoryImpl<TaskMapper, Task> implements TaskRepository {
 
     @Override
     public List<Task> list(TaskQuery query) {

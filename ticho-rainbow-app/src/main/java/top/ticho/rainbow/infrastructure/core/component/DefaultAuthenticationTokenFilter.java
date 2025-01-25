@@ -2,10 +2,10 @@ package top.ticho.rainbow.infrastructure.core.component;
 
 import cn.hutool.core.convert.Convert;
 import org.springframework.stereotype.Component;
-import top.ticho.boot.security.constant.BaseOAuth2Const;
-import top.ticho.boot.security.constant.BaseSecurityConst;
-import top.ticho.boot.security.filter.AbstractAuthTokenFilter;
 import top.ticho.rainbow.interfaces.dto.SecurityUser;
+import top.ticho.starter.security.constant.BaseOAuth2Const;
+import top.ticho.starter.security.constant.BaseSecurityConst;
+import top.ticho.starter.security.filter.AbstractAuthTokenFilter;
 
 import java.util.List;
 import java.util.Map;

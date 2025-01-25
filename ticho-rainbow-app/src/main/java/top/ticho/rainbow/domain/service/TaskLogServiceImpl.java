@@ -3,10 +3,7 @@ package top.ticho.rainbow.domain.service;
 import cn.hutool.core.date.DatePattern;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.view.core.TiPageResult;
-import top.ticho.boot.view.util.TiAssert;
 import top.ticho.rainbow.application.system.service.TaskLogService;
 import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
@@ -20,6 +17,8 @@ import top.ticho.rainbow.interfaces.dto.TaskLogDTO;
 import top.ticho.rainbow.interfaces.excel.TaskLogExp;
 import top.ticho.rainbow.interfaces.query.TaskLogQuery;
 import top.ticho.rainbow.interfaces.query.TaskQuery;
+import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.starter.view.util.TiAssert;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -40,16 +39,16 @@ import java.util.stream.Collectors;
 @Service
 public class TaskLogServiceImpl implements TaskLogService {
 
-    @Autowired
+    @Resource
     private TaskLogRepository taskLogRepository;
 
-    @Autowired
+    @Resource
     private DictHandle dictHandle;
 
     @Resource
     private HttpServletResponse response;
 
-    @Autowired
+    @Resource
     private TaskRepository taskRepository;
 
     @Override

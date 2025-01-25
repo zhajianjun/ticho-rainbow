@@ -5,7 +5,6 @@ import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.TiResult;
 import top.ticho.rainbow.application.system.service.MenuService;
 import top.ticho.rainbow.interfaces.dto.MenuDTO;
 import top.ticho.rainbow.interfaces.dto.MenuDtlDTO;
 import top.ticho.rainbow.interfaces.dto.RouteDTO;
+import top.ticho.starter.view.core.TiResult;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -35,7 +35,7 @@ import java.util.List;
 @ApiSort(50)
 public class MenuController {
 
-    @Autowired
+    @Resource
     private MenuService menuService;
 
     @PreAuthorize("@perm.hasPerms('system:menu:save')")

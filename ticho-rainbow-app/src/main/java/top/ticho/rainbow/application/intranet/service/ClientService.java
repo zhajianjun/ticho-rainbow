@@ -1,8 +1,8 @@
 package top.ticho.rainbow.application.intranet.service;
 
-import top.ticho.boot.view.core.TiPageResult;
 import top.ticho.rainbow.interfaces.dto.ClientDTO;
 import top.ticho.rainbow.interfaces.query.ClientQuery;
+import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 
 import java.io.IOException;

@@ -7,8 +7,8 @@ import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.util.ListUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import top.ticho.boot.web.util.valid.ValidUtil;
-import top.ticho.tool.json.util.JsonUtil;
+import top.ticho.starter.web.util.valid.TiValidUtil;
+import top.ticho.tool.json.util.TiJsonUtil;
 
 import javax.validation.ConstraintViolation;
 import java.util.List;
@@ -109,7 +109,7 @@ public class ExcelListener<M extends ExcelBaseImp> implements ReadListener<M> {
         setData(data, errorMsg, true);
         // 校验失败的逻辑
         if (log.isDebugEnabled()) {
-            log.debug("校验失败，错误信息: {}, 数据{}", errorMsg, JsonUtil.toJsonString(data));
+            log.debug("校验失败，错误信息: {}, 数据{}", errorMsg, TiJsonUtil.toJsonString(data));
         }
     }
 
@@ -137,7 +137,7 @@ public class ExcelListener<M extends ExcelBaseImp> implements ReadListener<M> {
      * @return {@link String}
      */
     public String valid(Object data, String delimiter) {
-        Set<ConstraintViolation<Object>> validate = ValidUtil.VALIDATOR_DEFAULT.validate(data);
+        Set<ConstraintViolation<Object>> validate = TiValidUtil.VALIDATOR_DEFAULT.validate(data);
         return validate
             .stream()
             .map(ConstraintViolation::getMessage)

@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.ticho.boot.web.util.TreeNode;
+import top.ticho.starter.web.util.TiTreeNode;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "路由菜单DTO")
-public class RouteDTO extends TreeNode<RouteDTO> implements Serializable {
+public class RouteDTO extends TiTreeNode<RouteDTO> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /** 菜单id */

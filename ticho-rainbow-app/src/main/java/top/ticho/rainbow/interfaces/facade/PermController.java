@@ -4,15 +4,15 @@ import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.TiResult;
 import top.ticho.rainbow.infrastructure.core.component.PermCacheHandle;
 import top.ticho.rainbow.interfaces.dto.PermDTO;
+import top.ticho.starter.view.core.TiResult;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -27,7 +27,7 @@ import java.util.List;
 @ApiSort(60)
 public class PermController {
 
-    @Autowired
+    @Resource
     private PermCacheHandle permCacheHandle;
 
     @PreAuthorize("@perm.hasPerms('system:perm:list')")

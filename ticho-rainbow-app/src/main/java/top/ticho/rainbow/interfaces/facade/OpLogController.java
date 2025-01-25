@@ -5,7 +5,6 @@ import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,12 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.TiPageResult;
-import top.ticho.boot.view.core.TiResult;
 import top.ticho.rainbow.application.system.service.OpLogService;
 import top.ticho.rainbow.interfaces.dto.OpLogDTO;
 import top.ticho.rainbow.interfaces.query.OpLogQuery;
+import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.starter.view.core.TiResult;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 
 
@@ -34,7 +34,7 @@ import java.io.IOException;
 @ApiSort(150)
 public class OpLogController {
 
-    @Autowired
+    @Resource
     private OpLogService opLogService;
 
     @PreAuthorize("@perm.hasPerms('system:opLog:getById')")

@@ -10,24 +10,14 @@ import cn.hutool.core.util.URLUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
-import top.ticho.boot.view.core.TiPageResult;
-import top.ticho.boot.view.enums.TiBizErrCode;
-import top.ticho.boot.view.enums.TiHttpErrCode;
-import top.ticho.boot.view.exception.TiBizException;
-import top.ticho.boot.view.util.TiAssert;
-import top.ticho.boot.web.util.CloudIdUtil;
-import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.storage.service.FileInfoService;
 import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.infrastructure.config.CacheConfig;
-import top.ticho.rainbow.infrastructure.core.component.cache.CommonCacheTemplate;
-import top.ticho.rainbow.infrastructure.core.component.cache.SpringCacheTemplate;
 import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.constant.DictConst;
@@ -45,7 +35,15 @@ import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoReqDTO;
 import top.ticho.rainbow.interfaces.excel.FileInfoExp;
 import top.ticho.rainbow.interfaces.query.FileInfoQuery;
-import top.ticho.tool.json.util.JsonUtil;
+import top.ticho.starter.cache.component.TiCacheTemplate;
+import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.starter.view.enums.TiBizErrCode;
+import top.ticho.starter.view.enums.TiHttpErrCode;
+import top.ticho.starter.view.exception.TiBizException;
+import top.ticho.starter.view.util.TiAssert;
+import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.starter.web.util.valid.TiValidUtil;
+import top.ticho.tool.json.util.TiJsonUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -77,22 +75,19 @@ import java.util.stream.Collectors;
 public class FileInfoServiceImpl implements FileInfoService {
     public static final String STORAGE_ID_NOT_BLANK = "id不能为空";
 
-    /** 下载链接缓存 */
-    private final CommonCacheTemplate<FileCache> fileUrlCacheTemplate = new CommonCacheTemplate<>(FileCache::getExpire);
-
     @Resource
     private HttpServletResponse response;
 
-    @Autowired
-    private SpringCacheTemplate springCacheTemplate;
+    @Resource
+    private TiCacheTemplate tiCacheTemplate;
 
-    @Autowired
+    @Resource
     private FileProperty fileProperty;
 
-    @Autowired
+    @Resource
     private FileInfoRepository fileInfoRepository;
 
-    @Autowired
+    @Resource
     private DictHandle dictHandle;
 
 
@@ -119,7 +114,7 @@ public class FileInfoServiceImpl implements FileInfoService {
             .map(s -> s + File.separator + fileName)
             .orElse(fileName);
         FileInfo fileInfo = new FileInfo();
-        fileInfo.setId(CloudIdUtil.getId());
+        fileInfo.setId(TiIdUtil.getId());
         fileInfo.setType(type);
         fileInfo.setFileName(fileName);
         fileInfo.setOriginalFileName(originalFileName);
@@ -178,9 +173,9 @@ public class FileInfoServiceImpl implements FileInfoService {
         TiAssert.isTrue(isCancel || isChunk, "删除失败, 分片或者作废状态文件才能删除");
         String path;
         if (Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CHUNK.code())) {
-            boolean isUploadChunkIng = springCacheTemplate.contain(CacheConst.UPLOAD_CHUNK, dbFileInfo.getChunkId());
+            boolean isUploadChunkIng = tiCacheTemplate.contain(CacheConst.UPLOAD_CHUNK, dbFileInfo.getChunkId());
             TiAssert.isTrue(!isUploadChunkIng, "删除失败, 分片文件正在上传中");
-            ChunkMetadataDTO metadata = JsonUtil.toJavaObject(dbFileInfo.getChunkMetadata(), ChunkMetadataDTO.class);
+            ChunkMetadataDTO metadata = TiJsonUtil.toJavaObject(dbFileInfo.getChunkMetadata(), ChunkMetadataDTO.class);
             path = metadata.getChunkDirPath();
         } else {
             path = dbFileInfo.getPath();
@@ -203,12 +198,12 @@ public class FileInfoServiceImpl implements FileInfoService {
     @Override
     public void download(String sign) {
         TiAssert.isNotBlank(sign, TiBizErrCode.PARAM_ERROR, "sign不能为空");
-        FileCache fileCache = fileUrlCacheTemplate.get(sign);
+        FileCache fileCache = tiCacheTemplate.get(CacheConst.FILE_URL_CACHE, sign, FileCache.class);
         TiAssert.isNotNull(fileCache, FileErrCode.FILE_NOT_EXIST);
         FileInfo fileInfo = fileCache.getFileInfo();
         if (Boolean.TRUE.equals(fileCache.getLimit())) {
             fileCache.setLimited(true);
-            fileUrlCacheTemplate.put(sign, fileCache);
+            tiCacheTemplate.put(CacheConst.FILE_URL_CACHE, sign, fileCache);
         }
         download(fileInfo);
     }
@@ -273,13 +268,13 @@ public class FileInfoServiceImpl implements FileInfoService {
         fileCache.setFileInfo(fileInfo);
         fileCache.setExpire(expire);
         fileCache.setLimit(limit);
-        fileUrlCacheTemplate.put(sign, fileCache);
+        tiCacheTemplate.put(CacheConst.FILE_URL_CACHE, sign, fileCache);
         return domain + "/file/download?sign=" + sign;
     }
 
     @Override
     public ChunkCacheDTO uploadChunk(ChunkFileDTO chunkFileDTO) {
-        ValidUtil.valid(chunkFileDTO);
+        TiValidUtil.valid(chunkFileDTO);
         MultipartFile chunkfile = chunkFileDTO.getChunkfile();
         DataSize maxFileSize = fileProperty.getMaxPartSize();
         Integer index = chunkFileDTO.getIndex();
@@ -325,7 +320,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         String chunkId = chunkFileDTO.getChunkId();
         boolean isContinued = Boolean.TRUE.equals(chunkFileDTO.getIsContinued());
         // 先从缓存中获取,每次走同步锁，性能比较差
-        ChunkCacheDTO chunkCacheDTO = springCacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkCacheDTO.class);
+        ChunkCacheDTO chunkCacheDTO = tiCacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkCacheDTO.class);
         if (Objects.nonNull(chunkCacheDTO)) {
             return chunkCacheDTO;
         }
@@ -333,7 +328,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         String lock = chunkId.intern();
         // 加锁的意义是，防止并发上传同一个文件，导致缓存被覆盖
         synchronized (lock) {
-            chunkCacheDTO = springCacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkCacheDTO.class);
+            chunkCacheDTO = tiCacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkCacheDTO.class);
             boolean hasCache = Objects.nonNull(chunkCacheDTO);
             // 缓存存在则返回false
             if (hasCache) {
@@ -367,9 +362,9 @@ public class FileInfoServiceImpl implements FileInfoService {
 
     private void saveChunkCache(ChunkCacheDTO chunkCacheDTO) {
         // 上传队列大小限制
-        long size = springCacheTemplate.size(CacheConst.UPLOAD_CHUNK);
+        long size = tiCacheTemplate.size(CacheConst.UPLOAD_CHUNK);
         TiAssert.isTrue(size + 1 <= CacheConfig.CacheEnum.UPLOAD_CHUNK.getMaxSize(), TiBizErrCode.PARAM_ERROR, "分片文件上传数量超过限制");
-        springCacheTemplate.put(CacheConst.UPLOAD_CHUNK, chunkCacheDTO.getChunkId(), chunkCacheDTO);
+        tiCacheTemplate.put(CacheConst.UPLOAD_CHUNK, chunkCacheDTO.getChunkId(), chunkCacheDTO);
     }
 
     /**
@@ -379,7 +374,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         String chunkId = dbFileInfo.getChunkId();
         ChunkCacheDTO chunkCacheDTO = new ChunkCacheDTO();
         // 如果数据库存在则进行断点续传
-        ChunkMetadataDTO metadata = JsonUtil.toJavaObject(dbFileInfo.getChunkMetadata(), ChunkMetadataDTO.class);
+        ChunkMetadataDTO metadata = TiJsonUtil.toJavaObject(dbFileInfo.getChunkMetadata(), ChunkMetadataDTO.class);
         chunkCacheDTO.setChunkId(chunkId);
         chunkCacheDTO.setMd5(dbFileInfo.getMd5());
         chunkCacheDTO.setId(dbFileInfo.getId());
@@ -442,7 +437,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         chunkCacheDTO.setChunkId(chunkFileDTO.getChunkId());
         chunkCacheDTO.setMd5(chunkFileDTO.getMd5());
         chunkCacheDTO.setType(chunkFileDTO.getType());
-        chunkCacheDTO.setId(CloudIdUtil.getId());
+        chunkCacheDTO.setId(TiIdUtil.getId());
         chunkCacheDTO.setChunkCount(chunkFileDTO.getChunkCount());
         chunkCacheDTO.setFileName(fileName);
         chunkCacheDTO.setFileSize(chunkFileDTO.getFileSize());
@@ -462,7 +457,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         fileInfo.setPath(chunkCacheDTO.getRelativeFullPath());
         fileInfo.setExt(chunkCacheDTO.getExtName());
         fileInfo.setSize(chunkCacheDTO.getFileSize());
-        fileInfo.setChunkMetadata(JsonUtil.toJsonString(chunkMetadataDTO));
+        fileInfo.setChunkMetadata(TiJsonUtil.toJsonString(chunkMetadataDTO));
         fileInfo.setStatus(FileInfoStatus.CHUNK.code());
         fileInfoRepository.save(fileInfo);
     }
@@ -470,7 +465,7 @@ public class FileInfoServiceImpl implements FileInfoService {
     @Override
     public FileInfoDTO composeChunk(String chunkId) {
         TiAssert.isNotBlank(chunkId, "分片id不能为空");
-        ChunkCacheDTO chunkCacheDTO = springCacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkCacheDTO.class);
+        ChunkCacheDTO chunkCacheDTO = tiCacheTemplate.get(CacheConst.UPLOAD_CHUNK, chunkId, ChunkCacheDTO.class);
         TiAssert.isNotNull(chunkCacheDTO, "分片文件不存在");
         ConcurrentSkipListSet<Integer> indexs = Optional.ofNullable(chunkCacheDTO.getIndexs()).orElseGet(ConcurrentSkipListSet::new);
         AtomicInteger uploadedChunkCountAto = chunkCacheDTO.getUploadedChunkCount();
@@ -506,7 +501,7 @@ public class FileInfoServiceImpl implements FileInfoService {
             throw new TiBizException(TiHttpErrCode.FAIL, "文件合并失败");
         } finally {
             // 清除缓存
-            springCacheTemplate.evict(CacheConst.UPLOAD_CHUNK, chunkId);
+            tiCacheTemplate.evict(CacheConst.UPLOAD_CHUNK, chunkId);
             moveToTmp(chunkCacheDTO.getType(), chunkCacheDTO.getChunkDirPath());
         }
         FileInfo fileInfo = fileInfoRepository.getById(chunkCacheDTO.getId());

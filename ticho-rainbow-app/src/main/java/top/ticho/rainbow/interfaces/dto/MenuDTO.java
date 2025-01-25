@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.ticho.boot.web.util.valid.ValidGroup;
+import top.ticho.starter.web.util.valid.TiValidGroup;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -26,13 +26,13 @@ public class MenuDTO implements Serializable {
 
     /** 主键编号 */
     @ApiModelProperty(value = "主键编号", position = 10)
-    @NotNull(message = "id不能为空", groups = {ValidGroup.Upd.class})
-    @Null(message = "id应为空", groups = {ValidGroup.Add.class})
+    @NotNull(message = "id不能为空", groups = {TiValidGroup.Upd.class})
+    @Null(message = "id应为空", groups = {TiValidGroup.Add.class})
     private Long id;
 
     /** 父级id */
     @ApiModelProperty(value = "父级id", position = 20)
-    @NotNull(message = "父id不能为空", groups = {ValidGroup.Add.class})
+    @NotNull(message = "父id不能为空", groups = {TiValidGroup.Add.class})
     private Long parentId;
 
     /** 结构 */
@@ -41,7 +41,7 @@ public class MenuDTO implements Serializable {
 
     /** 类型;1-目录,2-菜单,3-权限 */
     @ApiModelProperty(value = "类型;1-目录,2-菜单,3-权限", position = 40)
-    @NotNull(message = "类型不能为空", groups = {ValidGroup.Add.class})
+    @NotNull(message = "类型不能为空", groups = {TiValidGroup.Add.class})
     private Integer type;
 
     /** 权限标识 */
@@ -51,7 +51,7 @@ public class MenuDTO implements Serializable {
 
     /** 标题;目录名称、菜单名称、按钮名称 */
     @ApiModelProperty(value = "标题;目录名称、菜单名称、按钮名称", position = 50)
-    @NotBlank(message = "标题不能为空", groups = {ValidGroup.Add.class})
+    @NotBlank(message = "标题不能为空", groups = {TiValidGroup.Add.class})
     private String name;
 
     /** 路由地址 */
@@ -100,7 +100,7 @@ public class MenuDTO implements Serializable {
 
     /** 排序 */
     @ApiModelProperty(value = "排序", position = 140)
-    @NotNull(message = "排序不能为空", groups = {ValidGroup.Add.class})
+    @NotNull(message = "排序不能为空", groups = {TiValidGroup.Add.class})
     private Integer sort;
 
     /** 状态;1-正常,0-禁用 */

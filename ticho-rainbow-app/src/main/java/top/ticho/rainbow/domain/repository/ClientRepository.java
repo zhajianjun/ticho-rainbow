@@ -1,8 +1,8 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.boot.datasource.service.RootService;
 import top.ticho.rainbow.infrastructure.entity.Client;
 import top.ticho.rainbow.interfaces.query.ClientQuery;
+import top.ticho.starter.datasource.service.TiRepository;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * @author zhajianjun
  * @date 2023-12-17 20:12
  */
-public interface ClientRepository extends RootService<Client> {
+public interface ClientRepository extends TiRepository<Client> {
 
     /**
      * 根据条件查询客户端信息列表

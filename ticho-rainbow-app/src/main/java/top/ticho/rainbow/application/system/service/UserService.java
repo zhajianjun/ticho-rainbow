@@ -1,7 +1,6 @@
 package top.ticho.rainbow.application.system.service;
 
 import org.springframework.web.multipart.MultipartFile;
-import top.ticho.boot.view.core.TiPageResult;
 import top.ticho.rainbow.interfaces.dto.ImgCodeDTO;
 import top.ticho.rainbow.interfaces.dto.ImgCodeEmailDTO;
 import top.ticho.rainbow.interfaces.dto.PasswordDTO;
@@ -12,6 +11,7 @@ import top.ticho.rainbow.interfaces.dto.UserRoleDTO;
 import top.ticho.rainbow.interfaces.dto.UserRoleMenuDtlDTO;
 import top.ticho.rainbow.interfaces.dto.UserSignUpOrResetDTO;
 import top.ticho.rainbow.interfaces.query.UserQuery;
+import top.ticho.starter.view.core.TiPageResult;
 
 import java.io.IOException;
 import java.util.List;

@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.ticho.boot.view.core.TiPageQuery;
+import top.ticho.starter.view.core.TiPageQuery;
 
 import java.io.Serializable;
 import java.time.LocalDate;

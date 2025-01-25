@@ -6,11 +6,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import top.ticho.rainbow.domain.repository.ClientRepository;
 import top.ticho.rainbow.infrastructure.entity.Client;
 import top.ticho.rainbow.infrastructure.mapper.ClientMapper;
 import top.ticho.rainbow.interfaces.query.ClientQuery;
+import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public class ClientRepositoryImpl extends RootServiceImpl<ClientMapper, Client> implements ClientRepository {
+public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, Client> implements ClientRepository {
 
     @Override
     public List<Client> list(ClientQuery query) {

@@ -17,22 +17,22 @@
 
     <dependencies>
         <dependency>
-            <groupId>top.ticho.boot</groupId>
+            <groupId>top.ticho.starter</groupId>
             <artifactId>ticho-starter-web</artifactId>
         </dependency>
 
         <dependency>
             <groupId>top.ticho.tool</groupId>
-            <artifactId>ticho-intranet</artifactId>
+            <artifactId>ticho-tool-intranet</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>top.ticho.boot</groupId>
+            <groupId>top.ticho.starter</groupId>
             <artifactId>ticho-starter-datasource</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>top.ticho.boot</groupId>
+            <groupId>top.ticho.starter</groupId>
             <artifactId>ticho-starter-security</artifactId>
         </dependency>
 
@@ -47,13 +47,18 @@
         </dependency>
 
         <dependency>
-            <groupId>top.ticho.boot</groupId>
+            <groupId>top.ticho.starter</groupId>
             <artifactId>ticho-starter-swagger</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>top.ticho.boot</groupId>
+            <groupId>top.ticho.starter</groupId>
             <artifactId>ticho-starter-log</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>top.ticho.starter</groupId>
+            <artifactId>ticho-starter-cache</artifactId>
         </dependency>
 
         <dependency>
@@ -72,24 +77,14 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>top.ticho.boot</groupId>
+            <groupId>top.ticho.starter</groupId>
             <artifactId>ticho-starter-email</artifactId>
         </dependency>
-
-            <dependency>
-                <groupId>top.ticho.boot</groupId>
-                <artifactId>ticho-starter-dict</artifactId>
-            </dependency>
 
         <!-- 配合additional-spring-configuration-metadata.json时，添加配置时有提示 -->
         <dependency>

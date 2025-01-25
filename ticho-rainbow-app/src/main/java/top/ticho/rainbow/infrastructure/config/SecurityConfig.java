@@ -4,7 +4,7 @@ import cn.hutool.core.util.IdUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import top.ticho.boot.security.handle.jwt.JwtSigner;
+import top.ticho.starter.security.handle.jwt.JwtSigner;
 
 /**
  * @author zhajianjun

@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import top.ticho.boot.web.util.SpringContext;
 import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
 import top.ticho.rainbow.interfaces.dto.PermDTO;
+import top.ticho.starter.web.util.TiSpringUtil;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -87,7 +87,7 @@ public class PermCacheHandle {
      * @return {@link List}<{@link PermDTO}>
      */
     public List<PermDTO> listCurrentAppPerms() {
-        RequestMappingHandlerMapping mapping = SpringContext.getBean(RequestMappingHandlerMapping.class);
+        RequestMappingHandlerMapping mapping = TiSpringUtil.getBean(RequestMappingHandlerMapping.class);
         // 获取url与类和方法的对应信息
         Map<RequestMappingInfo, HandlerMethod> map = mapping.getHandlerMethods();
         return map.values()

@@ -2,18 +2,18 @@ package top.ticho.rainbow.infrastructure.core.component;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import top.ticho.boot.log.interceptor.WebLogInterceptor;
-import top.ticho.boot.view.core.TiResult;
-import top.ticho.boot.view.enums.TiHttpErrCode;
-import top.ticho.boot.view.log.TiHttpLog;
-import top.ticho.boot.web.handle.BaseResponseHandle;
+import top.ticho.starter.log.interceptor.WebLogInterceptor;
+import top.ticho.starter.view.core.TiResult;
+import top.ticho.starter.view.enums.TiHttpErrCode;
+import top.ticho.starter.view.log.TiHttpLog;
+import top.ticho.starter.web.handle.TiResponseHandle;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
@@ -28,8 +28,8 @@ import java.util.Objects;
 @Order(100)
 public class CustomResponseHandle {
 
-    @Autowired
-    private BaseResponseHandle baseResponseHandle;
+    @Resource
+    private TiResponseHandle tiResponseHandle;
 
     public void prefix(Exception ex) {
         TiHttpLog httpLog = WebLogInterceptor.logInfo();
@@ -67,7 +67,7 @@ public class CustomResponseHandle {
     @ExceptionHandler(Exception.class)
     public TiResult<String> exception(Exception ex, HttpServletResponse res) {
         prefix(ex);
-        return baseResponseHandle.exception(ex, res);
+        return tiResponseHandle.exception(ex, res);
     }
 
 }

@@ -1,16 +1,16 @@
 package top.ticho.rainbow.domain.handle;
 
 import cn.hutool.core.util.StrUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import top.ticho.boot.view.util.TiAssert;
 import top.ticho.rainbow.infrastructure.core.component.SseTemplate;
-import top.ticho.rainbow.infrastructure.core.component.cache.SpringCacheTemplate;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.util.CommonUtil;
 import top.ticho.rainbow.infrastructure.core.util.UserUtil;
+import top.ticho.starter.cache.component.TiCacheTemplate;
+import top.ticho.starter.view.util.TiAssert;
 
+import javax.annotation.Resource;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -24,21 +24,21 @@ import java.util.function.Predicate;
 public class SseHandle {
     public final String split = "-";
 
-    @Autowired
+    @Resource
     private SseTemplate sseTemplate;
 
-    @Autowired
-    private SpringCacheTemplate springCacheTemplate;
+    @Resource
+    private TiCacheTemplate tiCacheTemplate;
 
     public String getSign() {
         String id = StrUtil.format("{}{}{}", UserUtil.getCurrentUsername(), split, CommonUtil.fastShortUUID());
-        springCacheTemplate.put(CacheConst.SSE, id, System.currentTimeMillis());
+        tiCacheTemplate.put(CacheConst.SSE, id, System.currentTimeMillis());
         return id;
     }
 
     public SseEmitter connect(String id) {
-        TiAssert.isTrue(springCacheTemplate.contain(CacheConst.SSE, id), "权限不足");
-        springCacheTemplate.evict(CacheConst.SSE, id);
+        TiAssert.isTrue(tiCacheTemplate.contain(CacheConst.SSE, id), "权限不足");
+        tiCacheTemplate.evict(CacheConst.SSE, id);
         return sseTemplate.connect(id);
     }
 

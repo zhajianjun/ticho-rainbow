@@ -15,19 +15,19 @@ import org.slf4j.MDC;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.quartz.QuartzJobBean;
-import top.ticho.boot.view.util.TiAssert;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.rainbow.infrastructure.core.constant.CommConst;
 import top.ticho.rainbow.infrastructure.core.util.UserUtil;
 import top.ticho.rainbow.infrastructure.entity.TaskLog;
-import top.ticho.tool.json.util.JsonUtil;
-import top.ticho.tool.trace.common.bean.TraceInfo;
-import top.ticho.tool.trace.common.constant.LogConst;
-import top.ticho.tool.trace.common.prop.TraceProperty;
-import top.ticho.tool.trace.core.handle.TracePushContext;
-import top.ticho.tool.trace.core.util.TraceUtil;
-import top.ticho.tool.trace.spring.event.TraceEvent;
-import top.ticho.tool.trace.spring.util.IpUtil;
+import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.json.util.TiJsonUtil;
+import top.ticho.trace.common.bean.TraceInfo;
+import top.ticho.trace.common.constant.LogConst;
+import top.ticho.trace.common.prop.TraceProperty;
+import top.ticho.trace.core.handle.TracePushContext;
+import top.ticho.trace.core.util.TraceUtil;
+import top.ticho.trace.spring.event.TraceEvent;
+import top.ticho.trace.spring.util.IpUtil;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -62,7 +62,7 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
         if (Objects.equals(String.class, paramClass)) {
             return paramClass.cast(taskParam);
         }
-        return JsonUtil.toJavaObject(taskParam, paramClass);
+        return TiJsonUtil.toJavaObject(taskParam, paramClass);
     }
 
     public T getTaskParam(JobExecutionContext context) {
@@ -119,7 +119,7 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
         taskLog.setStartTime(LocalDateTimeUtil.of(start));
         taskLog.setEndTime(LocalDateTimeUtil.of(end));
         taskLog.setConsume(Long.valueOf(consume).intValue());
-        taskLog.setMdc(JsonUtil.toJsonString(mdcMap));
+        taskLog.setMdc(TiJsonUtil.toJsonString(mdcMap));
         taskLog.setTraceId(mdcMap.get(LogConst.TRACE_ID_KEY));
         taskLog.setStatus(Objects.equals(isErr, 1) ? 0 : 1);
         taskLog.setOperateBy(username);

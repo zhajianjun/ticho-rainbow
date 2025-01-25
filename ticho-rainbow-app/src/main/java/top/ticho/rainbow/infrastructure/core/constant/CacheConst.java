@@ -26,4 +26,6 @@ public class CacheConst {
 
     public static final String SSE = "ticho-rainbow:sse";
 
+    public static final String FILE_URL_CACHE = "ticho-rainbow:file-url";
+
 }

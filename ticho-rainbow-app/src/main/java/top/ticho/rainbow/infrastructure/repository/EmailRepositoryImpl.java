@@ -4,9 +4,9 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import top.ticho.boot.mail.component.MailContent;
-import top.ticho.boot.mail.component.MailTemplate;
 import top.ticho.rainbow.domain.repository.EmailRepository;
+import top.ticho.starter.mail.component.TiMailContent;
+import top.ticho.starter.mail.component.TiMailTemplate;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +22,7 @@ import java.util.Objects;
 public class EmailRepositoryImpl implements EmailRepository {
 
     @Override
-    public boolean sendMail(MailContent mailContent) {
+    public boolean sendMail(TiMailContent mailContent) {
         if (Objects.isNull(mailContent)) {
             return false;
         }
@@ -30,19 +30,19 @@ public class EmailRepositoryImpl implements EmailRepository {
     }
 
     @Override
-    public boolean sendMailBatch(List<MailContent> mailContents) {
+    public boolean sendMailBatch(List<TiMailContent> mailContents) {
         if (CollUtil.isEmpty(mailContents)) {
             return false;
         }
         return sendMailBatchExecute(mailContents);
     }
 
-    private MailTemplate getMailTemplate() {
-        return SpringUtil.getBean(MailTemplate.class);
+    private TiMailTemplate getMailTemplate() {
+        return SpringUtil.getBean(TiMailTemplate.class);
     }
 
-    public boolean sendMailExecute(MailContent mailContent) {
-        MailTemplate mailTemplate = getMailTemplate();
+    public boolean sendMailExecute(TiMailContent mailContent) {
+        TiMailTemplate mailTemplate = getMailTemplate();
         if (Objects.isNull(mailTemplate)) {
             return false;
         }
@@ -50,8 +50,8 @@ public class EmailRepositoryImpl implements EmailRepository {
         return true;
     }
 
-    public boolean sendMailBatchExecute(List<MailContent> mailContents) {
-        MailTemplate mailTemplate = getMailTemplate();
+    public boolean sendMailBatchExecute(List<TiMailContent> mailContents) {
+        TiMailTemplate mailTemplate = getMailTemplate();
         if (Objects.isNull(mailTemplate)) {
             return false;
         }

@@ -1,8 +1,8 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.boot.datasource.service.RootService;
 import top.ticho.rainbow.infrastructure.entity.FileInfo;
 import top.ticho.rainbow.interfaces.query.FileInfoQuery;
+import top.ticho.starter.datasource.service.TiRepository;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * @author zhajianjun
  * @date 2024-04-23 17:55
  */
-public interface FileInfoRepository extends RootService<FileInfo> {
+public interface FileInfoRepository extends TiRepository<FileInfo> {
 
     /**
      * 根据条件查询文件信息列表

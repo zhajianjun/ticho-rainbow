@@ -6,7 +6,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,17 +15,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.security.annotation.IgnoreJwtCheck;
-import top.ticho.boot.view.core.TiPageResult;
-import top.ticho.boot.view.core.TiResult;
-import top.ticho.boot.web.annotation.View;
 import top.ticho.rainbow.application.storage.service.FileInfoService;
 import top.ticho.rainbow.interfaces.dto.ChunkCacheDTO;
 import top.ticho.rainbow.interfaces.dto.ChunkFileDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoReqDTO;
 import top.ticho.rainbow.interfaces.query.FileInfoQuery;
+import top.ticho.starter.security.annotation.IgnoreJwtCheck;
+import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.starter.view.core.TiResult;
+import top.ticho.starter.web.annotation.TiView;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 
 
@@ -43,7 +43,7 @@ import java.io.IOException;
 public class FileInfoController {
 
 
-    @Autowired
+    @Resource
     private FileInfoService fileInfoService;
 
     @PreAuthorize("@perm.hasPerms('storage:file:upload')")
@@ -71,7 +71,7 @@ public class FileInfoController {
         return TiResult.ok(fileInfoService.composeChunk(chunkId));
     }
 
-    @View(ignore = true)
+    @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('storage:file:downloadById')")
     @ApiOperation(value = "下载文件", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 40)
@@ -81,7 +81,7 @@ public class FileInfoController {
         fileInfoService.downloadById(id);
     }
 
-    @View(ignore = true)
+    @TiView(ignore = true)
     @IgnoreJwtCheck
     @ApiOperation(value = "下载文件(公共)", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 50)
@@ -161,7 +161,7 @@ public class FileInfoController {
         return TiResult.ok(fileInfoService.page(query));
     }
 
-    @View(ignore = true)
+    @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('storage:file:expExcel')")
     @ApiOperation(value = "导出文件信息", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 130)

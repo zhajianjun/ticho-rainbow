@@ -12,25 +12,12 @@ import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import top.ticho.boot.mail.component.MailContent;
-import top.ticho.boot.mail.component.MailInines;
-import top.ticho.boot.view.core.TiPageResult;
-import top.ticho.boot.view.core.TiResult;
-import top.ticho.boot.view.enums.TiBizErrCode;
-import top.ticho.boot.view.exception.TiBizException;
-import top.ticho.boot.view.util.TiAssert;
-import top.ticho.boot.web.file.BaseMultPartFile;
-import top.ticho.boot.web.util.CloudIdUtil;
-import top.ticho.boot.web.util.SpringContext;
-import top.ticho.boot.web.util.valid.ValidGroup;
-import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.storage.service.FileInfoService;
 import top.ticho.rainbow.application.system.service.UserService;
 import top.ticho.rainbow.domain.handle.DictHandle;
@@ -38,7 +25,6 @@ import top.ticho.rainbow.domain.repository.EmailRepository;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
-import top.ticho.rainbow.infrastructure.core.component.cache.SpringCacheTemplate;
 import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.constant.CommConst;
@@ -71,8 +57,22 @@ import top.ticho.rainbow.interfaces.excel.UserImp;
 import top.ticho.rainbow.interfaces.excel.UserImpModel;
 import top.ticho.rainbow.interfaces.query.UserAccountQuery;
 import top.ticho.rainbow.interfaces.query.UserQuery;
-import top.ticho.tool.json.util.JsonUtil;
+import top.ticho.starter.cache.component.TiCacheTemplate;
+import top.ticho.starter.mail.component.TiMailContent;
+import top.ticho.starter.mail.component.TiMailInines;
+import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.starter.view.core.TiResult;
+import top.ticho.starter.view.enums.TiBizErrCode;
+import top.ticho.starter.view.exception.TiBizException;
+import top.ticho.starter.view.util.TiAssert;
+import top.ticho.starter.web.file.TiMultipartFile;
+import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.starter.web.util.TiSpringUtil;
+import top.ticho.starter.web.util.valid.TiValidGroup;
+import top.ticho.starter.web.util.valid.TiValidUtil;
+import top.ticho.tool.json.util.TiJsonUtil;
 
+import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
@@ -102,31 +102,31 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserServiceImpl extends AbstractAuthServiceImpl implements UserService {
 
-    @Autowired
+    @Resource
     private UserRepository userRepository;
 
-    @Autowired
+    @Resource
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
+    @Resource
     private UserRoleRepository userRoleRepository;
 
-    @Autowired(required = false)
+    @Resource
     private HttpServletResponse response;
 
-    @Autowired
+    @Resource
     private RoleRepository roleRepository;
 
-    @Autowired
-    private SpringCacheTemplate springCacheTemplate;
+    @Resource
+    private TiCacheTemplate springCacheTemplate;
 
-    @Autowired
+    @Resource
     private EmailRepository emailRepository;
 
-    @Autowired
+    @Resource
     private FileInfoService fileInfoService;
 
-    @Autowired
+    @Resource
     private DictHandle dictHandle;
 
     @Override
@@ -156,12 +156,12 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setContentType("application/json");
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-            response.getWriter().write(JsonUtil.toJsonString(result));
+            response.getWriter().write(TiJsonUtil.toJsonString(result));
         }
     }
 
     public void imgCodeValid(ImgCodeDTO imgCodeDTO) {
-        ValidUtil.valid(imgCodeDTO, ImgCodeDTO.ImgCodeValid.class);
+        TiValidUtil.valid(imgCodeDTO, ImgCodeDTO.ImgCodeValid.class);
         String imgCode = imgCodeDTO.getImgCode();
         String key = imgCodeDTO.getImgKey();
         String cacheImgCode = springCacheTemplate.get(CacheConst.VERIFY_CODE, key, String.class);
@@ -174,7 +174,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
     @Transactional(rollbackFor = Exception.class)
     public void signUpEmailSend(ImgCodeEmailDTO imgCodeEmailDTO) {
         // 图片验证码校验
-        ValidUtil.valid(imgCodeEmailDTO);
+        TiValidUtil.valid(imgCodeEmailDTO);
         imgCodeValid(imgCodeEmailDTO);
         // 发送邮箱验证码
         String email = imgCodeEmailDTO.getEmail();
@@ -188,10 +188,10 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         springCacheTemplate.put(CacheConst.SIGN_UP_CODE, email, code);
         GroupTemplate groupTemplate = BeetlUtil.getGroupTemplate(true);
         Template template = groupTemplate.getTemplate("/template/signUpEmailSend.html");
-        MailInines mailInines = new MailInines();
+        TiMailInines mailInines = new TiMailInines();
         mailInines.setContentId("p01");
-        mailInines.setFile(new BaseMultPartFile("captcha", "captcha.png", MediaType.IMAGE_PNG_VALUE, gifCaptcha.getImageBytes()));
-        MailContent mailContent = new MailContent();
+        mailInines.setFile(new TiMultipartFile("captcha", "captcha.png", MediaType.IMAGE_PNG_VALUE, gifCaptcha.getImageBytes()));
+        TiMailContent mailContent = new TiMailContent();
         mailContent.setTo(email);
         mailContent.setSubject("注册");
         mailContent.setContent(template.render());
@@ -203,7 +203,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public UserLoginDTO signUp(UserSignUpOrResetDTO userSignUpOrResetDTO) {
-        ValidUtil.valid(userSignUpOrResetDTO);
+        TiValidUtil.valid(userSignUpOrResetDTO);
         String email = userSignUpOrResetDTO.getEmail();
         String cacheEmailCode = springCacheTemplate.get(CacheConst.SIGN_UP_CODE, email, String.class);
         TiAssert.isNotBlank(cacheEmailCode, "验证码已过期");
@@ -212,7 +212,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         String username = userSignUpOrResetDTO.getUsername();
         String password = userSignUpOrResetDTO.getPassword();
         User user = new User();
-        user.setId(CloudIdUtil.getId());
+        user.setId(TiIdUtil.getId());
         user.setUsername(username);
         user.setUsername(email);
         user.setPassword(passwordEncoder.encode(password));
@@ -231,7 +231,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String resetPasswordEmailSend(ImgCodeEmailDTO imgCodeEmailDTO) {
-        ValidUtil.valid(imgCodeEmailDTO);
+        TiValidUtil.valid(imgCodeEmailDTO);
         imgCodeValid(imgCodeEmailDTO);
         // 发送邮箱验证码
         String email = imgCodeEmailDTO.getEmail();
@@ -245,10 +245,10 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         springCacheTemplate.put(CacheConst.RESET_PASSWORD_CODE, email, code);
         GroupTemplate groupTemplate = BeetlUtil.getGroupTemplate(true);
         Template template = groupTemplate.getTemplate("/template/resetPasswordEmailSend.html");
-        MailInines mailInines = new MailInines();
+        TiMailInines mailInines = new TiMailInines();
         mailInines.setContentId("p01");
-        mailInines.setFile(new BaseMultPartFile("captcha", "captcha.png", MediaType.IMAGE_PNG_VALUE, gifCaptcha.getImageBytes()));
-        MailContent mailContent = new MailContent();
+        mailInines.setFile(new TiMultipartFile("captcha", "captcha.png", MediaType.IMAGE_PNG_VALUE, gifCaptcha.getImageBytes()));
+        TiMailContent mailContent = new TiMailContent();
         mailContent.setTo(email);
         mailContent.setSubject("重置密码");
         mailContent.setContent(template.render());
@@ -260,7 +260,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
 
     @Override
     public UserLoginDTO resetPassword(UserSignUpOrResetDTO userSignUpOrResetDTO) {
-        ValidUtil.valid(userSignUpOrResetDTO);
+        TiValidUtil.valid(userSignUpOrResetDTO);
         String email = userSignUpOrResetDTO.getEmail();
         String cacheEmailCode = springCacheTemplate.get(CacheConst.RESET_PASSWORD_CODE, email, String.class);
         TiAssert.isNotBlank(cacheEmailCode, "验证码已过期");
@@ -320,7 +320,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void save(UserDTO userDTO) {
-        ValidUtil.valid(userDTO, ValidGroup.Add.class);
+        TiValidUtil.valid(userDTO, TiValidGroup.Add.class);
         String password = userDTO.getPassword();
         userDTO.setPassword(passwordEncoder.encode(password));
         User user = UserAssembler.INSTANCE.dtoToEntity(userDTO);
@@ -336,7 +336,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(UserDTO userDTO) {
-        ValidUtil.valid(userDTO, ValidGroup.Upd.class);
+        TiValidUtil.valid(userDTO, TiValidGroup.Upd.class);
         userDTO.setPassword(null);
         User user = UserAssembler.INSTANCE.dtoToEntity(userDTO);
         UserAccountQuery accountDTO = UserAssembler.INSTANCE.entityToAccount(user);
@@ -408,7 +408,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void bindRole(UserRoleDTO userRoleDTO) {
-        ValidUtil.valid(userRoleDTO);
+        TiValidUtil.valid(userRoleDTO);
         Long userId = userRoleDTO.getUserId();
         List<Long> roleIds = Optional.ofNullable(userRoleDTO.getRoleIds()).orElseGet(ArrayList::new);
         userRoleRepository.removeAndSave(userId, roleIds);
@@ -473,7 +473,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
         String fileName = StrUtil.format("{}-导入结果", file.getOriginalFilename());
         Role guestRole = roleRepository.getGuestRole();
         TiAssert.isNotNull(guestRole, "默认角色不存在，请联系管理员进行处理");
-        UserServiceImpl bean = SpringContext.getBean(this.getClass());
+        UserServiceImpl bean = TiSpringUtil.getBean(this.getClass());
         Map<String, Integer> valueMap = dictHandle.getValueMap(DictConst.SEX, NumberUtil::parseInt);
         ExcelHandle.readAndWriteToResponse((x, y) -> bean.readAndWrite(x, y, guestRole, valueMap), file, fileName, sheetName, UserImp.class, response);
     }
@@ -498,7 +498,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
             }
             userImp.setMessage("导入成功");
             User user = UserAssembler.INSTANCE.impToEntity(userImp);
-            user.setId(CloudIdUtil.getId());
+            user.setId(TiIdUtil.getId());
             user.setPassword(passwordEncoder.encode(CommConst.DEFAULT_PASSWORD));
             user.setStatus(UserStatus.NORMAL.code());
             user.setSex(valueMap.get(userImp.getSexName()));
@@ -573,7 +573,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
 
     @Override
     public void updatePassword(UserPasswordDTO userPasswordDTO) {
-        ValidUtil.valid(userPasswordDTO);
+        TiValidUtil.valid(userPasswordDTO);
         User dbUser = userRepository.getByUsername(userPasswordDTO.getUsername());
         TiAssert.isNotEmpty(dbUser, TiBizErrCode.FAIL, "用户不存在");
         SecurityUser loginUser = UserUtil.getCurrentUser();
@@ -586,7 +586,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
 
     @Override
     public void updatePasswordForSelf(PasswordDTO passwordDTO) {
-        ValidUtil.valid(passwordDTO);
+        TiValidUtil.valid(passwordDTO);
         SecurityUser loginUser = UserUtil.getCurrentUser();
         User dbUser = userRepository.getByUsername(loginUser.getUsername());
         TiAssert.isNotEmpty(dbUser, TiBizErrCode.FAIL, "用户不存在");

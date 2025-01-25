@@ -9,9 +9,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
-import top.ticho.boot.view.core.TiPageQuery;
-import top.ticho.boot.view.core.TiResult;
-import top.ticho.tool.json.util.JsonUtil;
+import top.ticho.starter.view.core.TiPageQuery;
+import top.ticho.starter.view.core.TiResult;
+import top.ticho.tool.json.util.TiJsonUtil;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
@@ -277,7 +277,7 @@ public class ExcelHandle {
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         TiResult<String> fail = TiResult.of(500, "下载文件失败，" + errMsg);
         PrintWriter writer = response.getWriter();
-        writer.println(JsonUtil.toJsonString(fail));
+        writer.println(TiJsonUtil.toJsonString(fail));
     }
 
 }

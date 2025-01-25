@@ -1,12 +1,6 @@
 package top.ticho.rainbow.domain.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.view.enums.TiBizErrCode;
-import top.ticho.boot.view.util.TiAssert;
-import top.ticho.boot.web.util.CloudIdUtil;
-import top.ticho.boot.web.util.valid.ValidGroup;
-import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.system.service.DictLabelService;
 import top.ticho.rainbow.domain.repository.DictLabelRepository;
 import top.ticho.rainbow.domain.repository.DictRepository;
@@ -14,7 +8,13 @@ import top.ticho.rainbow.infrastructure.entity.Dict;
 import top.ticho.rainbow.infrastructure.entity.DictLabel;
 import top.ticho.rainbow.interfaces.assembler.DictLabelAssembler;
 import top.ticho.rainbow.interfaces.dto.DictLabelDTO;
+import top.ticho.starter.view.enums.TiBizErrCode;
+import top.ticho.starter.view.util.TiAssert;
+import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.starter.web.util.valid.TiValidGroup;
+import top.ticho.starter.web.util.valid.TiValidUtil;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -28,15 +28,15 @@ import java.util.stream.Collectors;
 @Service
 public class DictLabelServiceImpl implements DictLabelService {
 
-    @Autowired
+    @Resource
     private DictLabelRepository dictLabelRepository;
 
-    @Autowired
+    @Resource
     private DictRepository dictRepository;
 
     @Override
     public void save(DictLabelDTO dictLabelDTO) {
-        ValidUtil.valid(dictLabelDTO, ValidGroup.Add.class);
+        TiValidUtil.valid(dictLabelDTO, TiValidGroup.Add.class);
         // 字典查询
         Dict dict = dictRepository.getByCodeExcludeId(dictLabelDTO.getCode(), null);
         TiAssert.isNotNull(dict, "保存失败,字典不存在");
@@ -45,7 +45,7 @@ public class DictLabelServiceImpl implements DictLabelService {
         DictLabel dictLabel = DictLabelAssembler.INSTANCE.dtoToEntity(dictLabelDTO);
         DictLabel dbDictLabel = dictLabelRepository.getByCodeAndValueExcludeId(dictLabel.getCode(), dictLabel.getValue(), null);
         TiAssert.isNull(dbDictLabel, "保存失败,字典值已存在");
-        dictLabel.setId(CloudIdUtil.getId());
+        dictLabel.setId(TiIdUtil.getId());
         TiAssert.isTrue(dictLabelRepository.save(dictLabel), TiBizErrCode.FAIL, "保存失败");
     }
 
@@ -62,7 +62,7 @@ public class DictLabelServiceImpl implements DictLabelService {
 
     @Override
     public void updateById(DictLabelDTO dictLabelDTO) {
-        ValidUtil.valid(dictLabelDTO, ValidGroup.Upd.class);
+        TiValidUtil.valid(dictLabelDTO, TiValidGroup.Upd.class);
         DictLabel dbDictLabel = dictLabelRepository.getById(dictLabelDTO.getId());
         TiAssert.isNotNull(dbDictLabel, TiBizErrCode.FAIL, "修改失败，字典标签不存在");
         Dict dict = dictRepository.getByCodeExcludeId(dbDictLabel.getCode(), null);

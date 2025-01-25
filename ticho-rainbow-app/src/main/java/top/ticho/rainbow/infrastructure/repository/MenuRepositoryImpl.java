@@ -8,12 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.datasource.service.impl.RootServiceImpl;
 import top.ticho.rainbow.domain.repository.MenuRepository;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.entity.Menu;
 import top.ticho.rainbow.infrastructure.mapper.MenuMapper;
 import top.ticho.rainbow.interfaces.query.MenuQuery;
+import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 
 import java.io.Serializable;
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public class MenuRepositoryImpl extends RootServiceImpl<MenuMapper, Menu> implements MenuRepository {
+public class MenuRepositoryImpl extends TiRepositoryImpl<MenuMapper, Menu> implements MenuRepository {
 
     @Override
     @Cacheable(value = CacheConst.COMMON, key = "'ticho-rainbow:menu:list'", sync = true)

@@ -1,8 +1,8 @@
 package top.ticho.rainbow.infrastructure.mapper;
 
 import org.springframework.stereotype.Repository;
-import top.ticho.boot.datasource.mapper.RootMapper;
 import top.ticho.rainbow.infrastructure.entity.Role;
+import top.ticho.starter.datasource.mapper.TiMapper;
 
 /**
  * 角色信息 mapper
@@ -11,6 +11,6 @@ import top.ticho.rainbow.infrastructure.entity.Role;
  * @date 2024-01-08 20:30
  */
 @Repository
-public interface RoleMapper extends RootMapper<Role> {
+public interface RoleMapper extends TiMapper<Role> {
 
 }

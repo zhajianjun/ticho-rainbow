@@ -1,7 +1,6 @@
 package top.ticho.rainbow.infrastructure.core.component;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -9,7 +8,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import top.ticho.boot.web.event.BaseApplicationReadyEvent;
+import top.ticho.starter.web.event.TiApplicationReadyEvent;
+
+import javax.annotation.Resource;
 
 /**
  * 权限编码缓存实践
@@ -22,7 +23,7 @@ import top.ticho.boot.web.event.BaseApplicationReadyEvent;
 @Component
 public class PermCacheEvent implements ApplicationListener<ApplicationReadyEvent> {
 
-    @Autowired
+    @Resource
     private PermCacheHandle permCacheHandle;
 
     /**
@@ -34,7 +35,7 @@ public class PermCacheEvent implements ApplicationListener<ApplicationReadyEvent
         permCacheHandle.pushCurrentAppPerms();
         ConfigurableApplicationContext applicationContext = event.getApplicationContext();
         Environment env = applicationContext.getEnvironment();
-        String property = env.getProperty(BaseApplicationReadyEvent.SPRING_APPLICATION_NAME_KEY, "application");
+        String property = env.getProperty(TiApplicationReadyEvent.SPRING_APPLICATION_NAME_KEY, "application");
         log.info("{} perms is cached", property);
     }
 

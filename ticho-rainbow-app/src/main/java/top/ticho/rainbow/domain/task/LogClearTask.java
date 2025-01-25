@@ -3,7 +3,6 @@ package top.ticho.rainbow.domain.task;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.quartz.JobExecutionContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.domain.repository.OpLogRepository;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
@@ -11,6 +10,7 @@ import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
 import top.ticho.rainbow.infrastructure.entity.OpLog;
 import top.ticho.rainbow.infrastructure.entity.TaskLog;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 
 /**
@@ -22,10 +22,10 @@ import java.time.LocalDateTime;
 @Component
 public class LogClearTask extends AbstracTask<Integer> {
 
-    @Autowired
+    @Resource
     private OpLogRepository opLogRepository;
 
-    @Autowired
+    @Resource
     private TaskLogRepository taskLogRepository;
 
     @Override

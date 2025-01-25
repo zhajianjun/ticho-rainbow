@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.ticho.boot.web.util.TreeNode;
+import top.ticho.starter.web.util.TiTreeNode;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "菜单详情信息")
-public class MenuDtlDTO extends TreeNode<MenuDtlDTO> implements Serializable {
+public class MenuDtlDTO extends TiTreeNode<MenuDtlDTO> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /** 菜单id */

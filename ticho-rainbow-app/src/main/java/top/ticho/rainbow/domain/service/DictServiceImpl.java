@@ -6,18 +6,8 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.view.core.TiPageResult;
-import top.ticho.boot.view.enums.TiBizErrCode;
-import top.ticho.boot.view.util.TiAssert;
-import top.ticho.boot.web.util.CloudIdUtil;
-import top.ticho.boot.web.util.SpringContext;
-import top.ticho.boot.web.util.valid.ValidGroup;
-import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.system.service.DictService;
 import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.DictLabelRepository;
@@ -34,6 +24,14 @@ import top.ticho.rainbow.interfaces.dto.DictLabelDTO;
 import top.ticho.rainbow.interfaces.excel.DictExp;
 import top.ticho.rainbow.interfaces.query.DictLabelQuery;
 import top.ticho.rainbow.interfaces.query.DictQuery;
+import top.ticho.starter.cache.component.TiCacheTemplate;
+import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.starter.view.enums.TiBizErrCode;
+import top.ticho.starter.view.util.TiAssert;
+import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.starter.web.util.TiSpringUtil;
+import top.ticho.starter.web.util.valid.TiValidGroup;
+import top.ticho.starter.web.util.valid.TiValidUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -59,14 +57,14 @@ import java.util.stream.Collectors;
 @Service
 public class DictServiceImpl implements DictService {
 
-    @Autowired
+    @Resource
     private DictRepository dictRepository;
 
-    @Autowired
+    @Resource
     private DictLabelRepository dictLabelRepository;
 
-    @Autowired
-    private CacheManager cacheManager;
+    @Resource
+    private TiCacheTemplate tiCacheTemplate;
 
     @Resource
     private HttpServletResponse response;
@@ -74,13 +72,13 @@ public class DictServiceImpl implements DictService {
 
     @Override
     public void save(DictDTO dictDTO) {
-        ValidUtil.valid(dictDTO, ValidGroup.Add.class);
+        TiValidUtil.valid(dictDTO, TiValidGroup.Add.class);
         Dict dict = DictAssembler.INSTANCE.dtoToEntity(dictDTO);
         Dict dbDict = dictRepository.getByCodeExcludeId(dict.getCode(), null);
         TiAssert.isNull(dbDict, TiBizErrCode.FAIL, "保存失败，字典已存在");
         Integer isSys = Optional.ofNullable(dict.getIsSys()).orElse(0);
         Integer status = Optional.ofNullable(dict.getStatus()).orElse(1);
-        dict.setId(CloudIdUtil.getId());
+        dict.setId(TiIdUtil.getId());
         dict.setStatus(status);
         dict.setIsSys(isSys);
         // 系统字典默认为正常
@@ -103,7 +101,7 @@ public class DictServiceImpl implements DictService {
 
     @Override
     public void updateById(DictDTO dictDTO) {
-        ValidUtil.valid(dictDTO, ValidGroup.Upd.class);
+        TiValidUtil.valid(dictDTO, TiValidGroup.Upd.class);
         Dict dbDict = dictRepository.getById(dictDTO.getId());
         TiAssert.isNotNull(dbDict, TiBizErrCode.FAIL, "修改失败，字典不存在");
         // 非系统字典修改
@@ -175,19 +173,15 @@ public class DictServiceImpl implements DictService {
     }
 
     public List<DictDTO> flush() {
-        Cache cache = cacheManager.getCache(CacheConst.COMMON);
-        if (Objects.nonNull(cache)) {
-            cache.evict("ticho-rainbow:dict:list");
-        }
-        DictServiceImpl bean = SpringUtil.getBean(this.getClass());
-        return bean.list();
+        tiCacheTemplate.evict(CacheConst.COMMON, "ticho-rainbow:dict:list");
+        return SpringUtil.getBean(this.getClass()).list();
     }
 
     @Override
     public void expExcel(DictQuery query) throws IOException {
         String sheetName = "字典信息";
         String fileName = "字典信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
-        DictHandle dictHandle = SpringContext.getBean(DictHandle.class);
+        DictHandle dictHandle = TiSpringUtil.getBean(DictHandle.class);
         Map<Integer, String> labelMap = dictHandle.getLabelMap(DictConst.COMMON_STATUS, NumberUtil::parseInt);
         ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, DictExp.class, response);
     }

@@ -9,15 +9,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.datasource.service.impl.RootServiceImpl;
-import top.ticho.boot.view.util.TiAssert;
-import top.ticho.boot.web.util.SpringContext;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.entity.User;
 import top.ticho.rainbow.infrastructure.mapper.UserMapper;
 import top.ticho.rainbow.interfaces.query.UserAccountQuery;
 import top.ticho.rainbow.interfaces.query.UserQuery;
+import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
+import top.ticho.starter.view.util.TiAssert;
+import top.ticho.starter.web.util.TiSpringUtil;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -32,7 +32,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public class UserRepositoryImpl extends RootServiceImpl<UserMapper, User> implements UserRepository {
+public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, User> implements UserRepository {
 
     @Override
     @Cacheable(value = CacheConst.USER_INFO, key = "#username")
@@ -77,7 +77,7 @@ public class UserRepositoryImpl extends RootServiceImpl<UserMapper, User> implem
     }
 
     private void clearCache(Collection<String> usernames) {
-        UserRepositoryImpl bean = SpringContext.getBean(this.getClass());
+        UserRepositoryImpl bean = TiSpringUtil.getBean(this.getClass());
         usernames.forEach(bean::clearCache);
     }
 

@@ -3,11 +3,11 @@ package top.ticho.rainbow.domain.task;
 import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
 import top.ticho.rainbow.infrastructure.core.prop.FileProperty;
 
+import javax.annotation.Resource;
 import java.io.File;
 
 /**
@@ -20,7 +20,7 @@ import java.io.File;
 @Slf4j
 public class FileTmpClearTask extends AbstracTask<String> {
 
-    @Autowired
+    @Resource
     private FileProperty fileProperty;
 
     @Override

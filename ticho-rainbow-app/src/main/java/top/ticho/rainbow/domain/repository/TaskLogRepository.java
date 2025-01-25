@@ -1,8 +1,8 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.boot.datasource.service.RootService;
 import top.ticho.rainbow.infrastructure.entity.TaskLog;
 import top.ticho.rainbow.interfaces.query.TaskLogQuery;
+import top.ticho.starter.datasource.service.TiRepository;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * @author zhajianjun
  * @date 2024-05-06 16:41
  */
-public interface TaskLogRepository extends RootService<TaskLog> {
+public interface TaskLogRepository extends TiRepository<TaskLog> {
 
     /**
      * 根据条件查询计划任务日志信息列表

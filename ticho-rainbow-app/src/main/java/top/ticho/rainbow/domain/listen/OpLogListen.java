@@ -3,21 +3,21 @@ package top.ticho.rainbow.domain.listen;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
-import top.ticho.boot.log.event.WebLogEvent;
-import top.ticho.boot.view.log.TiHttpLog;
-import top.ticho.boot.web.util.CloudIdUtil;
 import top.ticho.rainbow.domain.repository.OpLogRepository;
 import top.ticho.rainbow.infrastructure.entity.OpLog;
 import top.ticho.rainbow.interfaces.assembler.OpLogAssembler;
-import top.ticho.tool.json.util.JsonUtil;
-import top.ticho.tool.trace.common.constant.LogConst;
+import top.ticho.starter.log.event.WebLogEvent;
+import top.ticho.starter.view.log.TiHttpLog;
+import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.tool.json.util.TiJsonUtil;
+import top.ticho.trace.common.constant.LogConst;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,7 +35,7 @@ public class OpLogListen {
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
     private final List<String> ignorePaths = Stream.of("/opLog/page", "/file/uploadChunk").collect(Collectors.toList());
 
-    @Autowired
+    @Resource
     private OpLogRepository opLogRepository;
 
     @Async("asyncTaskExecutor")
@@ -72,9 +72,9 @@ public class OpLogListen {
         }
         Map<String, String> mdcMap = httpLog.getMdcMap();
         entity.setTraceId(mdcMap.get(LogConst.TRACE_ID_KEY));
-        entity.setMdc(JsonUtil.toJsonString(mdcMap));
-        entity.setId(CloudIdUtil.getId());
-        Map<String, String> map = JsonUtil.toMap(httpLog.getReqHeaders(), String.class, String.class);
+        entity.setMdc(TiJsonUtil.toJsonString(mdcMap));
+        entity.setId(TiIdUtil.getId());
+        Map<String, String> map = TiJsonUtil.toMap(httpLog.getReqHeaders(), String.class, String.class);
         String ip = entity.getIp();
         String realIp = Optional.ofNullable(map.get("Real-Ip")).orElse(ip);
         entity.setIp(realIp);

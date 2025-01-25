@@ -1,12 +1,12 @@
 package top.ticho.rainbow.application.storage.service;
 
-import top.ticho.boot.view.core.TiPageResult;
 import top.ticho.rainbow.infrastructure.entity.FileInfo;
 import top.ticho.rainbow.interfaces.dto.ChunkCacheDTO;
 import top.ticho.rainbow.interfaces.dto.ChunkFileDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoReqDTO;
 import top.ticho.rainbow.interfaces.query.FileInfoQuery;
+import top.ticho.starter.view.core.TiPageResult;
 
 import java.io.IOException;
 

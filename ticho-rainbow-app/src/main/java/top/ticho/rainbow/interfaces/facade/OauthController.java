@@ -4,7 +4,6 @@ import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,18 +11,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.security.annotation.IgnoreJwtCheck;
-import top.ticho.boot.security.constant.BaseOAuth2Const;
-import top.ticho.boot.security.dto.Oauth2AccessToken;
-import top.ticho.boot.security.handle.LoginUserHandle;
-import top.ticho.boot.view.core.TiResult;
-import top.ticho.boot.web.annotation.View;
-import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.system.service.UserService;
 import top.ticho.rainbow.interfaces.dto.ImgCodeEmailDTO;
 import top.ticho.rainbow.interfaces.dto.UserLoginDTO;
 import top.ticho.rainbow.interfaces.dto.UserSignUpOrResetDTO;
+import top.ticho.starter.security.annotation.IgnoreJwtCheck;
+import top.ticho.starter.security.constant.BaseOAuth2Const;
+import top.ticho.starter.security.dto.Oauth2AccessToken;
+import top.ticho.starter.security.handle.LoginUserHandle;
+import top.ticho.starter.view.core.TiResult;
+import top.ticho.starter.web.annotation.TiView;
+import top.ticho.starter.web.util.valid.TiValidUtil;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.security.Principal;
 
@@ -39,10 +39,10 @@ import java.security.Principal;
 @Api(tags = "权限登录")
 public class OauthController {
 
-    @Autowired
+    @Resource
     private LoginUserHandle loginUserHandle;
 
-    @Autowired
+    @Resource
     private UserService userService;
 
     @IgnoreJwtCheck
@@ -79,7 +79,7 @@ public class OauthController {
     }
 
     @IgnoreJwtCheck
-    @View(ignore = true)
+    @TiView(ignore = true)
     @ApiOperation(value = "验证码", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 50)
     @GetMapping("imgCode")
@@ -92,7 +92,7 @@ public class OauthController {
     @ApiOperationSupport(order = 60)
     @PostMapping("token")
     public TiResult<Oauth2AccessToken> token(UserLoginDTO userLoginDTO) {
-        ValidUtil.valid(userLoginDTO);
+        TiValidUtil.valid(userLoginDTO);
         return TiResult.ok(loginUserHandle.token(userLoginDTO));
     }
 

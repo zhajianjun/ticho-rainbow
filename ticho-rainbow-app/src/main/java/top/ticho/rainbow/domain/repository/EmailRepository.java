@@ -1,6 +1,6 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.boot.mail.component.MailContent;
+import top.ticho.starter.mail.component.TiMailContent;
 
 import java.util.List;
 
@@ -17,13 +17,13 @@ public interface EmailRepository {
      *
      * @param mailContent 邮件内容
      */
-    boolean sendMail(MailContent mailContent);
+    boolean sendMail(TiMailContent mailContent);
 
     /**
      * 邮件发送(批量)
      *
      * @param mailContent 邮件内容列表
      */
-    boolean sendMailBatch(List<MailContent> mailContent);
+    boolean sendMailBatch(List<TiMailContent> mailContent);
 
 }

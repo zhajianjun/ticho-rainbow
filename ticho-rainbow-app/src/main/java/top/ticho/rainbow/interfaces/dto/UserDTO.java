@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.ticho.boot.web.util.valid.ValidGroup;
+import top.ticho.starter.web.util.valid.TiValidGroup;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -29,7 +29,7 @@ public class UserDTO implements Serializable {
 
     /** 主键编号 */
     @ApiModelProperty(value = "主键编号", position = 10)
-    @NotNull(message = "主键编号不能为空", groups = ValidGroup.Upd.class)
+    @NotNull(message = "主键编号不能为空", groups = TiValidGroup.Upd.class)
     private Long id;
 
     /** 账户;账户具有唯一性 */
@@ -40,7 +40,7 @@ public class UserDTO implements Serializable {
     /** 密码 */
     @ApiModelProperty(value = "密码", position = 30)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @NotBlank(message = "密码不能为空", groups = ValidGroup.Add.class)
+    @NotBlank(message = "密码不能为空", groups = TiValidGroup.Add.class)
     private String password;
 
     /** 昵称 */

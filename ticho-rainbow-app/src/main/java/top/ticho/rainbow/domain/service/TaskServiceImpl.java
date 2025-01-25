@@ -4,15 +4,8 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.ticho.boot.view.core.TiPageResult;
-import top.ticho.boot.view.enums.TiBizErrCode;
-import top.ticho.boot.view.util.TiAssert;
-import top.ticho.boot.web.util.CloudIdUtil;
-import top.ticho.boot.web.util.valid.ValidGroup;
-import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.task.TaskService;
 import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.TaskRepository;
@@ -25,6 +18,12 @@ import top.ticho.rainbow.interfaces.assembler.TaskAssembler;
 import top.ticho.rainbow.interfaces.dto.TaskDTO;
 import top.ticho.rainbow.interfaces.excel.TaskExp;
 import top.ticho.rainbow.interfaces.query.TaskQuery;
+import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.starter.view.enums.TiBizErrCode;
+import top.ticho.starter.view.util.TiAssert;
+import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.starter.web.util.valid.TiValidGroup;
+import top.ticho.starter.web.util.valid.TiValidUtil;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -50,16 +49,16 @@ import java.util.stream.Collectors;
 public class TaskServiceImpl implements TaskService {
     public static final String DEFAULT_JOB_GROUP = "DEFAULT_JOB_GROUP";
 
-    @Autowired
+    @Resource
     private TaskRepository taskRepository;
 
-    @Autowired
+    @Resource
     private List<AbstracTask<?>> abstracTasks;
 
-    @Autowired
+    @Resource
     private TaskTemplate taskTemplate;
 
-    @Autowired
+    @Resource
     private DictHandle dictHandle;
 
     @Resource
@@ -90,9 +89,9 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void save(TaskDTO taskDTO) {
-        ValidUtil.valid(taskDTO);
+        TiValidUtil.valid(taskDTO);
         Task task = TaskAssembler.INSTANCE.dtoToEntity(taskDTO);
-        task.setId(CloudIdUtil.getId());
+        task.setId(TiIdUtil.getId());
         TiAssert.isTrue(taskRepository.save(task), TiBizErrCode.FAIL, "保存失败");
         check(task);
         boolean addedJob = taskTemplate.addJob(task.getId().toString(), DEFAULT_JOB_GROUP, task.getContent(), task.getCronExpression(), task.getName(), task.getParam());
@@ -133,7 +132,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(TaskDTO taskDTO) {
-        ValidUtil.valid(taskDTO, ValidGroup.Upd.class);
+        TiValidUtil.valid(taskDTO, TiValidGroup.Upd.class);
         Task task = TaskAssembler.INSTANCE.dtoToEntity(taskDTO);
         check(task);
         TiAssert.isTrue(taskRepository.updateById(task), TiBizErrCode.FAIL, "修改失败");

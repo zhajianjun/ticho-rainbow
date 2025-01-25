@@ -5,13 +5,8 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.IdUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.ticho.boot.view.core.TiPageResult;
-import top.ticho.boot.view.util.TiAssert;
-import top.ticho.boot.web.util.CloudIdUtil;
-import top.ticho.boot.web.util.valid.ValidUtil;
 import top.ticho.rainbow.application.intranet.service.ClientService;
 import top.ticho.rainbow.domain.handle.DictHandle;
 import top.ticho.rainbow.domain.repository.ClientRepository;
@@ -25,6 +20,10 @@ import top.ticho.rainbow.interfaces.assembler.PortAssembler;
 import top.ticho.rainbow.interfaces.dto.ClientDTO;
 import top.ticho.rainbow.interfaces.excel.ClientExp;
 import top.ticho.rainbow.interfaces.query.ClientQuery;
+import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.starter.view.util.TiAssert;
+import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.starter.web.util.valid.TiValidUtil;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 import top.ticho.tool.intranet.server.entity.PortInfo;
 import top.ticho.tool.intranet.server.handler.ServerHandler;
@@ -54,13 +53,13 @@ import java.util.stream.Collectors;
 @Service
 public class ClientServiceImpl implements ClientService {
 
-    @Autowired
+    @Resource
     private ClientRepository clientRepository;
-    @Autowired
+    @Resource
     private PortRepository portRepository;
-    @Autowired
+    @Resource
     private ServerHandler serverHandler;
-    @Autowired
+    @Resource
     private DictHandle dictHandle;
     @Resource
     private HttpServletResponse response;
@@ -68,9 +67,9 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void save(ClientDTO clientDTO) {
-        ValidUtil.valid(clientDTO);
+        TiValidUtil.valid(clientDTO);
         Client client = ClientAssembler.INSTANCE.dtoToEntity(clientDTO);
-        clientDTO.setId(CloudIdUtil.getId());
+        clientDTO.setId(TiIdUtil.getId());
         clientDTO.setAccessKey(IdUtil.fastSimpleUUID());
         TiAssert.isTrue(clientRepository.save(client), "保存失败");
         saveClientInfo(client, null);

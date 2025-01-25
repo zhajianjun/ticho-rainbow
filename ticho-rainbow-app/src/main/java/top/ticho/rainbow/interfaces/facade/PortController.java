@@ -5,7 +5,6 @@ import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,13 +14,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.boot.view.core.TiPageResult;
-import top.ticho.boot.view.core.TiResult;
-import top.ticho.boot.web.annotation.View;
 import top.ticho.rainbow.application.intranet.service.PortService;
 import top.ticho.rainbow.interfaces.dto.PortDTO;
 import top.ticho.rainbow.interfaces.query.PortQuery;
+import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.starter.view.core.TiResult;
+import top.ticho.starter.web.annotation.TiView;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 
 /**
@@ -36,7 +36,7 @@ import java.io.IOException;
 @ApiSort(100)
 public class PortController {
 
-    @Autowired
+    @Resource
     private PortService portService;
 
     @PreAuthorize("@perm.hasPerms('intranet:port:save')")
@@ -84,7 +84,7 @@ public class PortController {
         return TiResult.ok(portService.page(query));
     }
 
-    @View(ignore = true)
+    @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('intranet:port:expExcel')")
     @ApiOperation(value = "导出端口信息", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiOperationSupport(order = 60)

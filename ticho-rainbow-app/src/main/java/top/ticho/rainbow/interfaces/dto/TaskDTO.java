@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.ticho.boot.web.util.valid.ValidGroup;
+import top.ticho.starter.web.util.valid.TiValidGroup;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -25,7 +25,7 @@ public class TaskDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /** 任务ID */
-    @NotNull(message = "任务ID不能为空", groups = {ValidGroup.Upd.class})
+    @NotNull(message = "任务ID不能为空", groups = {TiValidGroup.Upd.class})
     @ApiModelProperty(value = "任务ID", position = 10)
     private Long id;
 

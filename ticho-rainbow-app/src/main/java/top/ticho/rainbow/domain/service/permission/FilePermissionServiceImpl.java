@@ -1,15 +1,14 @@
 package top.ticho.rainbow.domain.service.permission;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
-import top.ticho.boot.security.auth.PermissionService;
-import top.ticho.boot.view.util.TiAssert;
-import top.ticho.rainbow.infrastructure.core.component.cache.SpringCacheTemplate;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.constant.CommConst;
+import top.ticho.starter.cache.component.TiCacheTemplate;
+import top.ticho.starter.security.auth.PermissionService;
+import top.ticho.starter.view.util.TiAssert;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -28,10 +27,10 @@ public class FilePermissionServiceImpl implements PermissionService {
     @Resource
     private HttpServletRequest request;
 
-    @Autowired
-    private SpringCacheTemplate cacheTemplate;
+    @Resource
+    private TiCacheTemplate tiCacheTemplate;
 
-    @Autowired
+    @Resource
     @Qualifier("perm")
     private PermissionService permissionService;
 
@@ -39,7 +38,7 @@ public class FilePermissionServiceImpl implements PermissionService {
         log.debug("权限校验，permissions = {}", String.join(",", permissions));
         String chunkId = request.getParameter("chunkId");
         TiAssert.isNotBlank(chunkId, "chunkId is null");
-        boolean hasCache = cacheTemplate.contain(CacheConst.UPLOAD_CHUNK, chunkId);
+        boolean hasCache = tiCacheTemplate.contain(CacheConst.UPLOAD_CHUNK, chunkId);
         if (hasCache) {
             return true;
         }

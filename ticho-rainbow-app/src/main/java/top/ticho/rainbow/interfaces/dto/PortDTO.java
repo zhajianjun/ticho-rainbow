@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.ticho.boot.web.util.valid.ValidGroup;
+import top.ticho.starter.web.util.valid.TiValidGroup;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -29,7 +29,7 @@ public class PortDTO implements Serializable {
 
     /** 主键标识 */
     @ApiModelProperty(value = "主键标识", position = 10)
-    @NotNull(message = "编号不能为空", groups = ValidGroup.Upd.class)
+    @NotNull(message = "编号不能为空", groups = TiValidGroup.Upd.class)
     private Long id;
 
     /** 客户端秘钥 */

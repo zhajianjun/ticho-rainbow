@@ -1,15 +1,10 @@
 package top.ticho.rainbow.domain.service.login;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import top.ticho.boot.security.constant.BaseSecurityConst;
-import top.ticho.boot.security.handle.load.LoadUserService;
-import top.ticho.boot.view.enums.TiHttpErrCode;
-import top.ticho.boot.view.util.TiAssert;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
@@ -17,7 +12,12 @@ import top.ticho.rainbow.infrastructure.core.enums.UserStatus;
 import top.ticho.rainbow.infrastructure.entity.Role;
 import top.ticho.rainbow.infrastructure.entity.User;
 import top.ticho.rainbow.interfaces.dto.SecurityUser;
+import top.ticho.starter.security.constant.BaseSecurityConst;
+import top.ticho.starter.security.handle.load.LoadUserService;
+import top.ticho.starter.view.enums.TiHttpErrCode;
+import top.ticho.starter.view.util.TiAssert;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -31,13 +31,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DefaultUsernameLoadUserService implements LoadUserService {
 
-    @Autowired(required = false)
+    @Resource
     private UserRepository userRepository;
 
-    @Autowired
+    @Resource
     private UserRoleRepository userRoleRepository;
 
-    @Autowired
+    @Resource
     private RoleRepository roleRepository;
 
     @Override

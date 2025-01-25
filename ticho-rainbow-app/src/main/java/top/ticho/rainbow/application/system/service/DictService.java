@@ -1,8 +1,8 @@
 package top.ticho.rainbow.application.system.service;
 
-import top.ticho.boot.view.core.TiPageResult;
 import top.ticho.rainbow.interfaces.dto.DictDTO;
 import top.ticho.rainbow.interfaces.query.DictQuery;
+import top.ticho.starter.view.core.TiPageResult;
 
 import java.io.IOException;
 import java.util.List;

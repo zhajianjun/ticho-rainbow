@@ -1,9 +1,9 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.boot.datasource.service.RootService;
 import top.ticho.rainbow.infrastructure.entity.Dict;
 import top.ticho.rainbow.infrastructure.entity.DictLabel;
 import top.ticho.rainbow.interfaces.query.DictQuery;
+import top.ticho.starter.datasource.service.TiRepository;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-public interface DictRepository extends RootService<Dict> {
+public interface DictRepository extends TiRepository<Dict> {
 
     /**
      * 根据条件查询DictType列表
