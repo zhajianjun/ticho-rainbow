@@ -1,12 +1,12 @@
 package top.ticho.rainbow.interfaces.excel;
 
 import cn.hutool.core.lang.RegexPool;
-import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.format.DateTimeFormat;
-import com.alibaba.excel.annotation.write.style.ColumnWidth;
-import com.alibaba.excel.annotation.write.style.ContentFontStyle;
-import com.alibaba.excel.annotation.write.style.HeadFontStyle;
-import com.alibaba.excel.annotation.write.style.HeadStyle;
+import cn.idev.excel.annotation.ExcelProperty;
+import cn.idev.excel.annotation.format.DateTimeFormat;
+import cn.idev.excel.annotation.write.style.ColumnWidth;
+import cn.idev.excel.annotation.write.style.ContentFontStyle;
+import cn.idev.excel.annotation.write.style.HeadFontStyle;
+import cn.idev.excel.annotation.write.style.HeadStyle;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import top.ticho.rainbow.infrastructure.core.component.excel.ExcelBaseImp;

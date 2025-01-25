@@ -2,9 +2,9 @@ package top.ticho.rainbow.infrastructure.core.component.excel;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.read.listener.ReadListener;
-import com.alibaba.excel.util.ListUtils;
+import cn.idev.excel.context.AnalysisContext;
+import cn.idev.excel.read.listener.ReadListener;
+import cn.idev.excel.util.ListUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import top.ticho.starter.web.util.valid.TiValidUtil;

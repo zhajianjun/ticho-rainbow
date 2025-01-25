@@ -1,8 +1,8 @@
 package top.ticho.rainbow.infrastructure.core.component.excel;
 
-import com.alibaba.excel.annotation.ExcelIgnore;
-import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import cn.idev.excel.annotation.ExcelIgnore;
+import cn.idev.excel.annotation.ExcelProperty;
+import cn.idev.excel.annotation.write.style.ColumnWidth;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
