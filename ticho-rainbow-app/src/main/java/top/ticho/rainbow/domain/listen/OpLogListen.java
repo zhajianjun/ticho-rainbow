@@ -11,7 +11,7 @@ import org.springframework.util.AntPathMatcher;
 import top.ticho.rainbow.domain.repository.OpLogRepository;
 import top.ticho.rainbow.infrastructure.entity.OpLog;
 import top.ticho.rainbow.interfaces.assembler.OpLogAssembler;
-import top.ticho.starter.log.event.WebLogEvent;
+import top.ticho.starter.log.event.TiWebLogEvent;
 import top.ticho.starter.view.log.TiHttpLog;
 import top.ticho.starter.web.util.TiIdUtil;
 import top.ticho.tool.json.util.TiJsonUtil;
@@ -33,14 +33,18 @@ import java.util.stream.Stream;
 @Slf4j
 public class OpLogListen {
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
-    private final List<String> ignorePaths = Stream.of("/opLog/page", "/file/uploadChunk").collect(Collectors.toList());
+    private final List<String> ignorePaths = Stream.of(
+            "/opLog/page",
+            "/file/uploadChunk",
+            "/oauth/imgCode"
+    ).collect(Collectors.toList());
 
     @Resource
     private OpLogRepository opLogRepository;
 
     @Async("asyncTaskExecutor")
-    @EventListener(value = WebLogEvent.class)
-    public void logEventHandle(WebLogEvent webLogEvent) {
+    @EventListener(value = TiWebLogEvent.class)
+    public void logEventHandle(TiWebLogEvent webLogEvent) {
         TiHttpLog httpLog = webLogEvent.getTiHttpLog();
         OpLog entity = OpLogAssembler.INSTANCE.toEntity(httpLog);
         if (Objects.isNull(entity)) {

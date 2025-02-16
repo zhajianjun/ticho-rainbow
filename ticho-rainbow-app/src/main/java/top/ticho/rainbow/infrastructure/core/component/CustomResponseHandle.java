@@ -7,7 +7,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import top.ticho.starter.log.interceptor.WebLogInterceptor;
+import top.ticho.starter.log.interceptor.TiWebLogInterceptor;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.view.enums.TiHttpErrCode;
 import top.ticho.starter.view.log.TiHttpLog;
@@ -32,7 +32,7 @@ public class CustomResponseHandle {
     private TiResponseHandle tiResponseHandle;
 
     public void prefix(Exception ex) {
-        TiHttpLog httpLog = WebLogInterceptor.logInfo();
+        TiHttpLog httpLog = TiWebLogInterceptor.logInfo();
         if (Objects.nonNull(httpLog)) {
             String errorMsg = ExceptionUtil.stacktraceToString(ex);
             httpLog.setErrMessage(errorMsg);

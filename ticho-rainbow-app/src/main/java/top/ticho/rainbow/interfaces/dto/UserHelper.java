@@ -9,4 +9,5 @@ public interface UserHelper {
     String getUsername();
 
     void setUsername(String username);
+
 }
