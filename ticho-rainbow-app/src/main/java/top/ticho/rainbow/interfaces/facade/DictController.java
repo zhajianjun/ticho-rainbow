@@ -1,113 +1,120 @@
 package top.ticho.rainbow.interfaces.facade;
 
-import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import com.github.xiaoymin.knife4j.annotations.ApiSort;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.http.MediaType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.rainbow.application.system.service.DictService;
-import top.ticho.rainbow.interfaces.dto.DictDTO;
-import top.ticho.rainbow.interfaces.query.DictQuery;
+import top.ticho.rainbow.application.dto.command.DictModifyCommand;
+import top.ticho.rainbow.application.dto.command.DictSaveCommand;
+import top.ticho.rainbow.application.dto.query.DictQuery;
+import top.ticho.rainbow.application.dto.response.DictDTO;
+import top.ticho.rainbow.application.service.DictService;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 
 /**
- * 字典 控制器
+ * 字典
  *
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
+@Validated
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("dict")
-@Api(tags = "字典")
-@ApiSort(70)
 public class DictController {
+    private final DictService dictService;
 
-    @Resource
-    private DictService dictService;
-
+    /**
+     * 保存字典
+     */
     @PreAuthorize("@perm.hasPerms('system:dict:save')")
-    @ApiOperation(value = "保存字典")
-    @ApiOperationSupport(order = 10)
     @PostMapping
-    public TiResult<Void> save(@RequestBody DictDTO dictDTO) {
-        dictService.save(dictDTO);
+    public TiResult<Void> save(@Validated @RequestBody DictSaveCommand dictSaveCommand) {
+        dictService.save(dictSaveCommand);
         return TiResult.ok();
     }
 
+    /**
+     * 删除字典
+     *
+     * @param id 编号
+     */
     @PreAuthorize("@perm.hasPerms('system:dict:remove')")
-    @ApiOperation(value = "删除字典")
-    @ApiOperationSupport(order = 20)
-    @ApiImplicitParam(value = "编号", name = "id", required = true)
-    @DeleteMapping
-    public TiResult<Void> removeById(@RequestParam("id") Long id) {
-        dictService.removeById(id);
+    @DeleteMapping("{id:\\d+}")
+    public TiResult<Void> remove(@PathVariable("id") Long id) {
+        dictService.remove(id);
         return TiResult.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('system:dict:update')")
-    @ApiOperation(value = "修改字典")
-    @ApiOperationSupport(order = 30)
-    @PutMapping
-    public TiResult<Void> update(@RequestBody DictDTO dictDTO) {
-        dictService.updateById(dictDTO);
+    /**
+     * 修改字典
+     *
+     * @param id 编号
+     */
+    @PreAuthorize("@perm.hasPerms('system:dict:modify')")
+    @PutMapping("{id:\\d+}")
+    public TiResult<Void> modify(@PathVariable("id") Long id, @Validated @RequestBody DictModifyCommand dictModifyCommand) {
+        dictService.modify(id, dictModifyCommand);
         return TiResult.ok();
     }
 
+    /**
+     * 查询字典
+     *
+     * @param id 编号
+     */
     @PreAuthorize("@perm.hasPerms('system:dict:getById')")
-    @ApiOperation(value = "查询字典")
-    @ApiOperationSupport(order = 40)
-    @ApiImplicitParam(value = "编号", name = "id", required = true)
-    @GetMapping
-    public TiResult<DictDTO> getById(@RequestParam("id") Long id) {
+    @GetMapping("{id:\\d+}")
+    public TiResult<DictDTO> getById(@PathVariable("id") Long id) {
         return TiResult.ok(dictService.getById(id));
     }
 
+    /**
+     * 查询所有字典(分页)
+     */
     @PreAuthorize("@perm.hasPerms('system:dict:page')")
-    @ApiOperation(value = "查询所有字典(分页)")
-    @ApiOperationSupport(order = 50)
-    @PostMapping("page")
+    @GetMapping
     public TiResult<TiPageResult<DictDTO>> page(@RequestBody DictQuery query) {
         return TiResult.ok(dictService.page(query));
     }
 
-    @PreAuthorize("@perm.hasPerms('system:dict:list')")
-    @ApiOperation(value = "查询所有有效字典")
-    @ApiOperationSupport(order = 60)
-    @GetMapping("list")
+    /**
+     * 查询所有有效字典
+     */
+    @PreAuthorize("@perm.hasPerms('system:dict:all')")
+    @GetMapping("all")
     public TiResult<List<DictDTO>> list() {
         return TiResult.ok(dictService.list());
     }
 
+    /**
+     * 刷新所有有效字典
+     */
     @PreAuthorize("@perm.hasPerms('system:dict:flush')")
-    @ApiOperation(value = "刷新所有有效字典")
-    @ApiOperationSupport(order = 70)
     @GetMapping("flush")
     public TiResult<List<DictDTO>> flush() {
         return TiResult.ok(dictService.flush());
     }
 
+    /**
+     * 导出字典
+     */
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:dict:expExcel')")
-    @ApiOperation(value = "导出字典", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    @ApiOperationSupport(order = 100)
     @PostMapping("expExcel")
-    public void expExcel(@RequestBody DictQuery query) throws IOException {
+    public void expExcel(@Validated @RequestBody DictQuery query) throws IOException {
         dictService.expExcel(query);
     }
 

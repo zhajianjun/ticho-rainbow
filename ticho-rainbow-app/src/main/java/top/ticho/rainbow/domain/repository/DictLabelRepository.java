@@ -1,8 +1,7 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.infrastructure.entity.DictLabel;
-import top.ticho.rainbow.interfaces.query.DictLabelQuery;
-import top.ticho.starter.datasource.service.TiRepository;
+import top.ticho.rainbow.application.dto.query.DictLabelQuery;
+import top.ticho.rainbow.domain.entity.DictLabel;
 
 import java.util.List;
 
@@ -12,7 +11,39 @@ import java.util.List;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-public interface DictLabelRepository extends TiRepository<DictLabel> {
+public interface DictLabelRepository {
+
+    /**
+     * 保存字典标签
+     *
+     * @param dictLabel 字典标签
+     * @return boolean
+     */
+    boolean save(DictLabel dictLabel);
+
+    /**
+     * 删除字典标签
+     *
+     * @param id 编号
+     * @return boolean
+     */
+    boolean remove(Long id);
+
+    /**
+     * 修改字典标签
+     *
+     * @param dictLabel 字典标签信息
+     * @return boolean
+     */
+    boolean modify(DictLabel dictLabel);
+
+    /**
+     * 根据编号查询字典标签信息
+     *
+     * @param id 编号
+     * @return {@link DictLabel }
+     */
+    DictLabel find(Long id);
 
     /**
      * 根据条件查询Dict列表

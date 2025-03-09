@@ -1,23 +1,23 @@
 package top.ticho.rainbow.domain.service.login;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import top.ticho.rainbow.application.dto.SecurityUser;
+import top.ticho.rainbow.domain.entity.Role;
+import top.ticho.rainbow.domain.entity.User;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.core.enums.UserStatus;
-import top.ticho.rainbow.infrastructure.entity.Role;
-import top.ticho.rainbow.infrastructure.entity.User;
-import top.ticho.rainbow.interfaces.dto.SecurityUser;
-import top.ticho.starter.security.constant.BaseSecurityConst;
+import top.ticho.starter.security.constant.TiSecurityConst;
 import top.ticho.starter.security.handle.load.LoadUserService;
 import top.ticho.starter.view.enums.TiHttpErrCode;
 import top.ticho.starter.view.util.TiAssert;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -26,19 +26,15 @@ import java.util.stream.Collectors;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-@Component(BaseSecurityConst.LOAD_USER_TYPE_USERNAME)
-@Primary
 @Slf4j
+@RequiredArgsConstructor
+@Component(TiSecurityConst.LOAD_USER_TYPE_USERNAME)
+@Primary
 public class DefaultUsernameLoadUserService implements LoadUserService {
 
-    @Resource
-    private UserRepository userRepository;
-
-    @Resource
-    private UserRoleRepository userRoleRepository;
-
-    @Resource
-    private RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final UserRoleRepository userRoleRepository;
+    private final RoleRepository roleRepository;
 
     @Override
     public SecurityUser load(String account) {

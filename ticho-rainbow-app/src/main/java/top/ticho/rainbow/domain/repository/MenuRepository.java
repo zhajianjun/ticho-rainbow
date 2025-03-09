@@ -1,8 +1,7 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.infrastructure.entity.Menu;
-import top.ticho.rainbow.interfaces.query.MenuQuery;
-import top.ticho.starter.datasource.service.TiRepository;
+import top.ticho.rainbow.application.dto.query.MenuQuery;
+import top.ticho.rainbow.domain.entity.Menu;
 
 import java.util.List;
 
@@ -12,10 +11,41 @@ import java.util.List;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-public interface MenuRepository extends TiRepository<Menu> {
+public interface MenuRepository {
+    /**
+     * 保存菜单
+     *
+     * @param menu 菜单
+     * @return boolean
+     */
+    boolean save(Menu menu);
 
     /**
-     * 查询Menu列表
+     * 删除菜单
+     *
+     * @param id 编号
+     * @return boolean
+     */
+    boolean remove(Long id);
+
+    /**
+     * 修改菜单
+     *
+     * @param menu 菜单
+     * @return boolean
+     */
+    boolean modify(Menu menu);
+
+    /**
+     * 根据编号查询菜单
+     *
+     * @param id 编号
+     * @return {@link Menu }
+     */
+    Menu find(Long id);
+
+    /**
+     * 查询菜单
      *
      * @return {@link List}<{@link Menu}>
      */

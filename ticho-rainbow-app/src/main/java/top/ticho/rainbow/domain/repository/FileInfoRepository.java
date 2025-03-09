@@ -1,8 +1,8 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.infrastructure.entity.FileInfo;
-import top.ticho.rainbow.interfaces.query.FileInfoQuery;
-import top.ticho.starter.datasource.service.TiRepository;
+import top.ticho.rainbow.application.dto.query.FileInfoQuery;
+import top.ticho.rainbow.domain.entity.FileInfo;
+import top.ticho.starter.view.core.TiPageResult;
 
 import java.util.List;
 
@@ -12,7 +12,39 @@ import java.util.List;
  * @author zhajianjun
  * @date 2024-04-23 17:55
  */
-public interface FileInfoRepository extends TiRepository<FileInfo> {
+public interface FileInfoRepository {
+
+    /**
+     * 保存文件信息
+     *
+     * @param fileInfo 文件信息
+     * @return boolean
+     */
+    boolean save(FileInfo fileInfo);
+
+    /**
+     * 删除文件信息
+     *
+     * @param id 编号
+     * @return boolean
+     */
+    boolean remove(Long id);
+
+    /**
+     * 修改文件信息
+     *
+     * @param fileInfo 文件信息
+     * @return boolean
+     */
+    boolean modify(FileInfo fileInfo);
+
+    /**
+     * 根据编号查询文件信息
+     *
+     * @param id 身份证
+     * @return {@link FileInfo }
+     */
+    FileInfo find(Long id);
 
     /**
      * 根据条件查询文件信息列表
@@ -21,6 +53,14 @@ public interface FileInfoRepository extends TiRepository<FileInfo> {
      * @return {@link List}<{@link FileInfo}>
      */
     List<FileInfo> list(FileInfoQuery query);
+
+    /**
+     * 分页查询文件信息列表
+     *
+     * @param query 查询条件
+     * @return {@link TiPageResult }<{@link FileInfo }>
+     */
+    TiPageResult<FileInfo> page(FileInfoQuery query);
 
     /**
      * 根据分片id查询文件信息
@@ -46,5 +86,7 @@ public interface FileInfoRepository extends TiRepository<FileInfo> {
      * 作废
      */
     boolean cancel(Long id);
+
+
 }
 

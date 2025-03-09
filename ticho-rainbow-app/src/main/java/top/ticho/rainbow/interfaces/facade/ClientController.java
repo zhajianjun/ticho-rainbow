@@ -1,27 +1,25 @@
 package top.ticho.rainbow.interfaces.facade;
 
-import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import com.github.xiaoymin.knife4j.annotations.ApiSort;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.http.MediaType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.rainbow.application.intranet.service.ClientService;
-import top.ticho.rainbow.interfaces.dto.ClientDTO;
-import top.ticho.rainbow.interfaces.query.ClientQuery;
+import top.ticho.rainbow.application.dto.command.ClientModifyCommand;
+import top.ticho.rainbow.application.dto.command.ClientSaveCommand;
+import top.ticho.rainbow.application.dto.query.ClientQuery;
+import top.ticho.rainbow.application.dto.response.ClientDTO;
+import top.ticho.rainbow.application.service.ClientService;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 
@@ -31,74 +29,85 @@ import java.util.List;
  * @author zhajianjun
  * @date 2023-12-17 20:12
  */
+@Validated
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("client")
-@Api(tags = "客户端信息")
-@ApiSort(90)
 public class ClientController {
+    private final ClientService clientService;
 
-    @Resource
-    private ClientService clientService;
-
+    /**
+     * 保存客户端
+     */
     @PreAuthorize("@perm.hasPerms('intranet:client:save')")
-    @ApiOperation(value = "保存客户端")
-    @ApiOperationSupport(order = 10)
     @PostMapping
-    public TiResult<Void> save(@RequestBody ClientDTO clientDTO) {
-        clientService.save(clientDTO);
+    public TiResult<Void> save(@Validated @RequestBody ClientSaveCommand clientSaveCommand) {
+        clientService.save(clientSaveCommand);
         return TiResult.ok();
     }
 
+    /**
+     * 删除客户端
+     *
+     * @param id 编号
+     */
     @PreAuthorize("@perm.hasPerms('intranet:client:remove')")
-    @ApiOperation(value = "删除客户端")
-    @ApiOperationSupport(order = 20)
-    @ApiImplicitParam(value = "编号", name = "id", required = true)
-    @DeleteMapping
-    public TiResult<Void> remove(Long id) {
-        clientService.removeById(id);
+    @DeleteMapping("{id:\\d+}")
+    public TiResult<Void> remove(@PathVariable("id") Long id) {
+        clientService.remove(id);
         return TiResult.ok();
     }
 
-    @PreAuthorize("@perm.hasPerms('intranet:client:update')")
-    @ApiOperation(value = "修改客户端")
-    @ApiOperationSupport(order = 30)
-    @PutMapping
-    public TiResult<Void> update(@RequestBody ClientDTO clientDTO) {
-        clientService.updateById(clientDTO);
+    /**
+     * 修改客户端
+     */
+    @PreAuthorize("@perm.hasPerms('intranet:client:modify')")
+    @PutMapping("{id:\\d+}")
+    public TiResult<Void> modify(@PathVariable("id") Long id, @Validated @RequestBody ClientModifyCommand clientModifyCommand) {
+        clientService.modify(id, clientModifyCommand);
         return TiResult.ok();
     }
 
+    /**
+     * 查询客户端
+     *
+     * @param id 编号
+     */
     @PreAuthorize("@perm.hasPerms('intranet:client:getById')")
-    @ApiOperation(value = "查询客户端")
-    @ApiOperationSupport(order = 40)
-    @ApiImplicitParam(value = "编号", name = "id", required = true)
-    @GetMapping
-    public TiResult<ClientDTO> getById(Long id) {
+    @GetMapping("{id:\\d+}")
+    public TiResult<ClientDTO> getById(@PathVariable("id") Long id) {
         return TiResult.ok(clientService.getById(id));
     }
 
+    /**
+     * 查询所有客户端(分页)
+     */
     @PreAuthorize("@perm.hasPerms('intranet:client:page')")
-    @ApiOperation(value = "查询所有客户端(分页)")
-    @ApiOperationSupport(order = 50)
-    @PostMapping("page")
-    public TiResult<TiPageResult<ClientDTO>> page(@RequestBody ClientQuery query) {
+    @GetMapping
+    public TiResult<TiPageResult<ClientDTO>> page(@Validated ClientQuery query) {
         return TiResult.ok(clientService.page(query));
     }
 
-    @PreAuthorize("@perm.hasPerms('intranet:client:list')")
-    @ApiOperation(value = "查询所有客户端")
-    @ApiOperationSupport(order = 60)
-    @GetMapping("list")
-    public TiResult<List<ClientDTO>> list(ClientQuery query) {
+    /**
+     * 查询所有客户端
+     */
+    @PreAuthorize("@perm.hasPerms('intranet:client:all')")
+    @GetMapping("all")
+    public TiResult<List<ClientDTO>> list(@Validated ClientQuery query) {
         return TiResult.ok(clientService.list(query));
     }
 
+
+    /**
+     * 导出客户端信息
+     *
+     * @param query 查询
+     * @throws IOException io异常
+     */
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('intranet:client:expExcel')")
-    @ApiOperation(value = "导出客户端信息", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    @ApiOperationSupport(order = 70)
     @PostMapping("expExcel")
-    public void expExcel(@RequestBody ClientQuery query) throws IOException {
+    public void expExcel(@Validated @RequestBody ClientQuery query) throws IOException {
         clientService.expExcel(query);
     }
 

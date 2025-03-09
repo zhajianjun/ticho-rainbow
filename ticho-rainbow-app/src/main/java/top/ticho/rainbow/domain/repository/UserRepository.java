@@ -1,9 +1,8 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.infrastructure.entity.User;
-import top.ticho.rainbow.interfaces.query.UserAccountQuery;
-import top.ticho.rainbow.interfaces.query.UserQuery;
-import top.ticho.starter.datasource.service.TiRepository;
+import top.ticho.rainbow.application.dto.query.UserAccountQuery;
+import top.ticho.rainbow.application.dto.query.UserQuery;
+import top.ticho.rainbow.domain.entity.User;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,7 +13,13 @@ import java.util.List;
  * @author zhajianjun
  * @date 2023-12-17 20:12
  */
-public interface UserRepository extends TiRepository<User> {
+public interface UserRepository {
+
+    boolean save(User user);
+
+    boolean saveBatch(List<User> users);
+
+    boolean modify(User user);
 
     /**
      * 根据条件查询用户信息列表

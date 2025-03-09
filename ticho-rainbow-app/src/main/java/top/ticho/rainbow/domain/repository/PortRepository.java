@@ -1,8 +1,7 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.infrastructure.entity.Port;
-import top.ticho.rainbow.interfaces.query.PortQuery;
-import top.ticho.starter.datasource.service.TiRepository;
+import top.ticho.rainbow.application.dto.query.PortQuery;
+import top.ticho.rainbow.domain.entity.Port;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +15,15 @@ import java.util.function.Predicate;
  * @author zhajianjun
  * @date 2023-12-17 20:12
  */
-public interface PortRepository extends TiRepository<Port> {
+public interface PortRepository {
+
+    boolean save(Port port);
+
+    boolean remove(Long id);
+
+    boolean modify(Port port);
+
+    Port find(Long id);
 
     /**
      * 根据条件查询端口信息列表

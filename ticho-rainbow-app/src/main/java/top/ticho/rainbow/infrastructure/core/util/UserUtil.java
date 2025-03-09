@@ -5,11 +5,11 @@ import cn.hutool.core.util.StrUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.slf4j.MDC;
+import top.ticho.rainbow.application.dto.SecurityUser;
+import top.ticho.rainbow.application.dto.UserHelper;
 import top.ticho.rainbow.infrastructure.core.constant.CommConst;
 import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
-import top.ticho.rainbow.interfaces.dto.SecurityUser;
-import top.ticho.rainbow.interfaces.dto.UserHelper;
-import top.ticho.starter.security.util.BaseUserUtil;
+import top.ticho.starter.security.util.TiUserUtil;
 import top.ticho.trace.core.util.BeetlUtil;
 
 import java.util.List;
@@ -25,11 +25,11 @@ public class UserUtil {
 
 
     public static SecurityUser getCurrentUser() {
-        return BaseUserUtil.getCurrentUser();
+        return TiUserUtil.getCurrentUser();
     }
 
     public static String getCurrentUsername() {
-        return BaseUserUtil.getCurrentUsername();
+        return TiUserUtil.getCurrentUsername();
     }
 
 
@@ -39,7 +39,7 @@ public class UserUtil {
      * @return boolean
      */
     public static boolean isAdmin() {
-        SecurityUser currentUser = BaseUserUtil.getCurrentUser();
+        SecurityUser currentUser = TiUserUtil.getCurrentUser();
         return isAdmin(currentUser);
     }
 
@@ -67,7 +67,7 @@ public class UserUtil {
      * @return boolean
      */
     public static boolean isSelf(UserHelper userHelper) {
-        SecurityUser loginUser = BaseUserUtil.getCurrentUser();
+        SecurityUser loginUser = TiUserUtil.getCurrentUser();
         return isSelf(userHelper, loginUser);
     }
 

@@ -1,8 +1,8 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.infrastructure.entity.Client;
-import top.ticho.rainbow.interfaces.query.ClientQuery;
-import top.ticho.starter.datasource.service.TiRepository;
+import top.ticho.rainbow.application.dto.query.ClientQuery;
+import top.ticho.rainbow.domain.entity.Client;
+import top.ticho.starter.view.core.TiPageResult;
 
 import java.util.List;
 
@@ -12,32 +12,39 @@ import java.util.List;
  * @author zhajianjun
  * @date 2023-12-17 20:12
  */
-public interface ClientRepository extends TiRepository<Client> {
+public interface ClientRepository {
 
     /**
-     * 根据条件查询客户端信息列表
+     * 保存客户端
      *
-     * @param query 查询条件
-     * @return {@link List}<{@link Client}>
+     * @param client 客户
+     * @return boolean
      */
-    List<Client> list(ClientQuery query);
+    boolean save(Client client);
 
     /**
-     * 根据客户端秘钥查询客户端信息列表
+     * 删除客户端
      *
-     * @param accessKey 客户端秘钥
-     * @return {@link Client}
+     * @param id 编号
+     * @return boolean
      */
-    Client getByAccessKey(String accessKey);
+    boolean remove(Long id);
 
     /**
-     * 查询客户端信息列表
+     * 修改客户端
      *
-     * @param accessKeys 客户端秘钥列表
-     * @return {@link List }<{@link Client }>
+     * @param client 客户端信息
+     * @return boolean
      */
-    List<Client> getByAccessKeys(List<String> accessKeys);
+    boolean modify(Client client);
 
+    /**
+     * 根据编号查询客户端信息
+     *
+     * @param id 编号
+     * @return {@link Client }
+     */
+    Client find(Long id);
 
     /**
      * 根据客户端秘钥删除
@@ -45,5 +52,38 @@ public interface ClientRepository extends TiRepository<Client> {
      * @param accessKey 客户端秘钥
      */
     void removeByAccessKey(String accessKey);
+
+    /**
+     * 根据客户端秘钥查询客户端信息列表
+     *
+     * @param accessKey 客户端秘钥
+     * @return {@link Client }
+     */
+    Client findByAccessKey(String accessKey);
+
+    /**
+     * 查询客户端信息列表
+     *
+     * @param accessKeys 客户端秘钥列表
+     * @return {@link List }<{@link Client }>
+     */
+    List<Client> listByAccessKeys(List<String> accessKeys);
+
+    /**
+     * 根据条件查询客户端信息列表
+     *
+     * @param query 查询
+     * @return {@link List }<{@link Client }>
+     */
+    List<Client> list(ClientQuery query);
+
+    /**
+     * 分页查询客户端信息列表
+     *
+     * @param query 查询条件
+     * @return {@link TiPageResult }<{@link Client }>
+     */
+    TiPageResult<Client> page(ClientQuery query);
+
 }
 

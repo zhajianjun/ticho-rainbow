@@ -24,13 +24,13 @@ import javax.servlet.http.HttpServletRequest;
 @Order(1)
 public class FilePermissionServiceImpl implements PermissionService {
 
-    @Resource
+  
     private HttpServletRequest request;
 
-    @Resource
+  
     private TiCacheTemplate tiCacheTemplate;
 
-    @Resource
+  
     @Qualifier("perm")
     private PermissionService permissionService;
 

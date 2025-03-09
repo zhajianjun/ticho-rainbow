@@ -7,6 +7,7 @@ import cn.hutool.core.date.SystemClock;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -15,10 +16,10 @@ import org.slf4j.MDC;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+import top.ticho.rainbow.domain.entity.TaskLog;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.rainbow.infrastructure.core.constant.CommConst;
 import top.ticho.rainbow.infrastructure.core.util.UserUtil;
-import top.ticho.rainbow.infrastructure.entity.TaskLog;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.tool.json.util.TiJsonUtil;
 import top.ticho.trace.common.bean.TraceInfo;
@@ -29,7 +30,6 @@ import top.ticho.trace.core.util.TraceUtil;
 import top.ticho.trace.spring.event.TraceEvent;
 import top.ticho.trace.spring.util.IpUtil;
 
-import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,16 +42,11 @@ import java.util.Optional;
  * @date 2024-03-23 22:04
  */
 @Slf4j
+@RequiredArgsConstructor
 public abstract class AbstracTask<T> extends QuartzJobBean {
-
-    @Resource
-    private Environment environment;
-
-    @Resource
-    private TraceProperty traceProperty;
-
-    @Resource
-    private TaskLogRepository taskLogRepository;
+    private final Environment environment;
+    private final TraceProperty traceProperty;
+    private final TaskLogRepository taskLogRepository;
 
     public abstract void run(JobExecutionContext context);
 
@@ -111,21 +106,22 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
             .map(DateUtil::toLocalDateTime)
             .orElse(LocalDateTime.now());
         String username = mdcMap.get(CommConst.USERNAME_KEY);
-        TaskLog taskLog = new TaskLog();
-        taskLog.setTaskId(Long.parseLong(jobName));
-        taskLog.setContent(jobClassName);
-        taskLog.setParam(taskParam);
-        taskLog.setExecuteTime(executeTime);
-        taskLog.setStartTime(LocalDateTimeUtil.of(start));
-        taskLog.setEndTime(LocalDateTimeUtil.of(end));
-        taskLog.setConsume(Long.valueOf(consume).intValue());
-        taskLog.setMdc(TiJsonUtil.toJsonString(mdcMap));
-        taskLog.setTraceId(mdcMap.get(LogConst.TRACE_ID_KEY));
-        taskLog.setStatus(Objects.equals(isErr, 1) ? 0 : 1);
-        taskLog.setOperateBy(username);
-        taskLog.setIsErr(isErr);
-        taskLog.setErrMessage(errorMsg);
-        taskLogRepository.save(taskLog);
+        TaskLog taskLogPO = TaskLog.builder()
+            .taskId(Long.parseLong(jobName))
+            .content(jobClassName)
+            .param(taskParam)
+            .executeTime(executeTime)
+            .startTime(LocalDateTimeUtil.of(start))
+            .endTime(LocalDateTimeUtil.of(end))
+            .consume(Long.valueOf(consume).intValue())
+            .mdc(TiJsonUtil.toJsonString(mdcMap))
+            .traceId(mdcMap.get(LogConst.TRACE_ID_KEY))
+            .status(Objects.equals(isErr, 1) ? 0 : 1)
+            .operateBy(username)
+            .isErr(isErr)
+            .errMessage(errorMsg)
+            .build();
+        taskLogRepository.save(taskLogPO);
     }
 
     /**

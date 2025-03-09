@@ -1,8 +1,7 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.infrastructure.entity.Task;
-import top.ticho.rainbow.interfaces.query.TaskQuery;
-import top.ticho.starter.datasource.service.TiRepository;
+import top.ticho.rainbow.application.dto.query.TaskQuery;
+import top.ticho.rainbow.domain.entity.Task;
 
 import java.util.Collection;
 import java.util.List;
@@ -13,7 +12,15 @@ import java.util.List;
  * @author zhajianjun
  * @date 2024-03-23 23:38
  */
-public interface TaskRepository extends TiRepository<Task> {
+public interface TaskRepository {
+
+    boolean save(Task task);
+
+    boolean remove(Long id);
+
+    boolean modify(Task task);
+
+    Task find(Long id);
 
     /**
      * 根据条件查询计划任务信息列表
@@ -31,6 +38,7 @@ public interface TaskRepository extends TiRepository<Task> {
      * @return boolean
      */
     boolean updateStatusBatch(Collection<Long> ids, Integer status);
+
 
 }
 

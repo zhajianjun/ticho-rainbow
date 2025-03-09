@@ -66,6 +66,8 @@ ticho:
   cache:
     enable: true
   rainbow:
+    security:
+      key: ticho
     file:
       domain: http://localhost:5173/api
       mvc-resource-path: /static/file/**

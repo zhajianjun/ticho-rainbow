@@ -1,6 +1,7 @@
 package top.ticho.rainbow.domain.handle;
 
 import cn.hutool.core.util.StrUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import top.ticho.rainbow.infrastructure.core.component.SseTemplate;
@@ -10,7 +11,6 @@ import top.ticho.rainbow.infrastructure.core.util.UserUtil;
 import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.view.util.TiAssert;
 
-import javax.annotation.Resource;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -20,15 +20,13 @@ import java.util.function.Predicate;
  * @author zhajianjun
  * @date 2024-05-23 11:10
  */
+@RequiredArgsConstructor
 @Component
 public class SseHandle {
     public final String split = "-";
 
-    @Resource
-    private SseTemplate sseTemplate;
-
-    @Resource
-    private TiCacheTemplate tiCacheTemplate;
+    private final SseTemplate sseTemplate;
+    private final TiCacheTemplate tiCacheTemplate;
 
     public String getSign() {
         String id = StrUtil.format("{}{}{}", UserUtil.getCurrentUsername(), split, CommonUtil.fastShortUUID());

@@ -26,6 +26,7 @@ ${JAVA_OPTS} \
 -Dticho.mail.sender-name="${MAIL_SENDER_NAME}" \
 -Dticho.mail.username="${MAIL_USERNAME}" \
 -Dticho.mail.password="${MAIL_PASSWORD}" \
+-Dticho.rainbow.security.key="${RAINBOW_SECURITY_KEY}" \
 -Dticho.rainbow.file.domain="${RAINBOW_FILE_DOMAIN}" \
 -Dticho.rainbow.file.mvc-resource-path="${RAINBOW_MVC_RESOURCE_PATH}" \
 -Dticho.rainbow.file.max-file-size="${RAINBOW_MAX_FILE_SIZE}" \

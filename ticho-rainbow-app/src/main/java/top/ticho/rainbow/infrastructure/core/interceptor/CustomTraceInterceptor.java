@@ -1,5 +1,6 @@
 package top.ticho.rainbow.infrastructure.core.interceptor;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.lang.NonNull;
@@ -9,7 +10,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import top.ticho.rainbow.infrastructure.core.util.UserUtil;
 import top.ticho.trace.common.prop.TraceProperty;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,12 +20,12 @@ import javax.servlet.http.HttpServletResponse;
  * @date 2024-04-19 18:05
  */
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class CustomTraceInterceptor implements HandlerInterceptor, Ordered {
 
     /** 链路配置 */
-    @Resource
-    private TraceProperty traceProperty;
+    private final TraceProperty traceProperty;
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {

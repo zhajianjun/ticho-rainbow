@@ -3,7 +3,7 @@ package top.ticho.rainbow.infrastructure.core.util;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import io.swagger.annotations.ApiModelProperty;
-import top.ticho.rainbow.interfaces.dto.UserDTO;
+import top.ticho.rainbow.application.dto.UserDTO;
 
 import java.lang.reflect.Field;
 import java.util.StringJoiner;

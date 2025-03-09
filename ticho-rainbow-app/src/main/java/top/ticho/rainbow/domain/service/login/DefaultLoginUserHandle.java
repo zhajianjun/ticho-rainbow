@@ -1,37 +1,36 @@
 package top.ticho.rainbow.domain.service.login;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.ticho.rainbow.application.system.service.UserService;
-import top.ticho.rainbow.interfaces.dto.UserLoginDTO;
+import top.ticho.rainbow.application.dto.request.UserLoginDTO;
+import top.ticho.rainbow.application.service.UserService;
 import top.ticho.starter.security.dto.LoginRequest;
-import top.ticho.starter.security.dto.Oauth2AccessToken;
-import top.ticho.starter.security.handle.BaseLoginUserHandle;
+import top.ticho.starter.security.dto.TiToken;
+import top.ticho.starter.security.handle.TiLoginUserHandle;
 import top.ticho.starter.view.core.TiSecurityUser;
 import top.ticho.starter.web.util.valid.TiValidUtil;
-
-import javax.annotation.Resource;
 
 /**
  * @author zhajianjun
  * @date 2024-02-04 11:05
  */
+@RequiredArgsConstructor
 @Service
-public class DefaultLoginUserHandle extends BaseLoginUserHandle {
+public class DefaultLoginUserHandle extends TiLoginUserHandle {
 
-    @Resource
-    private UserService userService;
+    private final UserService userService;
 
     @Override
-    public Oauth2AccessToken token(LoginRequest loginRequest) {
+    public TiToken token(LoginRequest loginRequest) {
         if (loginRequest instanceof UserLoginDTO) {
             UserLoginDTO userLogin = (UserLoginDTO) loginRequest;
             TiValidUtil.valid(userLogin);
-            userService.imgCodeValid(userLogin);
+            userService.imgCodeValid(userLogin.getImgKey(), userLogin.getImgCode());
         }
         String account = loginRequest.getUsername();
         String credentials = loginRequest.getPassword();
         TiSecurityUser baseSecurityUser = this.checkPassword(account, credentials);
-        return this.getOauth2TokenAndSetAuthentication(baseSecurityUser);
+        return toToken(baseSecurityUser);
     }
 
 }

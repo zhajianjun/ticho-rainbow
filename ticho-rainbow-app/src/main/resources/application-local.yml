@@ -3,14 +3,15 @@ ticho:
     enable-async: true
     thread-name-prefix: Rainbow-
   datasource:
-    url: jdbc:mysql://49.234.10.33:10030/ticho_rainbow?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true
-    username: ENC(8yUwi7gFsHhtfKcuEHa6Kg==)
-    password: ENC(7xqTr9Bm6d2RCeaWdwMGlugy9f3P9sAK)
+    url: ENC(1/d6Y0rrGcknVxFMtf3GlMnw2IBvleJbToH0qXkQ/HrVEX2dmxLCfJVO156SKZ5/90F0QVCpW/zi3Yoj3WC8aZTiOvtu5XuMZIwJh80hQ0noELlnCfxFlvIx5Dd2epG4Bj5bvlOqKzA01buQKpl/ZR8qgKXRbJ+L6YICCcZkOT6wE2mFlOeNdwu+HfPmSgybZuWT+4HHQnV0aVjZGDvqXPdwuHvZJaliadbFTZFe9Ezt8fvGKn4KRnWeZzP/XxT/UYUciHX/K2aqdPS0E1x5kxUmRTji6WlsO3vjEgVdCpHDs8qa2acnIgKlvQUZULZidh96GseEnlyOnSzujt7T24jzzkZin6zJCCLe7JY7fsA=)
+    username: ENC(OQHWicNP2vKtZXsHL895SA==)
+    password: ENC(D1IEXGr1w4AZNqQGvNz4aPhb1YViyeVT)
     driver-class-name: com.mysql.cj.jdbc.Driver
     log:
       enable: true
       print-sql: true
-      print-simple: true
+      print-simple: false
+      show-params: true
   security:
     ant-patterns:
       - /
@@ -67,6 +68,8 @@ ticho:
   cache:
     enable: true
   rainbow:
+    security:
+      key: ticho
     file:
       domain: http://localhost:5122
       mvc-resource-path: /static/file/**

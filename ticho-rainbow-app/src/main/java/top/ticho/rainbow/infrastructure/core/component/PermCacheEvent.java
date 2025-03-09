@@ -1,5 +1,6 @@
 package top.ticho.rainbow.infrastructure.core.component;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -10,8 +11,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import top.ticho.starter.web.event.TiApplicationReadyEvent;
 
-import javax.annotation.Resource;
-
 /**
  * 权限编码缓存实践
  *
@@ -20,11 +19,11 @@ import javax.annotation.Resource;
  * @see ApplicationReadyEvent 应用程序已准备好执行的事件
  */
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class PermCacheEvent implements ApplicationListener<ApplicationReadyEvent> {
 
-    @Resource
-    private PermCacheHandle permCacheHandle;
+    private final PermCacheHandle permCacheHandle;
 
     /**
      * 默认事件

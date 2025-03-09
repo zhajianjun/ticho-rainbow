@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import top.ticho.rainbow.application.dto.PermDTO;
 import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
-import top.ticho.rainbow.interfaces.dto.PermDTO;
 import top.ticho.starter.web.util.TiSpringUtil;
 
 import java.util.ArrayList;

@@ -3,6 +3,7 @@ package top.ticho.rainbow.infrastructure.config;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -17,22 +18,18 @@ import top.ticho.rainbow.infrastructure.core.prop.FileProperty;
 import top.ticho.tool.intranet.prop.ServerProperty;
 import top.ticho.tool.intranet.server.handler.ServerHandler;
 
-import javax.annotation.Resource;
-
 /**
  * 通用配置
  *
  * @date 2023-12-17 08:30
  */
-@Configuration
 @Slf4j
+@RequiredArgsConstructor
+@Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    @Resource
-    private CustomTraceInterceptor customTraceInterceptor;
-
-    @Resource
-    private FileProperty fileProperty;
+    private final CustomTraceInterceptor customTraceInterceptor;
+    private final FileProperty fileProperty;
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {

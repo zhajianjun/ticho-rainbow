@@ -2,7 +2,7 @@ package top.ticho.rainbow.infrastructure.core.component.cache;
 
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
-import top.ticho.rainbow.infrastructure.entity.FileCache;
+import top.ticho.rainbow.infrastructure.persistence.po.FileCache;
 import top.ticho.starter.cache.config.TiCache;
 
 import java.time.Duration;

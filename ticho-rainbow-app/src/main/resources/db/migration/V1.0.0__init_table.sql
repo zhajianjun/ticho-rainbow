@@ -108,9 +108,9 @@ VALUES (1746819115722473472, 'commonStatus', '启用', '1', 'ant-design:account-
         '2024-01-19 16:34:17', 0),
        (1748262311816069120, 'protocolType', 'TCP', '7', NULL, NULL, 70, 1, NULL, 0, 'admin', '2024-01-19 16:33:11', 'admin', '2024-04-16 11:06:17',
         0),
-       (1781908812278530048, 'planTask', '内网映射数据刷新', 'top.ticho.rainbow.domain.task.IntranetTask', NULL, NULL, 10, 1, NULL, 0, 'admin',
+       (1781908812278530048, 'planTask', '内网映射数据刷新', 'top.ticho.rainbow.application.task.IntranetTask', NULL, NULL, 10, 1, NULL, 0, 'admin',
         '2024-04-21 12:52:22', NULL, NULL, 0),
-       (1783736290294890496, 'planTask', '临时文件清除定时任务', 'top.ticho.rainbow.domain.task.FileTmpClearTask', NULL, NULL, 20, 1, NULL, 0,
+       (1783736290294890496, 'planTask', '临时文件清除定时任务', 'top.ticho.rainbow.application.task.FileTmpClearTask', NULL, NULL, 20, 1, NULL, 0,
         'admin', '2024-04-26 13:54:06', NULL, NULL, 0),
        (1783760154588610560, 'fileStorageType', '公共', '1', NULL, NULL, 10, 1, NULL, 0, 'admin', '2024-04-26 15:28:56', NULL, NULL, 0),
        (1783760215653482496, 'fileStorageType', '私有', '2', NULL, NULL, 20, 1, NULL, 0, 'admin', '2024-04-26 15:29:11', NULL, NULL, 0),
@@ -122,7 +122,7 @@ VALUES (1746819115722473472, 'commonStatus', '启用', '1', 'ant-design:account-
         '2024-04-27 14:06:54', 0),
        (1783761418344988672, 'fileStatus', '作废', '99', NULL, '#fc0303', 40, 1, NULL, 0, 'admin', '2024-04-26 15:33:57', 'admin',
         '2024-04-27 14:06:42', 0),
-       (1784442289230184448, 'planTask', '日志清除', 'top.ticho.rainbow.domain.task.LogClearTask', '', NULL, 30, 1, NULL, 0, 'admin',
+       (1784442289230184448, 'planTask', '日志清除', 'top.ticho.rainbow.application.task.LogClearTask', '', NULL, 30, 1, NULL, 0, 'admin',
         '2024-04-28 12:39:30', NULL, NULL, 0),
        (1787471846036209664, 'taskLogStatus', '执行成功', '1', NULL, '#008000', 10, 1, NULL, 0, 'admin', '2024-05-06 21:17:52', 'admin',
         '2024-05-06 21:18:16', 0),
@@ -142,7 +142,7 @@ VALUES (1746819115722473472, 'commonStatus', '启用', '1', 'ant-design:account-
        (1788838598833864704, 'sex', '女', '1', NULL, NULL, 10, 1, NULL, 0, 'admin', '2024-05-10 15:48:52', NULL, NULL, 0),
        (1790214309058445312, 'channelStatus', '已激活', '1', NULL, '#108ee9', 10, 1, NULL, 0, 'admin', '2024-05-14 10:55:27', NULL, NULL, 0),
        (1790214564529307648, 'channelStatus', '未激活', '0', NULL, '#FF5500', 10, 1, NULL, 0, 'admin', '2024-05-14 10:56:27', NULL, NULL, 0),
-       (1791388986879508480, 'planTask', '邮件发送', 'top.ticho.rainbow.domain.task.EmailTask', NULL, NULL, 40, 1, NULL, 0, 'admin',
+       (1791388986879508480, 'planTask', '邮件发送', 'top.ticho.rainbow.application.task.EmailTask', NULL, NULL, 40, 1, NULL, 0, 'admin',
         '2024-05-17 16:43:12', 'admin', '2024-05-17 16:43:21', 0);
 
 
@@ -560,13 +560,13 @@ CREATE TABLE `sys_task`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='计划任务信息';
 
 INSERT INTO `sys_task`
-VALUES (1773971312662806528, '测试', 'top.ticho.rainbow.domain.task.IntranetTask', '', '0 0/5 * * * ? *', 0, NULL, 0, 'admin', '2024-03-30 15:11:34',
+VALUES (1773971312662806528, '测试', 'top.ticho.rainbow.application.task.IntranetTask', '', '0 0/5 * * * ? *', 0, NULL, 0, 'admin', '2024-03-30 15:11:34',
         'admin', '2024-05-15 09:11:00', 0),
-       (1783736600820187136, '缓存文件清除', 'top.ticho.rainbow.domain.task.FileTmpClearTask', NULL, '0 0 0 * * ? *', 1, NULL, 0, 'admin',
+       (1783736600820187136, '缓存文件清除', 'top.ticho.rainbow.application.task.FileTmpClearTask', NULL, '0 0 0 * * ? *', 1, NULL, 0, 'admin',
         '2024-04-26 13:55:21', 'admin', '2024-05-07 14:14:40', 0),
-       (1784442553299369984, '日志清除', 'top.ticho.rainbow.domain.task.LogClearTask', '1', '0 0 0 * * ? *', 1, NULL, 0, 'admin',
+       (1784442553299369984, '日志清除', 'top.ticho.rainbow.application.task.LogClearTask', '1', '0 0 0 * * ? *', 1, NULL, 0, 'admin',
         '2024-04-28 12:40:33', NULL, NULL, 0),
-       (1791389321148760064, '邮件发送', 'top.ticho.rainbow.domain.task.EmailTask',
+       (1791389321148760064, '邮件发送', 'top.ticho.rainbow.application.task.EmailTask',
         '{\n  \"to\": \"1019319473@qq.com\",\n  \"subject\": \"问候\",\n  \"content\": \"早上好\"\n}', '0 0 0 * * ? *', 1, NULL, 0, 'admin',
         '2024-05-17 16:44:31', 'admin', '2024-05-17 16:46:31', 0);
 

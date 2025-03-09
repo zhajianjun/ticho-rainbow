@@ -1,9 +1,8 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.infrastructure.entity.DictLabel;
-import top.ticho.rainbow.infrastructure.entity.Role;
-import top.ticho.rainbow.interfaces.query.RoleQuery;
-import top.ticho.starter.datasource.service.TiRepository;
+import top.ticho.rainbow.application.dto.query.RoleQuery;
+import top.ticho.rainbow.domain.entity.DictLabel;
+import top.ticho.rainbow.domain.entity.Role;
 
 import java.util.List;
 
@@ -13,7 +12,38 @@ import java.util.List;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-public interface RoleRepository extends TiRepository<Role> {
+public interface RoleRepository {
+
+    /**
+     * 保存角色
+     *
+     * @param role 角色
+     * @return boolean
+     */
+    boolean save(Role role);
+
+    /**
+     * 删除角色
+     *
+     * @param id 身份证
+     * @return boolean
+     */
+    boolean remove(Long id);
+
+    /**
+     * 修改角色
+     *
+     * @param role 角色
+     */
+    boolean modify(Role role);
+
+    /**
+     * 根据编号查询角色
+     *
+     * @param id 编号
+     * @return {@link Role }
+     */
+    Role find(Long id);
 
     /**
      * 所有角色缓存查询
@@ -54,6 +84,8 @@ public interface RoleRepository extends TiRepository<Role> {
      * @return {@link DictLabel}
      */
     Role getByCodeExcludeId(String code, Long excludeId);
+
+    List<Role> listByIds(List<Long> ids);
 
 }
 

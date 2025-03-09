@@ -4,7 +4,7 @@
     <include optional="true" resource="ticho-logback-common.xml"/>
 
     <springProfile name="local,dev,test,st">
-        <logger name="com.alibaba.nacos.client" level="ERROR"/>
+        <logger name="com.alibaba.nacos.clientPO" level="ERROR"/>
         <logger name="com.ulisesbocchio.jasyptspringboot" level="ERROR"/>
         <logger name="com.alibaba.cloud.nacos" level="INFO"/>
         <logger name="io.undertow" level="ERROR"/>
@@ -14,7 +14,7 @@
     </springProfile>
 
     <springProfile name="uat,prod">
-        <logger name="com.alibaba.nacos.client" level="ERROR"/>
+        <logger name="com.alibaba.nacos.clientPO" level="ERROR"/>
         <logger name="com.ulisesbocchio.jasyptspringboot" level="ERROR"/>
         <logger name="com.alibaba.cloud.nacos" level="ERROR"/>
         <logger name="io.undertow" level="ERROR"/>

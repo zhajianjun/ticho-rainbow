@@ -1,7 +1,6 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.infrastructure.entity.RoleMenu;
-import top.ticho.starter.datasource.service.TiRepository;
+import top.ticho.rainbow.domain.entity.RoleMenu;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-public interface RoleMenuRepository extends TiRepository<RoleMenu> {
+public interface RoleMenuRepository {
 
     /**
      * 根据角色id列表查询

@@ -1,8 +1,8 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.infrastructure.entity.OpLog;
-import top.ticho.rainbow.interfaces.query.OpLogQuery;
-import top.ticho.starter.datasource.service.TiRepository;
+import top.ticho.rainbow.application.dto.query.OpLogQuery;
+import top.ticho.rainbow.domain.entity.OpLog;
+import top.ticho.starter.view.core.TiPageResult;
 
 import java.util.List;
 
@@ -12,7 +12,18 @@ import java.util.List;
  * @author zhajianjun
  * @date 2024-03-24 17:55
  */
-public interface OpLogRepository extends TiRepository<OpLog> {
+public interface OpLogRepository {
+
+
+    void save(OpLog entity);
+
+    /**
+     * 根据编号查询日志信息
+     *
+     * @param id 编号
+     * @return {@link OpLog }
+     */
+    OpLog find(Long id);
 
     /**
      * 根据条件查询日志信息列表
@@ -20,7 +31,10 @@ public interface OpLogRepository extends TiRepository<OpLog> {
      * @param query 查询条件
      * @return {@link List}<{@link OpLog}>
      */
-    List<OpLog> list(OpLogQuery query);
+    TiPageResult<OpLog> page(OpLogQuery query);
+
+    void removeBefeoreDays(Integer days);
+
 
 }
 
