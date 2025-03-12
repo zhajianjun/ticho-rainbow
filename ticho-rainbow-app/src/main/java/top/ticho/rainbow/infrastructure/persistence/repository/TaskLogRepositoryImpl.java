@@ -29,7 +29,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class TaskLogRepositoryImpl extends TiRepositoryImpl<TaskLogMapper, TaskLogPO> implements TaskLogRepository {
     private final TaskLogConverter taskLogConverter;
-
     @Override
     public boolean save(TaskLog taskLog) {
         TaskLogPO taskLogPo = taskLogConverter.toPo(taskLog);

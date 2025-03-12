@@ -28,10 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DictLabelService {
-    private final DictLabelRepository dictLabelRepository;
-    private final DictRepository dictRepository;
-    private final DictLabelAssembler dictLabelAssembler;
-
+    private final DictLabelRepository dictLabelRepository;    private final DictRepository dictRepository;    private final DictLabelAssembler dictLabelAssembler;
     public void save(DictLabelSaveCommand dictLabelSaveCommand) {
         Dict dict = dictRepository.getByCodeExcludeId(dictLabelSaveCommand.getCode(), null);
         TiAssert.isNotNull(dict, "保存失败,字典不存在");

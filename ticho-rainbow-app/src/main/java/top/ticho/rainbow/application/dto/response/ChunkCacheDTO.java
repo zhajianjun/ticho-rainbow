@@ -16,35 +16,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ChunkCacheDTO {
 
     private String chunkId;
-
     private String md5;
-
     private Long id;
-
     private String originalFileName;
-
     private String fileName;
-
     private Long fileSize;
-
     private Integer type;
-
     private Integer chunkCount;
-
     private AtomicInteger uploadedChunkCount;
-
     private String extName;
-
     private String contentType;
-
     private Boolean complete;
-
     @JsonIgnore
     private String chunkDirPath;
-
     @JsonIgnore
     private String relativeFullPath;
-
     @JsonIgnore
     private ConcurrentSkipListSet<Integer> indexs;
 

@@ -1,7 +1,6 @@
 package top.ticho.rainbow.application.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -13,8 +12,6 @@ import java.time.LocalDateTime;
  * @date 2024-04-23 10:41
  */
 @Data
-
-@ApiModel(value = "文件信息DTO")
 public class FileInfoDTO {
 
     /** 主键编号 */

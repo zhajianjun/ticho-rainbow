@@ -1,6 +1,5 @@
 package top.ticho.rainbow.application.dto.response;
 
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import top.ticho.rainbow.application.dto.PortDTO;
 
@@ -11,7 +10,6 @@ import top.ticho.rainbow.application.dto.PortDTO;
  * @date 2024-05-16 09:50
  */
 @Data
-@ApiModel(value = "监控流量数据")
 public class FlowMonitorDTO {
 
     /** 端口号 */

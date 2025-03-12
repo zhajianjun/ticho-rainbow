@@ -39,12 +39,7 @@ import java.util.stream.Collectors;
 @Service
 public class TaskLogService {
 
-    private final TaskLogRepository taskLogRepository;
-    private final TaskLogAssembler taskLogAssembler;
-    private final DictExecutor dictExecutor;
-    private final HttpServletResponse response;
-    private final TaskRepository taskRepository;
-
+    private final TaskLogRepository taskLogRepository;    private final TaskLogAssembler taskLogAssembler;    private final DictExecutor dictExecutor;    private final HttpServletResponse response;    private final TaskRepository taskRepository;
     public TaskLogDTO getById(Long id) {
         TiAssert.isNotNull(id, "编号不能为空");
         TaskLog taskLog = taskLogRepository.find(id);

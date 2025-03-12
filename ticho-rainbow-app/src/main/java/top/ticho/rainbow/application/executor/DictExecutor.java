@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DictExecutor {
     private final DictService dictService;
-
     /**
      * 查询字典标签map
      * 例如: code:yesOrNo;1-是,0-否

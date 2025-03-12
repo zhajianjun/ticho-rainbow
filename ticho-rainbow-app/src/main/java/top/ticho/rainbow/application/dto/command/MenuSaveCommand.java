@@ -1,12 +1,9 @@
 package top.ticho.rainbow.application.dto.command;
 
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
-import top.ticho.starter.web.util.valid.TiValidGroup;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.List;
 
 /**
@@ -16,8 +13,6 @@ import java.util.List;
  * @date 2024-01-08 20:30
  */
 @Data
-
-@ApiModel(value = "菜单信息DTO")
 public class MenuSaveCommand {
 
     /** 父级id */
@@ -76,6 +71,5 @@ public class MenuSaveCommand {
 
     public interface Ext {
     }
-
 
 }

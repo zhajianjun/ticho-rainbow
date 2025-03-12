@@ -48,13 +48,7 @@ import java.util.stream.Collectors;
 @Service
 public class TaskService implements InitializingBean {
     public static final String DEFAULT_JOB_GROUP = "DEFAULT_JOB_GROUP";
-    private final TaskRepository taskRepository;
-    private final TaskAssembler taskAssembler;
-    private final List<AbstracTask<?>> abstracTasks;
-    private final TaskTemplate taskTemplate;
-    private final DictExecutor dictExecutor;
-    private final HttpServletResponse response;
-
+    private final TaskRepository taskRepository;    private final TaskAssembler taskAssembler;    private final List<AbstracTask<?>> abstracTasks;    private final TaskTemplate taskTemplate;    private final DictExecutor dictExecutor;    private final HttpServletResponse response;
     public void afterPropertiesSet() {
         List<Task> tasks = taskRepository.list(new TaskQuery());
         List<String> jobs = taskTemplate.listJobs();

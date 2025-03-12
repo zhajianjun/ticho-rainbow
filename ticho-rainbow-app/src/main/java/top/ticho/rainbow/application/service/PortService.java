@@ -48,13 +48,7 @@ import java.util.stream.Collectors;
 @Service
 public class PortService {
 
-    private final PortRepository portRepository;
-    private final PortAssembler portAssembler;
-    private final ClientRepository clientRepository;
-    private final ServerHandler serverHandler;
-    private final DictExecutor dictExecutor;
-    private final HttpServletResponse response;
-
+    private final PortRepository portRepository;    private final PortAssembler portAssembler;    private final ClientRepository clientRepository;    private final ServerHandler serverHandler;    private final DictExecutor dictExecutor;    private final HttpServletResponse response;
     public void save(PortDTO portDTO) {
         TiValidUtil.valid(portDTO);
         portDTO.setId(null);

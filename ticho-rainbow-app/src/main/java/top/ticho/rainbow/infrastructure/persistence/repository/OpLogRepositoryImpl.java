@@ -31,7 +31,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class OpLogRepositoryImpl extends TiRepositoryImpl<OpLogMapper, OpLogPO> implements OpLogRepository {
     private final OpLogConverter opLogConverter;
-
     @Override
     public void save(OpLog entity) {
         OpLogPO po = opLogConverter.toPo(entity);

@@ -23,7 +23,6 @@ import top.ticho.starter.view.core.TiResult;
 public class EmailController {
 
     private final EmailRepository emailRepository;
-
     /**
      * 邮件发送测试
      *

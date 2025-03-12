@@ -39,9 +39,7 @@ import java.util.stream.Collectors;
 @Order(100)
 public class CustomResponseHandle {
 
-    private final TiResponseHandle tiResponseHandle;
-    private final HttpServletResponse response;
-
+    private final TiResponseHandle tiResponseHandle;    private final HttpServletResponse response;
     public void prefix(Exception ex) {
         TiHttpLog httpLog = TiWebLogInterceptor.logInfo();
         if (Objects.nonNull(httpLog)) {

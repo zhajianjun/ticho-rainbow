@@ -43,10 +43,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MenuService extends AbstractAuthServiceImpl {
-    private final MenuRepository menuRepository;
-    private final MenuAssembler menuAssembler;
-    private final RoleMenuRepository roleMenuRepository;
-
+    private final MenuRepository menuRepository;    private final MenuAssembler menuAssembler;    private final RoleMenuRepository roleMenuRepository;
     public void save(MenuDTO menuDTO) {
         TiValidUtil.valid(menuDTO, TiValidGroup.Add.class);
         menuDTO.setId(TiIdUtil.getId());

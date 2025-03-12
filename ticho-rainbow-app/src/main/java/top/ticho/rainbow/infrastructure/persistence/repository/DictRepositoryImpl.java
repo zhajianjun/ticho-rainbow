@@ -31,7 +31,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class DictRepositoryImpl extends TiRepositoryImpl<DictMapper, DictPO> implements DictRepository {
     private final DictConverter dictConverter;
-
     @Override
     public boolean save(Dict dict) {
         return save(dictConverter.toPO(dict));

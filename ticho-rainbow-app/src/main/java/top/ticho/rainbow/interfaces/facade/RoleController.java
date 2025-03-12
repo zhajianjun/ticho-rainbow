@@ -40,7 +40,6 @@ import java.util.List;
 @RequestMapping("role")
 public class RoleController {
     private final RoleService roleService;
-
     /**
      * 查询全部角色(分页)
      */

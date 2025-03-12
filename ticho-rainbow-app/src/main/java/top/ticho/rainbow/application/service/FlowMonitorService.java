@@ -39,11 +39,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FlowMonitorService {
-    private final ClientRepository clientRepository;
-    private final PortRepository portRepository;
-    private final ServerHandler serverHandler;
-    private final PortAssembler portAssembler;
-
+    private final ClientRepository clientRepository;    private final PortRepository portRepository;    private final ServerHandler serverHandler;    private final PortAssembler portAssembler;
     public FlowMonitorStatsDTO info() {
         AppHandler appHandler = serverHandler.getAppHandler();
         Map<String, ClientInfo> clientMap = serverHandler.getClientMap();

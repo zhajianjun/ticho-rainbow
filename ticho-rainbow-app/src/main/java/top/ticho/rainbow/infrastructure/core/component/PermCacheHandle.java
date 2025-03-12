@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 public class PermCacheHandle {
 
     private final Map<String, Map<String, String>> MAP = new HashMap<>();
-
     public void pushCurrentAppPerms() {
         List<PermDTO> perms = listCurrentAppPerms();
         if (CollUtil.isEmpty(perms)) {

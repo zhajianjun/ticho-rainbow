@@ -37,5 +37,4 @@ public class ClientSaveCommand {
     private Integer sort;
     /** 备注信息 */
     private String remark;
-
 }

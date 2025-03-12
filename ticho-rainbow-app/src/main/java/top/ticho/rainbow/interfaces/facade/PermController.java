@@ -22,7 +22,6 @@ import java.util.List;
 @RequestMapping("perm")
 public class PermController {
     private final PermCacheHandle permCacheHandle;
-
     /**
      * 查询所有权限标识
      *

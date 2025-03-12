@@ -20,26 +20,16 @@ import java.util.Objects;
 public class Role {
 
     /** 主键编号 */
-    private Long id;
-    /** 角色编码 */
-    private String code;
-    /** 角色名称 */
-    private String name;
-    /** 状态;1-正常,0-禁用 */
-    private Integer status;
-    /** 备注信息 */
-    private String remark;
-    /** 版本号 */
-    private Long version;
-    /** 创建人 */
-    private String createBy;
-    /** 创建时间 */
-    private LocalDateTime createTime;
-    /** 修改人 */
-    private String updateBy;
-    /** 修改时间 */
+    private Long id;    /** 角色编码 */
+    private String code;    /** 角色名称 */
+    private String name;    /** 状态;1-正常,0-禁用 */
+    private Integer status;    /** 备注信息 */
+    private String remark;    /** 版本号 */
+    private Long version;    /** 创建人 */
+    private String createBy;    /** 创建时间 */
+    private LocalDateTime createTime;    /** 修改人 */
+    private String updateBy;    /** 修改时间 */
     private LocalDateTime updateTime;
-
     public void modify(RoleModifyVO modifyVO) {
         this.name = modifyVO.getName();
         this.status = modifyVO.getStatus();

@@ -24,7 +24,6 @@ import top.ticho.starter.web.event.TiApplicationReadyEvent;
 public class PermCacheEvent implements ApplicationListener<ApplicationReadyEvent> {
 
     private final PermCacheHandle permCacheHandle;
-
     /**
      * 默认事件
      */

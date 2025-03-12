@@ -46,26 +46,16 @@ import java.util.stream.Stream;
  */
 public abstract class AbstractAuthServiceImpl {
     @Resource
-    private UserRepository userRepository;
-    @Resource
-    private UserAssembler userAssembler;
-    @Resource
-    private UserRoleRepository userRoleRepository;
-    @Resource
-    private RoleRepository roleRepository;
-    @Resource
-    private RoleAssembler roleAssembler;
-    @Resource
-    private RoleMenuRepository roleMenuRepository;
-    @Resource
-    private MenuRepository menuRepository;
-    @Resource
-    private MenuAssembler menuAssembler;
-    @Resource
-    private FileInfoRepository fileInfoRepository;
-    @Resource
+    private UserRepository userRepository;    @Resource
+    private UserAssembler userAssembler;    @Resource
+    private UserRoleRepository userRoleRepository;    @Resource
+    private RoleRepository roleRepository;    @Resource
+    private RoleAssembler roleAssembler;    @Resource
+    private RoleMenuRepository roleMenuRepository;    @Resource
+    private MenuRepository menuRepository;    @Resource
+    private MenuAssembler menuAssembler;    @Resource
+    private FileInfoRepository fileInfoRepository;    @Resource
     private FileInfoService fileInfoService;
-
     public UserDTO getUser(String username) {
         User user = userRepository.getCacheByUsername(username);
         return userAssembler.toDTO(user);

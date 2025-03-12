@@ -23,17 +23,14 @@ public enum FileErrCode implements Serializable, TiErrCode {
     ;
 
     private static final long serialVersionUID = 1L;
-
     /**
      * 状态码
      */
     private final int code;
-
     /**
      * 状态信息
      */
     private final String msg;
-
     FileErrCode(int code, String msg) {
         this.code = code;
         this.msg = msg;

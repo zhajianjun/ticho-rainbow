@@ -1,6 +1,5 @@
 package top.ticho.rainbow.application.dto;
 
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
@@ -14,15 +13,12 @@ import java.util.List;
  * @date 2023-12-17 08:30
  */
 @Data
-
-@ApiModel(value = "用户角色信息DTO")
 public class UserRoleDTO {
 
 
     /** 用户id */
     @NotNull(message = "用户id不能为空")
     private Long userId;
-
     /** 角色id列表 */
     @NotEmpty(message = "角色id列表不能为空")
     private List<Long> roleIds;

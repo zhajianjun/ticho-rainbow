@@ -33,7 +33,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class FileInfoRepositoryImpl extends TiRepositoryImpl<FileInfoMapper, FileInfoPO> implements FileInfoRepository {
     private final FileInfoConverter fileInfoConverter;
-
     @Override
     public boolean save(FileInfo fileInfo) {
         FileInfoPO fileInfoPO = fileInfoConverter.toPo(fileInfo);

@@ -41,5 +41,4 @@ public class DictLabelSaveCommand {
     /** 备注信息 */
     @Size(max = 1024, message = "备注信息最大不能超过1024个字符")
     private String remark;
-
 }

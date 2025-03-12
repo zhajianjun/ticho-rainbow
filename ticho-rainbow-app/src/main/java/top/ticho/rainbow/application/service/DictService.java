@@ -54,13 +54,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class DictService {
-    private final DictAssembler dictAssembler;
-    private final DictLabelAssembler dictLabelAssembler;
-    private final DictRepository dictRepository;
-    private final DictLabelRepository dictLabelRepository;
-    private final TiCacheTemplate tiCacheTemplate;
-    private final HttpServletResponse response;
-
+    private final DictAssembler dictAssembler;    private final DictLabelAssembler dictLabelAssembler;    private final DictRepository dictRepository;    private final DictLabelRepository dictLabelRepository;    private final TiCacheTemplate tiCacheTemplate;    private final HttpServletResponse response;
     public void save(DictSaveCommand dictSaveCommand) {
         Dict dict = dictAssembler.toEntity(dictSaveCommand);
         Dict dbDict = dictRepository.getByCodeExcludeId(dictSaveCommand.getCode(), null);

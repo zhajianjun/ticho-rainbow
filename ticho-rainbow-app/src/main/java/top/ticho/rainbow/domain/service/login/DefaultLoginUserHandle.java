@@ -19,7 +19,6 @@ import top.ticho.starter.web.util.valid.TiValidUtil;
 public class DefaultLoginUserHandle extends TiLoginUserHandle {
 
     private final UserService userService;
-
     @Override
     public TiToken token(LoginRequest loginRequest) {
         if (loginRequest instanceof UserLoginDTO) {

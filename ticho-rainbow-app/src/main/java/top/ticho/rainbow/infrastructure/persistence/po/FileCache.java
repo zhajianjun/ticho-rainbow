@@ -14,16 +14,11 @@ import java.util.Objects;
 public class FileCache {
 
     /** 签名 */
-    private String sign;
-    /** 文件信息 */
-    private FileInfoPO fileInfoPO;
-    /* 过期时间戳 */
-    private Long expire;
-    /* 是否有限制 */
-    private Boolean limit;
-    /* 是否已限制 */
+    private String sign;    /** 文件信息 */
+    private FileInfoPO fileInfoPO;    /* 过期时间戳 */
+    private Long expire;    /* 是否有限制 */
+    private Boolean limit;    /* 是否已限制 */
     private Boolean limited;
-
     public Long getExpire() {
         // 如果过期时间为空，则返回0
         if (Objects.isNull(expire)) {

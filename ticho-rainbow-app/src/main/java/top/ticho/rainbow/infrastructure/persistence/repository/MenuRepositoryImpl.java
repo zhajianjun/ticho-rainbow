@@ -30,7 +30,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class MenuRepositoryImpl extends TiRepositoryImpl<MenuMapper, MenuPO> implements MenuRepository {
     private final MenuConverter menuConverter;
-
     @Override
     @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:menu:list'")
     public boolean save(Menu menu) {

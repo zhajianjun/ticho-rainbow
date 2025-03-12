@@ -28,9 +28,7 @@ import top.ticho.tool.intranet.server.handler.ServerHandler;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    private final CustomTraceInterceptor customTraceInterceptor;
-    private final FileProperty fileProperty;
-
+    private final CustomTraceInterceptor customTraceInterceptor;    private final FileProperty fileProperty;
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         // 参数1请求名称、参数2视图名称

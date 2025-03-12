@@ -28,5 +28,4 @@ public class DictSaveCommand {
     private Integer status;
     /** 备注信息 */
     private String remark;
-
 }

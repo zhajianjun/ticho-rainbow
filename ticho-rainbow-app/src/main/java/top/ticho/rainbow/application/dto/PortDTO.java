@@ -1,7 +1,6 @@
 package top.ticho.rainbow.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import top.ticho.starter.web.util.valid.TiValidGroup;
 
@@ -19,8 +18,6 @@ import java.time.LocalDateTime;
  * @date 2023-12-17 20:12
  */
 @Data
-
-@ApiModel(value = "端口信息DTO")
 public class PortDTO {
 
     /** 主键标识 */

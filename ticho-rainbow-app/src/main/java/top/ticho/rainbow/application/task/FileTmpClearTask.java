@@ -23,7 +23,6 @@ import java.io.File;
 public class FileTmpClearTask extends AbstracTask<String> {
 
     private final FileProperty fileProperty;
-
     public FileTmpClearTask(Environment environment, TraceProperty traceProperty, TaskLogRepository taskLogRepository, FileProperty fileProperty) {
         super(environment, traceProperty, taskLogRepository);
         this.fileProperty = fileProperty;

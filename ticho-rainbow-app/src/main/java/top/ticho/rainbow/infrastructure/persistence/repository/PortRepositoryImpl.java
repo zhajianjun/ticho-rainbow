@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PortRepositoryImpl extends TiRepositoryImpl<PortMapper, PortPO> implements PortRepository {
     private final PortConverter portConverter;
-
     @Override
     public boolean save(Port port) {
         PortPO portPO = portConverter.toPo(port);

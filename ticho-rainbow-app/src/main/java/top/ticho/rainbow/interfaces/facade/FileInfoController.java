@@ -38,7 +38,6 @@ import java.io.IOException;
 @RequestMapping("file")
 public class FileInfoController {
     private final FileInfoService fileInfoService;
-
     /**
      * 查询文件(分页)
      */

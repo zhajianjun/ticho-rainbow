@@ -37,7 +37,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> implements UserRepository {
     private final UserConverter userConverter;
-
     @Override
     @CacheEvict(value = CacheConst.USER_INFO, key = "#user.username")
     public boolean save(User user) {

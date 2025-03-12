@@ -18,7 +18,6 @@ import top.ticho.trace.common.prop.TraceProperty;
 public class SseHeatBeatTask extends AbstracTask<String> {
 
     private final SseHandle sseHandle;
-
     public SseHeatBeatTask(Environment environment, TraceProperty traceProperty, TaskLogRepository taskLogRepository, SseHandle sseHandle) {
         super(environment, traceProperty, taskLogRepository);
         this.sseHandle = sseHandle;

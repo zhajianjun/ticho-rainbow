@@ -99,19 +99,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class UserServiceImpl extends AbstractAuthServiceImpl implements UserService {
-    private final UserRepository userRepository;
-    private final UserAssembler userAssembler;
-    private final RoleAssembler roleAssembler;
-    private final PasswordEncoder passwordEncoder;
-    private final UserRoleRepository userRoleRepository;
-    private final HttpServletResponse response;
-    private final RoleRepository roleRepository;
-    private final TiCacheTemplate springCacheTemplate;
-    private final EmailRepository emailRepository;
-    private final FileInfoService fileInfoService;
-    private final FileInfoAssembler fileInfoAssembler;
-    private final DictExecutor dictExecutor;
-
+    private final UserRepository userRepository;    private final UserAssembler userAssembler;    private final RoleAssembler roleAssembler;    private final PasswordEncoder passwordEncoder;    private final UserRoleRepository userRoleRepository;    private final HttpServletResponse response;    private final RoleRepository roleRepository;    private final TiCacheTemplate springCacheTemplate;    private final EmailRepository emailRepository;    private final FileInfoService fileInfoService;    private final FileInfoAssembler fileInfoAssembler;    private final DictExecutor dictExecutor;
     @Override
     public void imgCode(String imgKey) throws IOException {
         response.setHeader("Pragma", "No-cache");

@@ -29,7 +29,6 @@ import java.util.List;
 @RequestMapping("menu")
 public class MenuController {
     private final MenuService menuService;
-
     /**
      * 保存菜单
      */

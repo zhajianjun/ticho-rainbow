@@ -1,7 +1,5 @@
 package top.ticho.rainbow.interfaces.facade;
 
-import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -10,10 +8,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.rainbow.application.dto.request.UserLoginDTO;
 import top.ticho.rainbow.application.dto.command.ResetPassworEmailSendCommand;
 import top.ticho.rainbow.application.dto.command.ResetPasswordCommand;
 import top.ticho.rainbow.application.dto.command.SignUpEmailSendCommand;
+import top.ticho.rainbow.application.dto.request.UserLoginDTO;
 import top.ticho.rainbow.application.service.UserService;
 import top.ticho.starter.security.annotation.IgnoreJwtCheck;
 import top.ticho.starter.security.constant.TiSecurityConst;
@@ -35,9 +33,7 @@ import java.security.Principal;
 @RestController(TiSecurityConst.OAUTH2_CONTROLLER)
 @RequestMapping("oauth")
 public class OauthController {
-    private final LoginUserHandle loginUserHandle;
-    private final UserService userService;
-
+    private final LoginUserHandle loginUserHandle;    private final UserService userService;
     /**
      * 注册邮箱发送
      */
@@ -101,8 +97,6 @@ public class OauthController {
      * 刷新token
      */
     @IgnoreJwtCheck
-    @ApiOperation("刷新token")
-    @ApiOperationSupport(order = 70)
     @PostMapping("refreshToken")
     public TiResult<TiToken> refreshToken(String refreshToken) {
         return TiResult.ok(loginUserHandle.refreshToken(refreshToken));
@@ -111,7 +105,6 @@ public class OauthController {
     /**
      * token信息查询
      */
-    @ApiOperationSupport(order = 80)
     @GetMapping("principal")
     public TiResult<Principal> principal() {
         return TiResult.ok(SecurityContextHolder.getContext().getAuthentication());

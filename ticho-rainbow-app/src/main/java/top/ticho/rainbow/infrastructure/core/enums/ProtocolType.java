@@ -20,9 +20,7 @@ public enum ProtocolType {
     RDESKTOP(6, "remote desktop"),
     TCP(7, "tcp");
 
-    private final int code;
-    private final String type;
-
+    private final int code;    private final String type;
     ProtocolType(int code, String type) {
         this.code = code;
         this.type = type;

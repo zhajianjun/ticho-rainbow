@@ -35,7 +35,6 @@ import java.util.List;
 @RequestMapping("client")
 public class ClientController {
     private final ClientService clientService;
-
     /**
      * 保存客户端
      */

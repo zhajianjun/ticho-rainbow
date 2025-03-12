@@ -28,31 +28,23 @@ public class ExcelListener<M extends ExcelBaseImp> implements ReadListener<M> {
 
     /** 执行id */
     private final String id = IdUtil.fastSimpleUUID();
-
     /** 批量数量 */
     private int batchSize;
-
     /** 校验错误数 */
     @Getter
     private long error = 0;
-
     /** 读取数量 */
     @Getter
     private long total = 0;
-
     /** 是否需要默认校验逻辑 */
     private final boolean defaultValid;
-
     /** 错误信息，拼接字符串 */
     private final String delimiter;
-
     /** 执行逻辑 */
     private final BiConsumer<List<M>, Consumer<M>> consumer;
-
     /** 缓存的数据 */
     @Getter
     private List<M> cacheDatas = ListUtils.newArrayListWithExpectedSize(batchSize);
-
     public ExcelListener(BiConsumer<List<M>, Consumer<M>> consumer) {
         this(50, consumer);
     }

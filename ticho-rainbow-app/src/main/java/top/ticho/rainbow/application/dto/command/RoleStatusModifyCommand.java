@@ -2,7 +2,6 @@ package top.ticho.rainbow.application.dto.command;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -18,5 +17,4 @@ public class RoleStatusModifyCommand {
     /** 版本号 */
     @NotNull(message = "版本号不能为空")
     private Long version;
-
 }

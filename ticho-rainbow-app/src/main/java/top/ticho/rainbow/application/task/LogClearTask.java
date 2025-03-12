@@ -17,9 +17,7 @@ import top.ticho.trace.common.prop.TraceProperty;
 @Component
 public class LogClearTask extends AbstracTask<Integer> {
 
-    private final OpLogRepository opLogRepository;
-    private final TaskLogRepository taskLogRepository;
-
+    private final OpLogRepository opLogRepository;    private final TaskLogRepository taskLogRepository;
     public LogClearTask(Environment environment, TraceProperty traceProperty, OpLogRepository opLogRepository, TaskLogRepository taskLogRepository) {
         super(environment, traceProperty, taskLogRepository);
         this.opLogRepository = opLogRepository;

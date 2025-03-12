@@ -27,7 +27,6 @@ import java.util.function.Predicate;
 public class SseTemplate {
     /** sseEmitterMap */
     private final Map<String, SseEmitter> sseEmitterMap = new ConcurrentHashMap<>();
-
     public static class SseEmitterUTF8 extends SseEmitter {
         public SseEmitterUTF8(Long timeout) {
             super(timeout);

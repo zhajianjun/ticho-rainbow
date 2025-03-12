@@ -50,14 +50,10 @@ public class CacheConfig {
         }
 
         /** key */
-        private final String key;
-        /** 过期策略;1-write,2-access */
-        private final Integer expireStrategy;
-        /** 过期时间（秒） */
-        private final int ttl;
-        /** 最大數量 */
-        private final int maxSize;
-    }
+        private final String key;        /** 过期策略;1-write,2-access */
+        private final Integer expireStrategy;        /** 过期时间（秒） */
+        private final int ttl;        /** 最大數量 */
+        private final int maxSize;    }
 
     @Bean
     public TiCacheBatch tiCacheBatch() {

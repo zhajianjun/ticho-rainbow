@@ -17,8 +17,6 @@ import lombok.EqualsAndHashCode;
 public class UserRolePO extends Model<UserRolePO> {
 
     /** 用户id */
-    private Long userId;
-    /** 角色id */
+    private Long userId;    /** 角色id */
     private Long roleId;
-
 }

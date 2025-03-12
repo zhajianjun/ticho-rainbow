@@ -34,7 +34,6 @@ import java.util.Objects;
 public class DefaultPermissionServiceImpl extends AbstractAuthServiceImpl implements PermissionService {
 
     private final HttpServletRequest request;
-
     public boolean hasPerms(String... permissions) {
         log.debug("权限校验，permissions = {}", String.join(",", permissions));
         boolean inner = Objects.equals(request.getHeader(TiSecurityConst.INNER), TiSecurityConst.INNER_VALUE);

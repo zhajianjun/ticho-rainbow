@@ -24,7 +24,6 @@ import top.ticho.starter.web.annotation.TiView;
 public class SseController {
 
     private final SseHandle sseHandle;
-
     /**
      * sign
      */

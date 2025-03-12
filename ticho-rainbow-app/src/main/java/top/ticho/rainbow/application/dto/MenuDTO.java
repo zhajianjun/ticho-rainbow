@@ -32,7 +32,6 @@ public class MenuDTO {
     /** 权限标识 */
     // @NotEmpty(message = "权限标识不能为空", groups = {Button.class})
     private List<String> perms;
-
     /** 标题;目录名称、菜单名称、按钮名称 */
     @NotBlank(message = "标题不能为空", groups = {TiValidGroup.Add.class})
     private String name;
@@ -67,7 +66,6 @@ public class MenuDTO {
     private Integer status;
     /** 备注信息 */
     private String remark;
-
 
     public interface Dir {
     }

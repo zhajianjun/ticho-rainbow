@@ -2,7 +2,6 @@ package top.ticho.rainbow.application.dto.response;
 
 import cn.idev.excel.annotation.format.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -14,8 +13,6 @@ import java.time.LocalDateTime;
  * @date 2023-12-17 20:12
  */
 @Data
-
-@ApiModel(value = "客户端信息DTO")
 public class ClientDTO {
 
 

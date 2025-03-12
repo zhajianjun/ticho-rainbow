@@ -19,21 +19,15 @@ public class FileProperty {
 
     /** 域名或者ip地址 */
     private String domain;
-
     /** 地址 */
     private String rootPath = System.getProperty("user.dir");
-
     private String mvcResourcePath = "/static/file/**";
-
     /** 文件大小限制，默认20MB */
     private DataSize maxFileSize = DataSize.ofMegabytes(20L);
-
     /** 分段上传大小限制 */
     private DataSize maxPartSize = DataSize.ofMegabytes(5L);
-
     /** 大文件大小限制，默认1GB */
     private DataSize maxBigFileSize = DataSize.ofGigabytes(1L);
-
     public String getRootPath() {
         if (Objects.isNull(this.rootPath) || Objects.equals(this.rootPath, File.separator)) {
             return File.separator;

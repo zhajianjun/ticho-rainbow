@@ -48,7 +48,6 @@ public class TaskTemplate {
 
     private Scheduler scheduler;
 
-
     /**
      * 新增定时任务
      *

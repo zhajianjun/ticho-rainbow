@@ -28,7 +28,6 @@ import java.io.IOException;
 @RequestMapping("taskLog")
 public class TaskLogController {
     private final TaskLogService taskLogService;
-
     /**
      * 查询计划任务日志
      *

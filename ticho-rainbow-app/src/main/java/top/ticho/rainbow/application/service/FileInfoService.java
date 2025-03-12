@@ -75,13 +75,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FileInfoService {
     public static final String STORAGE_ID_NOT_BLANK = "id不能为空";
-    private final HttpServletResponse response;
-    private final TiCacheTemplate tiCacheTemplate;
-    private final FileProperty fileProperty;
-    private final FileInfoRepository fileInfoRepository;
-    private final FileInfoAssembler fileInfoAssembler;
-    private final DictExecutor dictExecutor;
-
+    private final HttpServletResponse response;    private final TiCacheTemplate tiCacheTemplate;    private final FileProperty fileProperty;    private final FileInfoRepository fileInfoRepository;    private final FileInfoAssembler fileInfoAssembler;    private final DictExecutor dictExecutor;
     public FileInfoDTO upload(FileUploadCommand fileUploadCommand) {
         String remark = fileUploadCommand.getRemark();
         Integer type = fileUploadCommand.getType();

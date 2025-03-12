@@ -27,7 +27,6 @@ import java.io.IOException;
 @RequestMapping("opLog")
 public class OpLogController {
     private final OpLogService opLogService;
-
     /**
      * 查询操作日志
      *

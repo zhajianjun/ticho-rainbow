@@ -32,10 +32,7 @@ import java.util.stream.Collectors;
 @Primary
 public class DefaultUsernameLoadUserService implements LoadUserService {
 
-    private final UserRepository userRepository;
-    private final UserRoleRepository userRoleRepository;
-    private final RoleRepository roleRepository;
-
+    private final UserRepository userRepository;    private final UserRoleRepository userRoleRepository;    private final RoleRepository roleRepository;
     @Override
     public SecurityUser load(String account) {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();

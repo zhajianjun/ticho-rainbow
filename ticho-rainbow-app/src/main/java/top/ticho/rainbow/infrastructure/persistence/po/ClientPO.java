@@ -26,37 +26,24 @@ public class ClientPO extends Model<ClientPO> {
 
     /** 主键标识 */
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
-    /** 客户端秘钥 */
-    private String accessKey;
-    /** 客户端名称 */
-    private String name;
-    /** 过期时间 */
-    private LocalDateTime expireAt;
-    /** 状态;1-启用,0-停用 */
-    private Integer status;
-    /** 排序 */
-    private Integer sort;
-    /** 备注信息 */
-    private String remark;
-    /** 版本号 */
+    private Long id;    /** 客户端秘钥 */
+    private String accessKey;    /** 客户端名称 */
+    private String name;    /** 过期时间 */
+    private LocalDateTime expireAt;    /** 状态;1-启用,0-停用 */
+    private Integer status;    /** 排序 */
+    private Integer sort;    /** 备注信息 */
+    private String remark;    /** 版本号 */
     @Version
-    private Long version;
-    /** 创建人 */
+    private Long version;    /** 创建人 */
     @TableField(fill = FieldFill.INSERT)
-    private String createBy;
-    /** 创建时间 */
+    private String createBy;    /** 创建时间 */
     @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
-    /** 修改人 */
+    private LocalDateTime createTime;    /** 修改人 */
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private String updateBy;
-    /** 修改时间 */
+    private String updateBy;    /** 修改时间 */
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
-    /** 删除标识;0-未删除,1-已删除 */
+    private LocalDateTime updateTime;    /** 删除标识;0-未删除,1-已删除 */
     @TableField(fill = FieldFill.INSERT)
     @TableLogic
     private Integer isDelete;
-
 }

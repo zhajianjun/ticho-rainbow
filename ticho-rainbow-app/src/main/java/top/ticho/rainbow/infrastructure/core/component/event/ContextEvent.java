@@ -13,8 +13,6 @@ public class ContextEvent<M> {
 
     /** 事件名称 */
     private String name;
-
     /** 事件数据 */
     private M data;
-
 }

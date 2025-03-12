@@ -1,13 +1,8 @@
 package top.ticho.rainbow.application.dto.command;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
-import top.ticho.starter.web.util.valid.TiValidGroup;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
 /**
  * 计划任务信息DTO
@@ -33,5 +28,4 @@ public class TaskSaveCommand {
     private String remark;
     /** 任务状态;1-正常,0-停用 */
     private Integer status;
-
 }

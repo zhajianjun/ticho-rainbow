@@ -34,11 +34,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OpLogService {
-    private final OpLogRepository opLogRepository;
-    private final OpLogAssembler opLogAssembler;
-    private final DictExecutor dictExecutor;
-    private final HttpServletResponse response;
-
+    private final OpLogRepository opLogRepository;    private final OpLogAssembler opLogAssembler;    private final DictExecutor dictExecutor;    private final HttpServletResponse response;
     public OpLogDTO getById(Long id) {
         TiAssert.isNotNull(id, "编号不能为空");
         OpLog opLog = opLogRepository.find(id);

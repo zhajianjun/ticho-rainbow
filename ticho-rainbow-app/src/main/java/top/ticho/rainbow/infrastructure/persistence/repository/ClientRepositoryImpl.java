@@ -32,7 +32,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, ClientPO> implements ClientRepository {
     private final ClientConverter clientConverter;
-
     @Override
     public boolean save(Client client) {
         return save(clientConverter.toPo(client));

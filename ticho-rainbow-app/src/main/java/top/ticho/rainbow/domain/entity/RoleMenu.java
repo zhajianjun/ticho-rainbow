@@ -14,7 +14,5 @@ import lombok.Getter;
 public class RoleMenu {
 
     /** 角色id */
-    private Long roleId;
-    /** 菜单id */
-    private Long menuId;
-}
+    private Long roleId;    /** 菜单id */
+    private Long menuId;}

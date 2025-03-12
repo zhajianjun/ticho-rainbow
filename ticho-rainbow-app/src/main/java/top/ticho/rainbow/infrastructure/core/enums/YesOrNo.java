@@ -18,9 +18,7 @@ public enum YesOrNo {
     NO(0, "否"),
     ;
 
-    private final int code;
-    private final String msg;
-
+    private final int code;    private final String msg;
 
     public int code() {
         return code;
@@ -31,7 +29,6 @@ public enum YesOrNo {
     }
 
     private static final Map<Integer, String> map;
-
     static {
         map = Arrays.stream(values()).collect(Collectors.toMap(YesOrNo::code, YesOrNo::message));
     }

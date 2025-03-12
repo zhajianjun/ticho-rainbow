@@ -35,7 +35,6 @@ import java.util.List;
 @RequestMapping("dict")
 public class DictController {
     private final DictService dictService;
-
     /**
      * 保存字典
      */

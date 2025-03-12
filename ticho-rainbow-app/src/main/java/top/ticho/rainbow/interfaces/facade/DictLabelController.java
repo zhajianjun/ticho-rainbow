@@ -31,7 +31,6 @@ import java.util.List;
 @RequestMapping("dictLabel")
 public class DictLabelController {
     private final DictLabelService dictLabelService;
-
     /**
      * 保存字典标签
      */

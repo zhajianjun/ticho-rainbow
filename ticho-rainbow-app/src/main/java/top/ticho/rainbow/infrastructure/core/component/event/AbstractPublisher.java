@@ -20,10 +20,8 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractPublisher<M> {
 
     /** Disruptor */
-    private final Disruptor<ContextEvent<M>> disruptor;
-    /** 环形存储区 */
+    private final Disruptor<ContextEvent<M>> disruptor;    /** 环形存储区 */
     private RingBuffer<ContextEvent<M>> ringBuffer;
-
     /**
      * @param ringBufferSize 环形缓冲区大小，必须是2的幂次方
      */

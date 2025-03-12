@@ -50,13 +50,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class RoleService extends AbstractAuthServiceImpl {
-    private final RoleRepository roleRepository;
-    private final RoleAssembler roleAssembler;
-    private final RoleMenuRepository roleMenuRepository;
-    private final UserRoleRepository userRoleRepository;
-    private final DictExecutor dictExecutor;
-    private final HttpServletResponse response;
-
+    private final RoleRepository roleRepository;    private final RoleAssembler roleAssembler;    private final RoleMenuRepository roleMenuRepository;    private final UserRoleRepository userRoleRepository;    private final DictExecutor dictExecutor;    private final HttpServletResponse response;
 
     @Transactional(rollbackFor = Exception.class)
     public void save(RoleDTO roleDTO) {

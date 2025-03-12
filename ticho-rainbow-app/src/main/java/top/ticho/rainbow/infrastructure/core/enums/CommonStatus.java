@@ -21,9 +21,7 @@ public enum CommonStatus {
 
     ;
 
-    private final int code;
-    private final String msg;
-
+    private final int code;    private final String msg;
     CommonStatus(int code, String msg) {
         this.code = code;
         this.msg = msg;
@@ -38,7 +36,6 @@ public enum CommonStatus {
     }
 
     private static final Map<Integer, String> map;
-
     static {
         map = Arrays.stream(values()).collect(Collectors.toMap(CommonStatus::code, CommonStatus::message));
     }

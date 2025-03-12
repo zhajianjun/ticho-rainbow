@@ -1,6 +1,5 @@
 package top.ticho.rainbow.application.dto.command;
 
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -33,5 +32,4 @@ public class TaskModifyCommand {
     /** 版本号 */
     @NotNull(message = "版本号不能为空")
     private Long version;
-
 }

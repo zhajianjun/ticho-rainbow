@@ -21,7 +21,6 @@ import top.ticho.starter.view.core.TiResult;
 public class FlowMonitorController {
 
     private final FlowMonitorService flowMonitorService;
-
     /**
      * 查询流量监控
      */

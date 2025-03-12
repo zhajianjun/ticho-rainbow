@@ -3,7 +3,6 @@ package top.ticho.rainbow.infrastructure.core.component.excel;
 import cn.idev.excel.annotation.ExcelIgnore;
 import cn.idev.excel.annotation.ExcelProperty;
 import cn.idev.excel.annotation.write.style.ColumnWidth;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -17,16 +16,11 @@ import java.io.Serializable;
 @Data
 public class ExcelBaseImp implements Serializable {
     private static final long serialVersionUID = 1L;
-
     /** 错误信息 */
     @ExcelProperty(value = "错误信息")
     @ColumnWidth(25)
-    @ApiModelProperty(value = "错误信息")
     private String message;
-
     /** 数据是否异常 */
     @ExcelIgnore
-    @ApiModelProperty(hidden = true)
     private Boolean isError = false;
-
 }

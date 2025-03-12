@@ -1,7 +1,5 @@
 package top.ticho.rainbow.domain.handle;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -11,15 +9,11 @@ import lombok.Data;
  * @date 2024-05-23 10:58
  */
 @Data
-@ApiModel(value = "sse消息")
 public class SseMessage<T> {
 
-    @ApiModelProperty(value = " 事件类型", position = 10)
-    private SseEvent event;
-
-    @ApiModelProperty(value = "数据", position = 20)
+    /** 事件类型 */
+    private SseEvent event;    /** 数据 */
     private T data;
-
     public static <T> SseMessage<T> of(SseEvent sseEvent, T data) {
         SseMessage<T> message = new SseMessage<>();
         message.setData(data);

@@ -1,6 +1,7 @@
 package top.ticho.rainbow.application.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import top.ticho.starter.view.core.TiSecurityUser;
 
 /**
@@ -9,12 +10,12 @@ import top.ticho.starter.view.core.TiSecurityUser;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-@Data
 
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class SecurityUser extends TiSecurityUser implements UserHelper {
 
     private String username;
-
     private Integer status = 2;
 
     @Override

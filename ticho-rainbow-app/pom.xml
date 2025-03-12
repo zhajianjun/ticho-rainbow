@@ -48,11 +48,6 @@
 
         <dependency>
             <groupId>top.ticho.starter</groupId>
-            <artifactId>ticho-starter-swagger</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>top.ticho.starter</groupId>
             <artifactId>ticho-starter-log</artifactId>
         </dependency>
 

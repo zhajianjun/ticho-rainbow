@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
  * @author zhajianjun
  * @date 2025-03-01 19:00
  */
-@SuppressWarnings("checkstyle:JavadocStyle")
 @Data
 public class ClientModifyCommand {
 

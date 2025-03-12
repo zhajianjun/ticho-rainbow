@@ -51,14 +51,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ClientService {
-    private final ClientRepository clientRepository;
-    private final PortRepository portRepository;
-    private final ClientAssembler clientAssembler;
-    private final PortAssembler portAssembler;
-    private final ServerHandler serverHandler;
-    private final DictExecutor dictExecutor;
-    private final HttpServletResponse response;
-
+    private final ClientRepository clientRepository;    private final PortRepository portRepository;    private final ClientAssembler clientAssembler;    private final PortAssembler portAssembler;    private final ServerHandler serverHandler;    private final DictExecutor dictExecutor;    private final HttpServletResponse response;
     @Transactional(rollbackFor = Exception.class)
     public void save(ClientSaveCommand clientSaveCommand) {
         Client clientFromDb = clientRepository.findByAccessKey(clientSaveCommand.getAccessKey());

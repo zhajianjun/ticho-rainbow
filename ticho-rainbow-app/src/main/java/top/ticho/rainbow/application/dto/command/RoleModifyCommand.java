@@ -26,5 +26,4 @@ public class RoleModifyCommand {
     private Long version;
     /** 菜单id列表 */
     private List<Long> menuIds;
-
 }

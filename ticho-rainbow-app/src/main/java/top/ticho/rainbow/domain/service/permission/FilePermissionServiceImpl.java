@@ -26,14 +26,11 @@ public class FilePermissionServiceImpl implements PermissionService {
 
   
     private HttpServletRequest request;
-
   
     private TiCacheTemplate tiCacheTemplate;
-
   
     @Qualifier("perm")
     private PermissionService permissionService;
-
     public boolean hasPerms(String... permissions) {
         log.debug("权限校验，permissions = {}", String.join(",", permissions));
         String chunkId = request.getParameter("chunkId");
