@@ -1,4 +1,4 @@
-export class TiResult {
+export class Result {
   static success(data: any) {
     return {
       code: 0,

@@ -1,6 +1,6 @@
 <script lang="tsx">
   import type { PropType } from 'vue';
-  import { TiResult, Button } from 'ant-design-vue';
+  import { Result, Button } from 'ant-design-vue';
   import { defineComponent, ref, computed, unref } from 'vue';
   import { ExceptionEnum } from '@/enums/exceptionEnum';
   import notDataSvg from '@/assets/svg/no-data.svg';
@@ -109,7 +109,7 @@
       return () => {
         const { title, subTitle, btnText, icon, handler, status } = unref(getMapValue) || {};
         return (
-          <TiResult
+          <Result
             class={prefixCls}
             status={status as any}
             title={props.title || title}
@@ -124,7 +124,7 @@
                 ),
               icon: () => (icon ? <img src={icon} /> : null),
             }}
-          </TiResult>
+          </Result>
         );
       };
     },

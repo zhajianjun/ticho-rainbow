@@ -3,7 +3,7 @@
 
 import type { AxiosInstance, AxiosResponse } from 'axios';
 import { clone } from 'lodash-es';
-import type { RequestOptions, TiResult } from '#/axios';
+import type { RequestOptions, Result } from '#/axios';
 import type { AxiosTransform, CreateAxiosOptions } from './axiosTransform';
 import { VAxios } from './Axios';
 import { checkStatus } from './checkStatus';
@@ -31,7 +31,7 @@ const transform: AxiosTransform = {
   /**
    * @description: 处理响应数据。如果数据不是预期格式，可直接抛出错误
    */
-  transformResponseHook: (res: AxiosResponse<TiResult>, options: RequestOptions) => {
+  transformResponseHook: (res: AxiosResponse<Result>, options: RequestOptions) => {
     const { t } = useI18n();
     const { isTransformResponse, isReturnNativeResponse } = options;
     // 是否返回原生响应头 比如：需要获取响应头时使用该属性

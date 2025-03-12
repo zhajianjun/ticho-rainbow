@@ -7,7 +7,7 @@ import type {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
-import type { RequestOptions, TiResult } from '#/axios';
+import type { RequestOptions, Result } from '#/axios';
 
 export interface CreateAxiosOptions extends AxiosRequestConfig {
   authenticationScheme?: string;
@@ -25,7 +25,7 @@ export abstract class AxiosTransform {
   /**
    * @description: 处理响应数据
    */
-  transformResponseHook?: (res: AxiosResponse<TiResult>, options: RequestOptions) => any;
+  transformResponseHook?: (res: AxiosResponse<Result>, options: RequestOptions) => any;
 
   /**
    * @description: 请求失败处理

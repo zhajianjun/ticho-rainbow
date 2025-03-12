@@ -1,4 +1,4 @@
-export interface TiPageResult<T> {
+export interface PageResult<T> {
   /** 页码，从1开始 */
   pageNum: number;
   /** 页面大小 */

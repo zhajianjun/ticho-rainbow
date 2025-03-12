@@ -1,4 +1,4 @@
-import { TiResult } from '../utils';
+import { Result } from '../utils';
 
 const fakeUserInfo = {
   userId: '1',
@@ -16,10 +16,10 @@ const fakeUserInfo = {
 };
 export default class UserService {
   async login() {
-    return TiResult.success(fakeUserInfo);
+    return Result.success(fakeUserInfo);
   }
 
   async getUserInfoById() {
-    return TiResult.success(fakeUserInfo);
+    return Result.success(fakeUserInfo);
   }
 }
