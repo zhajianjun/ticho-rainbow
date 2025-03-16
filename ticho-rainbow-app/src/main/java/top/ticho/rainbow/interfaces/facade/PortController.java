@@ -80,11 +80,11 @@ public class PortController {
 
 
     /**
-     * 查询所有端口(分页)
+     * 查询端口(分页)
      */
     @PreAuthorize("@perm.hasPerms('intranet:port:page')")
     @GetMapping("page")
-    public TiResult<TiPageResult<PortDTO>> page(@Validated @RequestBody PortQuery query) {
+    public TiResult<TiPageResult<PortDTO>> page(@Validated PortQuery query) {
         return TiResult.ok(portService.page(query));
     }
 
@@ -92,10 +92,10 @@ public class PortController {
      * 导出端口信息
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('intranet:port:expExcel')")
+    @PreAuthorize("@perm.hasPerms('intranet:port:exportExcel')")
     @GetMapping("excel/export")
-    public void expExcel(@Validated @RequestBody PortQuery query) throws IOException {
-        portService.expExcel(query);
+    public void exportExcel(@Validated PortQuery query) throws IOException {
+        portService.exportExcel(query);
     }
 
 }

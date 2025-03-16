@@ -40,15 +40,6 @@ public class FileInfoController {
     private final FileInfoService fileInfoService;
 
     /**
-     * 查询文件(分页)
-     */
-    @PreAuthorize("@perm.hasPerms('storage:file:page')")
-    @GetMapping("page")
-    public TiResult<TiPageResult<FileInfoDTO>> page(@Validated @RequestBody FileInfoQuery query) {
-        return TiResult.ok(fileInfoService.page(query));
-    }
-
-    /**
      * 上传文件
      */
     @PreAuthorize("@perm.hasPerms('storage:file:upload')")
@@ -95,7 +86,7 @@ public class FileInfoController {
      * @param id 文件id
      */
     @PreAuthorize("@perm.hasPerms('storage:file:enable')")
-    @PatchMapping("enable")
+    @PatchMapping("status/enable")
     public TiResult<Void> enable(@NotNull(message = "编号不能为空") Long id) {
         fileInfoService.enable(id);
         return TiResult.ok();
@@ -107,7 +98,7 @@ public class FileInfoController {
      * @param id 文件id
      */
     @PreAuthorize("@perm.hasPerms('storage:file:disable')")
-    @PatchMapping("disable")
+    @PatchMapping("status/disable")
     public TiResult<Void> disable(@NotNull(message = "编号不能为空") Long id) {
         fileInfoService.disable(id);
         return TiResult.ok();
@@ -119,10 +110,19 @@ public class FileInfoController {
      * @param id 文件id
      */
     @PreAuthorize("@perm.hasPerms('storage:file:cancel')")
-    @PatchMapping("cancel")
+    @PatchMapping("status/cancel")
     public TiResult<Void> cancel(@NotNull(message = "编号不能为空") Long id) {
         fileInfoService.cancel(id);
         return TiResult.ok();
+    }
+
+    /**
+     * 查询文件(分页)
+     */
+    @PreAuthorize("@perm.hasPerms('storage:file:page')")
+    @GetMapping("page")
+    public TiResult<TiPageResult<FileInfoDTO>> page(@Validated FileInfoQuery query) {
+        return TiResult.ok(fileInfoService.page(query));
     }
 
     /**
@@ -154,10 +154,10 @@ public class FileInfoController {
      * 导出文件信息
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('storage:file:expExcel')")
+    @PreAuthorize("@perm.hasPerms('storage:file:exportExcel')")
     @GetMapping("excel/export")
-    public void expExcel(@Validated @RequestBody FileInfoQuery query) throws IOException {
-        fileInfoService.expExcel(query);
+    public void exportExcel(@Validated FileInfoQuery query) throws IOException {
+        fileInfoService.exportExcel(query);
     }
 
 }

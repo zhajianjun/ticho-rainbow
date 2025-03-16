@@ -80,7 +80,7 @@ public class ClientController {
     }
 
     /**
-     * 查询所有客户端(分页)
+     * 查询客户端(分页)
      */
     @PreAuthorize("@perm.hasPerms('intranet:client:page')")
     @GetMapping("page")
@@ -105,10 +105,10 @@ public class ClientController {
      * @throws IOException io异常
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('intranet:client:expExcel')")
+    @PreAuthorize("@perm.hasPerms('intranet:client:exportExcel')")
     @GetMapping("excel/export")
-    public void expExcel(@Validated @RequestBody ClientQuery query) throws IOException {
-        clientService.expExcel(query);
+    public void exportExcel(@Validated ClientQuery query) throws IOException {
+        clientService.exportExcel(query);
     }
 
 }

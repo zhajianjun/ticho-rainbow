@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.dto.query.OpLogQuery;
@@ -41,11 +40,11 @@ public class OpLogController {
     }
 
     /**
-     * 查询全部操作日志(分页)
+     * 查询操作日志(分页)
      */
     @PreAuthorize("@perm.hasPerms('system:opLog:page')")
     @GetMapping("page")
-    public TiResult<TiPageResult<OpLogDTO>> page(@Validated @RequestBody OpLogQuery query) {
+    public TiResult<TiPageResult<OpLogDTO>> page(@Validated OpLogQuery query) {
         return TiResult.ok(opLogService.page(query));
     }
 
@@ -55,10 +54,10 @@ public class OpLogController {
      * @param query 查询
      * @throws IOException io异常
      */
-    @PreAuthorize("@perm.hasPerms('system:opLog:expExcel')")
+    @PreAuthorize("@perm.hasPerms('system:opLog:exportExcel')")
     @GetMapping("excel/export")
-    public void expExcel(@RequestBody OpLogQuery query) throws IOException {
-        opLogService.expExcel(query);
+    public void exportExcel(@Validated OpLogQuery query) throws IOException {
+        opLogService.exportExcel(query);
     }
 
 }

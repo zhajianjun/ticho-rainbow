@@ -130,7 +130,7 @@ public class DictService {
         return SpringUtil.getBean(this.getClass()).list();
     }
 
-    public void expExcel(DictQuery query) throws IOException {
+    public void exportExcel(DictQuery query) throws IOException {
         String sheetName = "字典信息";
         String fileName = "字典信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         DictExecutor dictExecutor = TiSpringUtil.getBean(DictExecutor.class);

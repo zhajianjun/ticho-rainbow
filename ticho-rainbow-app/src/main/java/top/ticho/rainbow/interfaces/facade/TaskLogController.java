@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.dto.TaskLogDTO;
@@ -26,7 +25,7 @@ import java.io.IOException;
  */
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("taskLog")
+@RequestMapping("task-log")
 public class TaskLogController {
     private final TaskLogService taskLogService;
 
@@ -46,7 +45,7 @@ public class TaskLogController {
      */
     @PreAuthorize("@perm.hasPerms('system:taskLog:page')")
     @GetMapping("page")
-    public TiResult<TiPageResult<TaskLogDTO>> page(@Validated @RequestBody TaskLogQuery query) {
+    public TiResult<TiPageResult<TaskLogDTO>> page(@Validated TaskLogQuery query) {
         return TiResult.ok(taskLogService.page(query));
     }
 
@@ -54,10 +53,10 @@ public class TaskLogController {
      * 导出计划任务日志
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:taskLog:expExcel')")
+    @PreAuthorize("@perm.hasPerms('system:taskLog:exportExcel')")
     @GetMapping("excel/export")
-    public void expExcel(@Validated @RequestBody TaskLogQuery query) throws IOException {
-        taskLogService.expExcel(query);
+    public void exportExcel(@Validated TaskLogQuery query) throws IOException {
+        taskLogService.exportExcel(query);
     }
 
 }

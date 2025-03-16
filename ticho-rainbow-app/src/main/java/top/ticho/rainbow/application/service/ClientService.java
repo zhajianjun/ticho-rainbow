@@ -202,7 +202,7 @@ public class ClientService {
      *
      * @param query 查询条件
      */
-    public void expExcel(ClientQuery query) throws IOException {
+    public void exportExcel(ClientQuery query) throws IOException {
         String sheetName = "客户端信息";
         String fileName = "客户端信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.CHANNEL_STATUS);

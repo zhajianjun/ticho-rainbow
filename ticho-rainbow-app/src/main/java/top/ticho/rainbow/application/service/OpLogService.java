@@ -48,7 +48,7 @@ public class OpLogService {
         return TiPageUtil.of(page, opLogAssembler::toDTO);
     }
 
-    public void expExcel(OpLogQuery query) throws IOException {
+    public void exportExcel(OpLogQuery query) throws IOException {
         String sheetName = "操作日志";
         String fileName = "操作日志导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<Integer, String> labelMap = dictExecutor.getLabelMap(DictConst.YES_OR_NO, NumberUtil::parseInt);

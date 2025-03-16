@@ -60,7 +60,7 @@ public class TaskLogService {
         return new TiPageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), taskLogDTOs);
     }
 
-    public void expExcel(TaskLogQuery query) throws IOException {
+    public void exportExcel(TaskLogQuery query) throws IOException {
         String sheetName = "计划任务日志";
         String fileName = "计划任务日志导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.TASK_LOG_STATUS, DictConst.PLAN_TASK, DictConst.YES_OR_NO);

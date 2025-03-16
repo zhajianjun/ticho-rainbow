@@ -2,7 +2,10 @@ package top.ticho.rainbow.interfaces.facade;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,40 +51,14 @@ public class UserController {
     }
 
     /**
-     * 锁定用户
+     * 上传用户头像
      *
-     * @param usernames 用户名, 多个用逗号隔开
+     * @param file 文件
      */
-    @PreAuthorize("@perm.hasPerms('system:user:lock')")
-    @PostMapping("lock")
-    public TiResult<Void> lock(@RequestBody List<String> usernames) {
-        userService.lock(usernames);
-        return TiResult.ok();
-    }
-
-    /**
-     * 解锁用户
-     *
-     * @param usernames 用户名, 多个用逗号隔开
-     */
-    @PreAuthorize("@perm.hasPerms('system:user:unLock')")
-    @PostMapping("unLock")
-    public TiResult<Void> unLock(@RequestBody List<String> usernames) {
-        userService.unLock(usernames);
-        return TiResult.ok();
-    }
-
-
-    /**
-     * 注销用户
-     *
-     * @param usernames 用户名, 多个用逗号隔开
-     */
-    @PreAuthorize("@perm.hasPerms('system:user:logOut')")
-    @PostMapping("logOut")
-    public TiResult<Void> logOut(@RequestBody List<String> usernames) {
-        userService.logOut(usernames);
-        return TiResult.ok();
+    @PreAuthorize("@perm.hasPerms('system:user:uploadAvatar')")
+    @PostMapping("avatar")
+    public TiResult<String> uploadAvatar(@RequestPart("file") MultipartFile file) {
+        return TiResult.ok(userService.uploadAvatar(file));
     }
 
     /**
@@ -91,7 +68,7 @@ public class UserController {
      * @return {@link TiResult }<{@link Void }>
      */
     @PreAuthorize("@perm.hasPerms('system:user:remove')")
-    @PostMapping("remove")
+    @DeleteMapping
     public TiResult<Void> remove(@RequestBody List<String> usernames) {
         userService.remove(usernames);
         return TiResult.ok();
@@ -110,33 +87,47 @@ public class UserController {
     /**
      * 修改用户(登录人)
      */
-    @PreAuthorize("@perm.hasPerms('system:user:updateForSelf')")
-    @PutMapping("updateForSelf")
-    public TiResult<Void> updateForSelf(@RequestBody UserDTO userDTO) {
-        userService.updateForSelf(userDTO);
+    @PreAuthorize("@perm.hasPerms('system:user:modifyForSelf')")
+    @PutMapping("self")
+    public TiResult<Void> modifyForSelf(@RequestBody UserDTO userDTO) {
+        userService.modifyForSelf(userDTO);
         return TiResult.ok();
     }
 
     /**
-     * 上传用户头像
+     * 锁定用户
      *
-     * @param file 文件
+     * @param usernames 用户名, 多个用逗号隔开
      */
-    @PreAuthorize("@perm.hasPerms('system:user:uploadAvatar')")
-    @PostMapping("uploadAvatar")
-    public TiResult<String> uploadAvatar(@RequestPart("file") MultipartFile file) {
-        return TiResult.ok(userService.uploadAvatar(file));
+    @PreAuthorize("@perm.hasPerms('system:user:lock')")
+    @PatchMapping("status/lock")
+    public TiResult<Void> lock(@RequestBody List<String> usernames) {
+        userService.lock(usernames);
+        return TiResult.ok();
     }
 
     /**
-     * 重置用户密码
+     * 解锁用户
      *
-     * @param username 用户名
+     * @param usernames 用户名, 多个用逗号隔开
      */
-    @PreAuthorize("@perm.hasPerms('system:user:resetPassword')")
-    @PutMapping("resetPassword")
-    public TiResult<Void> resetPassword(String username) {
-        userService.resetPassword(username);
+    @PreAuthorize("@perm.hasPerms('system:user:unLock')")
+    @PatchMapping("status/un-lock")
+    public TiResult<Void> unLock(@RequestBody List<String> usernames) {
+        userService.unLock(usernames);
+        return TiResult.ok();
+    }
+
+
+    /**
+     * 注销用户
+     *
+     * @param usernames 用户名, 多个用逗号隔开
+     */
+    @PreAuthorize("@perm.hasPerms('system:user:logOut')")
+    @PatchMapping("status/log-out")
+    public TiResult<Void> logOut(@RequestBody List<String> usernames) {
+        userService.logOut(usernames);
         return TiResult.ok();
     }
 
@@ -144,7 +135,7 @@ public class UserController {
      * 修改用户密码
      */
     @PreAuthorize("@perm.hasPerms('system:user:updatePassword')")
-    @PutMapping("updatePassword")
+    @PatchMapping("password")
     public TiResult<Void> updatePassword(@RequestBody UserPasswordDTO userDetailDto) {
         userService.updatePassword(userDetailDto);
         return TiResult.ok();
@@ -154,11 +145,24 @@ public class UserController {
      * 修改用户密码(登录人)
      */
     @PreAuthorize("@perm.hasPerms('system:user:updatePasswordForSelf')")
-    @PutMapping("updatePasswordForSelf")
+    @PatchMapping("self-password")
     public TiResult<Void> updatePasswordForSelf(@RequestBody PasswordDTO passwordDTO) {
         userService.updatePasswordForSelf(passwordDTO);
         return TiResult.ok();
     }
+
+    /**
+     * 重置用户密码
+     *
+     * @param username 用户名
+     */
+    @PreAuthorize("@perm.hasPerms('system:user:resetPassword')")
+    @PatchMapping("password/reset")
+    public TiResult<Void> resetPassword(String username) {
+        userService.resetPassword(username);
+        return TiResult.ok();
+    }
+
 
     /**
      * 查询用户
@@ -176,7 +180,7 @@ public class UserController {
      * 查询用户(登录人)
      */
     @PreAuthorize("@perm.hasPerms('system:user:infoForSelf')")
-    @GetMapping("infoForSelf")
+    @GetMapping("self-info")
     public TiResult<UserDTO> info() {
         return TiResult.ok(userService.getInfo());
     }
@@ -196,17 +200,17 @@ public class UserController {
      * 查询用户角色菜单权限(登录人)
      */
     @PreAuthorize("@perm.hasPerms('system:user:detailForSelf')")
-    @GetMapping("detailForSelf")
+    @GetMapping("self-detail")
     public TiResult<UserRoleMenuDtlDTO> detailForSelf() {
         return TiResult.ok(userService.getUserDtl());
     }
 
     /**
-     * 查询全部用户(分页)
+     * 查询用户(分页)
      */
     @PreAuthorize("@perm.hasPerms('system:user:page')")
-    @GetMapping
-    public TiResult<TiPageResult<UserDTO>> page(@RequestBody UserQuery query) {
+    @GetMapping("page")
+    public TiResult<TiPageResult<UserDTO>> page(@Validated UserQuery query) {
         return TiResult.ok(userService.page(query));
     }
 
@@ -214,8 +218,8 @@ public class UserController {
      * 绑定用户角色
      */
     @PreAuthorize("@perm.hasPerms('system:user:bindRole')")
-    @PostMapping("bindRole")
-    public TiResult<Void> bindRole(@RequestBody UserRoleDTO userRoleDTO) {
+    @PostMapping("role/bind")
+    public TiResult<Void> bindRole(@Validated @RequestBody UserRoleDTO userRoleDTO) {
         userService.bindRole(userRoleDTO);
         return TiResult.ok();
     }
@@ -225,9 +229,9 @@ public class UserController {
      */
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:user:impTemplate')")
-    @PostMapping("impTemplate")
-    public void impTemplate() throws IOException {
-        userService.impTemplate();
+    @GetMapping("excel-template/download")
+    public void excelTemplateDownload() throws IOException {
+        userService.excelTemplateDownload();
     }
 
     /**
@@ -236,20 +240,20 @@ public class UserController {
      * @param file 文件
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:user:impExcel')")
-    @PostMapping("impExcel")
-    public void impExcel(@RequestPart("file") MultipartFile file) throws IOException {
-        userService.impExcel(file);
+    @PreAuthorize("@perm.hasPerms('system:user:importExcel')")
+    @PostMapping("excel/import")
+    public void importExcel(@RequestPart("file") MultipartFile file) throws IOException {
+        userService.importExcel(file);
     }
 
     /**
      * 导出用户
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:user:expExcel')")
+    @PreAuthorize("@perm.hasPerms('system:user:exportExcel')")
     @GetMapping("excel/export")
-    public void expExcel(@RequestBody UserQuery query) throws IOException {
-        userService.expExcel(query);
+    public void exportExcel(@RequestBody UserQuery query) throws IOException {
+        userService.exportExcel(query);
     }
 
 }

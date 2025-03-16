@@ -476,7 +476,7 @@ public class FileInfoService {
         return TiPageUtil.of(page, fileInfoAssembler::toDTO);
     }
 
-    public void expExcel(FileInfoQuery query) throws IOException {
+    public void exportExcel(FileInfoQuery query) throws IOException {
         String sheetName = "文件信息";
         String fileName = "文件信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.FILE_STATUS, DictConst.FILE_STORAGE_TYPE);

@@ -80,11 +80,11 @@ public class DictController {
     }
 
     /**
-     * 查询所有字典(分页)
+     * 查询字典(分页)
      */
     @PreAuthorize("@perm.hasPerms('system:dict:page')")
     @GetMapping("page")
-    public TiResult<TiPageResult<DictDTO>> page(@Validated @RequestBody DictQuery query) {
+    public TiResult<TiPageResult<DictDTO>> page(@Validated DictQuery query) {
         return TiResult.ok(dictService.page(query));
     }
 
@@ -110,10 +110,10 @@ public class DictController {
      * 导出字典
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:dict:expExcel')")
+    @PreAuthorize("@perm.hasPerms('system:dict:exportExcel')")
     @GetMapping("excel/export")
-    public void expExcel(@Validated @RequestBody DictQuery query) throws IOException {
-        dictService.expExcel(query);
+    public void exportExcel(@Validated DictQuery query) throws IOException {
+        dictService.exportExcel(query);
     }
 
 }

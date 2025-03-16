@@ -202,7 +202,7 @@ public class TaskService implements InitializingBean {
             .collect(Collectors.toList());
     }
 
-    public void expExcel(TaskQuery query) throws IOException {
+    public void exportExcel(TaskQuery query) throws IOException {
         String sheetName = "计划任务";
         String fileName = "计划任务导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.PLAN_TASK);

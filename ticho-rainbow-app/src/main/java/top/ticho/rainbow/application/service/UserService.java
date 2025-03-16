@@ -85,7 +85,7 @@ public interface UserService {
      *
      * @param userDTO 用户信息DTO 对象
      */
-    void updateForSelf(UserDTO userDTO);
+    void modifyForSelf(UserDTO userDTO);
 
     /**
      * 用户头像上传
@@ -176,7 +176,7 @@ public interface UserService {
     /**
      * 导入模板下载
      */
-    void impTemplate() throws IOException;
+    void excelTemplateDownload() throws IOException;
 
 
     /**
@@ -184,14 +184,14 @@ public interface UserService {
      *
      * @param file 文件信息
      */
-    void impExcel(MultipartFile file) throws IOException;
+    void importExcel(MultipartFile file) throws IOException;
 
     /**
      * 导出用户信息
      *
      * @param query 查询条件
      */
-    void expExcel(UserQuery query) throws IOException;
+    void exportExcel(UserQuery query) throws IOException;
 
 
 }

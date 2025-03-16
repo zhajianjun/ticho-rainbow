@@ -105,7 +105,7 @@ public class PortService {
         return new TiPageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), portDTOs);
     }
 
-    public void expExcel(PortQuery query) throws IOException {
+    public void exportExcel(PortQuery query) throws IOException {
         String sheetName = "端口信息";
         String fileName = "端口信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.CHANNEL_STATUS, DictConst.HTTP_TYPE);

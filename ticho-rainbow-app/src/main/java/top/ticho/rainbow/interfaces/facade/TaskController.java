@@ -5,6 +5,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -69,26 +70,13 @@ public class TaskController {
     }
 
     /**
-     * 执行一次计划任务
-     *
-     * @param id    编号
-     * @param param 参数
-     */
-    @PreAuthorize("@perm.hasPerms('system:task:runOnce')")
-    @GetMapping("runOnce")
-    public TiResult<Void> runOnce(@NotNull(message = "编号不能为空") Long id, String param) {
-        taskService.runOnce(id, param);
-        return TiResult.ok();
-    }
-
-    /**
      * 暂停计划任务
      *
      * @param id 编号
      * @return {@link TiResult }<{@link Void }>
      */
     @PreAuthorize("@perm.hasPerms('system:task:pause')")
-    @GetMapping("pause")
+    @PatchMapping("status/pause")
     public TiResult<Void> pause(@NotNull(message = "编号不能为空") Long id) {
         taskService.pause(id);
         return TiResult.ok();
@@ -100,9 +88,22 @@ public class TaskController {
      * @param id 编号
      */
     @PreAuthorize("@perm.hasPerms('system:task:resume')")
-    @GetMapping("resume")
+    @PatchMapping("status/resume")
     public TiResult<Void> resume(@NotNull(message = "编号不能为空") Long id) {
         taskService.resume(id);
+        return TiResult.ok();
+    }
+
+    /**
+     * 执行一次计划任务
+     *
+     * @param id    编号
+     * @param param 参数
+     */
+    @PreAuthorize("@perm.hasPerms('system:task:runOnce')")
+    @GetMapping("run-once")
+    public TiResult<Void> runOnce(@NotNull(message = "编号不能为空") Long id, String param) {
+        taskService.runOnce(id, param);
         return TiResult.ok();
     }
 
@@ -113,7 +114,7 @@ public class TaskController {
      * @param num            查询数量
      */
     @PreAuthorize("@perm.hasPerms('system:task:getRecentCronTime')")
-    @GetMapping("getRecentCronTime")
+    @GetMapping("recent-cron-time")
     public TiResult<List<String>> getRecentCronTime(String cronExpression, Integer num) {
         return TiResult.ok(taskService.getRecentCronTime(cronExpression, num));
     }
@@ -130,11 +131,11 @@ public class TaskController {
     }
 
     /**
-     * 查询所有计划任务(分页)
+     * 查询计划任务(分页)
      */
     @PreAuthorize("@perm.hasPerms('system:task:page')")
     @GetMapping("page")
-    public TiResult<TiPageResult<TaskDTO>> page(@Validated @RequestBody TaskQuery query) {
+    public TiResult<TiPageResult<TaskDTO>> page(@Validated TaskQuery query) {
         return TiResult.ok(taskService.page(query));
     }
 
@@ -151,10 +152,10 @@ public class TaskController {
      * 导出计划任务
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:task:expExcel')")
+    @PreAuthorize("@perm.hasPerms('system:task:exportExcel')")
     @GetMapping("excel/export")
-    public void expExcel(@Validated @RequestBody TaskQuery query) throws IOException {
-        taskService.expExcel(query);
+    public void exportExcel(@Validated TaskQuery query) throws IOException {
+        taskService.exportExcel(query);
     }
 
 }

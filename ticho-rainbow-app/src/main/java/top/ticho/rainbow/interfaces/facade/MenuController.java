@@ -98,7 +98,7 @@ public class MenuController {
      * @param roleCodes 角色代码
      */
     @PreAuthorize("@perm.hasPerms('system:menu:getPerms')")
-    @GetMapping("getPerms")
+    @GetMapping("perms")
     public TiResult<List<String>> getPerms(List<String> roleCodes) {
         return TiResult.ok(menuService.getPerms(roleCodes));
     }

@@ -140,7 +140,7 @@ public class RoleService extends AbstractAuthServiceImpl {
         return mergeRoleByIds(roleDtlQuery.getRoleIds(), roleDtlQuery.getShowAll(), roleDtlQuery.getTreeHandle());
     }
 
-    public void expExcel(RoleQuery query) throws IOException {
+    public void exportExcel(RoleQuery query) throws IOException {
         String sheetName = "角色信息";
         String fileName = "角色信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<Integer, String> labelMap = dictExecutor.getLabelMap(DictConst.COMMON_STATUS, NumberUtil::parseInt);

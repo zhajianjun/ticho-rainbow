@@ -327,7 +327,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateForSelf(UserDTO userDTO) {
+    public void modifyForSelf(UserDTO userDTO) {
         User dbUser = userRepository.getByUsername(UserUtil.getCurrentUsername());
         TiAssert.isNotNull(dbUser, TiBizErrCode.FAIL, "修改失败, 用户不存在");
         userDTO.setId(dbUser.getId());
@@ -436,14 +436,14 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
     }
 
     @Override
-    public void impTemplate() throws IOException {
+    public void excelTemplateDownload() throws IOException {
         String sheetName = "用户信息";
         String fileName = "用户信息模板-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         ExcelHandle.writeEmptyToResponseBatch(fileName, sheetName, UserImpModel.class, response);
     }
 
     @Override
-    public void impExcel(MultipartFile file) throws IOException {
+    public void importExcel(MultipartFile file) throws IOException {
         String sheetName = "导入结果";
         String fileName = StrUtil.format("{}-导入结果", file.getOriginalFilename());
         Role guestRole = roleRepository.getGuestRole();
@@ -524,7 +524,7 @@ public class UserServiceImpl extends AbstractAuthServiceImpl implements UserServ
     }
 
     @Override
-    public void expExcel(UserQuery query) throws IOException {
+    public void exportExcel(UserQuery query) throws IOException {
         String sheetName = "用户信息";
         String fileName = "用户信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.USER_STATUS, DictConst.SEX);

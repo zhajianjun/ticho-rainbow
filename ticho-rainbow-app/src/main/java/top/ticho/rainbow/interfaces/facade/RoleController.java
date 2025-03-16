@@ -96,21 +96,21 @@ public class RoleController {
     }
 
     /**
-     * 查询全部角色(分页)
+     * 查询角色(分页)
      */
     @PreAuthorize("@perm.hasPerms('system:role:page')")
     @GetMapping("page")
-    public TiResult<TiPageResult<RoleDTO>> page(@Validated @RequestBody RoleQuery query) {
+    public TiResult<TiPageResult<RoleDTO>> page(@Validated RoleQuery query) {
         return TiResult.ok(roleService.page(query));
     }
 
 
     /**
-     * 查询全部角色
+     * 查询所有角色
      */
     @PreAuthorize("@perm.hasPerms('system:role:all')")
-    @PostMapping("all")
-    public TiResult<List<RoleDTO>> list(@Validated @RequestBody RoleQuery query) {
+    @GetMapping("all")
+    public TiResult<List<RoleDTO>> list(@Validated RoleQuery query) {
         return TiResult.ok(roleService.list(query));
     }
 
@@ -129,8 +129,8 @@ public class RoleController {
      */
     @IgnoreJwtCheck(IgnoreType.INNER)
     @PreAuthorize("@perm.hasPerms('system:role:listRoleMenu')")
-    @PostMapping("menu/list")
-    public TiResult<RoleMenuDtlDTO> listRoleMenu(@Validated @RequestBody RoleDtlQuery roleDtlQuery) {
+    @GetMapping("menu/list")
+    public TiResult<RoleMenuDtlDTO> listRoleMenu(@Validated RoleDtlQuery roleDtlQuery) {
         return TiResult.ok(roleService.listRoleMenu(roleDtlQuery));
     }
 
@@ -138,10 +138,10 @@ public class RoleController {
      * 导出角色
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:role:expExcel')")
+    @PreAuthorize("@perm.hasPerms('system:role:exportExcel')")
     @GetMapping("excel/export")
-    public void expExcel(@Validated @RequestBody RoleQuery query) throws IOException {
-        roleService.expExcel(query);
+    public void exportExcel(@Validated RoleQuery query) throws IOException {
+        roleService.exportExcel(query);
     }
 
 }
