@@ -8,7 +8,6 @@ import { ContentTypeEnum } from '@/enums/httpEnum';
 enum Api {
   Upload = '/file/upload',
   GetUrl = '/file/getUrl',
-  Download = '/file/downloadById',
   UploadChunk = '/file/uploadChunk',
   ComposeChunk = '/file/composeChunk',
   EnableFileInfo = '/file/enable',
@@ -82,19 +81,6 @@ export function getUrl(id: string, expire?: number | null, limit?: boolean | nul
     { url: Api.GetUrl, params },
     {
       errorMessageMode: 'message',
-      joinParamsToUrl: true,
-      retryRequest: { isOpenRetry: false } as RetryRequest,
-    },
-  );
-}
-
-export function downloadFile(id: string) {
-  const params = { id: id };
-  return defHttp.get<any>(
-    { url: Api.Download, params, responseType: 'blob' },
-    {
-      errorMessageMode: 'message',
-      isTransformResponse: false,
       joinParamsToUrl: true,
       retryRequest: { isOpenRetry: false } as RetryRequest,
     },
