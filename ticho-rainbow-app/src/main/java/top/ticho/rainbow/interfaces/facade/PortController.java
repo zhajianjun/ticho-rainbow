@@ -2,21 +2,24 @@ package top.ticho.rainbow.interfaces.facade;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.rainbow.application.dto.PortDTO;
+import top.ticho.rainbow.application.dto.command.PortModifyfCommand;
+import top.ticho.rainbow.application.dto.command.PortSaveCommand;
 import top.ticho.rainbow.application.dto.query.PortQuery;
+import top.ticho.rainbow.application.dto.response.PortDTO;
 import top.ticho.rainbow.application.service.PortService;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
 /**
@@ -30,25 +33,14 @@ import java.io.IOException;
 @RequestMapping("port")
 public class PortController {
     private final PortService portService;
-    /**
-     * 查询所有端口(分页)
-     *
-     * @param query 查询
-     * @return {@link TiResult }<{@link TiPageResult }<{@link PortDTO }>>
-     */
-    @PreAuthorize("@perm.hasPerms('intranet:port:page')")
-    @GetMapping
-    public TiResult<TiPageResult<PortDTO>> page(@RequestBody PortQuery query) {
-        return TiResult.ok(portService.page(query));
-    }
 
     /**
      * 保存端口
      */
     @PreAuthorize("@perm.hasPerms('intranet:port:save')")
     @PostMapping
-    public TiResult<Void> save(@RequestBody PortDTO portDTO) {
-        portService.save(portDTO);
+    public TiResult<Void> save(@Validated @RequestBody PortSaveCommand portSaveCommand) {
+        portService.save(portSaveCommand);
         return TiResult.ok();
     }
 
@@ -59,7 +51,7 @@ public class PortController {
      */
     @PreAuthorize("@perm.hasPerms('intranet:port:remove')")
     @DeleteMapping
-    public TiResult<Void> remove(Long id) {
+    public TiResult<Void> remove(@NotNull(message = "编号不能为空") Long id) {
         portService.remove(id);
         return TiResult.ok();
     }
@@ -69,8 +61,8 @@ public class PortController {
      */
     @PreAuthorize("@perm.hasPerms('intranet:port:modify')")
     @PutMapping
-    public TiResult<Void> modify(@RequestBody PortDTO portDTO) {
-        portService.modify(portDTO);
+    public TiResult<Void> modify(@Validated @RequestBody PortModifyfCommand portModifyfCommand) {
+        portService.modify(portModifyfCommand);
         return TiResult.ok();
     }
 
@@ -81,19 +73,28 @@ public class PortController {
      * @return {@link TiResult }<{@link PortDTO }>
      */
     @PreAuthorize("@perm.hasPerms('intranet:port:getById')")
-    @GetMapping("{id}")
-    public TiResult<PortDTO> getById(@PathVariable Long id) {
+    @GetMapping
+    public TiResult<PortDTO> getById(@NotNull(message = "编号不能为空") Long id) {
         return TiResult.ok(portService.getById(id));
     }
 
+
+    /**
+     * 查询所有端口(分页)
+     */
+    @PreAuthorize("@perm.hasPerms('intranet:port:page')")
+    @GetMapping("page")
+    public TiResult<TiPageResult<PortDTO>> page(@Validated @RequestBody PortQuery query) {
+        return TiResult.ok(portService.page(query));
+    }
 
     /**
      * 导出端口信息
      */
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('intranet:port:expExcel')")
-    @PostMapping("expExcel")
-    public void expExcel(@RequestBody PortQuery query) throws IOException {
+    @GetMapping("excel/export")
+    public void expExcel(@Validated @RequestBody PortQuery query) throws IOException {
         portService.expExcel(query);
     }
 

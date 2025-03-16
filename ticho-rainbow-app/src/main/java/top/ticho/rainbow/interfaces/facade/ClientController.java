@@ -5,7 +5,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +19,7 @@ import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 
@@ -35,6 +35,7 @@ import java.util.List;
 @RequestMapping("client")
 public class ClientController {
     private final ClientService clientService;
+
     /**
      * 保存客户端
      */
@@ -51,8 +52,8 @@ public class ClientController {
      * @param id 编号
      */
     @PreAuthorize("@perm.hasPerms('intranet:client:remove')")
-    @DeleteMapping("{id:\\d+}")
-    public TiResult<Void> remove(@PathVariable("id") Long id) {
+    @DeleteMapping
+    public TiResult<Void> remove(@NotNull(message = "编号不能为空") Long id) {
         clientService.remove(id);
         return TiResult.ok();
     }
@@ -61,9 +62,9 @@ public class ClientController {
      * 修改客户端
      */
     @PreAuthorize("@perm.hasPerms('intranet:client:modify')")
-    @PutMapping("{id:\\d+}")
-    public TiResult<Void> modify(@PathVariable("id") Long id, @Validated @RequestBody ClientModifyCommand clientModifyCommand) {
-        clientService.modify(id, clientModifyCommand);
+    @PutMapping
+    public TiResult<Void> modify(@Validated @RequestBody ClientModifyCommand clientModifyCommand) {
+        clientService.modify(clientModifyCommand);
         return TiResult.ok();
     }
 
@@ -73,8 +74,8 @@ public class ClientController {
      * @param id 编号
      */
     @PreAuthorize("@perm.hasPerms('intranet:client:getById')")
-    @GetMapping("{id:\\d+}")
-    public TiResult<ClientDTO> getById(@PathVariable("id") Long id) {
+    @GetMapping
+    public TiResult<ClientDTO> getById(@NotNull(message = "编号不能为空") Long id) {
         return TiResult.ok(clientService.getById(id));
     }
 
@@ -82,7 +83,7 @@ public class ClientController {
      * 查询所有客户端(分页)
      */
     @PreAuthorize("@perm.hasPerms('intranet:client:page')")
-    @GetMapping
+    @GetMapping("page")
     public TiResult<TiPageResult<ClientDTO>> page(@Validated ClientQuery query) {
         return TiResult.ok(clientService.page(query));
     }
@@ -105,7 +106,7 @@ public class ClientController {
      */
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('intranet:client:expExcel')")
-    @PostMapping("expExcel")
+    @GetMapping("excel/export")
     public void expExcel(@Validated @RequestBody ClientQuery query) throws IOException {
         clientService.expExcel(query);
     }

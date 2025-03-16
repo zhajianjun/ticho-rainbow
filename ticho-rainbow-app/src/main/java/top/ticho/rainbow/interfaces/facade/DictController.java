@@ -5,7 +5,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +19,7 @@ import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 
@@ -35,6 +35,7 @@ import java.util.List;
 @RequestMapping("dict")
 public class DictController {
     private final DictService dictService;
+
     /**
      * 保存字典
      */
@@ -51,21 +52,19 @@ public class DictController {
      * @param id 编号
      */
     @PreAuthorize("@perm.hasPerms('system:dict:remove')")
-    @DeleteMapping("{id:\\d+}")
-    public TiResult<Void> remove(@PathVariable("id") Long id) {
+    @DeleteMapping
+    public TiResult<Void> remove(@NotNull(message = "编号不能为空") Long id) {
         dictService.remove(id);
         return TiResult.ok();
     }
 
     /**
      * 修改字典
-     *
-     * @param id 编号
      */
     @PreAuthorize("@perm.hasPerms('system:dict:modify')")
-    @PutMapping("{id:\\d+}")
-    public TiResult<Void> modify(@PathVariable("id") Long id, @Validated @RequestBody DictModifyCommand dictModifyCommand) {
-        dictService.modify(id, dictModifyCommand);
+    @PutMapping
+    public TiResult<Void> modify(@Validated @RequestBody DictModifyCommand dictModifyCommand) {
+        dictService.modify(dictModifyCommand);
         return TiResult.ok();
     }
 
@@ -75,8 +74,8 @@ public class DictController {
      * @param id 编号
      */
     @PreAuthorize("@perm.hasPerms('system:dict:getById')")
-    @GetMapping("{id:\\d+}")
-    public TiResult<DictDTO> getById(@PathVariable("id") Long id) {
+    @GetMapping
+    public TiResult<DictDTO> getById(@NotNull(message = "编号不能为空") Long id) {
         return TiResult.ok(dictService.getById(id));
     }
 
@@ -84,8 +83,8 @@ public class DictController {
      * 查询所有字典(分页)
      */
     @PreAuthorize("@perm.hasPerms('system:dict:page')")
-    @GetMapping
-    public TiResult<TiPageResult<DictDTO>> page(@RequestBody DictQuery query) {
+    @GetMapping("page")
+    public TiResult<TiPageResult<DictDTO>> page(@Validated @RequestBody DictQuery query) {
         return TiResult.ok(dictService.page(query));
     }
 
@@ -112,7 +111,7 @@ public class DictController {
      */
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:dict:expExcel')")
-    @PostMapping("expExcel")
+    @GetMapping("excel/export")
     public void expExcel(@Validated @RequestBody DictQuery query) throws IOException {
         dictService.expExcel(query);
     }

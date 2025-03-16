@@ -11,7 +11,6 @@ import top.ticho.rainbow.domain.entity.TaskLog;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.rainbow.infrastructure.persistence.converter.TaskLogConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.TaskLogMapper;
-import top.ticho.rainbow.infrastructure.persistence.po.OpLogPO;
 import top.ticho.rainbow.infrastructure.persistence.po.TaskLogPO;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 
@@ -29,6 +28,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class TaskLogRepositoryImpl extends TiRepositoryImpl<TaskLogMapper, TaskLogPO> implements TaskLogRepository {
     private final TaskLogConverter taskLogConverter;
+
     @Override
     public boolean save(TaskLog taskLog) {
         TaskLogPO taskLogPo = taskLogConverter.toPo(taskLog);

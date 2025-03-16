@@ -2,7 +2,6 @@ package top.ticho.rainbow.interfaces.facade;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -11,6 +10,8 @@ import top.ticho.rainbow.domain.handle.SseHandle;
 import top.ticho.starter.security.annotation.IgnoreJwtCheck;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * sse
@@ -24,6 +25,7 @@ import top.ticho.starter.web.annotation.TiView;
 public class SseController {
 
     private final SseHandle sseHandle;
+
     /**
      * sign
      */
@@ -51,8 +53,8 @@ public class SseController {
      * @param message 消息
      * @return {@link TiResult }<{@link Void }>
      */
-    @GetMapping("send/{id}")
-    public TiResult<Void> send(@PathVariable("id") String id, String message) {
+    @GetMapping("send")
+    public TiResult<Void> send(@NotBlank(message = "编号不能为空") String id, String message) {
         sseHandle.sendMessage(id, SseEvent.HEATBEAT, message);
         return TiResult.ok();
     }

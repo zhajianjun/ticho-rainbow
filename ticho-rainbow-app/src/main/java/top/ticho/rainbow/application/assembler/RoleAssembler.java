@@ -1,12 +1,12 @@
 package top.ticho.rainbow.application.assembler;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 import top.ticho.rainbow.application.dto.RoleDTO;
 import top.ticho.rainbow.application.dto.command.RoleModifyCommand;
+import top.ticho.rainbow.application.dto.command.RoleSaveCommand;
 import top.ticho.rainbow.application.dto.excel.RoleExp;
 import top.ticho.rainbow.domain.entity.Role;
-import top.ticho.rainbow.domain.vo.RoleModifyVO;
+import top.ticho.rainbow.domain.entity.vo.RoleModifyVO;
 
 /**
  * 角色信息 转换
@@ -17,7 +17,7 @@ import top.ticho.rainbow.domain.vo.RoleModifyVO;
 @Mapper(componentModel = "spring")
 public interface RoleAssembler {
 
-    Role toEntity(RoleDTO dto);
+    Role toEntity(RoleSaveCommand dto);
 
     RoleDTO toDTO(Role entity);
 

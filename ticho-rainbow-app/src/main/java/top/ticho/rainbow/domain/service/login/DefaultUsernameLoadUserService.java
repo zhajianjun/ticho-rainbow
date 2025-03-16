@@ -13,7 +13,6 @@ import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.core.enums.UserStatus;
-import top.ticho.starter.security.constant.TiSecurityConst;
 import top.ticho.starter.security.handle.load.LoadUserService;
 import top.ticho.starter.view.enums.TiHttpErrCode;
 import top.ticho.starter.view.util.TiAssert;
@@ -28,11 +27,14 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RequiredArgsConstructor
-@Component(TiSecurityConst.LOAD_USER_TYPE_USERNAME)
+@Component
 @Primary
 public class DefaultUsernameLoadUserService implements LoadUserService {
 
-    private final UserRepository userRepository;    private final UserRoleRepository userRoleRepository;    private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final UserRoleRepository userRoleRepository;
+    private final RoleRepository roleRepository;
+
     @Override
     public SecurityUser load(String account) {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();

@@ -1,4 +1,4 @@
-package top.ticho.rainbow.domain.vo;
+package top.ticho.rainbow.domain.entity.vo;
 
 import lombok.Value;
 

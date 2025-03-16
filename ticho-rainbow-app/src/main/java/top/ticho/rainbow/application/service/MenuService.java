@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.ticho.rainbow.application.assembler.MenuAssembler;
 import top.ticho.rainbow.application.dto.MenuDTO;
-import top.ticho.rainbow.application.dto.response.MenuDtlDTO;
 import top.ticho.rainbow.application.dto.RouteDTO;
 import top.ticho.rainbow.application.dto.RouteMetaDTO;
 import top.ticho.rainbow.application.dto.SecurityUser;
+import top.ticho.rainbow.application.dto.response.MenuDtlDTO;
 import top.ticho.rainbow.domain.entity.Menu;
 import top.ticho.rainbow.domain.repository.MenuRepository;
 import top.ticho.rainbow.domain.repository.RoleMenuRepository;
@@ -43,7 +43,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MenuService extends AbstractAuthServiceImpl {
-    private final MenuRepository menuRepository;    private final MenuAssembler menuAssembler;    private final RoleMenuRepository roleMenuRepository;
+    private final MenuRepository menuRepository;
+    private final MenuAssembler menuAssembler;
+    private final RoleMenuRepository roleMenuRepository;
+
     public void save(MenuDTO menuDTO) {
         TiValidUtil.valid(menuDTO, TiValidGroup.Add.class);
         menuDTO.setId(TiIdUtil.getId());

@@ -12,8 +12,10 @@ import lombok.Data;
 public class SseMessage<T> {
 
     /** 事件类型 */
-    private SseEvent event;    /** 数据 */
+    private SseEvent event;
+    /** 数据 */
     private T data;
+
     public static <T> SseMessage<T> of(SseEvent sseEvent, T data) {
         SseMessage<T> message = new SseMessage<>();
         message.setData(data);

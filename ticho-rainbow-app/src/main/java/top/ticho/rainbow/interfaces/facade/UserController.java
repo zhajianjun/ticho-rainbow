@@ -36,6 +36,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
     /**
      * 保存用户
      */
@@ -246,7 +247,7 @@ public class UserController {
      */
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:user:expExcel')")
-    @PostMapping("expExcel")
+    @GetMapping("excel/export")
     public void expExcel(@RequestBody UserQuery query) throws IOException {
         userService.expExcel(query);
     }

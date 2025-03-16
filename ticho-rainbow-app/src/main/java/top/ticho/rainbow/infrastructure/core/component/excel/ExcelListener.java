@@ -45,6 +45,7 @@ public class ExcelListener<M extends ExcelBaseImp> implements ReadListener<M> {
     /** 缓存的数据 */
     @Getter
     private List<M> cacheDatas = ListUtils.newArrayListWithExpectedSize(batchSize);
+
     public ExcelListener(BiConsumer<List<M>, Consumer<M>> consumer) {
         this(50, consumer);
     }

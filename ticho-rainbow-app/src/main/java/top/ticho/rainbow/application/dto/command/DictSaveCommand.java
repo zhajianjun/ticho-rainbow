@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
- * 字典创建命令
+ * 字典创建
  *
  * @author zhajianjun
  * @date 2024-01-14 13:43

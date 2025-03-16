@@ -15,9 +15,9 @@ import top.ticho.rainbow.application.dto.response.ClientDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.domain.entity.Port;
+import top.ticho.rainbow.domain.entity.vo.ClientModifyVO;
 import top.ticho.rainbow.domain.repository.ClientRepository;
 import top.ticho.rainbow.domain.repository.PortRepository;
-import top.ticho.rainbow.domain.vo.ClientModifyVO;
 import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.core.constant.DictConst;
 import top.ticho.starter.datasource.util.TiPageUtil;
@@ -51,7 +51,14 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ClientService {
-    private final ClientRepository clientRepository;    private final PortRepository portRepository;    private final ClientAssembler clientAssembler;    private final PortAssembler portAssembler;    private final ServerHandler serverHandler;    private final DictExecutor dictExecutor;    private final HttpServletResponse response;
+    private final ClientRepository clientRepository;
+    private final PortRepository portRepository;
+    private final ClientAssembler clientAssembler;
+    private final PortAssembler portAssembler;
+    private final ServerHandler serverHandler;
+    private final DictExecutor dictExecutor;
+    private final HttpServletResponse response;
+
     @Transactional(rollbackFor = Exception.class)
     public void save(ClientSaveCommand clientSaveCommand) {
         Client clientFromDb = clientRepository.findByAccessKey(clientSaveCommand.getAccessKey());
@@ -89,8 +96,8 @@ public class ClientService {
      * 修改客户端信息
      */
     @Transactional(rollbackFor = Exception.class)
-    public void modify(Long id, ClientModifyCommand clientModifyCommand) {
-        Client client = clientRepository.find(id);
+    public void modify(ClientModifyCommand clientModifyCommand) {
+        Client client = clientRepository.find(clientModifyCommand.getId());
         TiAssert.isNotNull(client, "修改失败，数据不存在");
         ClientModifyVO vo = clientAssembler.toVO(clientModifyCommand);
         client.modify(vo);
@@ -123,7 +130,6 @@ public class ClientService {
      * @return {@link ClientDTO}
      */
     public ClientDTO getById(Long id) {
-        TiAssert.isNotNull(id, "编号不能为空");
         Client clientPO = clientRepository.find(id);
         ClientDTO clientDTO = clientAssembler.toDTO(clientPO);
         fillChannelStatus(clientDTO);

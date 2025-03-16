@@ -18,12 +18,15 @@ import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.view.enums.TiBizErrCode;
 import top.ticho.starter.view.enums.TiHttpErrCode;
 import top.ticho.starter.view.log.TiHttpLog;
-import top.ticho.starter.web.handle.TiResponseHandle;
+import top.ticho.starter.web.handle.TiResponseBodyAdvice;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
@@ -37,9 +40,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RestControllerAdvice
 @Order(100)
-public class CustomResponseHandle {
+public class CustomResponseBodyAdvice {
 
-    private final TiResponseHandle tiResponseHandle;    private final HttpServletResponse response;
+    private final TiResponseBodyAdvice tiResponseBodyAdvice;
+    private final HttpServletResponse response;
+
     public void prefix(Exception ex) {
         TiHttpLog httpLog = TiWebLogInterceptor.logInfo();
         if (Objects.nonNull(httpLog)) {
@@ -65,7 +70,6 @@ public class CustomResponseHandle {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public TiResult<String> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException ex) {
-        prefix(ex);
         BindingResult bindingResult = ex.getBindingResult();
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         StringJoiner joiner = new StringJoiner(",", "{", "}");
@@ -74,9 +78,26 @@ public class CustomResponseHandle {
             .sorted(Comparator.comparing(ObjectError::getObjectName))
             .peek(next -> joiner.add(next.getField() + ":" + next.getDefaultMessage()))
             .collect(Collectors.toList());
+        log.warn("catch MethodArgumentNotValidException error\t{}", joiner);
         response.setStatus(HttpStatus.OK.value());
-        log.warn("catch error\t{}", joiner);
         return TiResult.fail(TiBizErrCode.PARAM_ERROR, errors.get(0).getDefaultMessage());
+    }
+
+    /**
+     * 参数校验异常处理
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public TiResult<String> constraintViolationExceptionHandler(ConstraintViolationException ex) {
+        Set<ConstraintViolation<?>> fieldErrors = ex.getConstraintViolations();
+        StringJoiner joiner = new StringJoiner(",", "{", "}");
+        List<ConstraintViolation<?>> errors = fieldErrors
+            .stream()
+            .sorted(Comparator.comparing(ConstraintViolation::getMessage))
+            .peek(next -> joiner.add(next.getPropertyPath() + ":" + next.getMessage()))
+            .collect(Collectors.toList());
+        log.warn("catch ConstraintViolationException error\t{}", joiner);
+        response.setStatus(HttpStatus.OK.value());
+        return TiResult.fail(TiBizErrCode.PARAM_ERROR, errors.get(0).getMessage());
     }
 
     /**
@@ -95,7 +116,7 @@ public class CustomResponseHandle {
     @ExceptionHandler(Exception.class)
     public TiResult<String> exception(Exception ex) {
         prefix(ex);
-        return tiResponseHandle.exception(ex);
+        return tiResponseBodyAdvice.exception(ex);
     }
 
 }

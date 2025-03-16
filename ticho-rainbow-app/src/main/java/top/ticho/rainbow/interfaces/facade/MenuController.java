@@ -2,20 +2,21 @@ package top.ticho.rainbow.interfaces.facade;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.dto.MenuDTO;
-import top.ticho.rainbow.application.dto.response.MenuDtlDTO;
 import top.ticho.rainbow.application.dto.RouteDTO;
+import top.ticho.rainbow.application.dto.response.MenuDtlDTO;
 import top.ticho.rainbow.application.service.MenuService;
 import top.ticho.starter.view.core.TiResult;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -29,6 +30,7 @@ import java.util.List;
 @RequestMapping("menu")
 public class MenuController {
     private final MenuService menuService;
+
     /**
      * 保存菜单
      */
@@ -45,8 +47,8 @@ public class MenuController {
      * @param id 编号
      */
     @PreAuthorize("@perm.hasPerms('system:menu:remove')")
-    @DeleteMapping("{id}")
-    public TiResult<Void> remove(@PathVariable("id") Long id) {
+    @DeleteMapping
+    public TiResult<Void> remove(@NotNull(message = "编号不能为空") Long id) {
         menuService.remove(id);
         return TiResult.ok();
     }
@@ -55,8 +57,8 @@ public class MenuController {
      * 修改菜单
      */
     @PreAuthorize("@perm.hasPerms('system:menu:modify')")
-    @PutMapping("{id}")
-    public TiResult<Void> modify(@RequestBody MenuDTO menuDTO) {
+    @PutMapping
+    public TiResult<Void> modify(@Validated @RequestBody MenuDTO menuDTO) {
         menuService.modify(menuDTO);
         return TiResult.ok();
     }
@@ -67,8 +69,8 @@ public class MenuController {
      * @param id 编号
      */
     @PreAuthorize("@perm.hasPerms('system:menu:getById')")
-    @GetMapping("{id}")
-    public TiResult<MenuDTO> getById(@PathVariable("id") Long id) {
+    @GetMapping
+    public TiResult<MenuDTO> getById(@NotNull(message = "编号不能为空") Long id) {
         return TiResult.ok(menuService.getById(id));
     }
 

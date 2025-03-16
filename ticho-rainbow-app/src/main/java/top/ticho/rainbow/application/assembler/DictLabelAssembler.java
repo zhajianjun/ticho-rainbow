@@ -7,7 +7,7 @@ import top.ticho.rainbow.application.dto.command.DictLabelSaveCommand;
 import top.ticho.rainbow.application.dto.excel.DictExp;
 import top.ticho.rainbow.application.dto.response.DictLabelDTO;
 import top.ticho.rainbow.domain.entity.DictLabel;
-import top.ticho.rainbow.domain.vo.DictLabelModifyVO;
+import top.ticho.rainbow.domain.entity.vo.DictLabelModifyVO;
 
 /**
  * 字典标签 转换

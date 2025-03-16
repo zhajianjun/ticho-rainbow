@@ -1,6 +1,7 @@
-package top.ticho.rainbow.domain.entity;
+package top.ticho.rainbow.application.dto;
 
 import lombok.Data;
+import top.ticho.rainbow.domain.entity.FileInfo;
 
 import java.util.Objects;
 
@@ -11,14 +12,19 @@ import java.util.Objects;
  * @date 2024-04-28 09:37
  */
 @Data
-public class FileCache {
+public class FileCacheDTO {
 
     /** 签名 */
-    private String sign;    /** 文件信息 */
-    private FileInfo fileInfo;    /* 过期时间戳 */
-    private Long expire;    /* 是否有限制 */
-    private Boolean limit;    /* 是否已限制 */
+    private String sign;
+    /** 文件信息 */
+    private FileInfo fileInfo;
+    /* 过期时间戳 */
+    private Long expire;
+    /* 是否有限制 */
+    private Boolean limit;
+    /* 是否已限制 */
     private Boolean limited;
+
     public Long getExpire() {
         // 如果过期时间为空，则返回0
         if (Objects.isNull(expire)) {

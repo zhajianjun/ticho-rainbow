@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
 import top.ticho.rainbow.application.assembler.PortAssembler;
-import top.ticho.rainbow.application.dto.response.FlowMonitorDTO;
-import top.ticho.rainbow.application.dto.response.FlowMonitorStatsDTO;
 import top.ticho.rainbow.application.dto.query.ClientQuery;
 import top.ticho.rainbow.application.dto.query.PortQuery;
+import top.ticho.rainbow.application.dto.response.FlowMonitorDTO;
+import top.ticho.rainbow.application.dto.response.FlowMonitorStatsDTO;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.domain.entity.Port;
 import top.ticho.rainbow.domain.repository.ClientRepository;
@@ -39,7 +39,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FlowMonitorService {
-    private final ClientRepository clientRepository;    private final PortRepository portRepository;    private final ServerHandler serverHandler;    private final PortAssembler portAssembler;
+    private final ClientRepository clientRepository;
+    private final PortRepository portRepository;
+    private final ServerHandler serverHandler;
+    private final PortAssembler portAssembler;
+
     public FlowMonitorStatsDTO info() {
         AppHandler appHandler = serverHandler.getAppHandler();
         Map<String, ClientInfo> clientMap = serverHandler.getClientMap();

@@ -2,14 +2,12 @@ package top.ticho.rainbow.infrastructure.core.component;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import top.ticho.rainbow.application.dto.PermDTO;
+import top.ticho.rainbow.application.dto.response.PermDTO;
 import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
 import top.ticho.starter.web.util.TiSpringUtil;
 
@@ -33,6 +31,7 @@ import java.util.stream.Collectors;
 public class PermCacheHandle {
 
     private final Map<String, Map<String, String>> MAP = new HashMap<>();
+
     public void pushCurrentAppPerms() {
         List<PermDTO> perms = listCurrentAppPerms();
         if (CollUtil.isEmpty(perms)) {
@@ -40,6 +39,9 @@ public class PermCacheHandle {
         }
         Map<String, String> map = perms
             .stream()
+            .filter(Objects::nonNull)
+            .filter(item -> StrUtil.isNotBlank(item.getCode()))
+            .filter(item -> StrUtil.isNotBlank(item.getName()))
             .collect(Collectors.toMap(PermDTO::getCode, PermDTO::getName, (v1, v2) -> v1, LinkedHashMap::new));
         MAP.put(SecurityConst.MICRO_REDIS_ALL_PERMS, map);
     }
@@ -93,7 +95,7 @@ public class PermCacheHandle {
             .stream()
             .map(this::getFunc)
             .filter(Objects::nonNull)
-            .sorted(Comparator.comparing(PermDTO::getSort))
+            .sorted(Comparator.comparing(PermDTO::getSort, Comparator.nullsLast(Comparator.naturalOrder())))
             .collect(Collectors.toList());
     }
 
@@ -109,13 +111,14 @@ public class PermCacheHandle {
         int start = value.indexOf("'") + 1;
         int end = value.lastIndexOf("'");
         value = value.substring(start, end);
-        ApiOperation apiOperation = handlerMethod.getMethodAnnotation(ApiOperation.class);
-        ApiOperationSupport support = handlerMethod.getMethodAnnotation(ApiOperationSupport.class);
+        // fixme 获取方法名，获取类名，获取方法描述，获取方法排序
+        // ApiOperation apiOperation = handlerMethod.getMethodAnnotation(ApiOperation.class);
+        // ApiOperationSupport support = handlerMethod.getMethodAnnotation(ApiOperationSupport.class);
         String name = handlerMethod.getBeanType().toString();
         PermDTO perm = new PermDTO();
         perm.setCode(value);
-        perm.setName(Optional.ofNullable(apiOperation).map(ApiOperation::value).orElse(name));
-        perm.setSort(Optional.ofNullable(support).map(ApiOperationSupport::order).orElse(Integer.MAX_VALUE));
+        // perm.setName(Optional.ofNullable(apiOperation).map(ApiOperation::value).orElse(name));
+        // perm.setSort(Optional.ofNullable(support).map(ApiOperationSupport::order).orElse(Integer.MAX_VALUE));
         return perm;
     }
 

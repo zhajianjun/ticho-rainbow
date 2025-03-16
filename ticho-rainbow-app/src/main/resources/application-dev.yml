@@ -37,8 +37,6 @@ ticho:
   log:
     enable: true
     print: false
-  swagger:
-    enable: true
   mail:
     enable: true
     # 配置 SMTP 服务器地址

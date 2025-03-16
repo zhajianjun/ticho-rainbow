@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
- * 客户端创建命令
+ * 客户端创建
  *
  * @author zhajianjun
  * @date 2025-03-01 19:00
@@ -32,9 +32,10 @@ public class ClientSaveCommand {
     @NotNull(message = "状态不能为空")
     private Integer status;
     /** 排序 */
-    @Max(value = 65535, message = "排序最大值为65535")
+    @Max(value = 65535, message = "排序最大值为{value}")
     @NotNull(message = "排序不能为空")
     private Integer sort;
     /** 备注信息 */
     private String remark;
+
 }

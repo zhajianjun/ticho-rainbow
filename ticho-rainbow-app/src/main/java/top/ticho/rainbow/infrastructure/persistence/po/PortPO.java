@@ -27,29 +27,44 @@ public class PortPO extends Model<PortPO> {
 
     /** 主键标识 */
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;    /** 客户端秘钥 */
-    private String accessKey;    /** 主机端口 */
-    private Integer port;    /** 客户端地址 */
-    private String endpoint;    /** 域名 */
+    private Long id;
+    /** 客户端秘钥 */
+    private String accessKey;
+    /** 主机端口 */
+    private Integer port;
+    /** 客户端地址 */
+    private String endpoint;
+    /** 域名 */
     @TableField(updateStrategy = FieldStrategy.IGNORED)
-    private String domain;    /** 状态;1-启用,0-停用 */
-    private Integer status;    /** 过期时间 */
+    private String domain;
+    /** 状态;1-启用,0-停用 */
+    private Integer status;
+    /** 过期时间 */
     @TableField(updateStrategy = FieldStrategy.IGNORED)
-    private LocalDateTime expireAt;    /** 协议类型 */
-    private Integer type;    /** 排序 */
-    private Integer sort;    /** 备注信息 */
+    private LocalDateTime expireAt;
+    /** 协议类型 */
+    private Integer type;
+    /** 排序 */
+    private Integer sort;
+    /** 备注信息 */
     @TableField(updateStrategy = FieldStrategy.IGNORED)
-    private String remark;    /** 版本号 */
+    private String remark;
+    /** 版本号 */
     @Version
-    private Long version;    /** 创建人 */
+    private Long version;
+    /** 创建人 */
     @TableField(fill = FieldFill.INSERT)
-    private String createBy;    /** 创建时间 */
+    private String createBy;
+    /** 创建时间 */
     @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;    /** 修改人 */
+    private LocalDateTime createTime;
+    /** 修改人 */
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private String updateBy;    /** 修改时间 */
+    private String updateBy;
+    /** 修改时间 */
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;    /** 删除标识;0-未删除,1-已删除 */
+    private LocalDateTime updateTime;
+    /** 删除标识;0-未删除,1-已删除 */
     @TableField(fill = FieldFill.INSERT)
     @TableLogic
     private Integer isDelete;

@@ -1,7 +1,6 @@
 package top.ticho.rainbow.application.dto.response;
 
 import lombok.Data;
-import top.ticho.rainbow.application.dto.PortDTO;
 
 /**
  * 监控流量数据

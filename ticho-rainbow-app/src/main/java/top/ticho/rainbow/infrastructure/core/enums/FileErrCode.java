@@ -31,6 +31,7 @@ public enum FileErrCode implements Serializable, TiErrCode {
      * 状态信息
      */
     private final String msg;
+
     FileErrCode(int code, String msg) {
         this.code = code;
         this.msg = msg;

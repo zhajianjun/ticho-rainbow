@@ -21,6 +21,7 @@ import top.ticho.starter.view.core.TiResult;
 public class ToolController {
 
     private final StringEncryptor stringEncryptor;
+
     /**
      * 加密
      *

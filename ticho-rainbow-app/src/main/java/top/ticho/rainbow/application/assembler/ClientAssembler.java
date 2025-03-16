@@ -9,7 +9,7 @@ import top.ticho.rainbow.application.dto.command.ClientSaveCommand;
 import top.ticho.rainbow.application.dto.excel.ClientExp;
 import top.ticho.rainbow.application.dto.response.ClientDTO;
 import top.ticho.rainbow.domain.entity.Client;
-import top.ticho.rainbow.domain.vo.ClientModifyVO;
+import top.ticho.rainbow.domain.entity.vo.ClientModifyVO;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 
 /**

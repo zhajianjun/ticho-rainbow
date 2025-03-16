@@ -10,7 +10,6 @@ import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.security.auth.PermissionService;
 import top.ticho.starter.view.util.TiAssert;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -24,13 +23,14 @@ import javax.servlet.http.HttpServletRequest;
 @Order(1)
 public class FilePermissionServiceImpl implements PermissionService {
 
-  
+
     private HttpServletRequest request;
-  
+
     private TiCacheTemplate tiCacheTemplate;
-  
+
     @Qualifier("perm")
     private PermissionService permissionService;
+
     public boolean hasPerms(String... permissions) {
         log.debug("权限校验，permissions = {}", String.join(",", permissions));
         String chunkId = request.getParameter("chunkId");

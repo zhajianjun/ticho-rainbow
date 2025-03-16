@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 /**
- * 计划任务信息DTO
+ * 计划任务创建
  *
  * @author zhajianjun
  * @date 2024-03-23 23:38
@@ -28,4 +28,5 @@ public class TaskSaveCommand {
     private String remark;
     /** 任务状态;1-正常,0-停用 */
     private Integer status;
+
 }

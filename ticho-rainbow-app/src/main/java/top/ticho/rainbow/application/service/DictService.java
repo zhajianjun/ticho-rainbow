@@ -19,9 +19,9 @@ import top.ticho.rainbow.application.dto.response.DictLabelDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
 import top.ticho.rainbow.domain.entity.Dict;
 import top.ticho.rainbow.domain.entity.DictLabel;
+import top.ticho.rainbow.domain.entity.vo.DictModifyVO;
 import top.ticho.rainbow.domain.repository.DictLabelRepository;
 import top.ticho.rainbow.domain.repository.DictRepository;
-import top.ticho.rainbow.domain.vo.DictModifyVO;
 import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.constant.DictConst;
@@ -54,7 +54,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class DictService {
-    private final DictAssembler dictAssembler;    private final DictLabelAssembler dictLabelAssembler;    private final DictRepository dictRepository;    private final DictLabelRepository dictLabelRepository;    private final TiCacheTemplate tiCacheTemplate;    private final HttpServletResponse response;
+    private final DictAssembler dictAssembler;
+    private final DictLabelAssembler dictLabelAssembler;
+    private final DictRepository dictRepository;
+    private final DictLabelRepository dictLabelRepository;
+    private final TiCacheTemplate tiCacheTemplate;
+    private final HttpServletResponse response;
+
     public void save(DictSaveCommand dictSaveCommand) {
         Dict dict = dictAssembler.toEntity(dictSaveCommand);
         Dict dbDict = dictRepository.getByCodeExcludeId(dictSaveCommand.getCode(), null);
@@ -63,7 +69,6 @@ public class DictService {
     }
 
     public void remove(Long id) {
-        TiAssert.isNotEmpty(id, TiBizErrCode.PARAM_ERROR, "编号不能为空");
         Dict dbDict = dictRepository.find(id);
         TiAssert.isNotNull(dbDict, TiBizErrCode.FAIL, "删除失败，字典不存在");
         TiAssert.isTrue(!Objects.equals(dbDict.getIsSys(), 1), TiBizErrCode.PARAM_ERROR, "系统字典无法删除");
@@ -72,8 +77,8 @@ public class DictService {
         TiAssert.isTrue(dictRepository.remove(id), TiBizErrCode.FAIL, "删除失败");
     }
 
-    public void modify(Long id, DictModifyCommand dictModifyCommand) {
-        Dict dict = dictRepository.find(id);
+    public void modify(DictModifyCommand dictModifyCommand) {
+        Dict dict = dictRepository.find(dictModifyCommand.getId());
         TiAssert.isNotNull(dict, TiBizErrCode.FAIL, "修改失败，字典不存在");
         DictModifyVO dictModifyVO = dictAssembler.toVO(dictModifyCommand);
         dict.modify(dictModifyVO);

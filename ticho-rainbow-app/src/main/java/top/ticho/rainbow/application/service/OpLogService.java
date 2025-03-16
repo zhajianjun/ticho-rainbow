@@ -5,9 +5,9 @@ import cn.hutool.core.util.NumberUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.assembler.OpLogAssembler;
-import top.ticho.rainbow.application.dto.response.OpLogDTO;
 import top.ticho.rainbow.application.dto.excel.OpLogExp;
 import top.ticho.rainbow.application.dto.query.OpLogQuery;
+import top.ticho.rainbow.application.dto.response.OpLogDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
 import top.ticho.rainbow.domain.entity.OpLog;
 import top.ticho.rainbow.domain.repository.OpLogRepository;
@@ -15,7 +15,6 @@ import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.core.constant.DictConst;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
-import top.ticho.starter.view.util.TiAssert;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -34,9 +33,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OpLogService {
-    private final OpLogRepository opLogRepository;    private final OpLogAssembler opLogAssembler;    private final DictExecutor dictExecutor;    private final HttpServletResponse response;
+    private final OpLogRepository opLogRepository;
+    private final OpLogAssembler opLogAssembler;
+    private final DictExecutor dictExecutor;
+    private final HttpServletResponse response;
+
     public OpLogDTO getById(Long id) {
-        TiAssert.isNotNull(id, "编号不能为空");
         OpLog opLog = opLogRepository.find(id);
         return opLogAssembler.toDTO(opLog);
     }

@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
- * 计划任务信息DTO
+ * 计划任务修改
  *
  * @author zhajianjun
  * @date 2024-03-23 23:38
@@ -14,6 +14,9 @@ import javax.validation.constraints.NotNull;
 @Data
 public class TaskModifyCommand {
 
+    /** 编号 */
+    @NotNull(message = "编号不能为空")
+    private Long id;
     /** 任务名称 */
     @NotBlank(message = "任务名称不能为空")
     private String name;
@@ -32,4 +35,5 @@ public class TaskModifyCommand {
     /** 版本号 */
     @NotNull(message = "版本号不能为空")
     private Long version;
+
 }

@@ -8,7 +8,6 @@ import top.ticho.rainbow.application.dto.response.DictDTO;
 import top.ticho.rainbow.application.dto.response.DictLabelDTO;
 import top.ticho.rainbow.application.service.DictService;
 
-import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,6 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DictExecutor {
     private final DictService dictService;
+
     /**
      * 查询字典标签map
      * 例如: code:yesOrNo;1-是,0-否

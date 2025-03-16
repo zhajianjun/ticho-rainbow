@@ -2,6 +2,7 @@ package top.ticho.rainbow.application.dto.query;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
@@ -13,7 +14,8 @@ import java.util.List;
 @Data
 public class RoleDtlQuery {
 
-    /** 角色code */
+    /** 角色编号 */
+    @NotEmpty(message = "角色编号不能为空")
     private List<Long> roleIds;
     /** 显示所有 */
     private Boolean showAll = false;

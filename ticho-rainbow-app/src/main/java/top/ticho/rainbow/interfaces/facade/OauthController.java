@@ -20,6 +20,7 @@ import top.ticho.starter.security.handle.LoginUserHandle;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
+import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.security.Principal;
 
@@ -33,12 +34,14 @@ import java.security.Principal;
 @RestController(TiSecurityConst.OAUTH2_CONTROLLER)
 @RequestMapping("oauth")
 public class OauthController {
-    private final LoginUserHandle loginUserHandle;    private final UserService userService;
+    private final LoginUserHandle loginUserHandle;
+    private final UserService userService;
+
     /**
      * 注册邮箱发送
      */
     @IgnoreJwtCheck
-    @PostMapping("signUpEmailSend")
+    @PostMapping("sign-up-email/send")
     public TiResult<Void> signUpEmailSend(@Validated @RequestBody SignUpEmailSendCommand signUpEmailSendCommand) {
         userService.signUpEmailSend(signUpEmailSendCommand);
         return TiResult.ok();
@@ -48,8 +51,8 @@ public class OauthController {
      * 注册
      */
     @IgnoreJwtCheck
-    @PostMapping("signUp")
-    public TiResult<UserLoginDTO> signUp(@RequestBody ResetPasswordCommand userSignUpOrResetDTO) {
+    @PostMapping("sign-up")
+    public TiResult<UserLoginDTO> signUp(@Validated @RequestBody ResetPasswordCommand userSignUpOrResetDTO) {
         return TiResult.ok(userService.signUp(userSignUpOrResetDTO));
     }
 
@@ -60,7 +63,7 @@ public class OauthController {
      * @return {@link TiResult }<{@link String }>
      */
     @IgnoreJwtCheck
-    @PostMapping("resetPasswordEmailSend")
+    @PostMapping("reset-password-email/send")
     public TiResult<String> resetPasswordEmailSend(@Validated @RequestBody ResetPassworEmailSendCommand resetPassworEmailSendCommand) {
         return TiResult.ok(userService.resetPasswordEmailSend(resetPassworEmailSendCommand));
     }
@@ -69,7 +72,7 @@ public class OauthController {
      * 重置用户密码
      */
     @IgnoreJwtCheck
-    @PostMapping("resetPassword")
+    @PostMapping("reset-password")
     public TiResult<UserLoginDTO> resetPassword(@Validated @RequestBody ResetPasswordCommand resetPasswordCommand) {
         return TiResult.ok(userService.resetPassword(resetPasswordCommand));
     }
@@ -79,8 +82,8 @@ public class OauthController {
      */
     @IgnoreJwtCheck
     @TiView(ignore = true)
-    @GetMapping("imgCode")
-    public void imgCode(String imgKey) throws IOException {
+    @GetMapping("img-code")
+    public void imgCode(@NotBlank(message = "验证码秘钥不能为空") String imgKey) throws IOException {
         userService.imgCode(imgKey);
     }
 
@@ -97,8 +100,8 @@ public class OauthController {
      * 刷新token
      */
     @IgnoreJwtCheck
-    @PostMapping("refreshToken")
-    public TiResult<TiToken> refreshToken(String refreshToken) {
+    @PostMapping("token/refresh")
+    public TiResult<TiToken> refreshToken(@NotBlank(message = "refreshToken不能为空") String refreshToken) {
         return TiResult.ok(loginUserHandle.refreshToken(refreshToken));
     }
 
@@ -115,7 +118,7 @@ public class OauthController {
      *
      * @return {@link TiResult }<{@link String }>
      */
-    @GetMapping("publicKey")
+    @GetMapping("public-key")
     public TiResult<String> publicKey() {
         return TiResult.ok(loginUserHandle.publicKey());
     }

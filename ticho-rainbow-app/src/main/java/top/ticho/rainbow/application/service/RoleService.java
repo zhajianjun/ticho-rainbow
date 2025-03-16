@@ -12,16 +12,17 @@ import top.ticho.rainbow.application.dto.RoleDTO;
 import top.ticho.rainbow.application.dto.RoleMenuDTO;
 import top.ticho.rainbow.application.dto.RoleMenuDtlDTO;
 import top.ticho.rainbow.application.dto.command.RoleModifyCommand;
+import top.ticho.rainbow.application.dto.command.RoleSaveCommand;
 import top.ticho.rainbow.application.dto.command.RoleStatusModifyCommand;
 import top.ticho.rainbow.application.dto.excel.RoleExp;
 import top.ticho.rainbow.application.dto.query.RoleDtlQuery;
 import top.ticho.rainbow.application.dto.query.RoleQuery;
 import top.ticho.rainbow.application.executor.DictExecutor;
 import top.ticho.rainbow.domain.entity.Role;
+import top.ticho.rainbow.domain.entity.vo.RoleModifyVO;
 import top.ticho.rainbow.domain.repository.RoleMenuRepository;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
-import top.ticho.rainbow.domain.vo.RoleModifyVO;
 import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.core.constant.DictConst;
 import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
@@ -50,15 +51,20 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class RoleService extends AbstractAuthServiceImpl {
-    private final RoleRepository roleRepository;    private final RoleAssembler roleAssembler;    private final RoleMenuRepository roleMenuRepository;    private final UserRoleRepository userRoleRepository;    private final DictExecutor dictExecutor;    private final HttpServletResponse response;
+    private final RoleRepository roleRepository;
+    private final RoleAssembler roleAssembler;
+    private final RoleMenuRepository roleMenuRepository;
+    private final UserRoleRepository userRoleRepository;
+    private final DictExecutor dictExecutor;
+    private final HttpServletResponse response;
 
     @Transactional(rollbackFor = Exception.class)
-    public void save(RoleDTO roleDTO) {
-        Role role = roleAssembler.toEntity(roleDTO);
+    public void save(RoleSaveCommand roleSaveCommand) {
+        Role role = roleAssembler.toEntity(roleSaveCommand);
         Role dbDictType = roleRepository.getByCodeExcludeId(role.getCode(), null);
         TiAssert.isNull(dbDictType, TiBizErrCode.FAIL, "保存失败，角色已存在");
         TiAssert.isTrue(roleRepository.save(role), TiBizErrCode.FAIL, "保存失败");
-        List<Long> menuIds = roleDTO.getMenuIds();
+        List<Long> menuIds = roleSaveCommand.getMenuIds();
         RoleMenuDTO roleMenuDTO = new RoleMenuDTO();
         roleMenuDTO.setRoleId(role.getId());
         roleMenuDTO.setMenuIds(menuIds);
@@ -79,8 +85,8 @@ public class RoleService extends AbstractAuthServiceImpl {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void modify(Long id, RoleModifyCommand roleModifyCommand) {
-        Role role = roleRepository.find(id);
+    public void modify(RoleModifyCommand roleModifyCommand) {
+        Role role = roleRepository.find(roleModifyCommand.getId());
         TiAssert.isNotNull(role, TiBizErrCode.FAIL, "修改失败，角色已存在");
         RoleModifyVO modifyVO = roleAssembler.toVo(roleModifyCommand);
         role.modify(modifyVO);
@@ -92,8 +98,8 @@ public class RoleService extends AbstractAuthServiceImpl {
         bindMenu(roleMenuDTO);
     }
 
-    public void modifyStatus(Long id, RoleStatusModifyCommand roleStatusModifyCommand) {
-        Role role = roleRepository.find(id);
+    public void modifyStatus(RoleStatusModifyCommand roleStatusModifyCommand) {
+        Role role = roleRepository.find(roleStatusModifyCommand.getId());
         TiAssert.isNotNull(role, TiBizErrCode.FAIL, "修改失败，角色不存在");
         role.modifyStatus(roleStatusModifyCommand.getStatus(), roleStatusModifyCommand.getVersion());
         roleRepository.modify(role);

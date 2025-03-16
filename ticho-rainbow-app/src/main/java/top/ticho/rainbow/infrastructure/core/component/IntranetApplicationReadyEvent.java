@@ -24,7 +24,9 @@ import java.util.List;
 @Component
 public class IntranetApplicationReadyEvent implements ApplicationListener<ApplicationReadyEvent> {
 
-    private final ServerHandler serverHandler;    private final ClientService clientService;
+    private final ServerHandler serverHandler;
+    private final ClientService clientService;
+
     @Async
     public void onApplicationEvent(@NonNull ApplicationReadyEvent event) {
         log.info("内网应用程序启动");

@@ -26,7 +26,9 @@ public enum UserStatus {
     LOG_OUT(4, "已注销"),
     ;
 
-    private final int code;    private final String msg;
+    private final int code;
+    private final String msg;
+
     UserStatus(int code, String msg) {
         this.code = code;
         this.msg = msg;
@@ -41,6 +43,7 @@ public enum UserStatus {
     }
 
     private static final Map<Integer, String> map;
+
     static {
         map = Arrays.stream(values()).collect(Collectors.toMap(UserStatus::code, UserStatus::message));
     }

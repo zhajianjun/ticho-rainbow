@@ -27,6 +27,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class DictLabelRepositoryImpl extends TiRepositoryImpl<DictLabelMapper, DictLabelPO> implements DictLabelRepository {
     private final DictLabelConverter dictLabelConverter;
+
     @Override
     public boolean save(DictLabel dictLabel) {
         DictLabelPO po = dictLabelConverter.toPo(dictLabel);

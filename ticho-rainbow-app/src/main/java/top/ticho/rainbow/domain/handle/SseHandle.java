@@ -25,7 +25,9 @@ import java.util.function.Predicate;
 public class SseHandle {
     public final String split = "-";
 
-    private final SseTemplate sseTemplate;    private final TiCacheTemplate tiCacheTemplate;
+    private final SseTemplate sseTemplate;
+    private final TiCacheTemplate tiCacheTemplate;
+
     public String getSign() {
         String id = StrUtil.format("{}{}{}", UserUtil.getCurrentUsername(), split, CommonUtil.fastShortUUID());
         tiCacheTemplate.put(CacheConst.SSE, id, System.currentTimeMillis());

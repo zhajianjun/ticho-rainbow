@@ -6,7 +6,7 @@ import top.ticho.rainbow.application.dto.command.TaskSaveCommand;
 import top.ticho.rainbow.application.dto.excel.TaskExp;
 import top.ticho.rainbow.application.dto.response.TaskDTO;
 import top.ticho.rainbow.domain.entity.Task;
-import top.ticho.rainbow.domain.vo.TaskModifyVo;
+import top.ticho.rainbow.domain.entity.vo.TaskModifyVo;
 
 /**
  * 计划任务信息 转换

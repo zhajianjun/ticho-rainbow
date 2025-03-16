@@ -44,7 +44,10 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public abstract class AbstracTask<T> extends QuartzJobBean {
-    private final Environment environment;    private final TraceProperty traceProperty;    private final TaskLogRepository taskLogRepository;
+    private final Environment environment;
+    private final TraceProperty traceProperty;
+    private final TaskLogRepository taskLogRepository;
+
     public abstract void run(JobExecutionContext context);
 
     public abstract Class<T> getParamClass();

@@ -8,9 +8,9 @@ import top.ticho.rainbow.application.dto.command.DictLabelSaveCommand;
 import top.ticho.rainbow.application.dto.response.DictLabelDTO;
 import top.ticho.rainbow.domain.entity.Dict;
 import top.ticho.rainbow.domain.entity.DictLabel;
+import top.ticho.rainbow.domain.entity.vo.DictLabelModifyVO;
 import top.ticho.rainbow.domain.repository.DictLabelRepository;
 import top.ticho.rainbow.domain.repository.DictRepository;
-import top.ticho.rainbow.domain.vo.DictLabelModifyVO;
 import top.ticho.rainbow.infrastructure.core.enums.YesOrNo;
 import top.ticho.starter.view.enums.TiBizErrCode;
 import top.ticho.starter.view.util.TiAssert;
@@ -28,7 +28,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DictLabelService {
-    private final DictLabelRepository dictLabelRepository;    private final DictRepository dictRepository;    private final DictLabelAssembler dictLabelAssembler;
+    private final DictLabelRepository dictLabelRepository;
+    private final DictRepository dictRepository;
+    private final DictLabelAssembler dictLabelAssembler;
+
     public void save(DictLabelSaveCommand dictLabelSaveCommand) {
         Dict dict = dictRepository.getByCodeExcludeId(dictLabelSaveCommand.getCode(), null);
         TiAssert.isNotNull(dict, "保存失败,字典不存在");
@@ -40,7 +43,6 @@ public class DictLabelService {
     }
 
     public void remove(Long id) {
-        TiAssert.isNotNull(id, TiBizErrCode.PARAM_ERROR, "编号不能为空");
         DictLabel dbDictLabel = dictLabelRepository.find(id);
         TiAssert.isNotNull(dbDictLabel, TiBizErrCode.FAIL, "删除失败，字典标签不存在");
         Dict dict = dictRepository.getByCodeExcludeId(dbDictLabel.getCode(), null);
@@ -49,14 +51,14 @@ public class DictLabelService {
         TiAssert.isTrue(dictLabelRepository.remove(id), TiBizErrCode.FAIL, "删除失败");
     }
 
-    public void modify(Long id, DictLabelModifyCommand dictLabelModifyCommand) {
-        DictLabel dictLabel = dictLabelRepository.find(id);
+    public void modify(DictLabelModifyCommand dictLabelModifyCommand) {
+        DictLabel dictLabel = dictLabelRepository.find(dictLabelModifyCommand.getId());
         TiAssert.isNotNull(dictLabel, TiBizErrCode.FAIL, "修改失败，字典标签不存在");
         Dict dict = dictRepository.getByCodeExcludeId(dictLabel.getCode(), null);
         TiAssert.isNotNull(dict, "修改失败，字典不存在");
         boolean isSysDict = Objects.equals(YesOrNo.YES.code(), dict.getIsSys());
         if (!isSysDict) {
-            DictLabel repeatDictLabel = dictLabelRepository.getByCodeAndValueExcludeId(dictLabelModifyCommand.getCode(), dictLabelModifyCommand.getValue(), id);
+            DictLabel repeatDictLabel = dictLabelRepository.getByCodeAndValueExcludeId(dictLabelModifyCommand.getCode(), dictLabelModifyCommand.getValue(), dictLabelModifyCommand.getId());
             TiAssert.isNull(repeatDictLabel, "修改失败,字典值已存在");
         }
         DictLabelModifyVO dictLabelModifyVO = dictLabelAssembler.toVO(dictLabelModifyCommand);

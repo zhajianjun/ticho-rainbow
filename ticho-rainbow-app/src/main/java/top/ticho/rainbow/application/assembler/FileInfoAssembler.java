@@ -2,10 +2,10 @@ package top.ticho.rainbow.application.assembler;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import top.ticho.rainbow.application.dto.response.ChunkCacheDTO;
 import top.ticho.rainbow.application.dto.ChunkMetadataDTO;
-import top.ticho.rainbow.application.dto.response.FileInfoDTO;
 import top.ticho.rainbow.application.dto.excel.FileInfoExp;
+import top.ticho.rainbow.application.dto.response.ChunkCacheDTO;
+import top.ticho.rainbow.application.dto.response.FileInfoDTO;
 import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.infrastructure.core.enums.FileInfoStatus;
 import top.ticho.tool.json.util.TiJsonUtil;

@@ -26,7 +26,9 @@ public enum FileInfoStatus {
     CANCE(99, "作废"),
     ;
 
-    private final int code;    private final String message;
+    private final int code;
+    private final String message;
+
     FileInfoStatus(int code, String message) {
         this.code = code;
         this.message = message;
@@ -41,6 +43,7 @@ public enum FileInfoStatus {
     }
 
     private static final Map<Integer, String> map;
+
     static {
         map = Arrays.stream(values()).collect(Collectors.toMap(FileInfoStatus::code, FileInfoStatus::message));
     }

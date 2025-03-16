@@ -16,15 +16,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
 import top.ticho.rainbow.application.assembler.FileInfoAssembler;
-import top.ticho.rainbow.application.dto.response.ChunkCacheDTO;
 import top.ticho.rainbow.application.dto.ChunkMetadataDTO;
-import top.ticho.rainbow.application.dto.response.FileInfoDTO;
+import top.ticho.rainbow.application.dto.FileCacheDTO;
 import top.ticho.rainbow.application.dto.command.FileChunkUploadCommand;
 import top.ticho.rainbow.application.dto.command.FileUploadCommand;
 import top.ticho.rainbow.application.dto.excel.FileInfoExp;
 import top.ticho.rainbow.application.dto.query.FileInfoQuery;
+import top.ticho.rainbow.application.dto.response.ChunkCacheDTO;
+import top.ticho.rainbow.application.dto.response.FileInfoDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
-import top.ticho.rainbow.domain.entity.FileCache;
 import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.infrastructure.config.CacheConfig;
@@ -74,8 +74,13 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class FileInfoService {
-    public static final String STORAGE_ID_NOT_BLANK = "id不能为空";
-    private final HttpServletResponse response;    private final TiCacheTemplate tiCacheTemplate;    private final FileProperty fileProperty;    private final FileInfoRepository fileInfoRepository;    private final FileInfoAssembler fileInfoAssembler;    private final DictExecutor dictExecutor;
+    private final HttpServletResponse response;
+    private final TiCacheTemplate tiCacheTemplate;
+    private final FileProperty fileProperty;
+    private final FileInfoRepository fileInfoRepository;
+    private final FileInfoAssembler fileInfoAssembler;
+    private final DictExecutor dictExecutor;
+
     public FileInfoDTO upload(FileUploadCommand fileUploadCommand) {
         String remark = fileUploadCommand.getRemark();
         Integer type = fileUploadCommand.getType();
@@ -120,25 +125,21 @@ public class FileInfoService {
     }
 
     public void enable(Long id) {
-        TiAssert.isNotNull(id, TiBizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
         boolean enable = fileInfoRepository.enable(id);
         TiAssert.isTrue(enable, TiBizErrCode.FAIL, "启用失败");
     }
 
     public void disable(Long id) {
-        TiAssert.isNotNull(id, TiBizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
         boolean enable = fileInfoRepository.disable(id);
         TiAssert.isTrue(enable, TiBizErrCode.FAIL, "停用失败");
     }
 
     public void cancel(Long id) {
-        TiAssert.isNotNull(id, TiBizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
         boolean enable = fileInfoRepository.cancel(id);
         TiAssert.isTrue(enable, TiBizErrCode.FAIL, "作废失败");
     }
 
     public void delete(Long id) {
-        TiAssert.isNotNull(id, TiBizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
         FileInfo dbFileInfo = fileInfoRepository.find(id);
         TiAssert.isNotNull(dbFileInfo, FileErrCode.FILE_NOT_EXIST, "删除失败, 文件信息不存在");
         boolean isCancel = Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CANCE.code());
@@ -157,29 +158,23 @@ public class FileInfoService {
         fileInfoRepository.remove(id);
     }
 
-    public void downloadById(Long id) {
-        TiAssert.isNotNull(id, TiBizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
-        FileInfo fileInfo = fileInfoRepository.find(id);
-        TiAssert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST);
-        boolean normal = Objects.equals(fileInfo.getStatus(), FileInfoStatus.NORMAL.code());
-        TiAssert.isTrue(normal, FileErrCode.FILE_STATUS_ERROR);
-        download(fileInfo);
-    }
-
     public void download(String sign) {
-        TiAssert.isNotBlank(sign, TiBizErrCode.PARAM_ERROR, "sign不能为空");
-        FileCache fileCache = tiCacheTemplate.get(CacheConst.FILE_URL_CACHE, sign, FileCache.class);
-        TiAssert.isNotNull(fileCache, FileErrCode.FILE_NOT_EXIST);
-        FileInfo fileInfo = fileCache.getFileInfo();
-        if (Boolean.TRUE.equals(fileCache.getLimit())) {
-            fileCache.setLimited(true);
-            tiCacheTemplate.put(CacheConst.FILE_URL_CACHE, sign, fileCache);
+        FileCacheDTO fileCacheDTO = tiCacheTemplate.get(CacheConst.FILE_URL_CACHE, sign, FileCacheDTO.class);
+        TiAssert.isNotNull(fileCacheDTO, FileErrCode.FILE_NOT_EXIST);
+        FileInfo fileInfo = fileCacheDTO.getFileInfo();
+        if (Boolean.TRUE.equals(fileCacheDTO.getLimit())) {
+            fileCacheDTO.setLimited(true);
+            tiCacheTemplate.put(CacheConst.FILE_URL_CACHE, sign, fileCacheDTO);
         }
         download(fileInfo);
     }
 
     private void download(FileInfo fileInfo) {
-        File file = getFile(fileInfo);
+        TiAssert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST);
+        TiAssert.isTrue(fileInfo.isNormal(), FileErrCode.FILE_STATUS_ERROR);
+        String absolutePath = getAbsolutePath(fileInfo.getType(), fileInfo.getPath());
+        File file = new File(absolutePath);
+        TiAssert.isTrue(FileUtil.exist(file), FileErrCode.FILE_NOT_EXIST);
         try {
             response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
             response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLUtil.encodeAll(fileInfo.getOriginalFileName()));
@@ -195,15 +190,7 @@ public class FileInfoService {
         }
     }
 
-    private File getFile(FileInfo fileInfo) {
-        String absolutePath = getAbsolutePath(fileInfo.getType(), fileInfo.getPath());
-        File file = new File(absolutePath);
-        TiAssert.isTrue(FileUtil.exist(file), FileErrCode.FILE_NOT_EXIST);
-        return file;
-    }
-
     public String getUrl(Long id, Long expire, Boolean limit) {
-        TiAssert.isNotNull(id, TiBizErrCode.PARAM_ERROR, STORAGE_ID_NOT_BLANK);
         long seconds = TimeUnit.DAYS.toSeconds(7);
         if (expire != null) {
             TiAssert.isTrue(expire <= seconds, TiBizErrCode.PARAM_ERROR, "过期时间最长为7天");
@@ -216,6 +203,7 @@ public class FileInfoService {
 
     public String getUrl(FileInfo fileInfo, Long expire, Boolean limit) {
         TiAssert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST);
+        TiAssert.isTrue(fileInfo.isNormal(), FileErrCode.FILE_STATUS_ERROR);
         boolean normal = Objects.equals(fileInfo.getStatus(), FileInfoStatus.NORMAL.code());
         if (!normal) {
             return null;
@@ -232,12 +220,12 @@ public class FileInfoService {
             return domain + "/" + mvcResourcePath + "/" + fileInfo.getPath();
         }
         String sign = CommonUtil.fastShortUUID();
-        FileCache fileCache = new FileCache();
-        fileCache.setSign(sign);
-        fileCache.setFileInfo(fileInfo);
-        fileCache.setExpire(expire);
-        fileCache.setLimit(limit);
-        tiCacheTemplate.put(CacheConst.FILE_URL_CACHE, sign, fileCache);
+        FileCacheDTO fileCacheDTO = new FileCacheDTO();
+        fileCacheDTO.setSign(sign);
+        fileCacheDTO.setFileInfo(fileInfo);
+        fileCacheDTO.setExpire(expire);
+        fileCacheDTO.setLimit(limit);
+        tiCacheTemplate.put(CacheConst.FILE_URL_CACHE, sign, fileCacheDTO);
         return domain + "/file/download?sign=" + sign;
     }
 

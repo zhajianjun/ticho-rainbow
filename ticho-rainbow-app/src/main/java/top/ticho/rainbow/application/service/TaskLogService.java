@@ -18,7 +18,6 @@ import top.ticho.rainbow.domain.repository.TaskRepository;
 import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.core.constant.DictConst;
 import top.ticho.starter.view.core.TiPageResult;
-import top.ticho.starter.view.util.TiAssert;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -39,9 +38,13 @@ import java.util.stream.Collectors;
 @Service
 public class TaskLogService {
 
-    private final TaskLogRepository taskLogRepository;    private final TaskLogAssembler taskLogAssembler;    private final DictExecutor dictExecutor;    private final HttpServletResponse response;    private final TaskRepository taskRepository;
+    private final TaskLogRepository taskLogRepository;
+    private final TaskLogAssembler taskLogAssembler;
+    private final DictExecutor dictExecutor;
+    private final HttpServletResponse response;
+    private final TaskRepository taskRepository;
+
     public TaskLogDTO getById(Long id) {
-        TiAssert.isNotNull(id, "编号不能为空");
         TaskLog taskLog = taskLogRepository.find(id);
         return taskLogAssembler.toDTO(taskLog);
     }

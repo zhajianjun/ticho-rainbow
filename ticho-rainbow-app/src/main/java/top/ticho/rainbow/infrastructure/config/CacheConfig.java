@@ -3,8 +3,8 @@ package top.ticho.rainbow.infrastructure.config;
 import lombok.Getter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import top.ticho.rainbow.application.dto.FileCacheDTO;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
-import top.ticho.rainbow.infrastructure.persistence.po.FileCache;
 import top.ticho.starter.cache.config.TiCache;
 import top.ticho.starter.cache.config.TiCacheBatch;
 
@@ -50,10 +50,14 @@ public class CacheConfig {
         }
 
         /** key */
-        private final String key;        /** 过期策略;1-write,2-access */
-        private final Integer expireStrategy;        /** 过期时间（秒） */
-        private final int ttl;        /** 最大數量 */
-        private final int maxSize;    }
+        private final String key;
+        /** 过期策略;1-write,2-access */
+        private final Integer expireStrategy;
+        /** 过期时间（秒） */
+        private final int ttl;
+        /** 最大數量 */
+        private final int maxSize;
+    }
 
     @Bean
     public TiCacheBatch tiCacheBatch() {
@@ -81,11 +85,11 @@ public class CacheConfig {
     }
 
     @Bean
-    public TiCache<String, FileCache> fileInfoCache() {
-        return new TiCache<String, FileCache>() {
+    public TiCache<String, FileCacheDTO> fileInfoCache() {
+        return new TiCache<String, FileCacheDTO>() {
             @Override
             public String getName() {
-                return "";
+                return CacheConst.FILE_URL_CACHE;
             }
 
             @Override
@@ -99,17 +103,17 @@ public class CacheConfig {
             }
 
             @Override
-            public long expireAfterCreate(String key, FileCache value, long currentTime) {
+            public long expireAfterCreate(String key, FileCacheDTO value, long currentTime) {
                 return Duration.ofMillis(value.getExpire()).toNanos();
             }
 
             @Override
-            public long expireAfterUpdate(String key, FileCache value, long currentTime, long currentDuration) {
+            public long expireAfterUpdate(String key, FileCacheDTO value, long currentTime, long currentDuration) {
                 return Duration.ofMillis(value.getExpire()).toNanos();
             }
 
             @Override
-            public long expireAfterRead(String key, FileCache value, long currentTime, long currentDuration) {
+            public long expireAfterRead(String key, FileCacheDTO value, long currentTime, long currentDuration) {
                 return Duration.ofMillis(value.getExpire()).toNanos();
             }
 

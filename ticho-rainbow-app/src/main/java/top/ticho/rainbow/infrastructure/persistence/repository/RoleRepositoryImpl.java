@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, RolePO> implements RoleRepository {
     private final RoleConverter roleConverter;
+
     @Override
     @Cacheable(value = CacheConst.COMMON, key = "'ticho-rainbow:role:list'", sync = true)
     public List<Role> cacheList() {
@@ -64,7 +65,6 @@ public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, RolePO> imp
     public Role find(Long id) {
         return null;
     }
-
 
 
     @Override

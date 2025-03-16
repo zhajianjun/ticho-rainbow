@@ -22,6 +22,7 @@ import top.ticho.trace.common.prop.TraceProperty;
 public class EmailTask extends AbstracTask<MailContentDTO> {
 
     private final EmailRepository emailRepository;
+
     public EmailTask(Environment environment, TraceProperty traceProperty, TaskLogRepository taskLogRepository, EmailRepository emailRepository) {
         super(environment, traceProperty, taskLogRepository);
         this.emailRepository = emailRepository;

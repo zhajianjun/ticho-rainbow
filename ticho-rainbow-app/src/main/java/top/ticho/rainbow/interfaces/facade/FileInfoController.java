@@ -6,16 +6,15 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.rainbow.application.dto.response.ChunkCacheDTO;
-import top.ticho.rainbow.application.dto.response.FileInfoDTO;
 import top.ticho.rainbow.application.dto.command.FileChunkUploadCommand;
 import top.ticho.rainbow.application.dto.command.FileUploadCommand;
 import top.ticho.rainbow.application.dto.query.FileInfoQuery;
+import top.ticho.rainbow.application.dto.response.ChunkCacheDTO;
+import top.ticho.rainbow.application.dto.response.FileInfoDTO;
 import top.ticho.rainbow.application.service.FileInfoService;
 import top.ticho.starter.security.annotation.IgnoreJwtCheck;
 import top.ticho.starter.view.core.TiPageResult;
@@ -23,6 +22,7 @@ import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
 
@@ -38,11 +38,12 @@ import java.io.IOException;
 @RequestMapping("file")
 public class FileInfoController {
     private final FileInfoService fileInfoService;
+
     /**
      * 查询文件(分页)
      */
     @PreAuthorize("@perm.hasPerms('storage:file:page')")
-    @GetMapping
+    @GetMapping("page")
     public TiResult<TiPageResult<FileInfoDTO>> page(@Validated @RequestBody FileInfoQuery query) {
         return TiResult.ok(fileInfoService.page(query));
     }
@@ -60,7 +61,7 @@ public class FileInfoController {
      * 上传分片文件
      */
     @PreAuthorize("@file_perm.hasPerms('storage:file:uploadChunk')")
-    @PostMapping("uploadChunk")
+    @PostMapping("chunk/upload")
     public TiResult<ChunkCacheDTO> uploadChunk(@Validated FileChunkUploadCommand fileChunkUploadCommand) {
         return TiResult.ok(fileInfoService.uploadChunk(fileChunkUploadCommand));
     }
@@ -71,7 +72,7 @@ public class FileInfoController {
      * @param chunkId 分片id
      */
     @PreAuthorize("@perm.hasPerms('storage:file:composeChunk')")
-    @PostMapping("composeChunk")
+    @PostMapping("chunk/compose")
     public TiResult<FileInfoDTO> composeChunk(@NotBlank(message = "分片id不能为空") String chunkId) {
         return TiResult.ok(fileInfoService.composeChunk(chunkId));
     }
@@ -82,8 +83,8 @@ public class FileInfoController {
      * @param id 文件id
      */
     @PreAuthorize("@perm.hasPerms('storage:file:delete')")
-    @DeleteMapping("{id}")
-    public TiResult<Void> delete(@PathVariable("id") Long id) {
+    @DeleteMapping
+    public TiResult<Void> delete(@NotNull(message = "编号不能为空") Long id) {
         fileInfoService.delete(id);
         return TiResult.ok();
     }
@@ -94,8 +95,8 @@ public class FileInfoController {
      * @param id 文件id
      */
     @PreAuthorize("@perm.hasPerms('storage:file:enable')")
-    @PatchMapping("enable/{id}")
-    public TiResult<Void> enable(@PathVariable("id") Long id) {
+    @PatchMapping("enable")
+    public TiResult<Void> enable(@NotNull(message = "编号不能为空") Long id) {
         fileInfoService.enable(id);
         return TiResult.ok();
     }
@@ -106,8 +107,8 @@ public class FileInfoController {
      * @param id 文件id
      */
     @PreAuthorize("@perm.hasPerms('storage:file:disable')")
-    @PatchMapping("disable/{id}")
-    public TiResult<Void> disable(@PathVariable("id") Long id) {
+    @PatchMapping("disable")
+    public TiResult<Void> disable(@NotNull(message = "编号不能为空") Long id) {
         fileInfoService.disable(id);
         return TiResult.ok();
     }
@@ -118,58 +119,43 @@ public class FileInfoController {
      * @param id 文件id
      */
     @PreAuthorize("@perm.hasPerms('storage:file:cancel')")
-    @PatchMapping("cancel/{id}")
-    public TiResult<Void> cancel(@PathVariable("id") Long id) {
+    @PatchMapping("cancel")
+    public TiResult<Void> cancel(@NotNull(message = "编号不能为空") Long id) {
         fileInfoService.cancel(id);
         return TiResult.ok();
     }
 
-
     /**
      * 下载文件
-     *
-     * @param id 文件id
-     */
-    @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('storage:file:downloadById')")
-    @GetMapping("downloadById/{id}")
-    public void downloadById(@PathVariable("id") Long id) {
-        fileInfoService.downloadById(id);
-    }
-
-    /**
-     * 下载文件(公共)
      *
      * @param sign 签名
      */
     @TiView(ignore = true)
     @IgnoreJwtCheck
     @GetMapping("download")
-    public void download(String sign) {
+    public void download(@NotBlank(message = "签名不能为空") String sign) {
         fileInfoService.download(sign);
     }
 
     /**
-     * 查询下载链接
+     * 获取下载链接
      *
      * @param id     文件id
      * @param expire 过期时间， <=7天，默认30分钟，单位：秒
-     * @param limit  是否限制
+     * @param limit  是否限制 true 链接只能使用一次，false 过期时间内不限制
      */
     @PreAuthorize("@perm.hasPerms('storage:file:getUrl')")
-    @GetMapping("getUrl")
+    @GetMapping("presigned")
     public TiResult<String> getUrl(Long id, Long expire, Boolean limit) {
         return TiResult.ok(fileInfoService.getUrl(id, expire, limit));
     }
 
     /**
      * 导出文件信息
-     *
-     * @throws IOException io异常
      */
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('storage:file:expExcel')")
-    @GetMapping("expExcel")
+    @GetMapping("excel/export")
     public void expExcel(@Validated @RequestBody FileInfoQuery query) throws IOException {
         fileInfoService.expExcel(query);
     }

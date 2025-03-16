@@ -28,6 +28,7 @@ public class FileProperty {
     private DataSize maxPartSize = DataSize.ofMegabytes(5L);
     /** 大文件大小限制，默认1GB */
     private DataSize maxBigFileSize = DataSize.ofGigabytes(1L);
+
     public String getRootPath() {
         if (Objects.isNull(this.rootPath) || Objects.equals(this.rootPath, File.separator)) {
             return File.separator;

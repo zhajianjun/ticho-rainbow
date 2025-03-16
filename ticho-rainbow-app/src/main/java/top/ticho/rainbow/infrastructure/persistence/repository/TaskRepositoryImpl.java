@@ -29,6 +29,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class TaskRepositoryImpl extends TiRepositoryImpl<TaskMapper, TaskPO> implements TaskRepository {
     private final TaskConverter taskConverter;
+
     @Override
     public boolean save(Task task) {
         TaskPO taskPO = taskConverter.toPo(task);

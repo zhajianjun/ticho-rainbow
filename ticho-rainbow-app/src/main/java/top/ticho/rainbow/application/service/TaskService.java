@@ -16,8 +16,8 @@ import top.ticho.rainbow.application.dto.query.TaskQuery;
 import top.ticho.rainbow.application.dto.response.TaskDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
 import top.ticho.rainbow.domain.entity.Task;
+import top.ticho.rainbow.domain.entity.vo.TaskModifyVo;
 import top.ticho.rainbow.domain.repository.TaskRepository;
-import top.ticho.rainbow.domain.vo.TaskModifyVo;
 import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
 import top.ticho.rainbow.infrastructure.core.component.TaskTemplate;
 import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
@@ -48,7 +48,13 @@ import java.util.stream.Collectors;
 @Service
 public class TaskService implements InitializingBean {
     public static final String DEFAULT_JOB_GROUP = "DEFAULT_JOB_GROUP";
-    private final TaskRepository taskRepository;    private final TaskAssembler taskAssembler;    private final List<AbstracTask<?>> abstracTasks;    private final TaskTemplate taskTemplate;    private final DictExecutor dictExecutor;    private final HttpServletResponse response;
+    private final TaskRepository taskRepository;
+    private final TaskAssembler taskAssembler;
+    private final List<AbstracTask<?>> abstracTasks;
+    private final TaskTemplate taskTemplate;
+    private final DictExecutor dictExecutor;
+    private final HttpServletResponse response;
+
     public void afterPropertiesSet() {
         List<Task> tasks = taskRepository.list(new TaskQuery());
         List<String> jobs = taskTemplate.listJobs();
@@ -102,14 +108,14 @@ public class TaskService implements InitializingBean {
     }
 
     public void remove(Long id) {
-        TiAssert.isNotNull(id, "编号不能为空");
         TiAssert.isTrue(taskRepository.remove(id), TiBizErrCode.FAIL, "删除失败");
         boolean deleteJob = taskTemplate.deleteJob(id.toString(), DEFAULT_JOB_GROUP);
         TiAssert.isTrue(deleteJob, TiBizErrCode.FAIL, "删除任务失败");
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void modify(Long id, TaskModifyCommand taskModifyCommand) {
+    public void modify(TaskModifyCommand taskModifyCommand) {
+        Long id = taskModifyCommand.getId();
         check(taskModifyCommand.getCronExpression(), taskModifyCommand.getContent(), taskModifyCommand.getParam());
         Task task = taskRepository.find(id);
         TaskModifyVo taskModifyVo = taskAssembler.toVo(taskModifyCommand);
@@ -130,7 +136,6 @@ public class TaskService implements InitializingBean {
     }
 
     public void runOnce(Long id, String param) {
-        TiAssert.isNotNull(id, "编号不能为空");
         Task task = taskRepository.find(id);
         TiAssert.isNotNull(task, TiBizErrCode.FAIL, "任务不存在");
         boolean exists = taskTemplate.checkExists(task.getId().toString(), DEFAULT_JOB_GROUP);
@@ -141,7 +146,6 @@ public class TaskService implements InitializingBean {
     }
 
     public void pause(Long id) {
-        TiAssert.isNotNull(id, "编号不能为空");
         Task task = taskRepository.find(id);
         TiAssert.isNotNull(task, TiBizErrCode.FAIL, "任务不存在");
         Integer status = task.getStatus();
@@ -155,7 +159,6 @@ public class TaskService implements InitializingBean {
     }
 
     public void resume(Long id) {
-        TiAssert.isNotNull(id, "编号不能为空");
         Task task = taskRepository.find(id);
         TiAssert.isNotNull(task, TiBizErrCode.FAIL, "任务不存在");
         Integer status = task.getStatus();
@@ -177,7 +180,6 @@ public class TaskService implements InitializingBean {
 
 
     public TaskDTO getById(Long id) {
-        TiAssert.isNotNull(id, "编号不能为空");
         Task task = taskRepository.find(id);
         return taskAssembler.toDTO(task);
     }

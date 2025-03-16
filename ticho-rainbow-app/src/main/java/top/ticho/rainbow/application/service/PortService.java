@@ -8,12 +8,15 @@ import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.assembler.PortAssembler;
-import top.ticho.rainbow.application.dto.PortDTO;
+import top.ticho.rainbow.application.dto.command.PortModifyfCommand;
+import top.ticho.rainbow.application.dto.command.PortSaveCommand;
 import top.ticho.rainbow.application.dto.excel.PortExp;
 import top.ticho.rainbow.application.dto.query.PortQuery;
+import top.ticho.rainbow.application.dto.response.PortDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.domain.entity.Port;
+import top.ticho.rainbow.domain.entity.vo.PortModifyfVO;
 import top.ticho.rainbow.domain.repository.ClientRepository;
 import top.ticho.rainbow.domain.repository.PortRepository;
 import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
@@ -21,7 +24,6 @@ import top.ticho.rainbow.infrastructure.core.constant.DictConst;
 import top.ticho.rainbow.infrastructure.core.enums.ProtocolType;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.util.TiAssert;
-import top.ticho.starter.web.util.valid.TiValidGroup;
 import top.ticho.starter.web.util.valid.TiValidUtil;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 import top.ticho.tool.intranet.server.entity.PortInfo;
@@ -48,18 +50,22 @@ import java.util.stream.Collectors;
 @Service
 public class PortService {
 
-    private final PortRepository portRepository;    private final PortAssembler portAssembler;    private final ClientRepository clientRepository;    private final ServerHandler serverHandler;    private final DictExecutor dictExecutor;    private final HttpServletResponse response;
-    public void save(PortDTO portDTO) {
-        TiValidUtil.valid(portDTO);
-        portDTO.setId(null);
-        check(portDTO);
-        Port port = portAssembler.toEntity(portDTO);
+    private final PortRepository portRepository;
+    private final PortAssembler portAssembler;
+    private final ClientRepository clientRepository;
+    private final ServerHandler serverHandler;
+    private final DictExecutor dictExecutor;
+    private final HttpServletResponse response;
+
+    public void save(PortSaveCommand portSaveCommand) {
+        TiValidUtil.valid(portSaveCommand);
+        check(null, portSaveCommand.getAccessKey(), portSaveCommand.getPort(), portSaveCommand.getDomain(), portSaveCommand.getType());
+        Port port = portAssembler.toEntity(portSaveCommand);
         TiAssert.isTrue(portRepository.save(port), "保存失败");
-        savePortInfo(portDTO.getPort());
+        savePortInfo(portSaveCommand.getPort());
     }
 
     public void remove(Long id) {
-        TiAssert.isNotNull(id, "编号不能为空");
         Port dbPort = portRepository.find(id);
         TiAssert.isNotNull(dbPort, "删除失败，数据不存在");
         TiAssert.isTrue(portRepository.remove(id), "删除失败");
@@ -67,20 +73,20 @@ public class PortService {
 
     }
 
-    public void modify(PortDTO portDTO) {
-        TiValidUtil.valid(portDTO, TiValidGroup.Upd.class);
-        Port dbPort = portRepository.find(portDTO.getId());
-        TiAssert.isNotNull(dbPort, "修改失败，数据不存在");
+    public void modify(PortModifyfCommand portModifyfCommand) {
+        TiValidUtil.valid(portModifyfCommand);
+        Port port = portRepository.find(portModifyfCommand.getId());
+        TiAssert.isNotNull(port, "修改失败，数据不存在");
         // accessKey不可修改
-        portDTO.setAccessKey(dbPort.getAccessKey());
-        check(portDTO);
-        Port port = portAssembler.toEntity(portDTO);
+        portModifyfCommand.setAccessKey(port.getAccessKey());
+        check(portModifyfCommand.getId(), portModifyfCommand.getAccessKey(), portModifyfCommand.getPort(), portModifyfCommand.getDomain(), portModifyfCommand.getType());
+        PortModifyfVO portModifyfVO = portAssembler.toModifyfVO(portModifyfCommand);
+        port.modify(portModifyfVO);
         TiAssert.isTrue(portRepository.modify(port), "修改失败");
-        updatePortInfo(dbPort);
+        updatePortInfo(port);
     }
 
     public PortDTO getById(Long id) {
-        TiAssert.isNotNull(id, "编号不能为空");
         Port port = portRepository.find(id);
         PortDTO portDTO = portAssembler.toDTO(port);
         fillChannelStatus(portDTO);
@@ -135,19 +141,18 @@ public class PortService {
     /**
      * 通用检查
      */
-    public void check(PortDTO portDTO) {
-        Client client = clientRepository.findByAccessKey(portDTO.getAccessKey());
+    public void check(Long id, String accessKey, Integer port, String domain, Integer type) {
+        Client client = clientRepository.findByAccessKey(accessKey);
         TiAssert.isNotNull(client, "客户端信息不存在");
-        Port dbPortByNum = portRepository.getByPortExcludeId(portDTO.getId(), portDTO.getPort());
+        Port dbPortByNum = portRepository.getByPortExcludeId(id, port);
         TiAssert.isNull(dbPortByNum, "端口已存在");
-        String domain = portDTO.getDomain();
-        boolean isHttps = ProtocolType.HTTPS.compareTo(ProtocolType.getByCode(portDTO.getType())) == 0;
+        boolean isHttps = ProtocolType.HTTPS.compareTo(ProtocolType.getByCode(type)) == 0;
         if (isHttps) {
             TiAssert.isNotBlank(domain, "Https域名不能为空");
             TiAssert.isTrue(ReUtil.isMatch("^([a-z0-9-]+\\.)+[a-z]{2,}(/\\S*)?$", domain), "域名格式不正确");
         }
         if (StrUtil.isNotBlank(domain)) {
-            Port dbPortByDomain = portRepository.getByDomainExcludeId(portDTO.getId(), domain);
+            Port dbPortByDomain = portRepository.getByDomainExcludeId(id, domain);
             TiAssert.isNull(dbPortByDomain, "域名已存在");
         }
     }

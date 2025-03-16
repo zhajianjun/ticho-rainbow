@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * 分片文件信息
+ * 分片文件上传
  *
  * @author zhajianjun
  * @date 2024-02-19 12:08
@@ -27,14 +27,14 @@ public class FileChunkUploadCommand {
     /** md5 */
     private String md5;
     /** 文件名 */
-    @Size(max = 100, message = "文件名过长，1-100字符以内！")
+    @Size(max = 100, min = 1, message = "文件名过长，{min}-{max}字符以内！")
     private String fileName;
     /** 文件大小 */
     @NotNull(message = "文件大小不能空")
     private Long fileSize;
     /** 分片数量 */
     @NotNull(message = "分片数量不能为空")
-    @Min(value = 1, message = "分片数量最小为1")
+    @Min(value = 1, message = "分片数量最小为{value}")
     private Integer chunkCount;
     /** 分片文件 */
     @NotNull(message = "分片文件不能空")

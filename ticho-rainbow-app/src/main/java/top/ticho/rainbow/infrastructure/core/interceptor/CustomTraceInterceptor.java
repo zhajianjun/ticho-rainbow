@@ -26,6 +26,7 @@ public class CustomTraceInterceptor implements HandlerInterceptor, Ordered {
 
     /** 链路配置 */
     private final TraceProperty traceProperty;
+
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
         if (!(handler instanceof HandlerMethod)) {

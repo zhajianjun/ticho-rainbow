@@ -5,7 +5,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +19,7 @@ import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 
@@ -35,6 +35,7 @@ import java.util.List;
 @RequestMapping("task")
 public class TaskController {
     private final TaskService taskService;
+
     /**
      * 保存计划任务
      */
@@ -51,21 +52,19 @@ public class TaskController {
      * @param id 编号
      */
     @PreAuthorize("@perm.hasPerms('system:task:remove')")
-    @DeleteMapping("{id}")
-    public TiResult<Void> remove(@PathVariable("id") Long id) {
+    @DeleteMapping
+    public TiResult<Void> remove(@NotNull(message = "编号不能为空") Long id) {
         taskService.remove(id);
         return TiResult.ok();
     }
 
     /**
      * 修改计划任务
-     *
-     * @param id 编号
      */
     @PreAuthorize("@perm.hasPerms('system:task:modify')")
-    @PutMapping("{id}")
-    public TiResult<Void> modify(@PathVariable("id") Long id, @Validated @RequestBody TaskModifyCommand taskModifyCommand) {
-        taskService.modify(id, taskModifyCommand);
+    @PutMapping
+    public TiResult<Void> modify(@Validated @RequestBody TaskModifyCommand taskModifyCommand) {
+        taskService.modify(taskModifyCommand);
         return TiResult.ok();
     }
 
@@ -77,7 +76,7 @@ public class TaskController {
      */
     @PreAuthorize("@perm.hasPerms('system:task:runOnce')")
     @GetMapping("runOnce")
-    public TiResult<Void> runOnce(Long id, String param) {
+    public TiResult<Void> runOnce(@NotNull(message = "编号不能为空") Long id, String param) {
         taskService.runOnce(id, param);
         return TiResult.ok();
     }
@@ -90,7 +89,7 @@ public class TaskController {
      */
     @PreAuthorize("@perm.hasPerms('system:task:pause')")
     @GetMapping("pause")
-    public TiResult<Void> pause(Long id) {
+    public TiResult<Void> pause(@NotNull(message = "编号不能为空") Long id) {
         taskService.pause(id);
         return TiResult.ok();
     }
@@ -102,7 +101,7 @@ public class TaskController {
      */
     @PreAuthorize("@perm.hasPerms('system:task:resume')")
     @GetMapping("resume")
-    public TiResult<Void> resume(Long id) {
+    public TiResult<Void> resume(@NotNull(message = "编号不能为空") Long id) {
         taskService.resume(id);
         return TiResult.ok();
     }
@@ -125,8 +124,8 @@ public class TaskController {
      * @param id 编号
      */
     @PreAuthorize("@perm.hasPerms('system:task:getById')")
-    @GetMapping(("{id}"))
-    public TiResult<TaskDTO> getById(@PathVariable("id") Long id) {
+    @GetMapping()
+    public TiResult<TaskDTO> getById(@NotNull(message = "编号不能为空") Long id) {
         return TiResult.ok(taskService.getById(id));
     }
 
@@ -134,8 +133,8 @@ public class TaskController {
      * 查询所有计划任务(分页)
      */
     @PreAuthorize("@perm.hasPerms('system:task:page')")
-    @GetMapping
-    public TiResult<TiPageResult<TaskDTO>> page(@RequestBody TaskQuery query) {
+    @GetMapping("page")
+    public TiResult<TiPageResult<TaskDTO>> page(@Validated @RequestBody TaskQuery query) {
         return TiResult.ok(taskService.page(query));
     }
 
@@ -144,7 +143,7 @@ public class TaskController {
      */
     @PreAuthorize("@perm.hasPerms('system:task:all')")
     @GetMapping("all")
-    public TiResult<List<TaskDTO>> list(TaskQuery query) {
+    public TiResult<List<TaskDTO>> list(@Validated TaskQuery query) {
         return TiResult.ok(taskService.list(query));
     }
 
@@ -153,8 +152,8 @@ public class TaskController {
      */
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:task:expExcel')")
-    @PostMapping("expExcel")
-    public void expExcel(@RequestBody TaskQuery query) throws IOException {
+    @GetMapping("excel/export")
+    public void expExcel(@Validated @RequestBody TaskQuery query) throws IOException {
         taskService.expExcel(query);
     }
 

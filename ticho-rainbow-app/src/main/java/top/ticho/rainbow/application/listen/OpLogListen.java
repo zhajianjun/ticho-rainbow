@@ -25,13 +25,16 @@ import java.util.stream.Stream;
 @Slf4j
 @Component
 public class OpLogListen {
-    private final AntPathMatcher antPathMatcher = new AntPathMatcher();    private final List<String> ignorePaths = Stream.of(
+    private final AntPathMatcher antPathMatcher = new AntPathMatcher();
+    private final List<String> ignorePaths = Stream.of(
         "/opLog/page",
         "/file/uploadChunk",
         "/oauth/imgCode"
     ).collect(Collectors.toList());
 
-    private final OpLogRepository opLogRepository;    private final OpLogAssembler opLogAssembler;
+    private final OpLogRepository opLogRepository;
+    private final OpLogAssembler opLogAssembler;
+
     @Async("asyncTaskExecutor")
     @EventListener(value = TiWebLogEvent.class)
     public void logEventHandle(TiWebLogEvent webLogEvent) {

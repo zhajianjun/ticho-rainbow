@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * 文件表
+ * 文件上传
  *
  * @author zhajianjun
  * @date 2024-02-18 12:08
@@ -26,7 +26,7 @@ public class FileUploadCommand {
     /** 相对位置，不包含文件名 */
     private String relativePath;
     /** 备注 */
-    @Size(max = 50, message = "备注过长，1-50字符以内！")
+    @Size(max = 50, min = 1, message = "备注过长，{min}-{max}字符以内！")
     private String remark;
 
 }

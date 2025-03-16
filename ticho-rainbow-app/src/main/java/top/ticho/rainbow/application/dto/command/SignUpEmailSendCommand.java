@@ -6,7 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 /**
- * 邮箱验证码发送时图片验证码DTO
+ * 注册邮箱发送验证码
  *
  * @author zhajianjun
  * @date 2024-02-12 20:19

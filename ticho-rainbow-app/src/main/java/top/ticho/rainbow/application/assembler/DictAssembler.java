@@ -6,7 +6,7 @@ import top.ticho.rainbow.application.dto.command.DictModifyCommand;
 import top.ticho.rainbow.application.dto.command.DictSaveCommand;
 import top.ticho.rainbow.application.dto.response.DictDTO;
 import top.ticho.rainbow.domain.entity.Dict;
-import top.ticho.rainbow.domain.vo.DictModifyVO;
+import top.ticho.rainbow.domain.entity.vo.DictModifyVO;
 import top.ticho.rainbow.infrastructure.core.enums.YesOrNo;
 
 import java.util.Objects;

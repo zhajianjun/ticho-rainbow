@@ -17,6 +17,7 @@ import lombok.EqualsAndHashCode;
 public class RoleMenuPO extends Model<RoleMenuPO> {
 
     /** 角色id */
-    private Long roleId;    /** 菜单id */
+    private Long roleId;
+    /** 菜单id */
     private Long menuId;
 }

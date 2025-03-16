@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.Version;
 import lombok.Builder;
 import lombok.Getter;
+import top.ticho.rainbow.domain.entity.vo.PortModifyfVO;
 
 import java.time.LocalDateTime;
 
@@ -19,23 +20,51 @@ import java.time.LocalDateTime;
 public class Port {
 
     /** 主键标识 */
-    private Long id;    /** 客户端秘钥 */
-    private String accessKey;    /** 主机端口 */
-    private Integer port;    /** 客户端地址 */
-    private String endpoint;    /** 域名 */
+    private Long id;
+    /** 客户端秘钥 */
+    private String accessKey;
+    /** 主机端口 */
+    private Integer port;
+    /** 客户端地址 */
+    private String endpoint;
+    /** 域名 */
     @TableField(updateStrategy = FieldStrategy.IGNORED)
-    private String domain;    /** 状态;1-启用,0-停用 */
-    private Integer status;    /** 过期时间 */
+    private String domain;
+    /** 状态;1-启用,0-停用 */
+    private Integer status;
+    /** 过期时间 */
     @TableField(updateStrategy = FieldStrategy.IGNORED)
-    private LocalDateTime expireAt;    /** 协议类型 */
-    private Integer type;    /** 排序 */
-    private Integer sort;    /** 备注信息 */
+    private LocalDateTime expireAt;
+    /** 协议类型 */
+    private Integer type;
+    /** 排序 */
+    private Integer sort;
+    /** 备注信息 */
     @TableField(updateStrategy = FieldStrategy.IGNORED)
-    private String remark;    /** 版本号 */
+    private String remark;
+    /** 版本号 */
     @Version
-    private Long version;    /** 创建人 */
-    private String createBy;    /** 创建时间 */
-    private LocalDateTime createTime;    /** 修改人 */
-    private String updateBy;    /** 修改时间 */
+    private Long version;
+    /** 创建人 */
+    private String createBy;
+    /** 创建时间 */
+    private LocalDateTime createTime;
+    /** 修改人 */
+    private String updateBy;
+    /** 修改时间 */
     private LocalDateTime updateTime;
+
+    public void modify(PortModifyfVO portModifyfVO) {
+        this.accessKey = portModifyfVO.getAccessKey();
+        this.port = portModifyfVO.getPort();
+        this.endpoint = portModifyfVO.getEndpoint();
+        this.domain = portModifyfVO.getDomain();
+        this.status = portModifyfVO.getStatus();
+        this.expireAt = portModifyfVO.getExpireAt();
+        this.type = portModifyfVO.getType();
+        this.sort = portModifyfVO.getSort();
+        this.remark = portModifyfVO.getRemark();
+        this.version = portModifyfVO.getVersion();
+    }
+
 }

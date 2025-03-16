@@ -10,7 +10,6 @@ import top.ticho.tool.intranet.server.entity.ClientInfo;
 import top.ticho.tool.intranet.server.handler.ServerHandler;
 import top.ticho.trace.common.prop.TraceProperty;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -22,7 +21,9 @@ import java.util.List;
 @Component
 public class IntranetTask extends AbstracTask<String> {
 
-    private final ClientService clientService;    private final ServerHandler serverHandler;
+    private final ClientService clientService;
+    private final ServerHandler serverHandler;
+
     public IntranetTask(Environment environment, TraceProperty traceProperty, TaskLogRepository taskLogRepository, ClientService clientService, ServerHandler serverHandler) {
         super(environment, traceProperty, taskLogRepository);
         this.clientService = clientService;
