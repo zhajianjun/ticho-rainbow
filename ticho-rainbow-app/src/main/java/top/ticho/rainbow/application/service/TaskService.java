@@ -151,7 +151,7 @@ public class TaskService implements InitializingBean {
         Integer status = task.getStatus();
         TiAssert.isTrue(Objects.equals(status, 1), TiBizErrCode.FAIL, "任务未启动");
         boolean exists = taskTemplate.checkExists(id.toString(), DEFAULT_JOB_GROUP);
-        boolean updated = taskRepository.updateStatusBatch(Collections.singletonList(id), 0);
+        boolean updated = taskRepository.modifyStatusBatch(Collections.singletonList(id), 0);
         TiAssert.isTrue(updated, TiBizErrCode.FAIL, "暂停任务失败");
         TiAssert.isTrue(exists, TiBizErrCode.FAIL, "任务不存在");
         boolean pauseJob = taskTemplate.pauseJob(id.toString(), DEFAULT_JOB_GROUP);
@@ -163,8 +163,8 @@ public class TaskService implements InitializingBean {
         TiAssert.isNotNull(task, TiBizErrCode.FAIL, "任务不存在");
         Integer status = task.getStatus();
         TiAssert.isTrue(Objects.equals(status, 0), TiBizErrCode.FAIL, "任务已启动");
-        boolean updated = taskRepository.updateStatusBatch(Collections.singletonList(id), 1);
-        TiAssert.isTrue(updated, TiBizErrCode.FAIL, "恢复任务失败");
+        boolean modify = taskRepository.modifyStatusBatch(Collections.singletonList(id), 1);
+        TiAssert.isTrue(modify, TiBizErrCode.FAIL, "恢复任务失败");
         boolean exists = taskTemplate.checkExists(id.toString(), DEFAULT_JOB_GROUP);
         TiAssert.isTrue(exists, TiBizErrCode.FAIL, "任务不存在");
         boolean resumeJob = taskTemplate.resumeJob(id.toString(), DEFAULT_JOB_GROUP);

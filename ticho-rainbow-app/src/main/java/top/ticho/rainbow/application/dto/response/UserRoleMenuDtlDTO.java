@@ -1,35 +1,25 @@
-package top.ticho.rainbow.application.dto;
+package top.ticho.rainbow.application.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import top.ticho.starter.web.util.valid.TiValidGroup;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 用户信息DTO
+ * 用户角色菜单功能号详情
  *
  * @author zhajianjun
- * @date 2024-01-08 20:30
+ * @date 2023-12-17 08:30
  */
 @Data
-public class UserDTO {
+public class UserRoleMenuDtlDTO {
 
     /** 主键编号 */
-    @NotNull(message = "主键编号不能为空", groups = TiValidGroup.Upd.class)
     private Long id;
     /** 账户;账户具有唯一性 */
-    @NotBlank(message = "账户不能为空")
     private String username;
-    /** 密码 */
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @NotBlank(message = "密码不能为空", groups = TiValidGroup.Add.class)
-    private String password;
     /** 昵称 */
     private String nickname;
     /** 真实姓名 */
@@ -66,12 +56,17 @@ public class UserDTO {
     private Integer status;
     /** 备注信息 */
     private String remark;
-    /** 创建时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private LocalDateTime createTime;
-    /** 角色编号列表 */
+    /** 角色id列表 */
     private List<Long> roleIds;
+    /** 角色code列表 */
+    private List<String> roleCodes;
+    /** 菜单id列表 */
+    private List<Long> menuIds;
+    /** 权限标识 */
+    private List<String> perms;
     /** 角色信息 */
     private List<RoleDTO> roles;
+    /** 菜单信息 */
+    private List<MenuDtlDTO> menus;
 
 }

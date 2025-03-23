@@ -1,12 +1,10 @@
 package top.ticho.rainbow.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import top.ticho.rainbow.application.dto.UserHelper;
+import top.ticho.rainbow.domain.entity.vo.UserModifyVO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,9 +16,6 @@ import java.time.LocalDateTime;
  * @date 2024-01-08 20:30
  */
 @Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class User implements UserHelper {
 
@@ -75,4 +70,21 @@ public class User implements UserHelper {
     private String updateBy;
     /** 修改时间 */
     private LocalDateTime updateTime;
+
+    public void modify(UserModifyVO modifyVo) {
+        this.nickname = modifyVo.getNickname();
+        this.email = modifyVo.getEmail();
+        this.mobile = modifyVo.getMobile();
+        this.remark = modifyVo.getRemark();
+        this.version = modifyVo.getVersion();
+    }
+
+    public void modifyPassword(String password) {
+        this.password = password;
+    }
+
+    public void modifyPhoto(String photo) {
+        this.photo = photo;
+    }
+
 }

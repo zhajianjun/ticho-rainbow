@@ -1,4 +1,4 @@
-package top.ticho.rainbow.application.dto;
+package top.ticho.rainbow.application.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

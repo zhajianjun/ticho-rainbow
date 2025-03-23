@@ -69,7 +69,7 @@ public class TaskRepositoryImpl extends TiRepositoryImpl<TaskMapper, TaskPO> imp
     }
 
     @Override
-    public boolean updateStatusBatch(Collection<Long> ids, Integer status) {
+    public boolean modifyStatusBatch(Collection<Long> ids, Integer status) {
         if (CollUtil.isEmpty(ids) || Objects.isNull(status)) {
             return false;
         }

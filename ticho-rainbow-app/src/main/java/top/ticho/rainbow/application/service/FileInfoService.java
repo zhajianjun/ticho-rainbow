@@ -501,6 +501,13 @@ public class FileInfoService {
 
     /**
      * 获取绝对路径
+     */
+    public String getAbsolutePath(FileInfo fileInfo) {
+        return getAbsolutePath(fileInfo.getType(), fileInfo.getPath());
+    }
+
+    /**
+     * 获取绝对路径
      *
      * @param type 存储类型
      * @param path 文件相对路径
@@ -515,13 +522,6 @@ public class FileInfoService {
             prefixPath = fileProperty.getPrivatePath();
         }
         return prefixPath + path;
-    }
-
-    /**
-     * 获取绝对路径
-     */
-    public String getAbsolutePath(FileInfo fileInfo) {
-        return getAbsolutePath(fileInfo.getType(), fileInfo.getPath());
     }
 
 }

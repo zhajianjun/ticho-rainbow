@@ -10,7 +10,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.ticho.rainbow.application.dto.query.UserAccountQuery;
 import top.ticho.rainbow.application.dto.query.UserQuery;
 import top.ticho.rainbow.domain.entity.User;
 import top.ticho.rainbow.domain.repository.UserRepository;
@@ -63,6 +62,12 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
     }
 
     @Override
+    public User find(Long id) {
+        UserPO userPO = getById(id);
+        return userConverter.toEntity(userPO);
+    }
+
+    @Override
     @Cacheable(value = CacheConst.USER_INFO, key = "#username")
     public User getCacheByUsername(String username) {
         return getByUsername(username);
@@ -90,7 +95,7 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
     }
 
     @Override
-    public Integer updateStatus(Collection<String> usernames, Integer status, Collection<Integer> eqDbStatus, Collection<Integer> neDbStatus) {
+    public Integer modifyStatus(Collection<String> usernames, Integer status, Collection<Integer> eqDbStatus, Collection<Integer> neDbStatus) {
         if (CollUtil.isEmpty(usernames)) {
             return 0;
         }
@@ -151,17 +156,12 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
     }
 
     @Override
-    public List<User> getByAccount(UserAccountQuery userAccountQuery) {
-        String username = userAccountQuery.getUsername();
-        String email = userAccountQuery.getEmail();
-        String mobile = userAccountQuery.getMobile();
-        List<Integer> status = userAccountQuery.getStatus();
+    public List<User> getByAccount(String username, String email, String mobile) {
         if (StrUtil.isAllBlank(username, email, mobile)) {
             return Collections.emptyList();
         }
         LambdaQueryWrapper<UserPO> wrapper = Wrappers.lambdaQuery();
         wrapper
-            .eq(CollUtil.isNotEmpty(status), UserPO::getStatus, status)
             .and(x ->
                 x.eq(StrUtil.isNotBlank(username), UserPO::getUsername, username)
                     .or()

@@ -5,8 +5,8 @@ import cn.hutool.core.util.StrUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import top.ticho.rainbow.application.dto.MenuDTO;
-import top.ticho.rainbow.application.dto.RouteDTO;
-import top.ticho.rainbow.application.dto.RouteMetaDTO;
+import top.ticho.rainbow.application.dto.response.RouteDTO;
+import top.ticho.rainbow.application.dto.response.RouteMetaDTO;
 import top.ticho.rainbow.application.dto.response.MenuDtlDTO;
 import top.ticho.rainbow.domain.entity.Menu;
 

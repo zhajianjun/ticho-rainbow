@@ -8,6 +8,7 @@ import top.ticho.rainbow.application.dto.excel.DictExp;
 import top.ticho.rainbow.application.dto.response.DictLabelDTO;
 import top.ticho.rainbow.domain.entity.DictLabel;
 import top.ticho.rainbow.domain.entity.vo.DictLabelModifyVO;
+import top.ticho.starter.web.util.TiIdUtil;
 
 /**
  * 字典标签 转换
@@ -15,11 +16,11 @@ import top.ticho.rainbow.domain.entity.vo.DictLabelModifyVO;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", imports = {TiIdUtil.class})
 public interface DictLabelAssembler {
 
+    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
     @Mapping(target = "version", ignore = true)
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "createTime", ignore = true)
     @Mapping(target = "createBy", ignore = true)
     DictLabel toEntity(DictLabelSaveCommand dictLabelSaveCommand);

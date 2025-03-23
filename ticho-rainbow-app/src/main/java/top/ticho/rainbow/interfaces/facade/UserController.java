@@ -13,17 +13,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import top.ticho.rainbow.application.dto.PasswordDTO;
-import top.ticho.rainbow.application.dto.UserDTO;
-import top.ticho.rainbow.application.dto.UserPasswordDTO;
-import top.ticho.rainbow.application.dto.UserRoleDTO;
-import top.ticho.rainbow.application.dto.UserRoleMenuDtlDTO;
+import top.ticho.rainbow.application.dto.command.UserModifySelfPasswordCommand;
+import top.ticho.rainbow.application.dto.response.UserDTO;
+import top.ticho.rainbow.application.dto.command.UserModifyPasswordCommand;
+import top.ticho.rainbow.application.dto.command.UserBindRoleCommand;
+import top.ticho.rainbow.application.dto.response.UserRoleMenuDtlDTO;
+import top.ticho.rainbow.application.dto.command.UseModifyCommand;
+import top.ticho.rainbow.application.dto.command.UseModifySelfCommand;
+import top.ticho.rainbow.application.dto.command.UseSaveCommand;
 import top.ticho.rainbow.application.dto.query.UserQuery;
 import top.ticho.rainbow.application.service.UserService;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 
@@ -45,8 +49,8 @@ public class UserController {
      */
     @PreAuthorize("@perm.hasPerms('system:user:save')")
     @PostMapping
-    public TiResult<Void> save(@RequestBody UserDTO userDTO) {
-        userService.save(userDTO);
+    public TiResult<Void> save(@Validated @RequestBody UseSaveCommand useSaveCommand) {
+        userService.save(useSaveCommand);
         return TiResult.ok();
     }
 
@@ -57,7 +61,7 @@ public class UserController {
      */
     @PreAuthorize("@perm.hasPerms('system:user:uploadAvatar')")
     @PostMapping("avatar")
-    public TiResult<String> uploadAvatar(@RequestPart("file") MultipartFile file) {
+    public TiResult<String> uploadAvatar(@NotNull(message = "请上传头像") MultipartFile file) {
         return TiResult.ok(userService.uploadAvatar(file));
     }
 
@@ -69,7 +73,7 @@ public class UserController {
      */
     @PreAuthorize("@perm.hasPerms('system:user:remove')")
     @DeleteMapping
-    public TiResult<Void> remove(@RequestBody List<String> usernames) {
+    public TiResult<Void> remove(@Validated @RequestBody List<String> usernames) {
         userService.remove(usernames);
         return TiResult.ok();
     }
@@ -79,8 +83,8 @@ public class UserController {
      */
     @PreAuthorize("@perm.hasPerms('system:user:modify')")
     @PutMapping
-    public TiResult<Void> modify(@RequestBody UserDTO userDTO) {
-        userService.modify(userDTO);
+    public TiResult<Void> modify(@Validated @RequestBody UseModifyCommand useModifyCommand) {
+        userService.modify(useModifyCommand);
         return TiResult.ok();
     }
 
@@ -89,8 +93,8 @@ public class UserController {
      */
     @PreAuthorize("@perm.hasPerms('system:user:modifyForSelf')")
     @PutMapping("self")
-    public TiResult<Void> modifyForSelf(@RequestBody UserDTO userDTO) {
-        userService.modifyForSelf(userDTO);
+    public TiResult<Void> modifySelf(@Validated @RequestBody UseModifySelfCommand useModifySelfCommand) {
+        userService.modifyForSelf(useModifySelfCommand);
         return TiResult.ok();
     }
 
@@ -101,7 +105,7 @@ public class UserController {
      */
     @PreAuthorize("@perm.hasPerms('system:user:lock')")
     @PatchMapping("status/lock")
-    public TiResult<Void> lock(@RequestBody List<String> usernames) {
+    public TiResult<Void> lock(@NotNull(message = "用户名不能为空") @RequestBody List<String> usernames) {
         userService.lock(usernames);
         return TiResult.ok();
     }
@@ -113,7 +117,7 @@ public class UserController {
      */
     @PreAuthorize("@perm.hasPerms('system:user:unLock')")
     @PatchMapping("status/un-lock")
-    public TiResult<Void> unLock(@RequestBody List<String> usernames) {
+    public TiResult<Void> unLock(@NotNull(message = "用户名不能为空") @RequestBody List<String> usernames) {
         userService.unLock(usernames);
         return TiResult.ok();
     }
@@ -126,7 +130,7 @@ public class UserController {
      */
     @PreAuthorize("@perm.hasPerms('system:user:logOut')")
     @PatchMapping("status/log-out")
-    public TiResult<Void> logOut(@RequestBody List<String> usernames) {
+    public TiResult<Void> logOut(@NotNull(message = "用户名不能为空") @RequestBody List<String> usernames) {
         userService.logOut(usernames);
         return TiResult.ok();
     }
@@ -136,8 +140,8 @@ public class UserController {
      */
     @PreAuthorize("@perm.hasPerms('system:user:updatePassword')")
     @PatchMapping("password")
-    public TiResult<Void> updatePassword(@RequestBody UserPasswordDTO userDetailDto) {
-        userService.updatePassword(userDetailDto);
+    public TiResult<Void> modifyPassword(@Validated @RequestBody UserModifyPasswordCommand userModifyPasswordCommand) {
+        userService.modifyPassword(userModifyPasswordCommand);
         return TiResult.ok();
     }
 
@@ -146,8 +150,8 @@ public class UserController {
      */
     @PreAuthorize("@perm.hasPerms('system:user:updatePasswordForSelf')")
     @PatchMapping("self-password")
-    public TiResult<Void> updatePasswordForSelf(@RequestBody PasswordDTO passwordDTO) {
-        userService.updatePasswordForSelf(passwordDTO);
+    public TiResult<Void> modifySelfPassword(@Validated @RequestBody UserModifySelfPasswordCommand userModifySelfPasswordCommand) {
+        userService.modifyPasswordForSelf(userModifySelfPasswordCommand);
         return TiResult.ok();
     }
 
@@ -168,7 +172,6 @@ public class UserController {
      * 查询用户
      *
      * @param username 用户名
-     * @return {@link TiResult }<{@link UserDTO }>
      */
     @PreAuthorize("@perm.hasPerms('system:user:info')")
     @GetMapping("info")
@@ -181,7 +184,7 @@ public class UserController {
      */
     @PreAuthorize("@perm.hasPerms('system:user:infoForSelf')")
     @GetMapping("self-info")
-    public TiResult<UserDTO> info() {
+    public TiResult<UserDTO> selfInfo() {
         return TiResult.ok(userService.getInfo());
     }
 
@@ -201,7 +204,7 @@ public class UserController {
      */
     @PreAuthorize("@perm.hasPerms('system:user:detailForSelf')")
     @GetMapping("self-detail")
-    public TiResult<UserRoleMenuDtlDTO> detailForSelf() {
+    public TiResult<UserRoleMenuDtlDTO> selfDetail() {
         return TiResult.ok(userService.getUserDtl());
     }
 
@@ -219,8 +222,8 @@ public class UserController {
      */
     @PreAuthorize("@perm.hasPerms('system:user:bindRole')")
     @PostMapping("role/bind")
-    public TiResult<Void> bindRole(@Validated @RequestBody UserRoleDTO userRoleDTO) {
-        userService.bindRole(userRoleDTO);
+    public TiResult<Void> bindRole(@Validated @RequestBody UserBindRoleCommand userBindRoleCommand) {
+        userService.bindRole(userBindRoleCommand);
         return TiResult.ok();
     }
 
@@ -252,7 +255,7 @@ public class UserController {
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:user:exportExcel')")
     @GetMapping("excel/export")
-    public void exportExcel(@RequestBody UserQuery query) throws IOException {
+    public void exportExcel(@Validated @RequestBody UserQuery query) throws IOException {
         userService.exportExcel(query);
     }
 

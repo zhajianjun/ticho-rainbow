@@ -1,7 +1,7 @@
 package top.ticho.rainbow.application.assembler;
 
 import org.mapstruct.Mapper;
-import top.ticho.rainbow.application.dto.TaskLogDTO;
+import top.ticho.rainbow.application.dto.response.TaskLogDTO;
 import top.ticho.rainbow.application.dto.excel.TaskLogExp;
 import top.ticho.rainbow.domain.entity.TaskLog;
 

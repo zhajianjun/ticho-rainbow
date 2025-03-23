@@ -37,7 +37,7 @@ public interface TaskRepository {
      * @param status 状态
      * @return boolean
      */
-    boolean updateStatusBatch(Collection<Long> ids, Integer status);
+    boolean modifyStatusBatch(Collection<Long> ids, Integer status);
 
 
 }

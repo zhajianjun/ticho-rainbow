@@ -1,13 +1,15 @@
 package top.ticho.rainbow.application.assembler;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import top.ticho.rainbow.application.dto.UserDTO;
-import top.ticho.rainbow.application.dto.UserRoleMenuDtlDTO;
+import top.ticho.rainbow.application.dto.response.UserDTO;
+import top.ticho.rainbow.application.dto.response.UserRoleMenuDtlDTO;
+import top.ticho.rainbow.application.dto.command.UseModifyCommand;
+import top.ticho.rainbow.application.dto.command.UseModifySelfCommand;
+import top.ticho.rainbow.application.dto.command.UseSaveCommand;
 import top.ticho.rainbow.application.dto.excel.UserExp;
 import top.ticho.rainbow.application.dto.excel.UserImp;
-import top.ticho.rainbow.application.dto.query.UserAccountQuery;
 import top.ticho.rainbow.domain.entity.User;
+import top.ticho.rainbow.domain.entity.vo.UserModifyVO;
 
 /**
  * 用户信息 转换
@@ -20,32 +22,41 @@ public interface UserAssembler {
 
     /**
      * 用户信息
-     *
-     * @param dto 用户信息DTO
-     * @return {@link User}
      */
-    User toEntity(UserDTO dto);
+    User toEntity(UseSaveCommand useSaveCommand);
 
-    /**
-     * 用户信息DTO
-     *
-     * @param entity 用户信息
-     * @return {@link UserDTO}
-     */
+    UserModifyVO toModifyVo(UseModifyCommand useModifyCommand);
+
+    UserModifyVO toModifyVo(UseModifySelfCommand useModifyCommand);
+
     UserDTO toDTO(User entity);
-
-    /**
-     * 用户转用户登录账号信息
-     *
-     * @param user 用户
-     * @return {@link UserAccountQuery}
-     */
-    @Mapping(target = "status", ignore = true)
-    UserAccountQuery toAccountQuery(User user);
 
     UserRoleMenuDtlDTO toDtlDTO(User user);
 
     UserExp toExp(User user);
 
-    User toEntity(UserImp imp);
+    default User toEntity(UserImp imp, String password, Integer status, Integer sex) {
+        if (imp == null) {
+            return null;
+        }
+        User.UserBuilder user = User.builder();
+        user.username(imp.getUsername());
+        user.nickname(imp.getNickname());
+        user.realname(imp.getRealname());
+        user.idcard(imp.getIdcard());
+        user.age(imp.getAge());
+        user.birthday(imp.getBirthday());
+        user.address(imp.getAddress());
+        user.education(imp.getEducation());
+        user.email(imp.getEmail());
+        user.qq(imp.getQq());
+        user.wechat(imp.getWechat());
+        user.mobile(imp.getMobile());
+        user.password(password);
+        user.sex(sex);
+        user.status(status);
+        return user.build();
+    }
+
+
 }

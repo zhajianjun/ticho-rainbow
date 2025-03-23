@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.dto.MenuDTO;
-import top.ticho.rainbow.application.dto.RouteDTO;
+import top.ticho.rainbow.application.dto.response.RouteDTO;
 import top.ticho.rainbow.application.dto.response.MenuDtlDTO;
 import top.ticho.rainbow.application.service.MenuService;
 import top.ticho.starter.view.core.TiResult;

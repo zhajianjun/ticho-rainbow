@@ -6,7 +6,7 @@ import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.assembler.TaskLogAssembler;
-import top.ticho.rainbow.application.dto.TaskLogDTO;
+import top.ticho.rainbow.application.dto.response.TaskLogDTO;
 import top.ticho.rainbow.application.dto.excel.TaskLogExp;
 import top.ticho.rainbow.application.dto.query.TaskLogQuery;
 import top.ticho.rainbow.application.dto.query.TaskQuery;

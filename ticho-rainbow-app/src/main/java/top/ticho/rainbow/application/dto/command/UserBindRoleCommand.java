@@ -1,4 +1,4 @@
-package top.ticho.rainbow.application.dto;
+package top.ticho.rainbow.application.dto.command;
 
 import lombok.Data;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * @date 2023-12-17 08:30
  */
 @Data
-public class UserRoleDTO {
+public class UserBindRoleCommand {
 
 
     /** 用户id */

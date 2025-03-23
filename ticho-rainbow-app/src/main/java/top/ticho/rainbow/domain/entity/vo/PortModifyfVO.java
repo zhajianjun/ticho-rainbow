@@ -1,6 +1,7 @@
 package top.ticho.rainbow.domain.entity.vo;
 
 import lombok.Data;
+import lombok.Value;
 
 import java.time.LocalDateTime;
 
@@ -10,28 +11,28 @@ import java.time.LocalDateTime;
  * @author zhajianjun
  * @date 2023-12-17 20:12
  */
-@Data
+@Value
 public class PortModifyfVO {
 
     /** 客户端秘钥 */
-    private String accessKey;
+    String accessKey;
     /** 主机端口 */
-    private Integer port;
+    Integer port;
     /** 客户端地址 */
-    private String endpoint;
+    String endpoint;
     /** 域名 */
-    private String domain;
+    String domain;
     /** 状态;1-启用,0-停用 */
-    private Integer status;
+    Integer status;
     /** 过期时间 */
-    private LocalDateTime expireAt;
+    LocalDateTime expireAt;
     /** 协议类型 */
-    private Integer type;
+    Integer type;
     /** 排序 */
-    private Integer sort;
+    Integer sort;
     /** 备注信息 */
-    private String remark;
+    String remark;
     /** 版本号 */
-    private Long version;
+    Long version;
 
 }

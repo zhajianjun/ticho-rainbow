@@ -1,7 +1,6 @@
-package top.ticho.rainbow.application.dto;
+package top.ticho.rainbow.application.dto.response;
 
 import lombok.Data;
-import top.ticho.rainbow.application.dto.response.MenuDtlDTO;
 
 import java.util.List;
 

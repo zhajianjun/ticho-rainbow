@@ -1,4 +1,4 @@
-package top.ticho.rainbow.application.dto;
+package top.ticho.rainbow.application.dto.command;
 
 import lombok.Data;
 
@@ -12,7 +12,7 @@ import javax.validation.constraints.Pattern;
  * @date 2021-05-29 9:25
  */
 @Data
-public class UserPasswordDTO {
+public class UserModifyPasswordCommand {
 
     /** 主键标识 */
     @NotBlank(message = "用户名不能为空")

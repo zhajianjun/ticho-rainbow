@@ -10,6 +10,7 @@ import top.ticho.rainbow.application.dto.excel.ClientExp;
 import top.ticho.rainbow.application.dto.response.ClientDTO;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.domain.entity.vo.ClientModifyVO;
+import top.ticho.starter.web.util.TiIdUtil;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 
 /**
@@ -18,16 +19,16 @@ import top.ticho.tool.intranet.server.entity.ClientInfo;
  * @author zhajianjun
  * @date 2023-12-17 20:12
  */
-@Mapper(componentModel = "spring", imports = {IdUtil.class})
+@Mapper(componentModel = "spring", imports = {IdUtil.class, TiIdUtil.class})
 public interface ClientAssembler {
 
-    @Mapping(target = "updateTime", ignore = true)
-    @Mapping(target = "updateBy", ignore = true)
+    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
+    @Mapping(target = "accessKey", expression = "java(IdUtil.fastSimpleUUID())", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
     @Mapping(target = "createTime", ignore = true)
     @Mapping(target = "createBy", ignore = true)
+    @Mapping(target = "updateTime", ignore = true)
+    @Mapping(target = "updateBy", ignore = true)
     @Mapping(target = "version", ignore = true)
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "accessKey", expression = "java(IdUtil.fastSimpleUUID())", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
     Client toEntity(ClientSaveCommand dto);
 
     ClientModifyVO toVO(ClientModifyCommand dto);

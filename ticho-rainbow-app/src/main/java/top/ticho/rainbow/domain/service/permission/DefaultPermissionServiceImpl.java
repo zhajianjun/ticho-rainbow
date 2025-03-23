@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.dto.SecurityUser;
-import top.ticho.rainbow.application.dto.UserDTO;
+import top.ticho.rainbow.application.dto.response.UserDTO;
 import top.ticho.rainbow.application.service.AbstractAuthServiceImpl;
 import top.ticho.rainbow.infrastructure.core.constant.CommConst;
 import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;

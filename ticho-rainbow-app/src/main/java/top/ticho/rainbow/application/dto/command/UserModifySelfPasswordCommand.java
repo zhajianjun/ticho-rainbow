@@ -1,4 +1,4 @@
-package top.ticho.rainbow.application.dto;
+package top.ticho.rainbow.application.dto.command;
 
 import lombok.Data;
 
@@ -12,7 +12,7 @@ import javax.validation.constraints.Pattern;
  * @date 2024-03-24 14:39
  */
 @Data
-public class PasswordDTO {
+public class UserModifySelfPasswordCommand {
 
     @NotBlank(message = "旧密码不能为空")
     private String password;

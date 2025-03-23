@@ -1,6 +1,5 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.application.dto.query.UserAccountQuery;
 import top.ticho.rainbow.application.dto.query.UserQuery;
 import top.ticho.rainbow.domain.entity.User;
 
@@ -20,6 +19,8 @@ public interface UserRepository {
     boolean saveBatch(List<User> users);
 
     boolean modify(User user);
+
+    User find(Long id);
 
     /**
      * 根据条件查询用户信息列表
@@ -62,7 +63,7 @@ public interface UserRepository {
      * @param neDbStatus 不能更新的状态
      * @return {@link User}
      */
-    Integer updateStatus(Collection<String> usernames, Integer status, Collection<Integer> eqDbStatus, Collection<Integer> neDbStatus);
+    Integer modifyStatus(Collection<String> usernames, Integer status, Collection<Integer> eqDbStatus, Collection<Integer> neDbStatus);
 
     /**
      * @param email 邮箱
@@ -71,12 +72,9 @@ public interface UserRepository {
     User getByEmail(String email);
 
     /**
-     * 根据用户登录账号信息查询
-     *
-     * @param userAccountQuery 用户登录账号信息
      * @return 用户信息
      */
-    List<User> getByAccount(UserAccountQuery userAccountQuery);
+    List<User> getByAccount(String username, String email, String mobile);
 
 }
 
