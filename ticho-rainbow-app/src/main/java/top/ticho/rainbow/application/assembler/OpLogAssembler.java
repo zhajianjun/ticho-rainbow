@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
 import org.springframework.http.HttpStatus;
-import top.ticho.rainbow.application.dto.excel.OpLogExp;
+import top.ticho.rainbow.application.dto.excel.OpLogExcelExport;
 import top.ticho.rainbow.application.dto.response.OpLogDTO;
 import top.ticho.rainbow.domain.entity.OpLog;
 import top.ticho.starter.view.log.TiHttpLog;
@@ -42,6 +42,6 @@ public interface OpLogAssembler {
 
     OpLogDTO toDTO(OpLog entity);
 
-    OpLogExp toExp(OpLog opLog);
+    OpLogExcelExport toExp(OpLog opLog);
 
 }

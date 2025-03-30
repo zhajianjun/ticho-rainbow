@@ -1,4 +1,4 @@
-package top.ticho.rainbow.domain.service;
+package top.ticho.rainbow.application.service;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

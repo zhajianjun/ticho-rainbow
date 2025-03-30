@@ -9,9 +9,10 @@ import cn.idev.excel.annotation.write.style.HeadStyle;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
- * 用户信息excel模板
+ * 用户信息导出
  *
  * @author zhajianjun
  * @date 2024-05-09 18:41
@@ -20,7 +21,7 @@ import java.time.LocalDate;
 @HeadFontStyle(fontHeightInPoints = 12)
 @HeadStyle(fillForegroundColor = 1, leftBorderColor = 22, rightBorderColor = 22, bottomBorderColor = 57)
 @ContentFontStyle(fontHeightInPoints = 10)
-public class UserImpModel {
+public class UserExcelExport {
 
     /** 账户;账户具有唯一性 */
     @ColumnWidth(20)
@@ -75,5 +76,31 @@ public class UserImpModel {
     @ColumnWidth(20)
     @ExcelProperty(value = "手机号码")
     private String mobile;
+    /** 用户状态;1-正常,2-未激活,3-已锁定,4-已注销 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "状态")
+    private String statusName;
+    /** 备注信息 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "备注信息")
+    private String remark;
+    /** 创建人 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "创建人")
+    private String createBy;
+    /** 创建时间 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "创建时间")
+    @DateTimeFormat(value = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createTime;
+    /** 修改人 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "修改人")
+    private String updateBy;
+    /** 修改时间 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "修改时间")
+    @DateTimeFormat(value = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updateTime;
 
 }

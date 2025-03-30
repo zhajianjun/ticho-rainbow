@@ -11,7 +11,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * 端口信息导出
+ * 文件信息导出
  *
  * @author zhajianjun
  * @date 2024-05-14 18:00
@@ -20,49 +20,48 @@ import java.time.LocalDateTime;
 @HeadFontStyle(fontHeightInPoints = 12)
 @HeadStyle(fillForegroundColor = 1, leftBorderColor = 22, rightBorderColor = 22, bottomBorderColor = 57)
 @ContentFontStyle(fontHeightInPoints = 10)
-public class PortExp {
+public class FileInfoExcelExport {
 
-    /** 客户端名称 */
+    /** 存储类型;1-公共,2-私有 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "客户端名称")
-    private String clientName;
-    /** 主机端口 */
-    @ColumnWidth(20)
-    @ExcelProperty(value = "主机端口")
-    private Integer port;
-    /** 客户端地址 */
-    @ColumnWidth(20)
-    @ExcelProperty(value = "客户端地址")
-    private String endpoint;
-    /** 域名 */
-    @ColumnWidth(20)
-    @ExcelProperty(value = "域名")
-    private String domain;
-    /** 状态;1-启用,0-停用 */
-    @ColumnWidth(20)
-    @ExcelProperty(value = "端口状态")
-    private String statusName;
-    /** 过期时间 */
-    @ColumnWidth(20)
-    @ExcelProperty(value = "过期时间")
-    @DateTimeFormat(value = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime expireAt;
-    /** 协议类型 */
-    @ColumnWidth(20)
-    @ExcelProperty(value = "协议类型")
+    @ExcelProperty(value = "存储类型")
     private String typeName;
-    /** 客户端状态;1-激活,0-未激活 */
+    /** 文件名 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "客户端通道状态")
-    private String clientChannelStatusName;
-    /** 通道状态;1-激活,0-未激活 */
+    @ExcelProperty(value = "文件名")
+    private String fileName;
+    /** 文件扩展名 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "应用通道状态")
-    private String appChannelStatusName;
-    /** 排序 */
+    @ExcelProperty(value = "文件扩展名")
+    private String ext;
+    /** 存储路径 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "排序")
-    private Integer sort;
+    @ExcelProperty(value = "存储路径")
+    private String path;
+    /** 文件大小;单位字节 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "文件大小")
+    private String size;
+    /** MIME类型 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "MIME类型")
+    private String contentType;
+    /** 原始文件名 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "原始文件名")
+    private String originalFileName;
+    /** 文件元数据 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "文件元数据")
+    private String metadata;
+    /** 分片id */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "分片id")
+    private String chunkId;
+    /** 状态;1-正常,2-停用,3-分片上传,99-作废 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "文件状态")
+    private String statusName;
     /** 备注信息 */
     @ColumnWidth(20)
     @ExcelProperty(value = "备注信息")

@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.rainbow.application.dto.MenuDTO;
+import top.ticho.rainbow.application.dto.response.MenuDTO;
+import top.ticho.rainbow.application.dto.command.MenuModifyCommand;
+import top.ticho.rainbow.application.dto.command.MenuSaveCommand;
 import top.ticho.rainbow.application.dto.response.RouteDTO;
 import top.ticho.rainbow.application.dto.response.MenuDtlDTO;
 import top.ticho.rainbow.application.service.MenuService;
@@ -36,8 +38,8 @@ public class MenuController {
      */
     @PreAuthorize("@perm.hasPerms('system:menu:save')")
     @PostMapping
-    public TiResult<Void> save(@RequestBody MenuDTO menuDTO) {
-        menuService.save(menuDTO);
+    public TiResult<Void> save(@Validated @RequestBody MenuSaveCommand menuSaveCommand) {
+        menuService.save(menuSaveCommand);
         return TiResult.ok();
     }
 
@@ -58,8 +60,8 @@ public class MenuController {
      */
     @PreAuthorize("@perm.hasPerms('system:menu:modify')")
     @PutMapping
-    public TiResult<Void> modify(@Validated @RequestBody MenuDTO menuDTO) {
-        menuService.modify(menuDTO);
+    public TiResult<Void> modify(@Validated @RequestBody MenuModifyCommand menuModifyCommand) {
+        menuService.modify(menuModifyCommand);
         return TiResult.ok();
     }
 

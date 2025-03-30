@@ -1,12 +1,9 @@
 package top.ticho.rainbow.application.dto.command;
 
 import lombok.Data;
-import top.ticho.rainbow.application.dto.MenuDTO;
-import top.ticho.starter.web.util.valid.TiValidGroup;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.List;
 
 /**
@@ -30,13 +27,10 @@ public class MenuSaveCommand {
     @NotBlank(message = "标题不能为空")
     private String name;
     /** 路由地址 */
-    @NotBlank(message = "路由地址不能为空", groups = {Dir.class, Menu.class})
     private String path;
     /** 组件路径 */
-    @NotBlank(message = "组件路径不能为空", groups = {Ext.class})
     private String component;
     /** 组件名称 */
-    @NotBlank(message = "组件名称不能为空", groups = {Ext.class, Button.class})
     private String componentName;
     /** 转发地址 */
     private String redirect;
@@ -51,27 +45,15 @@ public class MenuSaveCommand {
     /** 菜单是否可关闭;1-是,0-否 */
     private Integer closable;
     /** 图标 */
-    @NotBlank(message = "图标不能为空", groups = {Dir.class})
     private String icon;
     /** 排序 */
     @NotNull(message = "排序不能为空")
     private Integer sort;
     /** 状态;1-正常,0-禁用 */
+    @NotNull(message = "状态不能为空")
     private Integer status;
     /** 备注信息 */
     private String remark;
-
-    public interface Dir {
-    }
-
-    public interface Menu {
-    }
-
-    public interface Button {
-    }
-
-    public interface Ext {
-    }
 
 
 }

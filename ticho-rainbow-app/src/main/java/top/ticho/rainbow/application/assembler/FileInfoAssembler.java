@@ -3,7 +3,7 @@ package top.ticho.rainbow.application.assembler;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import top.ticho.rainbow.application.dto.ChunkMetadataDTO;
-import top.ticho.rainbow.application.dto.excel.FileInfoExp;
+import top.ticho.rainbow.application.dto.excel.FileInfoExcelExport;
 import top.ticho.rainbow.application.dto.response.ChunkCacheDTO;
 import top.ticho.rainbow.application.dto.response.FileInfoDTO;
 import top.ticho.rainbow.domain.entity.FileInfo;
@@ -67,7 +67,7 @@ public interface FileInfoAssembler {
      * 将文件信息实体对象转换为导出对象。
      *
      * @param fileInfo 文件信息
-     * @return {@link FileInfoExp}
+     * @return {@link FileInfoExcelExport}
      */
-    FileInfoExp toExp(FileInfo fileInfo);
+    FileInfoExcelExport toExp(FileInfo fileInfo);
 }

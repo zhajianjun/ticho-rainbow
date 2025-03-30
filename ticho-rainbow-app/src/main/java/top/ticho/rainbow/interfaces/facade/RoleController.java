@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.dto.response.RoleDTO;
-import top.ticho.rainbow.application.dto.RoleMenuDTO;
+import top.ticho.rainbow.application.dto.command.RoleBindMenuCommand;
 import top.ticho.rainbow.application.dto.response.RoleMenuDtlDTO;
 import top.ticho.rainbow.application.dto.command.RoleModifyCommand;
 import top.ticho.rainbow.application.dto.command.RoleSaveCommand;
@@ -119,8 +119,8 @@ public class RoleController {
      */
     @PreAuthorize("@perm.hasPerms('system:role:bindMenu')")
     @PostMapping("menu/bind")
-    public TiResult<Void> bindMenu(@Validated @RequestBody RoleMenuDTO roleMenuDTO) {
-        roleService.bindMenu(roleMenuDTO);
+    public TiResult<Void> bindMenu(@Validated @RequestBody RoleBindMenuCommand bindMenuCommand) {
+        roleService.bindMenu(bindMenuCommand);
         return TiResult.ok();
     }
 

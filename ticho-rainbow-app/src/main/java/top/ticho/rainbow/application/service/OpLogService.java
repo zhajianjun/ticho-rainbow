@@ -5,7 +5,7 @@ import cn.hutool.core.util.NumberUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.assembler.OpLogAssembler;
-import top.ticho.rainbow.application.dto.excel.OpLogExp;
+import top.ticho.rainbow.application.dto.excel.OpLogExcelExport;
 import top.ticho.rainbow.application.dto.query.OpLogQuery;
 import top.ticho.rainbow.application.dto.response.OpLogDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
@@ -52,17 +52,17 @@ public class OpLogService {
         String sheetName = "操作日志";
         String fileName = "操作日志导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<Integer, String> labelMap = dictExecutor.getLabelMap(DictConst.YES_OR_NO, NumberUtil::parseInt);
-        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, OpLogExp.class, response);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, OpLogExcelExport.class, response);
     }
 
-    private Collection<OpLogExp> excelExpHandle(OpLogQuery query, Map<Integer, String> labelMap) {
+    private Collection<OpLogExcelExport> excelExpHandle(OpLogQuery query, Map<Integer, String> labelMap) {
         TiPageResult<OpLog> page = opLogRepository.page(query);
         return page.getRows()
             .stream()
             .map(x -> {
-                OpLogExp opLogExp = opLogAssembler.toExp(x);
-                opLogExp.setIsErrName(labelMap.get(x.getIsErr()));
-                return opLogExp;
+                OpLogExcelExport opLogExcelExport = opLogAssembler.toExp(x);
+                opLogExcelExport.setIsErrName(labelMap.get(x.getIsErr()));
+                return opLogExcelExport;
             })
             .collect(Collectors.toList());
     }

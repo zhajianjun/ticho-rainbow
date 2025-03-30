@@ -1,4 +1,4 @@
-package top.ticho.rainbow.application.dto;
+package top.ticho.rainbow.application.dto.response;
 
 import lombok.Data;
 
@@ -51,18 +51,5 @@ public class MenuDTO {
     private Integer status;
     /** 备注信息 */
     private String remark;
-
-    public interface Dir {
-    }
-
-    public interface Menu {
-    }
-
-    public interface Button {
-    }
-
-    public interface Ext {
-    }
-
 
 }

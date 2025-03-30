@@ -3,7 +3,7 @@ package top.ticho.rainbow.application.task;
 import org.quartz.JobExecutionContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import top.ticho.rainbow.domain.handle.SseHandle;
+import top.ticho.rainbow.application.service.SseHandle;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
 import top.ticho.trace.common.prop.TraceProperty;

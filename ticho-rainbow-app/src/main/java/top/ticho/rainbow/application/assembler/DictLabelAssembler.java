@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import top.ticho.rainbow.application.dto.command.DictLabelModifyCommand;
 import top.ticho.rainbow.application.dto.command.DictLabelSaveCommand;
-import top.ticho.rainbow.application.dto.excel.DictExp;
+import top.ticho.rainbow.application.dto.excel.DictExcelExport;
 import top.ticho.rainbow.application.dto.response.DictLabelDTO;
 import top.ticho.rainbow.domain.entity.DictLabel;
 import top.ticho.rainbow.domain.entity.vo.DictLabelModifyVO;
@@ -33,6 +33,6 @@ public interface DictLabelAssembler {
     @Mapping(target = "updateBy", ignore = true)
     @Mapping(target = "statusName", ignore = true)
     @Mapping(target = "name", ignore = true)
-    DictExp toExport(DictLabel dictLabel);
+    DictExcelExport toExport(DictLabel dictLabel);
 
 }

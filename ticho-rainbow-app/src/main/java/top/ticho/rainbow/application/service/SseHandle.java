@@ -1,9 +1,11 @@
-package top.ticho.rainbow.domain.handle;
+package top.ticho.rainbow.application.service;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import top.ticho.rainbow.application.dto.SseMessage;
+import top.ticho.rainbow.application.event.SseEvent;
 import top.ticho.rainbow.infrastructure.core.component.SseTemplate;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.core.util.CommonUtil;

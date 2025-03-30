@@ -11,7 +11,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * 字典信息导出
+ * 角色信息导出
  *
  * @author zhajianjun
  * @date 2024-05-13 18:00
@@ -20,39 +20,19 @@ import java.time.LocalDateTime;
 @HeadFontStyle(fontHeightInPoints = 12)
 @HeadStyle(fillForegroundColor = 1, leftBorderColor = 22, rightBorderColor = 22, bottomBorderColor = 57)
 @ContentFontStyle(fontHeightInPoints = 10)
-public class DictExp {
+public class RoleExcelExport {
 
-    /** 字典编码 */
+    /** 角色编码 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "字典编码")
+    @ExcelProperty(value = "角色编码")
     private String code;
-    /** 字典名称 */
+    /** 角色名称 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "字典名称")
+    @ExcelProperty(value = "角色名称")
     private String name;
-    /** 字典标签 */
-    @ColumnWidth(20)
-    @ExcelProperty(value = "字典标签")
-    private String label;
-    /** 字典编码 */
-    @ColumnWidth(20)
-    @ExcelProperty(value = "字典值")
-    private String value;
-    /** 图标 */
-    @ColumnWidth(20)
-    @ExcelProperty(value = "图标")
-    private String icon;
-    /** 颜色 */
-    @ColumnWidth(20)
-    @ExcelProperty(value = "颜色")
-    private String color;
-    /** 排序 */
-    @ColumnWidth(20)
-    @ExcelProperty(value = "排序")
-    private Integer sort;
     /** 状态;1-正常,0-禁用 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "字典状态")
+    @ExcelProperty(value = "角色状态")
     private String statusName;
     /** 备注信息 */
     @ColumnWidth(20)

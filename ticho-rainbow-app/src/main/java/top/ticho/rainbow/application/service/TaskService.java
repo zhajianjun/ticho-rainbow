@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import top.ticho.rainbow.application.assembler.TaskAssembler;
 import top.ticho.rainbow.application.dto.command.TaskModifyCommand;
 import top.ticho.rainbow.application.dto.command.TaskSaveCommand;
-import top.ticho.rainbow.application.dto.excel.TaskExp;
+import top.ticho.rainbow.application.dto.excel.TaskExcelExport;
 import top.ticho.rainbow.application.dto.query.TaskQuery;
 import top.ticho.rainbow.application.dto.response.TaskDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
@@ -206,20 +206,20 @@ public class TaskService implements InitializingBean {
         String sheetName = "计划任务";
         String fileName = "计划任务导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.PLAN_TASK);
-        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, TaskExp.class, response);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, TaskExcelExport.class, response);
     }
 
-    private Collection<TaskExp> excelExpHandle(TaskQuery query, Map<String, String> labelMap) {
+    private Collection<TaskExcelExport> excelExpHandle(TaskQuery query, Map<String, String> labelMap) {
         query.checkPage();
         Page<Task> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
         taskRepository.list(query);
         return page.getResult()
             .stream()
             .map(x -> {
-                TaskExp taskExp = taskAssembler.toExp(x);
-                taskExp.setStatusName(labelMap.get(DictConst.COMMON_STATUS + x.getStatus()));
-                taskExp.setContent(labelMap.get(DictConst.PLAN_TASK + x.getContent()));
-                return taskExp;
+                TaskExcelExport taskExcelExport = taskAssembler.toExp(x);
+                taskExcelExport.setStatusName(labelMap.get(DictConst.COMMON_STATUS + x.getStatus()));
+                taskExcelExport.setContent(labelMap.get(DictConst.PLAN_TASK + x.getContent()));
+                return taskExcelExport;
             })
             .collect(Collectors.toList());
     }

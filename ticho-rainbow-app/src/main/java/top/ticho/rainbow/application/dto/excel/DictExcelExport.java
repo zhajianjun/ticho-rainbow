@@ -11,56 +11,48 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * 文件信息导出
+ * 字典信息导出
  *
  * @author zhajianjun
- * @date 2024-05-14 18:00
+ * @date 2024-05-13 18:00
  */
 @Data
 @HeadFontStyle(fontHeightInPoints = 12)
 @HeadStyle(fillForegroundColor = 1, leftBorderColor = 22, rightBorderColor = 22, bottomBorderColor = 57)
 @ContentFontStyle(fontHeightInPoints = 10)
-public class FileInfoExp {
+public class DictExcelExport {
 
-    /** 存储类型;1-公共,2-私有 */
+    /** 字典编码 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "存储类型")
-    private String typeName;
-    /** 文件名 */
+    @ExcelProperty(value = "字典编码")
+    private String code;
+    /** 字典名称 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "文件名")
-    private String fileName;
-    /** 文件扩展名 */
+    @ExcelProperty(value = "字典名称")
+    private String name;
+    /** 字典标签 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "文件扩展名")
-    private String ext;
-    /** 存储路径 */
+    @ExcelProperty(value = "字典标签")
+    private String label;
+    /** 字典编码 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "存储路径")
-    private String path;
-    /** 文件大小;单位字节 */
+    @ExcelProperty(value = "字典值")
+    private String value;
+    /** 图标 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "文件大小")
-    private String size;
-    /** MIME类型 */
+    @ExcelProperty(value = "图标")
+    private String icon;
+    /** 颜色 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "MIME类型")
-    private String contentType;
-    /** 原始文件名 */
+    @ExcelProperty(value = "颜色")
+    private String color;
+    /** 排序 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "原始文件名")
-    private String originalFileName;
-    /** 文件元数据 */
+    @ExcelProperty(value = "排序")
+    private Integer sort;
+    /** 状态;1-正常,0-禁用 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "文件元数据")
-    private String metadata;
-    /** 分片id */
-    @ColumnWidth(20)
-    @ExcelProperty(value = "分片id")
-    private String chunkId;
-    /** 状态;1-正常,2-停用,3-分片上传,99-作废 */
-    @ColumnWidth(20)
-    @ExcelProperty(value = "文件状态")
+    @ExcelProperty(value = "字典状态")
     private String statusName;
     /** 备注信息 */
     @ColumnWidth(20)

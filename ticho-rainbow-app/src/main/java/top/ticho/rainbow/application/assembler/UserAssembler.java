@@ -6,8 +6,8 @@ import top.ticho.rainbow.application.dto.response.UserRoleMenuDtlDTO;
 import top.ticho.rainbow.application.dto.command.UseModifyCommand;
 import top.ticho.rainbow.application.dto.command.UseModifySelfCommand;
 import top.ticho.rainbow.application.dto.command.UseSaveCommand;
-import top.ticho.rainbow.application.dto.excel.UserExp;
-import top.ticho.rainbow.application.dto.excel.UserImp;
+import top.ticho.rainbow.application.dto.excel.UserExcelExport;
+import top.ticho.rainbow.application.dto.excel.UserExcelImport;
 import top.ticho.rainbow.domain.entity.User;
 import top.ticho.rainbow.domain.entity.vo.UserModifyVO;
 
@@ -33,9 +33,9 @@ public interface UserAssembler {
 
     UserRoleMenuDtlDTO toDtlDTO(User user);
 
-    UserExp toExp(User user);
+    UserExcelExport toExp(User user);
 
-    default User toEntity(UserImp imp, String password, Integer status, Integer sex) {
+    default User toEntity(UserExcelImport imp, String password, Integer status, Integer sex) {
         if (imp == null) {
             return null;
         }

@@ -2,6 +2,7 @@ package top.ticho.rainbow.domain.entity;
 
 import lombok.Builder;
 import lombok.Getter;
+import top.ticho.rainbow.domain.entity.vo.MenuModifyVO;
 
 import java.time.LocalDateTime;
 
@@ -64,10 +65,31 @@ public class Menu {
     /** 修改时间 */
     private LocalDateTime updateTime;
 
-    public void modify(long parentId, String structure, Integer status) {
+    public void modify(Long parentId, String structure) {
         this.parentId = parentId;
         this.structure = structure;
-        this.status = status;
+    }
+
+    public void modifyCurrentActiveMenu(String currentActiveMenu) {
+        this.currentActiveMenu = currentActiveMenu;
+    }
+
+    public void modify(MenuModifyVO menuModifyVO) {
+        this.perms = menuModifyVO.getPerms();
+        this.name = menuModifyVO.getName();
+        this.path = menuModifyVO.getPath();
+        this.component = menuModifyVO.getComponent();
+        this.componentName = menuModifyVO.getComponentName();
+        this.redirect = menuModifyVO.getRedirect();
+        this.extFlag = menuModifyVO.getExtFlag();
+        this.keepAlive = menuModifyVO.getKeepAlive();
+        this.invisible = menuModifyVO.getInvisible();
+        this.currentActiveMenu = menuModifyVO.getCurrentActiveMenu();
+        this.closable = menuModifyVO.getClosable();
+        this.icon = menuModifyVO.getIcon();
+        this.sort = menuModifyVO.getSort();
+        this.status = menuModifyVO.getStatus();
+        this.remark = menuModifyVO.getRemark();
     }
 
 }

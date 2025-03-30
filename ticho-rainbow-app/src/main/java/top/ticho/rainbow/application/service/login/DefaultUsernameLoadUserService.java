@@ -1,4 +1,4 @@
-package top.ticho.rainbow.domain.service.login;
+package top.ticho.rainbow.application.service.login;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

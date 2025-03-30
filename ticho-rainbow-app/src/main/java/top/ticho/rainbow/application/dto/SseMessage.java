@@ -1,6 +1,7 @@
-package top.ticho.rainbow.domain.handle;
+package top.ticho.rainbow.application.dto;
 
 import lombok.Data;
+import top.ticho.rainbow.application.event.SseEvent;
 
 /**
  * sse消息

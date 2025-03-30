@@ -1,4 +1,4 @@
-package top.ticho.rainbow.domain.service.permission;
+package top.ticho.rainbow.application.service.permission;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,6 +10,7 @@ import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.security.auth.PermissionService;
 import top.ticho.starter.view.util.TiAssert;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -23,13 +24,13 @@ import javax.servlet.http.HttpServletRequest;
 @Order(1)
 public class FilePermissionServiceImpl implements PermissionService {
 
-
-    private HttpServletRequest request;
-
-    private TiCacheTemplate tiCacheTemplate;
-
-    @Qualifier("perm")
+    @Qualifier(CommConst.PERM_KEY)
+    @Resource
     private PermissionService permissionService;
+    @Resource
+    private HttpServletRequest request;
+    @Resource
+    private TiCacheTemplate tiCacheTemplate;
 
     public boolean hasPerms(String... permissions) {
         log.debug("权限校验，permissions = {}", String.join(",", permissions));

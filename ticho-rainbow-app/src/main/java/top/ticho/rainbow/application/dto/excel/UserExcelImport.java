@@ -27,7 +27,7 @@ import java.time.LocalDate;
 @HeadFontStyle(fontHeightInPoints = 12)
 @HeadStyle(fillForegroundColor = 1, leftBorderColor = 22, rightBorderColor = 22, bottomBorderColor = 57)
 @ContentFontStyle(fontHeightInPoints = 10)
-public class UserImp extends ExcelBaseImp {
+public class UserExcelImport extends ExcelBaseImp {
 
     /** 账户;账户具有唯一性 */
     @ColumnWidth(20)

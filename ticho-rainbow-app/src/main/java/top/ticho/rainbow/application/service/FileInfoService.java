@@ -20,7 +20,7 @@ import top.ticho.rainbow.application.dto.ChunkMetadataDTO;
 import top.ticho.rainbow.application.dto.FileCacheDTO;
 import top.ticho.rainbow.application.dto.command.FileChunkUploadCommand;
 import top.ticho.rainbow.application.dto.command.FileUploadCommand;
-import top.ticho.rainbow.application.dto.excel.FileInfoExp;
+import top.ticho.rainbow.application.dto.excel.FileInfoExcelExport;
 import top.ticho.rainbow.application.dto.query.FileInfoQuery;
 import top.ticho.rainbow.application.dto.response.ChunkCacheDTO;
 import top.ticho.rainbow.application.dto.response.FileInfoDTO;
@@ -480,10 +480,10 @@ public class FileInfoService {
         String sheetName = "文件信息";
         String fileName = "文件信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.FILE_STATUS, DictConst.FILE_STORAGE_TYPE);
-        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, FileInfoExp.class, response);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, FileInfoExcelExport.class, response);
     }
 
-    private Collection<FileInfoExp> excelExpHandle(FileInfoQuery query, Map<String, String> labelMap) {
+    private Collection<FileInfoExcelExport> excelExpHandle(FileInfoQuery query, Map<String, String> labelMap) {
         query.checkPage();
         Page<FileInfo> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
         fileInfoRepository.list(query);
@@ -491,10 +491,10 @@ public class FileInfoService {
         return result
             .stream()
             .map(x -> {
-                FileInfoExp fileInfoExp = fileInfoAssembler.toExp(x);
-                fileInfoExp.setTypeName(labelMap.get(DictConst.FILE_STORAGE_TYPE + x.getType()));
-                fileInfoExp.setStatusName(labelMap.get(DictConst.FILE_STATUS + x.getStatus()));
-                return fileInfoExp;
+                FileInfoExcelExport fileInfoExcelExport = fileInfoAssembler.toExp(x);
+                fileInfoExcelExport.setTypeName(labelMap.get(DictConst.FILE_STORAGE_TYPE + x.getType()));
+                fileInfoExcelExport.setStatusName(labelMap.get(DictConst.FILE_STATUS + x.getStatus()));
+                return fileInfoExcelExport;
             })
             .collect(Collectors.toList());
     }

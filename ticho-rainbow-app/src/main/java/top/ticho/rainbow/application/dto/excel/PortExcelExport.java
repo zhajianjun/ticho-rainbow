@@ -11,29 +11,58 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * 角色信息导出
+ * 端口信息导出
  *
  * @author zhajianjun
- * @date 2024-05-13 18:00
+ * @date 2024-05-14 18:00
  */
 @Data
 @HeadFontStyle(fontHeightInPoints = 12)
 @HeadStyle(fillForegroundColor = 1, leftBorderColor = 22, rightBorderColor = 22, bottomBorderColor = 57)
 @ContentFontStyle(fontHeightInPoints = 10)
-public class RoleExp {
+public class PortExcelExport {
 
-    /** 角色编码 */
+    /** 客户端名称 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "角色编码")
-    private String code;
-    /** 角色名称 */
+    @ExcelProperty(value = "客户端名称")
+    private String clientName;
+    /** 主机端口 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "角色名称")
-    private String name;
-    /** 状态;1-正常,0-禁用 */
+    @ExcelProperty(value = "主机端口")
+    private Integer port;
+    /** 客户端地址 */
     @ColumnWidth(20)
-    @ExcelProperty(value = "角色状态")
+    @ExcelProperty(value = "客户端地址")
+    private String endpoint;
+    /** 域名 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "域名")
+    private String domain;
+    /** 状态;1-启用,0-停用 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "端口状态")
     private String statusName;
+    /** 过期时间 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "过期时间")
+    @DateTimeFormat(value = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime expireAt;
+    /** 协议类型 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "协议类型")
+    private String typeName;
+    /** 客户端状态;1-激活,0-未激活 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "客户端通道状态")
+    private String clientChannelStatusName;
+    /** 通道状态;1-激活,0-未激活 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "应用通道状态")
+    private String appChannelStatusName;
+    /** 排序 */
+    @ColumnWidth(20)
+    @ExcelProperty(value = "排序")
+    private Integer sort;
     /** 备注信息 */
     @ColumnWidth(20)
     @ExcelProperty(value = "备注信息")

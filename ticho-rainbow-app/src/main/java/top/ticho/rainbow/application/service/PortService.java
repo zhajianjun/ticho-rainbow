@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.assembler.PortAssembler;
 import top.ticho.rainbow.application.dto.command.PortModifyfCommand;
 import top.ticho.rainbow.application.dto.command.PortSaveCommand;
-import top.ticho.rainbow.application.dto.excel.PortExp;
+import top.ticho.rainbow.application.dto.excel.PortExcelExport;
 import top.ticho.rainbow.application.dto.query.PortQuery;
 import top.ticho.rainbow.application.dto.response.PortDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
@@ -109,10 +109,10 @@ public class PortService {
         String sheetName = "端口信息";
         String fileName = "端口信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.CHANNEL_STATUS, DictConst.HTTP_TYPE);
-        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, PortExp.class, response);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, PortExcelExport.class, response);
     }
 
-    private Collection<PortExp> excelExpHandle(PortQuery query, Map<String, String> labelMap) {
+    private Collection<PortExcelExport> excelExpHandle(PortQuery query, Map<String, String> labelMap) {
         query.checkPage();
         Page<Port> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
         portRepository.list(query);
@@ -123,17 +123,17 @@ public class PortService {
         return result
             .stream()
             .map(x -> {
-                PortExp portExp = portAssembler.toExp(x);
+                PortExcelExport portExcelExport = portAssembler.toExp(x);
                 ClientInfo clientInfo = serverHandler.getClientByAccessKey(x.getAccessKey());
                 int clientChannelStatus = Objects.nonNull(clientInfo) && Objects.nonNull(clientInfo.getChannel()) ? 1 : 0;
                 AppHandler appHandler = serverHandler.getAppHandler();
                 int channelStatus = appHandler.exists(x.getPort()) ? 1 : 0;
-                portExp.setClientName(clientNameMap.get(x.getAccessKey()));
-                portExp.setStatusName(labelMap.get(DictConst.COMMON_STATUS + x.getStatus()));
-                portExp.setTypeName(labelMap.get(DictConst.HTTP_TYPE + x.getType()));
-                portExp.setClientChannelStatusName(labelMap.get(DictConst.CHANNEL_STATUS + clientChannelStatus));
-                portExp.setAppChannelStatusName(labelMap.get(DictConst.CHANNEL_STATUS + channelStatus));
-                return portExp;
+                portExcelExport.setClientName(clientNameMap.get(x.getAccessKey()));
+                portExcelExport.setStatusName(labelMap.get(DictConst.COMMON_STATUS + x.getStatus()));
+                portExcelExport.setTypeName(labelMap.get(DictConst.HTTP_TYPE + x.getType()));
+                portExcelExport.setClientChannelStatusName(labelMap.get(DictConst.CHANNEL_STATUS + clientChannelStatus));
+                portExcelExport.setAppChannelStatusName(labelMap.get(DictConst.CHANNEL_STATUS + channelStatus));
+                return portExcelExport;
             })
             .collect(Collectors.toList());
     }

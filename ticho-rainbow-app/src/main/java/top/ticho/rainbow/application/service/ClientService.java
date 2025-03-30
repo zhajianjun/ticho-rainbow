@@ -9,7 +9,7 @@ import top.ticho.rainbow.application.assembler.ClientAssembler;
 import top.ticho.rainbow.application.assembler.PortAssembler;
 import top.ticho.rainbow.application.dto.command.ClientModifyCommand;
 import top.ticho.rainbow.application.dto.command.ClientSaveCommand;
-import top.ticho.rainbow.application.dto.excel.ClientExp;
+import top.ticho.rainbow.application.dto.excel.ClientExcelExport;
 import top.ticho.rainbow.application.dto.query.ClientQuery;
 import top.ticho.rainbow.application.dto.response.ClientDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
@@ -207,22 +207,22 @@ public class ClientService {
         String fileName = "客户端信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.CHANNEL_STATUS);
         query.setCount(false);
-        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, ClientExp.class, response);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, ClientExcelExport.class, response);
     }
 
-    private Collection<ClientExp> excelExpHandle(ClientQuery query, Map<String, String> labelMap) {
+    private Collection<ClientExcelExport> excelExpHandle(ClientQuery query, Map<String, String> labelMap) {
         query.checkPage();
         TiPageResult<Client> page = clientRepository.page(query);
         List<Client> result = page.getRows();
         return result
             .stream()
             .map(item -> {
-                ClientExp clientExp = clientAssembler.toExp(item);
-                clientExp.setStatusName(labelMap.get(DictConst.COMMON_STATUS + item.getStatus()));
+                ClientExcelExport clientExcelExport = clientAssembler.toExp(item);
+                clientExcelExport.setStatusName(labelMap.get(DictConst.COMMON_STATUS + item.getStatus()));
                 ClientInfo clientInfo = serverHandler.getClientByAccessKey(item.getAccessKey());
                 int channelStatus = Optional.ofNullable(clientInfo).map(ClientInfo::getChannel).isPresent() ? 1 : 0;
-                clientExp.setChannelStatusName(labelMap.get(DictConst.CHANNEL_STATUS + channelStatus));
-                return clientExp;
+                clientExcelExport.setChannelStatusName(labelMap.get(DictConst.CHANNEL_STATUS + channelStatus));
+                return clientExcelExport;
             })
             .collect(Collectors.toList());
     }

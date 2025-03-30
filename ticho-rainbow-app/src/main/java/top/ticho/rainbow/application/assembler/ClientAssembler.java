@@ -6,7 +6,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
 import top.ticho.rainbow.application.dto.command.ClientModifyCommand;
 import top.ticho.rainbow.application.dto.command.ClientSaveCommand;
-import top.ticho.rainbow.application.dto.excel.ClientExp;
+import top.ticho.rainbow.application.dto.excel.ClientExcelExport;
 import top.ticho.rainbow.application.dto.response.ClientDTO;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.domain.entity.vo.ClientModifyVO;
@@ -45,6 +45,6 @@ public interface ClientAssembler {
     @Mapping(target = "statusName", ignore = true)
     @Mapping(target = "connectTime", ignore = true)
     @Mapping(target = "channelStatusName", ignore = true)
-    ClientExp toExp(Client client);
+    ClientExcelExport toExp(Client client);
 
 }

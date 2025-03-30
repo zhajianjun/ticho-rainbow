@@ -1,4 +1,4 @@
-package top.ticho.rainbow.domain.service.login;
+package top.ticho.rainbow.application.service.login;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;

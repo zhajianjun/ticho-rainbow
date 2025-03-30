@@ -23,6 +23,7 @@ import top.ticho.rainbow.application.assembler.FileInfoAssembler;
 import top.ticho.rainbow.application.assembler.RoleAssembler;
 import top.ticho.rainbow.application.assembler.UserAssembler;
 import top.ticho.rainbow.application.dto.command.UserModifySelfPasswordCommand;
+import top.ticho.rainbow.application.dto.excel.UserExcelExport;
 import top.ticho.rainbow.application.dto.response.RoleDTO;
 import top.ticho.rainbow.application.dto.SecurityUser;
 import top.ticho.rainbow.application.dto.response.UserDTO;
@@ -35,12 +36,13 @@ import top.ticho.rainbow.application.dto.command.SignUpEmailSendCommand;
 import top.ticho.rainbow.application.dto.command.UseModifyCommand;
 import top.ticho.rainbow.application.dto.command.UseModifySelfCommand;
 import top.ticho.rainbow.application.dto.command.UseSaveCommand;
-import top.ticho.rainbow.application.dto.excel.UserExp;
-import top.ticho.rainbow.application.dto.excel.UserImp;
-import top.ticho.rainbow.application.dto.excel.UserImpModel;
+import top.ticho.rainbow.application.dto.excel.UserExcelImport;
+import top.ticho.rainbow.application.dto.excel.UserExcelImportModel;
 import top.ticho.rainbow.application.dto.query.UserQuery;
 import top.ticho.rainbow.application.dto.request.UserLoginDTO;
 import top.ticho.rainbow.application.dto.response.FileInfoDTO;
+import top.ticho.rainbow.application.dto.response.UserRoleMenuDtlDTO;
+import top.ticho.rainbow.application.executor.AuthExecutor;
 import top.ticho.rainbow.application.executor.DictExecutor;
 import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.domain.entity.Role;
@@ -100,7 +102,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class UserService extends AbstractAuthServiceImpl {
+public class UserService {
     private final UserRepository userRepository;
     private final UserAssembler userAssembler;
     private final RoleAssembler roleAssembler;
@@ -113,6 +115,7 @@ public class UserService extends AbstractAuthServiceImpl {
     private final FileInfoService fileInfoService;
     private final FileInfoAssembler fileInfoAssembler;
     private final DictExecutor dictExecutor;
+    private final AuthExecutor authExecutor;
 
     public void imgCode(String imgKey) throws IOException {
         response.setHeader("Pragma", "No-cache");
@@ -411,7 +414,7 @@ public class UserService extends AbstractAuthServiceImpl {
     public void excelTemplateDownload() throws IOException {
         String sheetName = "用户信息";
         String fileName = "用户信息模板-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
-        ExcelHandle.writeEmptyToResponseBatch(fileName, sheetName, UserImpModel.class, response);
+        ExcelHandle.writeEmptyToResponseBatch(fileName, sheetName, UserExcelImportModel.class, response);
     }
 
     public void importExcel(MultipartFile file) throws IOException {
@@ -421,26 +424,26 @@ public class UserService extends AbstractAuthServiceImpl {
         TiAssert.isNotNull(guestRole, "默认角色不存在，请联系管理员进行处理");
         UserService bean = TiSpringUtil.getBean(this.getClass());
         Map<String, Integer> valueMap = dictExecutor.getValueMap(DictConst.SEX, NumberUtil::parseInt);
-        ExcelHandle.readAndWriteToResponse((x, y) -> bean.readAndWrite(x, y, guestRole, valueMap), file, fileName, sheetName, UserImp.class, response);
+        ExcelHandle.readAndWriteToResponse((x, y) -> bean.readAndWrite(x, y, guestRole, valueMap), file, fileName, sheetName, UserExcelImport.class, response);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void readAndWrite(List<UserImp> userImps, Consumer<UserImp> errHandle, Role guestRole, Map<String, Integer> valueMap) {
+    public void readAndWrite(List<UserExcelImport> userExcelImports, Consumer<UserExcelImport> errHandle, Role guestRole, Map<String, Integer> valueMap) {
         List<User> users = new ArrayList<>();
         List<UserRole> userRoles = new ArrayList<>();
-        for (UserImp userImp : userImps) {
-            if (userImp.getIsError()) {
+        for (UserExcelImport userExcelImport : userExcelImports) {
+            if (userExcelImport.getIsError()) {
                 continue;
             }
             String password = passwordEncoder.encode(CommConst.DEFAULT_PASSWORD);
-            User user = userAssembler.toEntity(userImp, password, UserStatus.NORMAL.code(), valueMap.get(userImp.getSexName()));
+            User user = userAssembler.toEntity(userExcelImport, password, UserStatus.NORMAL.code(), valueMap.get(userExcelImport.getSexName()));
             List<String> errorMsgs = checkRepeat(user);
             if (CollUtil.isNotEmpty(errorMsgs)) {
-                userImp.setMessage(String.join(",", errorMsgs));
-                errHandle.accept(userImp);
+                userExcelImport.setMessage(String.join(",", errorMsgs));
+                errHandle.accept(userExcelImport);
                 continue;
             }
-            userImp.setMessage("导入成功");
+            userExcelImport.setMessage("导入成功");
             users.add(user);
             UserRole userRole = UserRole.builder()
                 .userId(user.getId())
@@ -460,20 +463,20 @@ public class UserService extends AbstractAuthServiceImpl {
         String sheetName = "用户信息";
         String fileName = "用户信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.USER_STATUS, DictConst.SEX);
-        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, UserExp.class, response);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, UserExcelExport.class, response);
     }
 
-    private Collection<UserExp> excelExpHandle(UserQuery query, Map<String, String> labelMap) {
+    private Collection<UserExcelExport> excelExpHandle(UserQuery query, Map<String, String> labelMap) {
         query.checkPage();
         Page<User> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
         userRepository.list(query);
         return page.getResult()
             .stream()
             .map(x -> {
-                UserExp userExp = userAssembler.toExp(x);
-                userExp.setStatusName(labelMap.get(DictConst.USER_STATUS + x.getStatus()));
-                userExp.setSexName(labelMap.get(DictConst.SEX + x.getSex()));
-                return userExp;
+                UserExcelExport userExcelExport = userAssembler.toExp(x);
+                userExcelExport.setStatusName(labelMap.get(DictConst.USER_STATUS + x.getStatus()));
+                userExcelExport.setSexName(labelMap.get(DictConst.SEX + x.getSex()));
+                return userExcelExport;
             })
             .collect(Collectors.toList());
     }
@@ -572,6 +575,14 @@ public class UserService extends AbstractAuthServiceImpl {
             userDto.setRoleIds(itemRoleIds);
             userDto.setRoles(roleDTOS);
         }
+    }
+
+    public UserRoleMenuDtlDTO getUserDtl() {
+        return authExecutor.getUserDtl();
+    }
+
+    public UserRoleMenuDtlDTO getUserDtl(String username) {
+        return authExecutor.getUserDtl(username);
     }
 
 }

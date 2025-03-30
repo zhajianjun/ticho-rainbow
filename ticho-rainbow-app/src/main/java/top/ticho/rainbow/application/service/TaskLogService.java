@@ -6,8 +6,8 @@ import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.assembler.TaskLogAssembler;
+import top.ticho.rainbow.application.dto.excel.TaskLogExcelExport;
 import top.ticho.rainbow.application.dto.response.TaskLogDTO;
-import top.ticho.rainbow.application.dto.excel.TaskLogExp;
 import top.ticho.rainbow.application.dto.query.TaskLogQuery;
 import top.ticho.rainbow.application.dto.query.TaskQuery;
 import top.ticho.rainbow.application.executor.DictExecutor;
@@ -64,10 +64,10 @@ public class TaskLogService {
         String sheetName = "计划任务日志";
         String fileName = "计划任务日志导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.TASK_LOG_STATUS, DictConst.PLAN_TASK, DictConst.YES_OR_NO);
-        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, TaskLogExp.class, response);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, TaskLogExcelExport.class, response);
     }
 
-    private Collection<TaskLogExp> excelExpHandle(TaskLogQuery query, Map<String, String> labelMap) {
+    private Collection<TaskLogExcelExport> excelExpHandle(TaskLogQuery query, Map<String, String> labelMap) {
         query.checkPage();
         Page<TaskLog> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
         taskLogRepository.list(query);
@@ -77,12 +77,12 @@ public class TaskLogService {
         return result
             .stream()
             .map(x -> {
-                TaskLogExp taskLogExp = taskLogAssembler.toExp(x);
-                taskLogExp.setName(taskMap.get(x.getTaskId()));
-                taskLogExp.setStatusName(labelMap.get(DictConst.TASK_LOG_STATUS + x.getStatus()));
-                taskLogExp.setContent(labelMap.get(DictConst.PLAN_TASK + x.getContent()));
-                taskLogExp.setIsErrName(labelMap.get(DictConst.YES_OR_NO + x.getIsErr()));
-                return taskLogExp;
+                TaskLogExcelExport taskLogExcelExport = taskLogAssembler.toExp(x);
+                taskLogExcelExport.setName(taskMap.get(x.getTaskId()));
+                taskLogExcelExport.setStatusName(labelMap.get(DictConst.TASK_LOG_STATUS + x.getStatus()));
+                taskLogExcelExport.setContent(labelMap.get(DictConst.PLAN_TASK + x.getContent()));
+                taskLogExcelExport.setIsErrName(labelMap.get(DictConst.YES_OR_NO + x.getIsErr()));
+                return taskLogExcelExport;
             })
             .collect(Collectors.toList());
     }

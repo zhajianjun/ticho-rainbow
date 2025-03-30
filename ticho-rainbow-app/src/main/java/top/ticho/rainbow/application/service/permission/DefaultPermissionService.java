@@ -1,4 +1,4 @@
-package top.ticho.rainbow.domain.service.permission;
+package top.ticho.rainbow.application.service.permission;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
@@ -8,7 +8,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.dto.SecurityUser;
 import top.ticho.rainbow.application.dto.response.UserDTO;
-import top.ticho.rainbow.application.service.AbstractAuthServiceImpl;
+import top.ticho.rainbow.application.executor.AuthExecutor;
 import top.ticho.rainbow.infrastructure.core.constant.CommConst;
 import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
 import top.ticho.rainbow.infrastructure.core.enums.UserStatus;
@@ -31,9 +31,10 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Service(CommConst.PERM_KEY)
 @Order(1)
-public class DefaultPermissionServiceImpl extends AbstractAuthServiceImpl implements PermissionService {
+public class DefaultPermissionService implements PermissionService {
 
     private final HttpServletRequest request;
+    private final AuthExecutor authExecutor;
 
     public boolean hasPerms(String... permissions) {
         log.debug("权限校验，permissions = {}", String.join(",", permissions));
@@ -55,11 +56,11 @@ public class DefaultPermissionServiceImpl extends AbstractAuthServiceImpl implem
         if (roleCodes.contains(SecurityConst.ADMIN)) {
             return true;
         }
-        UserDTO user = getUser(currentUser.getUsername());
+        UserDTO user = authExecutor.getUser(currentUser.getUsername());
         if (Objects.isNull(user) || !Objects.equals(user.getStatus(), UserStatus.NORMAL.code())) {
             return false;
         }
-        List<String> perms = getPerms(roleCodes);
+        List<String> perms = authExecutor.getPerms(roleCodes);
         if (CollUtil.isEmpty(perms)) {
             return false;
         }

@@ -1,15 +1,17 @@
-package top.ticho.rainbow.application.service;
+package top.ticho.rainbow.application.executor;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.assembler.MenuAssembler;
 import top.ticho.rainbow.application.assembler.RoleAssembler;
 import top.ticho.rainbow.application.assembler.UserAssembler;
+import top.ticho.rainbow.application.dto.response.MenuDtlDTO;
 import top.ticho.rainbow.application.dto.response.RoleDTO;
 import top.ticho.rainbow.application.dto.response.RoleMenuDtlDTO;
 import top.ticho.rainbow.application.dto.response.UserDTO;
 import top.ticho.rainbow.application.dto.response.UserRoleMenuDtlDTO;
-import top.ticho.rainbow.application.dto.response.MenuDtlDTO;
+import top.ticho.rainbow.application.service.FileInfoService;
 import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.domain.entity.Menu;
 import top.ticho.rainbow.domain.entity.Role;
@@ -44,7 +46,8 @@ import java.util.stream.Stream;
  * @author zhajianjun
  * @date 2023-12-17 08:30
  */
-public abstract class AbstractAuthServiceImpl {
+@Component
+public class AuthExecutor {
     @Resource
     private UserRepository userRepository;
     @Resource

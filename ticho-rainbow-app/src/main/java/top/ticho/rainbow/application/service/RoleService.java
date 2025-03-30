@@ -8,15 +8,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.ticho.rainbow.application.assembler.RoleAssembler;
+import top.ticho.rainbow.application.dto.excel.RoleExcelExport;
 import top.ticho.rainbow.application.dto.response.RoleDTO;
-import top.ticho.rainbow.application.dto.RoleMenuDTO;
+import top.ticho.rainbow.application.dto.command.RoleBindMenuCommand;
 import top.ticho.rainbow.application.dto.response.RoleMenuDtlDTO;
 import top.ticho.rainbow.application.dto.command.RoleModifyCommand;
 import top.ticho.rainbow.application.dto.command.RoleSaveCommand;
 import top.ticho.rainbow.application.dto.command.RoleStatusModifyCommand;
-import top.ticho.rainbow.application.dto.excel.RoleExp;
 import top.ticho.rainbow.application.dto.query.RoleDtlQuery;
 import top.ticho.rainbow.application.dto.query.RoleQuery;
+import top.ticho.rainbow.application.executor.AuthExecutor;
 import top.ticho.rainbow.application.executor.DictExecutor;
 import top.ticho.rainbow.domain.entity.Role;
 import top.ticho.rainbow.domain.entity.vo.RoleModifyVO;
@@ -50,13 +51,14 @@ import java.util.stream.Collectors;
  */
 @RequiredArgsConstructor
 @Service
-public class RoleService extends AbstractAuthServiceImpl {
+public class RoleService {
     private final RoleRepository roleRepository;
     private final RoleAssembler roleAssembler;
     private final RoleMenuRepository roleMenuRepository;
     private final UserRoleRepository userRoleRepository;
     private final DictExecutor dictExecutor;
     private final HttpServletResponse response;
+    private final AuthExecutor authExecutor;
 
     @Transactional(rollbackFor = Exception.class)
     public void save(RoleSaveCommand roleSaveCommand) {
@@ -65,10 +67,10 @@ public class RoleService extends AbstractAuthServiceImpl {
         TiAssert.isNull(dbDictType, TiBizErrCode.FAIL, "保存失败，角色已存在");
         TiAssert.isTrue(roleRepository.save(role), TiBizErrCode.FAIL, "保存失败");
         List<Long> menuIds = roleSaveCommand.getMenuIds();
-        RoleMenuDTO roleMenuDTO = new RoleMenuDTO();
-        roleMenuDTO.setRoleId(role.getId());
-        roleMenuDTO.setMenuIds(menuIds);
-        bindMenu(roleMenuDTO);
+        RoleBindMenuCommand roleBindMenuCommand = new RoleBindMenuCommand();
+        roleBindMenuCommand.setRoleId(role.getId());
+        roleBindMenuCommand.setMenuIds(menuIds);
+        bindMenu(roleBindMenuCommand);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -92,10 +94,10 @@ public class RoleService extends AbstractAuthServiceImpl {
         role.modify(modifyVO);
         TiAssert.isTrue(roleRepository.modify(role), TiBizErrCode.FAIL, "修改失败");
         List<Long> menuIds = roleModifyCommand.getMenuIds();
-        RoleMenuDTO roleMenuDTO = new RoleMenuDTO();
-        roleMenuDTO.setRoleId(role.getId());
-        roleMenuDTO.setMenuIds(menuIds);
-        bindMenu(roleMenuDTO);
+        RoleBindMenuCommand roleBindMenuCommand = new RoleBindMenuCommand();
+        roleBindMenuCommand.setRoleId(role.getId());
+        roleBindMenuCommand.setMenuIds(menuIds);
+        bindMenu(roleBindMenuCommand);
     }
 
     public void modifyStatus(RoleStatusModifyCommand roleStatusModifyCommand) {
@@ -130,33 +132,33 @@ public class RoleService extends AbstractAuthServiceImpl {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void bindMenu(RoleMenuDTO roleMenuDTO) {
-        TiValidUtil.valid(roleMenuDTO);
+    public void bindMenu(RoleBindMenuCommand bindMenuCommand) {
+        TiValidUtil.valid(bindMenuCommand);
         // 删除角色绑定的菜单
-        roleMenuRepository.removeAndSave(roleMenuDTO.getRoleId(), roleMenuDTO.getMenuIds());
+        roleMenuRepository.removeAndSave(bindMenuCommand.getRoleId(), bindMenuCommand.getMenuIds());
     }
 
     public RoleMenuDtlDTO listRoleMenu(RoleDtlQuery roleDtlQuery) {
-        return mergeRoleByIds(roleDtlQuery.getRoleIds(), roleDtlQuery.getShowAll(), roleDtlQuery.getTreeHandle());
+        return authExecutor.mergeRoleByIds(roleDtlQuery.getRoleIds(), roleDtlQuery.getShowAll(), roleDtlQuery.getTreeHandle());
     }
 
     public void exportExcel(RoleQuery query) throws IOException {
         String sheetName = "角色信息";
         String fileName = "角色信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<Integer, String> labelMap = dictExecutor.getLabelMap(DictConst.COMMON_STATUS, NumberUtil::parseInt);
-        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, RoleExp.class, response);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, RoleExcelExport.class, response);
     }
 
-    private Collection<RoleExp> excelExpHandle(RoleQuery query, Map<Integer, String> labelMap) {
+    private Collection<RoleExcelExport> excelExpHandle(RoleQuery query, Map<Integer, String> labelMap) {
         query.checkPage();
         Page<Role> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
         roleRepository.list(query);
         return page.getResult()
             .stream()
             .map(x -> {
-                RoleExp roleExp = roleAssembler.toExp(x);
-                roleExp.setStatusName(labelMap.get(x.getStatus()));
-                return roleExp;
+                RoleExcelExport roleExcelExport = roleAssembler.toExp(x);
+                roleExcelExport.setStatusName(labelMap.get(x.getStatus()));
+                return roleExcelExport;
             })
             .collect(Collectors.toList());
     }

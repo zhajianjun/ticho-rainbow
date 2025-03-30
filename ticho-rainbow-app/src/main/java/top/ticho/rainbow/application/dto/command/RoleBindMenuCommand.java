@@ -1,4 +1,4 @@
-package top.ticho.rainbow.application.dto;
+package top.ticho.rainbow.application.dto.command;
 
 import lombok.Data;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * @date 2023-12-17 08:30
  */
 @Data
-public class RoleMenuDTO {
+public class RoleBindMenuCommand {
 
     /** 角色id */
     @NotNull(message = "角色id不能为空")

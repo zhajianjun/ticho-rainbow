@@ -1,4 +1,4 @@
-package top.ticho.rainbow.domain.service.login;
+package top.ticho.rainbow.application.service.login;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

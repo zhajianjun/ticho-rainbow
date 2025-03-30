@@ -5,9 +5,10 @@ import org.jasypt.encryption.StringEncryptor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.starter.view.core.TiResult;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * 工具
@@ -29,7 +30,7 @@ public class ToolController {
      */
     @PreAuthorize("@perm.hasPerms('system:tool:encrypt')")
     @GetMapping("encrypt")
-    public TiResult<String> encrypt(@RequestParam("message") String message) {
+    public TiResult<String> encrypt(@NotBlank(message = "参数不能为空") String message) {
         return TiResult.ok(stringEncryptor.encrypt(message));
     }
 
@@ -40,7 +41,7 @@ public class ToolController {
      */
     @PreAuthorize("@perm.hasPerms('system:tool:decrypt')")
     @GetMapping("decrypt")
-    public TiResult<String> decrypt(@RequestParam("message") String message) {
+    public TiResult<String> decrypt(@NotBlank(message = "参数不能为空") String message) {
         return TiResult.ok(stringEncryptor.decrypt(message));
     }
 

@@ -1,4 +1,4 @@
-package top.ticho.rainbow.domain.handle;
+package top.ticho.rainbow.application.event;
 
 /**
  * @author zhajianjun

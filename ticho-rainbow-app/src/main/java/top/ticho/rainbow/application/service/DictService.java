@@ -11,7 +11,7 @@ import top.ticho.rainbow.application.assembler.DictAssembler;
 import top.ticho.rainbow.application.assembler.DictLabelAssembler;
 import top.ticho.rainbow.application.dto.command.DictModifyCommand;
 import top.ticho.rainbow.application.dto.command.DictSaveCommand;
-import top.ticho.rainbow.application.dto.excel.DictExp;
+import top.ticho.rainbow.application.dto.excel.DictExcelExport;
 import top.ticho.rainbow.application.dto.query.DictLabelQuery;
 import top.ticho.rainbow.application.dto.query.DictQuery;
 import top.ticho.rainbow.application.dto.response.DictDTO;
@@ -136,10 +136,10 @@ public class DictService {
         DictExecutor dictExecutor = TiSpringUtil.getBean(DictExecutor.class);
         Map<Integer, String> labelMap = dictExecutor.getLabelMap(DictConst.COMMON_STATUS, NumberUtil::parseInt);
         query.setCount(false);
-        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, DictExp.class, response);
+        ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, DictExcelExport.class, response);
     }
 
-    private Collection<DictExp> excelExpHandle(DictQuery query, Map<Integer, String> labelMap) {
+    private Collection<DictExcelExport> excelExpHandle(DictQuery query, Map<Integer, String> labelMap) {
         TiPageResult<Dict> page = dictRepository.page(query);
         return page.getRows()
             .stream()
