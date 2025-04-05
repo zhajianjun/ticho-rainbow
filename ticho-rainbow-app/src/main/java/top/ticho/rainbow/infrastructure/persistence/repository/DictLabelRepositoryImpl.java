@@ -47,7 +47,7 @@ public class DictLabelRepositoryImpl extends TiRepositoryImpl<DictLabelMapper, D
 
     @Override
     public DictLabel find(Long id) {
-        return dictLabelConverter.toEntity(getById(id));
+        return dictLabelConverter.toEntity(super.getById(id));
     }
 
     @Override

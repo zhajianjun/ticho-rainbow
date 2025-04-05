@@ -171,7 +171,7 @@ public class TaskService implements InitializingBean {
         TiAssert.isTrue(resumeJob, TiBizErrCode.FAIL, "恢复任务失败");
     }
 
-    public List<String> getRecentCronTime(String cronExpression, Integer num) {
+    public List<String> recentCronTime(String cronExpression, Integer num) {
         num = Optional.ofNullable(num).orElse(10);
         TiAssert.isTrue(num > 0, TiBizErrCode.FAIL, "查询数量必须大于0");
         TiAssert.isTrue(TaskTemplate.isValid(cronExpression), TiBizErrCode.FAIL, "cron表达式不合法");
@@ -179,7 +179,7 @@ public class TaskService implements InitializingBean {
     }
 
 
-    public TaskDTO getById(Long id) {
+    public TaskDTO find(Long id) {
         Task task = taskRepository.find(id);
         return taskAssembler.toDTO(task);
     }

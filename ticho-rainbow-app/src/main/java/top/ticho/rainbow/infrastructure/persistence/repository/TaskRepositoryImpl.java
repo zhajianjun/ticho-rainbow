@@ -49,7 +49,7 @@ public class TaskRepositoryImpl extends TiRepositoryImpl<TaskMapper, TaskPO> imp
 
     @Override
     public Task find(Long id) {
-        return taskConverter.toEntity(getById(id));
+        return taskConverter.toEntity(super.getById(id));
     }
 
     @Override

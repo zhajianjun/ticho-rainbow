@@ -36,7 +36,7 @@ public class DictLabelController {
     /**
      * 保存字典标签
      */
-    @PreAuthorize("@perm.hasPerms('system:dictLabel:save')")
+    @PreAuthorize("@perm.hasPerms('system:dict-label:save')")
     @PostMapping
     public TiResult<Void> save(@Validated @RequestBody DictLabelSaveCommand dictLabelSaveCommand) {
         dictLabelService.save(dictLabelSaveCommand);
@@ -48,7 +48,7 @@ public class DictLabelController {
      *
      * @param id 编号
      */
-    @PreAuthorize("@perm.hasPerms('system:dictLabel:remove')")
+    @PreAuthorize("@perm.hasPerms('system:dict-label:remove')")
     @DeleteMapping
     public TiResult<Void> remove(@NotNull(message = "编号不能为空") Long id) {
         dictLabelService.remove(id);
@@ -58,7 +58,7 @@ public class DictLabelController {
     /**
      * 修改字典标签
      */
-    @PreAuthorize("@perm.hasPerms('system:dictLabel:modify')")
+    @PreAuthorize("@perm.hasPerms('system:dict-label:modify')")
     @PutMapping
     public TiResult<Void> modify(@Validated @RequestBody DictLabelModifyCommand dictLabelModifyCommand) {
         dictLabelService.modify(dictLabelModifyCommand);
@@ -70,7 +70,7 @@ public class DictLabelController {
      *
      * @param code 字典编码
      */
-    @PreAuthorize("@perm.hasPerms('system:dictLabel:getByCode')")
+    @PreAuthorize("@perm.hasPerms('system:dict-label:find')")
     @GetMapping
     public TiResult<List<DictLabelDTO>> getByCode(@NotBlank(message = "字典编码不能为空") String code) {
         return TiResult.ok(dictLabelService.getByCode(code));

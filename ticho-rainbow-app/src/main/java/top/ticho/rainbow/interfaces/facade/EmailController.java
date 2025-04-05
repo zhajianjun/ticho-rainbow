@@ -30,7 +30,7 @@ public class EmailController {
      * @param mailContent 邮件内容
      * @return {@link TiResult }<{@link Void }>
      */
-    @PreAuthorize("@perm.hasPerms('system:email:sendTest')")
+    @PreAuthorize("@perm.hasPerms('system:email:send-test')")
     @PostMapping("test/send")
     public TiResult<Void> sendTest(TiMailContent mailContent) {
         emailRepository.sendMail(mailContent);

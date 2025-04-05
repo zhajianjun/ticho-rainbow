@@ -111,14 +111,10 @@ public class PermCacheHandle {
         int start = value.indexOf("'") + 1;
         int end = value.lastIndexOf("'");
         value = value.substring(start, end);
-        // fixme 获取方法名，获取类名，获取方法描述，获取方法排序
-        // ApiOperation apiOperation = handlerMethod.getMethodAnnotation(ApiOperation.class);
-        // ApiOperationSupport support = handlerMethod.getMethodAnnotation(ApiOperationSupport.class);
-        String name = handlerMethod.getBeanType().toString();
         PermDTO perm = new PermDTO();
         perm.setCode(value);
-        // perm.setName(Optional.ofNullable(apiOperation).map(ApiOperation::value).orElse(name));
-        // perm.setSort(Optional.ofNullable(support).map(ApiOperationSupport::order).orElse(Integer.MAX_VALUE));
+        perm.setName(value);
+        perm.setSort(10);
         return perm;
     }
 

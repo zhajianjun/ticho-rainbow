@@ -63,7 +63,7 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
 
     @Override
     public User find(Long id) {
-        UserPO userPO = getById(id);
+        UserPO userPO = super.getById(id);
         return userConverter.toEntity(userPO);
     }
 

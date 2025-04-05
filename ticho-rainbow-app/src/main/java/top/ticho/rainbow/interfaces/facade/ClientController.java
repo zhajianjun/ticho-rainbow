@@ -73,10 +73,10 @@ public class ClientController {
      *
      * @param id 编号
      */
-    @PreAuthorize("@perm.hasPerms('intranet:client:getById')")
+    @PreAuthorize("@perm.hasPerms('intranet:client:find')")
     @GetMapping
-    public TiResult<ClientDTO> getById(@NotNull(message = "编号不能为空") Long id) {
-        return TiResult.ok(clientService.getById(id));
+    public TiResult<ClientDTO> find(@NotNull(message = "编号不能为空") Long id) {
+        return TiResult.ok(clientService.find(id));
     }
 
     /**
@@ -105,7 +105,7 @@ public class ClientController {
      * @throws IOException io异常
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('intranet:client:exportExcel')")
+    @PreAuthorize("@perm.hasPerms('intranet:client:export')")
     @GetMapping("excel/export")
     public void exportExcel(@Validated ClientQuery query) throws IOException {
         clientService.exportExcel(query);

@@ -100,7 +100,7 @@ public class TaskController {
      * @param id    编号
      * @param param 参数
      */
-    @PreAuthorize("@perm.hasPerms('system:task:runOnce')")
+    @PreAuthorize("@perm.hasPerms('system:task:run-once')")
     @GetMapping("run-once")
     public TiResult<Void> runOnce(@NotNull(message = "编号不能为空") Long id, String param) {
         taskService.runOnce(id, param);
@@ -113,10 +113,10 @@ public class TaskController {
      * @param cronExpression cron表达式
      * @param num            查询数量
      */
-    @PreAuthorize("@perm.hasPerms('system:task:getRecentCronTime')")
+    @PreAuthorize("@perm.hasPerms('system:task:recent-cron-time')")
     @GetMapping("recent-cron-time")
-    public TiResult<List<String>> getRecentCronTime(String cronExpression, Integer num) {
-        return TiResult.ok(taskService.getRecentCronTime(cronExpression, num));
+    public TiResult<List<String>> recentCronTime(String cronExpression, Integer num) {
+        return TiResult.ok(taskService.recentCronTime(cronExpression, num));
     }
 
     /**
@@ -124,10 +124,10 @@ public class TaskController {
      *
      * @param id 编号
      */
-    @PreAuthorize("@perm.hasPerms('system:task:getById')")
+    @PreAuthorize("@perm.hasPerms('system:task:find')")
     @GetMapping()
-    public TiResult<TaskDTO> getById(@NotNull(message = "编号不能为空") Long id) {
-        return TiResult.ok(taskService.getById(id));
+    public TiResult<TaskDTO> find(@NotNull(message = "编号不能为空") Long id) {
+        return TiResult.ok(taskService.find(id));
     }
 
     /**
@@ -152,7 +152,7 @@ public class TaskController {
      * 导出计划任务
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:task:exportExcel')")
+    @PreAuthorize("@perm.hasPerms('system:task:export')")
     @GetMapping("excel/export")
     public void exportExcel(@Validated TaskQuery query) throws IOException {
         taskService.exportExcel(query);

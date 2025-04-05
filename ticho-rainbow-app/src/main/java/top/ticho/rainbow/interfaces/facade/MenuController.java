@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.rainbow.application.dto.response.MenuDTO;
 import top.ticho.rainbow.application.dto.command.MenuModifyCommand;
 import top.ticho.rainbow.application.dto.command.MenuSaveCommand;
-import top.ticho.rainbow.application.dto.response.RouteDTO;
+import top.ticho.rainbow.application.dto.response.MenuDTO;
 import top.ticho.rainbow.application.dto.response.MenuDtlDTO;
+import top.ticho.rainbow.application.dto.response.RouteDTO;
 import top.ticho.rainbow.application.service.MenuService;
 import top.ticho.starter.view.core.TiResult;
 
@@ -70,10 +70,10 @@ public class MenuController {
      *
      * @param id 编号
      */
-    @PreAuthorize("@perm.hasPerms('system:menu:getById')")
+    @PreAuthorize("@perm.hasPerms('system:menu:find')")
     @GetMapping
-    public TiResult<MenuDTO> getById(@NotNull(message = "编号不能为空") Long id) {
-        return TiResult.ok(menuService.getById(id));
+    public TiResult<MenuDTO> find(@NotNull(message = "编号不能为空") Long id) {
+        return TiResult.ok(menuService.find(id));
     }
 
     /**
@@ -99,9 +99,9 @@ public class MenuController {
      *
      * @param roleCodes 角色代码
      */
-    @PreAuthorize("@perm.hasPerms('system:menu:getPerms')")
+    @PreAuthorize("@perm.hasPerms('system:menu:perms')")
     @GetMapping("perms")
-    public TiResult<List<String>> getPerms(List<String> roleCodes) {
+    public TiResult<List<String>> getPerms(String roleCodes) {
         return TiResult.ok(menuService.getPerms(roleCodes));
     }
 

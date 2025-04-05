@@ -53,7 +53,7 @@ public class FileInfoRepositoryImpl extends TiRepositoryImpl<FileInfoMapper, Fil
 
     @Override
     public FileInfo find(Long id) {
-        FileInfoPO po = getById(id);
+        FileInfoPO po = super.getById(id);
         return fileInfoConverter.toEntity(po);
     }
 

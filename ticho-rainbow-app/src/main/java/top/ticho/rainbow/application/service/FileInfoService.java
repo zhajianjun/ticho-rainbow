@@ -139,7 +139,7 @@ public class FileInfoService {
         TiAssert.isTrue(enable, TiBizErrCode.FAIL, "作废失败");
     }
 
-    public void delete(Long id) {
+    public void remove(Long id) {
         FileInfo dbFileInfo = fileInfoRepository.find(id);
         TiAssert.isNotNull(dbFileInfo, FileErrCode.FILE_NOT_EXIST, "删除失败, 文件信息不存在");
         boolean isCancel = Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CANCE.code());

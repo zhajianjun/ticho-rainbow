@@ -49,7 +49,7 @@ public class DictRepositoryImpl extends TiRepositoryImpl<DictMapper, DictPO> imp
 
     @Override
     public Dict find(Long id) {
-        return dictConverter.toEntity(getById(id));
+        return dictConverter.toEntity(super.getById(id));
     }
 
     @Override

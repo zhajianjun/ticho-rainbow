@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.rainbow.application.dto.response.RoleDTO;
 import top.ticho.rainbow.application.dto.command.RoleBindMenuCommand;
-import top.ticho.rainbow.application.dto.response.RoleMenuDtlDTO;
 import top.ticho.rainbow.application.dto.command.RoleModifyCommand;
 import top.ticho.rainbow.application.dto.command.RoleSaveCommand;
 import top.ticho.rainbow.application.dto.command.RoleStatusModifyCommand;
 import top.ticho.rainbow.application.dto.query.RoleDtlQuery;
 import top.ticho.rainbow.application.dto.query.RoleQuery;
+import top.ticho.rainbow.application.dto.response.RoleDTO;
+import top.ticho.rainbow.application.dto.response.RoleMenuDtlDTO;
 import top.ticho.rainbow.application.service.RoleService;
 import top.ticho.starter.security.annotation.IgnoreJwtCheck;
 import top.ticho.starter.security.annotation.IgnoreType;
@@ -77,7 +77,7 @@ public class RoleController {
     /**
      * 修改角色状态
      */
-    @PreAuthorize("@perm.hasPerms('system:role:updateStatus')")
+    @PreAuthorize("@perm.hasPerms('system:role:modify-status')")
     @PatchMapping("status")
     public TiResult<Void> modifyStatus(@RequestBody RoleStatusModifyCommand statusModifyCommand) {
         roleService.modifyStatus(statusModifyCommand);
@@ -89,10 +89,10 @@ public class RoleController {
      *
      * @param id 编号
      */
-    @PreAuthorize("@perm.hasPerms('system:role:getById')")
+    @PreAuthorize("@perm.hasPerms('system:role:find')")
     @GetMapping
-    public TiResult<RoleDTO> getById(@NotNull(message = "编号不能为空") Long id) {
-        return TiResult.ok(roleService.getById(id));
+    public TiResult<RoleDTO> find(@NotNull(message = "编号不能为空") Long id) {
+        return TiResult.ok(roleService.find(id));
     }
 
     /**
@@ -117,7 +117,7 @@ public class RoleController {
     /**
      * 绑定角色菜单
      */
-    @PreAuthorize("@perm.hasPerms('system:role:bindMenu')")
+    @PreAuthorize("@perm.hasPerms('system:role:bind-menu')")
     @PostMapping("menu/bind")
     public TiResult<Void> bindMenu(@Validated @RequestBody RoleBindMenuCommand bindMenuCommand) {
         roleService.bindMenu(bindMenuCommand);
@@ -128,7 +128,7 @@ public class RoleController {
      * 查询角色菜单
      */
     @IgnoreJwtCheck(IgnoreType.INNER)
-    @PreAuthorize("@perm.hasPerms('system:role:listRoleMenu')")
+    @PreAuthorize("@perm.hasPerms('system:role:list-role-menu')")
     @GetMapping("menu/list")
     public TiResult<RoleMenuDtlDTO> listRoleMenu(@Validated RoleDtlQuery roleDtlQuery) {
         return TiResult.ok(roleService.listRoleMenu(roleDtlQuery));
@@ -138,7 +138,7 @@ public class RoleController {
      * 导出角色
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:role:exportExcel')")
+    @PreAuthorize("@perm.hasPerms('system:role:export')")
     @GetMapping("excel/export")
     public void exportExcel(@Validated RoleQuery query) throws IOException {
         roleService.exportExcel(query);

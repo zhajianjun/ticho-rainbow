@@ -1,11 +1,9 @@
 package top.ticho.rainbow.application.dto.command;
 
 import lombok.Data;
-import top.ticho.starter.web.util.valid.TiValidGroup;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.List;
 
 /**

@@ -86,7 +86,7 @@ public class PortService {
         updatePortInfo(port);
     }
 
-    public PortDTO getById(Long id) {
+    public PortDTO find(Long id) {
         Port port = portRepository.find(id);
         PortDTO portDTO = portAssembler.toDTO(port);
         fillChannelStatus(portDTO);

@@ -73,10 +73,10 @@ public class DictController {
      *
      * @param id 编号
      */
-    @PreAuthorize("@perm.hasPerms('system:dict:getById')")
+    @PreAuthorize("@perm.hasPerms('system:dict:find')")
     @GetMapping
-    public TiResult<DictDTO> getById(@NotNull(message = "编号不能为空") Long id) {
-        return TiResult.ok(dictService.getById(id));
+    public TiResult<DictDTO> find(@NotNull(message = "编号不能为空") Long id) {
+        return TiResult.ok(dictService.find(id));
     }
 
     /**
@@ -110,7 +110,7 @@ public class DictController {
      * 导出字典
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:dict:exportExcel')")
+    @PreAuthorize("@perm.hasPerms('system:dict:export')")
     @GetMapping("excel/export")
     public void exportExcel(@Validated DictQuery query) throws IOException {
         dictService.exportExcel(query);

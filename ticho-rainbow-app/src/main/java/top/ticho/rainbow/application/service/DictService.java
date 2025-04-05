@@ -85,7 +85,7 @@ public class DictService {
         TiAssert.isTrue(dictRepository.modify(dict), TiBizErrCode.FAIL, "修改失败");
     }
 
-    public DictDTO getById(Long id) {
+    public DictDTO find(Long id) {
         Dict dict = dictRepository.find(id);
         return dictAssembler.toDTO(dict);
     }

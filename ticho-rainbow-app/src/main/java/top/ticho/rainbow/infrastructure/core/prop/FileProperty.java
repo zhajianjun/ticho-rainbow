@@ -21,6 +21,7 @@ public class FileProperty {
     private String domain;
     /** 地址 */
     private String rootPath = System.getProperty("user.dir");
+    /** mvc资源路径 */
     private String mvcResourcePath = "/static/file/**";
     /** 文件大小限制，默认20MB */
     private DataSize maxFileSize = DataSize.ofMegabytes(20L);

@@ -72,10 +72,10 @@ public class PortController {
      * @param id 编号
      * @return {@link TiResult }<{@link PortDTO }>
      */
-    @PreAuthorize("@perm.hasPerms('intranet:port:getById')")
+    @PreAuthorize("@perm.hasPerms('intranet:port:find')")
     @GetMapping
-    public TiResult<PortDTO> getById(@NotNull(message = "编号不能为空") Long id) {
-        return TiResult.ok(portService.getById(id));
+    public TiResult<PortDTO> find(@NotNull(message = "编号不能为空") Long id) {
+        return TiResult.ok(portService.find(id));
     }
 
 
@@ -92,7 +92,7 @@ public class PortController {
      * 导出端口信息
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('intranet:port:exportExcel')")
+    @PreAuthorize("@perm.hasPerms('intranet:port:export')")
     @GetMapping("excel/export")
     public void exportExcel(@Validated PortQuery query) throws IOException {
         portService.exportExcel(query);

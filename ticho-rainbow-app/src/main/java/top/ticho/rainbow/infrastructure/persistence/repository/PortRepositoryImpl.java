@@ -53,7 +53,7 @@ public class PortRepositoryImpl extends TiRepositoryImpl<PortMapper, PortPO> imp
 
     @Override
     public Port find(Long id) {
-        return portConverter.toEntity(getById(id));
+        return portConverter.toEntity(super.getById(id));
     }
 
     @Override

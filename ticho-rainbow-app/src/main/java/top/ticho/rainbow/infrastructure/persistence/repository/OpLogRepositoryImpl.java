@@ -40,7 +40,7 @@ public class OpLogRepositoryImpl extends TiRepositoryImpl<OpLogMapper, OpLogPO> 
 
     @Override
     public OpLog find(Long id) {
-        return opLogConverter.toEntity(getById(id));
+        return opLogConverter.toEntity(super.getById(id));
     }
 
     @Override

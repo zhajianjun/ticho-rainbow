@@ -53,7 +53,7 @@ public class MenuRepositoryImpl extends TiRepositoryImpl<MenuMapper, MenuPO> imp
 
     @Override
     public Menu find(Long id) {
-        return menuConverter.toEntity(getById(id));
+        return menuConverter.toEntity(super.getById(id));
     }
 
     @Override

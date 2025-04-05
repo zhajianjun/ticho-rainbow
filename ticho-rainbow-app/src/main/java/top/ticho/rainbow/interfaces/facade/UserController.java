@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import top.ticho.rainbow.application.dto.command.UserModifySelfPasswordCommand;
-import top.ticho.rainbow.application.dto.response.UserDTO;
-import top.ticho.rainbow.application.dto.command.UserModifyPasswordCommand;
-import top.ticho.rainbow.application.dto.command.UserBindRoleCommand;
-import top.ticho.rainbow.application.dto.response.UserRoleMenuDtlDTO;
 import top.ticho.rainbow.application.dto.command.UseModifyCommand;
 import top.ticho.rainbow.application.dto.command.UseModifySelfCommand;
 import top.ticho.rainbow.application.dto.command.UseSaveCommand;
+import top.ticho.rainbow.application.dto.command.UserBindRoleCommand;
+import top.ticho.rainbow.application.dto.command.UserModifyPasswordCommand;
+import top.ticho.rainbow.application.dto.command.UserModifySelfPasswordCommand;
 import top.ticho.rainbow.application.dto.query.UserQuery;
+import top.ticho.rainbow.application.dto.response.UserDTO;
+import top.ticho.rainbow.application.dto.response.UserRoleMenuDtlDTO;
 import top.ticho.rainbow.application.service.UserService;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
@@ -59,7 +59,7 @@ public class UserController {
      *
      * @param file 文件
      */
-    @PreAuthorize("@perm.hasPerms('system:user:uploadAvatar')")
+    @PreAuthorize("@perm.hasPerms('system:user:upload-avatar')")
     @PostMapping("avatar")
     public TiResult<String> uploadAvatar(@NotNull(message = "请上传头像") MultipartFile file) {
         return TiResult.ok(userService.uploadAvatar(file));
@@ -91,7 +91,7 @@ public class UserController {
     /**
      * 修改用户(登录人)
      */
-    @PreAuthorize("@perm.hasPerms('system:user:modifyForSelf')")
+    @PreAuthorize("@perm.hasPerms('system:user:modify-self')")
     @PutMapping("self")
     public TiResult<Void> modifySelf(@Validated @RequestBody UseModifySelfCommand useModifySelfCommand) {
         userService.modifyForSelf(useModifySelfCommand);
@@ -128,7 +128,7 @@ public class UserController {
      *
      * @param usernames 用户名, 多个用逗号隔开
      */
-    @PreAuthorize("@perm.hasPerms('system:user:logOut')")
+    @PreAuthorize("@perm.hasPerms('system:user:log-out')")
     @PatchMapping("status/log-out")
     public TiResult<Void> logOut(@NotNull(message = "用户名不能为空") @RequestBody List<String> usernames) {
         userService.logOut(usernames);
@@ -138,7 +138,7 @@ public class UserController {
     /**
      * 修改用户密码
      */
-    @PreAuthorize("@perm.hasPerms('system:user:updatePassword')")
+    @PreAuthorize("@perm.hasPerms('system:user:modify-password')")
     @PatchMapping("password")
     public TiResult<Void> modifyPassword(@Validated @RequestBody UserModifyPasswordCommand userModifyPasswordCommand) {
         userService.modifyPassword(userModifyPasswordCommand);
@@ -148,7 +148,7 @@ public class UserController {
     /**
      * 修改用户密码(登录人)
      */
-    @PreAuthorize("@perm.hasPerms('system:user:updatePasswordForSelf')")
+    @PreAuthorize("@perm.hasPerms('system:user:modify-self-passwordf')")
     @PatchMapping("self-password")
     public TiResult<Void> modifySelfPassword(@Validated @RequestBody UserModifySelfPasswordCommand userModifySelfPasswordCommand) {
         userService.modifyPasswordForSelf(userModifySelfPasswordCommand);
@@ -160,7 +160,7 @@ public class UserController {
      *
      * @param username 用户名
      */
-    @PreAuthorize("@perm.hasPerms('system:user:resetPassword')")
+    @PreAuthorize("@perm.hasPerms('system:user:reset-password')")
     @PatchMapping("password/reset")
     public TiResult<Void> resetPassword(String username) {
         userService.resetPassword(username);
@@ -173,7 +173,7 @@ public class UserController {
      *
      * @param username 用户名
      */
-    @PreAuthorize("@perm.hasPerms('system:user:info')")
+    @PreAuthorize("@perm.hasPerms('system:user:find-info')")
     @GetMapping("info")
     public TiResult<UserDTO> info(String username) {
         return TiResult.ok(userService.getInfoByUsername(username));
@@ -182,7 +182,7 @@ public class UserController {
     /**
      * 查询用户(登录人)
      */
-    @PreAuthorize("@perm.hasPerms('system:user:infoForSelf')")
+    @PreAuthorize("@perm.hasPerms('system:user:find-self-info')")
     @GetMapping("self-info")
     public TiResult<UserDTO> selfInfo() {
         return TiResult.ok(userService.getInfo());
@@ -193,7 +193,7 @@ public class UserController {
      *
      * @param username 用户名
      */
-    @PreAuthorize("@perm.hasPerms('system:user:detail')")
+    @PreAuthorize("@perm.hasPerms('system:user:find-detail')")
     @GetMapping("detail")
     public TiResult<UserRoleMenuDtlDTO> detail(String username) {
         return TiResult.ok(userService.getUserDtl(username));
@@ -202,7 +202,7 @@ public class UserController {
     /**
      * 查询用户角色菜单权限(登录人)
      */
-    @PreAuthorize("@perm.hasPerms('system:user:detailForSelf')")
+    @PreAuthorize("@perm.hasPerms('system:user:find-self-detail')")
     @GetMapping("self-detail")
     public TiResult<UserRoleMenuDtlDTO> selfDetail() {
         return TiResult.ok(userService.getUserDtl());
@@ -220,7 +220,7 @@ public class UserController {
     /**
      * 绑定用户角色
      */
-    @PreAuthorize("@perm.hasPerms('system:user:bindRole')")
+    @PreAuthorize("@perm.hasPerms('system:user:bind-role')")
     @PostMapping("role/bind")
     public TiResult<Void> bindRole(@Validated @RequestBody UserBindRoleCommand userBindRoleCommand) {
         userService.bindRole(userBindRoleCommand);
@@ -231,7 +231,7 @@ public class UserController {
      * 下载导入模板
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:user:impTemplate')")
+    @PreAuthorize("@perm.hasPerms('system:user:download-import-template')")
     @GetMapping("excel-template/download")
     public void excelTemplateDownload() throws IOException {
         userService.excelTemplateDownload();
@@ -243,7 +243,7 @@ public class UserController {
      * @param file 文件
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:user:importExcel')")
+    @PreAuthorize("@perm.hasPerms('system:user:import')")
     @PostMapping("excel/import")
     public void importExcel(@RequestPart("file") MultipartFile file) throws IOException {
         userService.importExcel(file);
@@ -253,7 +253,7 @@ public class UserController {
      * 导出用户
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:user:exportExcel')")
+    @PreAuthorize("@perm.hasPerms('system:user:export')")
     @GetMapping("excel/export")
     public void exportExcel(@Validated @RequestBody UserQuery query) throws IOException {
         userService.exportExcel(query);

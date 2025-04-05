@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.assembler.TaskLogAssembler;
 import top.ticho.rainbow.application.dto.excel.TaskLogExcelExport;
-import top.ticho.rainbow.application.dto.response.TaskLogDTO;
 import top.ticho.rainbow.application.dto.query.TaskLogQuery;
 import top.ticho.rainbow.application.dto.query.TaskQuery;
+import top.ticho.rainbow.application.dto.response.TaskLogDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
 import top.ticho.rainbow.domain.entity.Task;
 import top.ticho.rainbow.domain.entity.TaskLog;
@@ -44,7 +44,7 @@ public class TaskLogService {
     private final HttpServletResponse response;
     private final TaskRepository taskRepository;
 
-    public TaskLogDTO getById(Long id) {
+    public TaskLogDTO find(Long id) {
         TaskLog taskLog = taskLogRepository.find(id);
         return taskLogAssembler.toDTO(taskLog);
     }

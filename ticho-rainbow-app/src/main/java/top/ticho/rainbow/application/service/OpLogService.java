@@ -38,7 +38,7 @@ public class OpLogService {
     private final DictExecutor dictExecutor;
     private final HttpServletResponse response;
 
-    public OpLogDTO getById(Long id) {
+    public OpLogDTO find(Long id) {
         OpLog opLog = opLogRepository.find(id);
         return opLogAssembler.toDTO(opLog);
     }

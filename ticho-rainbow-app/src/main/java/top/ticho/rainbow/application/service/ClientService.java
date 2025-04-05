@@ -129,7 +129,7 @@ public class ClientService {
      * @param id 编号
      * @return {@link ClientDTO}
      */
-    public ClientDTO getById(Long id) {
+    public ClientDTO find(Long id) {
         Client clientPO = clientRepository.find(id);
         ClientDTO clientDTO = clientAssembler.toDTO(clientPO);
         fillChannelStatus(clientDTO);

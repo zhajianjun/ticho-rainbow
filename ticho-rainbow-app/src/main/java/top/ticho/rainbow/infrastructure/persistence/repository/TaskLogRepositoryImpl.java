@@ -68,7 +68,7 @@ public class TaskLogRepositoryImpl extends TiRepositoryImpl<TaskLogMapper, TaskL
 
     @Override
     public TaskLog find(Long id) {
-        return taskLogConverter.toEntity(getById(id));
+        return taskLogConverter.toEntity(super.getById(id));
     }
 
     public void removeBefeoreDays(Integer days) {

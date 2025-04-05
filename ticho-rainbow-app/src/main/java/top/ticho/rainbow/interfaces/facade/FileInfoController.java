@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.dto.command.FileChunkUploadCommand;
@@ -51,7 +50,7 @@ public class FileInfoController {
     /**
      * 上传分片文件
      */
-    @PreAuthorize("@file_perm.hasPerms('storage:file:uploadChunk')")
+    @PreAuthorize("@file_perm.hasPerms('storage:file:upload-chunk')")
     @PostMapping("chunk/upload")
     public TiResult<ChunkCacheDTO> uploadChunk(@Validated FileChunkUploadCommand fileChunkUploadCommand) {
         return TiResult.ok(fileInfoService.uploadChunk(fileChunkUploadCommand));
@@ -62,7 +61,7 @@ public class FileInfoController {
      *
      * @param chunkId 分片id
      */
-    @PreAuthorize("@perm.hasPerms('storage:file:composeChunk')")
+    @PreAuthorize("@perm.hasPerms('storage:file:compose-chunk')")
     @PostMapping("chunk/compose")
     public TiResult<FileInfoDTO> composeChunk(@NotBlank(message = "分片id不能为空") String chunkId) {
         return TiResult.ok(fileInfoService.composeChunk(chunkId));
@@ -73,10 +72,10 @@ public class FileInfoController {
      *
      * @param id 文件id
      */
-    @PreAuthorize("@perm.hasPerms('storage:file:delete')")
+    @PreAuthorize("@perm.hasPerms('storage:file:remove')")
     @DeleteMapping
-    public TiResult<Void> delete(@NotNull(message = "编号不能为空") Long id) {
-        fileInfoService.delete(id);
+    public TiResult<Void> remove(@NotNull(message = "编号不能为空") Long id) {
+        fileInfoService.remove(id);
         return TiResult.ok();
     }
 
@@ -144,7 +143,7 @@ public class FileInfoController {
      * @param expire 过期时间， <=7天，默认30分钟，单位：秒
      * @param limit  是否限制 true 链接只能使用一次，false 过期时间内不限制
      */
-    @PreAuthorize("@perm.hasPerms('storage:file:getUrl')")
+    @PreAuthorize("@perm.hasPerms('storage:file:presigned')")
     @GetMapping("presigned")
     public TiResult<String> getUrl(Long id, Long expire, Boolean limit) {
         return TiResult.ok(fileInfoService.getUrl(id, expire, limit));
@@ -154,7 +153,7 @@ public class FileInfoController {
      * 导出文件信息
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('storage:file:exportExcel')")
+    @PreAuthorize("@perm.hasPerms('storage:file:export')")
     @GetMapping("excel/export")
     public void exportExcel(@Validated FileInfoQuery query) throws IOException {
         fileInfoService.exportExcel(query);

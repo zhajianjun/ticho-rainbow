@@ -30,7 +30,7 @@ public class PermController {
      */
     @PreAuthorize("@perm.hasPerms('system:perm:all')")
     @GetMapping("all")
-    public TiResult<List<PermDTO>> listAll() {
+    public TiResult<List<PermDTO>> all() {
         return TiResult.ok(permCacheHandle.listAllAppPerms());
     }
 

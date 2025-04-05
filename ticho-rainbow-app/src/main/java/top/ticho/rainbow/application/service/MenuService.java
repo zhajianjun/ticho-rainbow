@@ -26,6 +26,7 @@ import top.ticho.starter.view.enums.TiBizErrCode;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.TiTreeUtil;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -73,7 +74,7 @@ public class MenuService {
         TiAssert.isTrue(menuRepository.remove(id), TiBizErrCode.FAIL, "删除失败");
     }
 
-    public MenuDTO getById(Long id) {
+    public MenuDTO find(Long id) {
         Menu menu = menuRepository.find(id);
         return menuAssembler.toDTO(menu);
     }
@@ -237,8 +238,8 @@ public class MenuService {
         menu.modify(parentId, structure);
     }
 
-    public List<String> getPerms(List<String> roleCodes) {
-        return authExecutor.getPerms(roleCodes);
+    public List<String> getPerms(String roleCodes) {
+        return authExecutor.getPerms(Arrays.stream(roleCodes.split(",")).collect(Collectors.toList()));
     }
 
 }

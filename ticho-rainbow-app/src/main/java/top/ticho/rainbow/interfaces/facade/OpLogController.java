@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("opLog")
+@RequestMapping("op-log")
 public class OpLogController {
     private final OpLogService opLogService;
 
@@ -33,16 +33,16 @@ public class OpLogController {
      *
      * @param id 编号
      */
-    @PreAuthorize("@perm.hasPerms('system:opLog:getById')")
+    @PreAuthorize("@perm.hasPerms('system:op-log:find')")
     @GetMapping
-    public TiResult<OpLogDTO> getById(@NotNull(message = "编号不能为空") Long id) {
-        return TiResult.ok(opLogService.getById(id));
+    public TiResult<OpLogDTO> find(@NotNull(message = "编号不能为空") Long id) {
+        return TiResult.ok(opLogService.find(id));
     }
 
     /**
      * 查询操作日志(分页)
      */
-    @PreAuthorize("@perm.hasPerms('system:opLog:page')")
+    @PreAuthorize("@perm.hasPerms('system:op-log:page')")
     @GetMapping("page")
     public TiResult<TiPageResult<OpLogDTO>> page(@Validated OpLogQuery query) {
         return TiResult.ok(opLogService.page(query));
@@ -54,7 +54,7 @@ public class OpLogController {
      * @param query 查询
      * @throws IOException io异常
      */
-    @PreAuthorize("@perm.hasPerms('system:opLog:exportExcel')")
+    @PreAuthorize("@perm.hasPerms('system:op-log:export')")
     @GetMapping("excel/export")
     public void exportExcel(@Validated OpLogQuery query) throws IOException {
         opLogService.exportExcel(query);

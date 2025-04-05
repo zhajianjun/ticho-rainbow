@@ -15,13 +15,6 @@ ticho:
     ant-patterns:
       - /
       - /health
-      - /**/user/token
-      - /**/user/refreshToken
-      - /doc.html
-      - /swagger-resources/**
-      - /webjars/**
-      - /v2/api-docs
-      - /favicon.ico
       - ${ticho.rainbow.file.mvc-resource-path}
   cors:
     enable: true
@@ -46,7 +39,7 @@ ticho:
     # 配置邮箱用户名
     username: ENC(MEtHRUmgiDUB5WbRcSeyNdlhcDN2qNx1b2qdhhabHM4=)
     # 配置密码，注意，不是真正的密码，而是申请到的授权码
-    password: ENC(smiBr2v3UplE9o4Z2w36s3w5gQrw7D/wqh4HSc1tPU4=)
+    password: ENC(5/i5hSsiLT3CnzPn8HAQueEVSSxghAAQOsVOuAVhfX4=)
     # 发件人名称
     sender-name: Rainbow
     # 默认的邮件编码

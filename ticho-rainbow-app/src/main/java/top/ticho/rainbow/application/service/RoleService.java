@@ -8,15 +8,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.ticho.rainbow.application.assembler.RoleAssembler;
-import top.ticho.rainbow.application.dto.excel.RoleExcelExport;
-import top.ticho.rainbow.application.dto.response.RoleDTO;
 import top.ticho.rainbow.application.dto.command.RoleBindMenuCommand;
-import top.ticho.rainbow.application.dto.response.RoleMenuDtlDTO;
 import top.ticho.rainbow.application.dto.command.RoleModifyCommand;
 import top.ticho.rainbow.application.dto.command.RoleSaveCommand;
 import top.ticho.rainbow.application.dto.command.RoleStatusModifyCommand;
+import top.ticho.rainbow.application.dto.excel.RoleExcelExport;
 import top.ticho.rainbow.application.dto.query.RoleDtlQuery;
 import top.ticho.rainbow.application.dto.query.RoleQuery;
+import top.ticho.rainbow.application.dto.response.RoleDTO;
+import top.ticho.rainbow.application.dto.response.RoleMenuDtlDTO;
 import top.ticho.rainbow.application.executor.AuthExecutor;
 import top.ticho.rainbow.application.executor.DictExecutor;
 import top.ticho.rainbow.domain.entity.Role;
@@ -107,7 +107,7 @@ public class RoleService {
         roleRepository.modify(role);
     }
 
-    public RoleDTO getById(Long id) {
+    public RoleDTO find(Long id) {
         Role role = roleRepository.find(id);
         return roleAssembler.toDTO(role);
     }
