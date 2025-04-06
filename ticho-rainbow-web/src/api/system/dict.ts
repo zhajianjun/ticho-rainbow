@@ -6,9 +6,9 @@ import { RetryRequest } from '#/axios';
 enum Api {
   Dict = '/dict',
   DictPage = '/dict/page',
-  list = '/dict/list',
+  all = '/dict/all',
   flush = '/dict/flush',
-  Export = '/dict/expExcel',
+  Export = '/dict/excel/export',
 }
 
 export function saveDict(params: DictDTO) {
@@ -28,14 +28,14 @@ export function modifyDict(params: DictDTO) {
 }
 
 export function dictPage(params?: DictQuery) {
-  return defHttp.post<PageResult<DictDTO>>(
+  return defHttp.get<PageResult<DictDTO>>(
     { url: Api.DictPage, params },
     { errorMessageMode: 'none' },
   );
 }
 
-export function list() {
-  return defHttp.get<DictDTO[]>({ url: Api.list }, { errorMessageMode: 'none' });
+export function all() {
+  return defHttp.get<DictDTO[]>({ url: Api.all }, { errorMessageMode: 'none' });
 }
 
 export function flush() {
@@ -43,7 +43,7 @@ export function flush() {
 }
 
 export function expExcel(params?: DictQuery) {
-  return defHttp.post<any>(
+  return defHttp.get<any>(
     { url: Api.Export, params, responseType: 'blob' },
     {
       errorMessageMode: 'message',

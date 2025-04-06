@@ -7,7 +7,7 @@ import { ContentTypeEnum } from '@/enums/httpEnum';
 
 enum Api {
   Upload = '/file/upload',
-  GetUrl = '/file/getUrl',
+  Presigned = '/file/presigned',
   UploadChunk = '/file/uploadChunk',
   ComposeChunk = '/file/composeChunk',
   EnableFileInfo = '/file/enable',
@@ -75,10 +75,10 @@ export function composeChunk(chunkId: string) {
  * @param expire
  * @param limit
  */
-export function getUrl(id: string, expire?: number | null, limit?: boolean | null) {
+export function presigned(id: string, expire?: number | null, limit?: boolean | null) {
   const params = { id: id, expire: expire, limit: limit };
   return defHttp.get<string>(
-    { url: Api.GetUrl, params },
+    { url: Api.Presigned, params },
     {
       errorMessageMode: 'message',
       joinParamsToUrl: true,
@@ -124,7 +124,7 @@ export function modifyFileInfo(params: FileInfoDTO) {
 }
 
 export function fileInfoPage(params?: FileInfoQuery) {
-  return defHttp.post<FileInfoDTO[]>(
+  return defHttp.get<FileInfoDTO[]>(
     { url: Api.FileInfoPage, params },
     { errorMessageMode: 'none' },
   );

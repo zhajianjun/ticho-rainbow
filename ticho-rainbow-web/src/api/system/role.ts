@@ -11,15 +11,15 @@ import { RetryRequest } from '#/axios';
 enum Api {
   Role = '/role',
   RolePage = '/role/page',
-  RoleList = '/role/list',
-  ListRoleMenu = '/role/listRoleMenu',
-  BindMenu = '/role/bindMenu',
-  UpdateStatus = '/role/updateStatus',
+  RoleList = '/role/all',
+  ListRoleMenu = '/role/menu/list',
+  BindMenu = '/role/menu/bind',
+  ModifyStatus = '/role/status',
   Export = '/role/expExcel',
 }
 
 export function rolePage(params?: RoleQuery) {
-  return defHttp.post<RoleDTO>({ url: Api.RolePage, params }, { errorMessageMode: 'none' });
+  return defHttp.get<RoleDTO>({ url: Api.RolePage, params }, { errorMessageMode: 'none' });
 }
 
 export function listRoles(params?: RoleDTO) {
@@ -43,7 +43,7 @@ export function modifyRole(params: any) {
 }
 
 export function modifyRoleStatus(params: any) {
-  return defHttp.put<any>({ url: Api.UpdateStatus, params }, { errorMessageMode: 'message' });
+  return defHttp.patch<any>({ url: Api.ModifyStatus, params }, { errorMessageMode: 'message' });
 }
 
 export function listRoleMenu(params?: RoleMenuQueryDTO) {

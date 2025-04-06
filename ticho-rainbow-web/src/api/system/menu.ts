@@ -3,11 +3,11 @@ import { MenuDtlModule } from './model/menuModel';
 
 enum Api {
   Menu = '/menu',
-  MenuList = '/menu/list',
+  AllMenu = '/menu/all',
   Routes = '/menu/route',
 }
 
-export const getMenuList = () => defHttp.get<MenuDtlModule[]>({ url: Api.MenuList });
+export const getMenuList = () => defHttp.get<MenuDtlModule[]>({ url: Api.AllMenu });
 
 export const getRoutes = () => defHttp.get<MenuDtlModule[]>({ url: Api.Routes });
 

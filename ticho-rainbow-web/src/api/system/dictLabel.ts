@@ -2,7 +2,7 @@ import { defHttp } from '@/utils/http/axios';
 import { DictLabelDTO } from './model/dictLabelModel';
 
 enum Api {
-  DictLabel = '/dictLabel',
+  DictLabel = '/dict-label',
 }
 
 export function saveDictLabel(params: DictLabelDTO) {
@@ -21,7 +21,7 @@ export function modifyDictLabel(params: DictLabelDTO) {
   return defHttp.put<DictLabelDTO>({ url: Api.DictLabel, params }, { errorMessageMode: 'message' });
 }
 
-export function getByCode(code: string) {
+export function findDictLabel(code: string) {
   const params = { code: code };
   return defHttp.get<DictLabelDTO[]>(
     { url: Api.DictLabel, params },

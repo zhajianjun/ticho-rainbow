@@ -5,7 +5,7 @@ import { RetryRequest } from '#/axios';
 enum Api {
   Port = '/port',
   PortPage = '/port/page',
-  Export = '/port/expExcel',
+  Export = '/port/excel/export',
 }
 
 export function savePort(params: PortDTO) {
@@ -21,11 +21,11 @@ export function modifyPort(params: PortDTO) {
 }
 
 export function portPage(params?: PortQuery) {
-  return defHttp.post<PortDTO[]>({ url: Api.PortPage, params }, { errorMessageMode: 'message' });
+  return defHttp.get<PortDTO[]>({ url: Api.PortPage, params }, { errorMessageMode: 'message' });
 }
 
 export function expExcel(params?: PortQuery) {
-  return defHttp.post<any>(
+  return defHttp.get<any>(
     { url: Api.Export, params, responseType: 'blob' },
     {
       errorMessageMode: 'message',

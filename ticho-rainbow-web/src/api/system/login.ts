@@ -12,12 +12,12 @@ import { ErrorMessageMode, RetryRequest } from '#/axios';
 
 enum Api {
   Login = '/oauth/token',
-  ImgCode = '/oauth/imgCode',
-  SignUpEmailSend = '/oauth/signUpEmailSend',
-  SignUp = '/oauth/signUp',
-  ResetPasswordEmailSend = '/oauth/resetPasswordEmailSend',
-  ResetPassword = '/oauth/resetPassword',
-  UserDtlForSelf = '/user/detailForSelf',
+  ImgCode = '/oauth/img-code',
+  SignUpEmailSend = '/oauth/sign-up-email/send',
+  SignUp = '/oauth/sign-up',
+  ResetPasswordEmailSend = '/oauth/reset-password-email/send',
+  ResetPassword = '/oauth/reset-password',
+  UserDtlForSelf = '/user/self-info',
 }
 
 export function getImgCode(imgKey: string, mode: ErrorMessageMode = 'modal') {

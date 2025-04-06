@@ -4,13 +4,13 @@ import { isNull } from '@/utils/is';
 import { h } from 'vue';
 import { Tag, Textarea } from 'ant-design-vue';
 import dayjs from 'dayjs';
-import { taskList } from '@/api/system/task';
+import { allTasks } from '@/api/system/task';
 import { DescItem } from '@/components/Description';
 
 const yesOrNo = 'yesOrNo';
 const planTask = 'planTask';
 const taskLogStatus = 'taskLogStatus';
-export const task = await taskList();
+export const task = await allTasks();
 
 export function getTableColumns(): BasicColumn[] {
   return [

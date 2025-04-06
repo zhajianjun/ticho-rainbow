@@ -30,7 +30,7 @@
   import { SHOW_CHILD } from 'ant-design-vue/es/vc-cascader';
 
   import { saveMenu, modifyMenu } from '@/api/system/menu';
-  import { getPerms } from '@/api/system/perm';
+  import { getPermissions } from '@/api/system/permssion';
   import { MenuDtlModule } from '@/api/system/model/menuModel';
 
   export default defineComponent({
@@ -99,7 +99,7 @@
         });
       });
 
-      getPerms().then((res) => {
+      getPermissions().then((res) => {
         permList.value = res as unknown as Array<any>;
       });
 

@@ -228,7 +228,7 @@
       }
 
       function handleRemove(record: Recordable) {
-        removeUser([record.username]).then(() => {
+        removeUser(record.username).then(() => {
           reload();
         });
       }

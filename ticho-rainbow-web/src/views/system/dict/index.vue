@@ -115,7 +115,7 @@
   } from './dict.data';
   import { getTableColumns as getDictLabelTableColumns } from './dictLabel.data';
   import { delDict, dictPage, expExcel } from '@/api/system/dict';
-  import { delDictLabel, getByCode } from '@/api/system/dictLabel';
+  import { delDictLabel, findDictLabel } from '@/api/system/dictLabel';
   import { usePermission } from '@/hooks/web/usePermission';
   import { Tag } from 'ant-design-vue';
   import { flushDicts } from '@/store/modules/dict';
@@ -145,7 +145,7 @@
           if (!code) {
             return Promise.resolve();
           }
-          return getByCode(code);
+          return findDictLabel(code);
         },
         rowKey: 'id',
         columns: getDictLabelTableColumns(),

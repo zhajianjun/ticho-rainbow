@@ -3,9 +3,9 @@ import { OpLogDTO, OpLogQuery } from './model/opLogModel';
 import { RetryRequest } from '#/axios';
 
 enum Api {
-  OpLog = '/opLog',
-  OpLogPage = '/opLog/page',
-  Export = '/opLog/expExcel',
+  OpLog = '/op-log',
+  OpLogPage = '/op-log/page',
+  Export = '/op-log/excel/export',
 }
 
 export function getOpLog(id: string) {
@@ -14,11 +14,11 @@ export function getOpLog(id: string) {
 }
 
 export function opLogPage(params?: OpLogQuery) {
-  return defHttp.post<OpLogDTO[]>({ url: Api.OpLogPage, params }, { errorMessageMode: 'none' });
+  return defHttp.get<OpLogDTO[]>({ url: Api.OpLogPage, params }, { errorMessageMode: 'none' });
 }
 
 export function expExcel(params?: OpLogQuery) {
-  return defHttp.post<any>(
+  return defHttp.get<any>(
     { url: Api.Export, params, responseType: 'blob' },
     {
       errorMessageMode: 'message',

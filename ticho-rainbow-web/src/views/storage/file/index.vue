@@ -114,7 +114,7 @@
     enableFileInfo,
     expExcel,
     fileInfoPage,
-    getUrl,
+    presigned,
   } from '@/api/storage/fileInfo';
   import { usePermission } from '@/hooks/web/usePermission';
   import { useMessage } from '@/hooks/web/useMessage';
@@ -195,7 +195,7 @@
 
       function handleDownload(record: Recordable) {
         try {
-          getUrl(record.id, null, true).then((res) => {
+          presigned(record.id, null, true).then((res) => {
             if (!res) {
               createMessage.error('文件不存在');
               return;

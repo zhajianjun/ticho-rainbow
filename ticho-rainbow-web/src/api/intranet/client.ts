@@ -5,8 +5,8 @@ import { RetryRequest } from '#/axios';
 enum Api {
   Client = '/client',
   ClientPage = '/client/page',
-  ClientAll = '/client/list',
-  Export = '/client/expExcel',
+  ClientAll = '/client/all',
+  Export = '/client/excel/export',
 }
 
 export function saveClient(params: ClientDTO) {
@@ -29,7 +29,7 @@ export function modifyClientStatus(params: ClientDTO) {
 }
 
 export function clientPage(params?: ClientQuery) {
-  return defHttp.post<ClientDTO[]>(
+  return defHttp.get<ClientDTO[]>(
     { url: Api.ClientPage, params },
     { errorMessageMode: 'message' },
   );
@@ -40,7 +40,7 @@ export function clientAll(params?: ClientQuery) {
 }
 
 export function expExcel(params?: ClientQuery) {
-  return defHttp.post<any>(
+  return defHttp.get<any>(
     { url: Api.Export, params, responseType: 'blob' },
     {
       errorMessageMode: 'message',

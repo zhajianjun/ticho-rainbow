@@ -3,16 +3,16 @@ import { TaskLogDTO, TaskLogQuery } from './model/taskLogModel';
 import { RetryRequest } from '#/axios';
 
 enum Api {
-  TaskLogPage = '/taskLog/page',
-  Export = '/taskLog/expExcel',
+  TaskLogPage = '/task-log/page',
+  Export = '/task-log/excel/export',
 }
 
 export function taskLogPage(params?: TaskLogQuery) {
-  return defHttp.post<TaskLogDTO[]>({ url: Api.TaskLogPage, params }, { errorMessageMode: 'none' });
+  return defHttp.get<TaskLogDTO[]>({ url: Api.TaskLogPage, params }, { errorMessageMode: 'none' });
 }
 
 export function expExcel(params?: TaskLogQuery) {
-  return defHttp.post<any>(
+  return defHttp.get<any>(
     { url: Api.Export, params, responseType: 'blob' },
     {
       errorMessageMode: 'message',

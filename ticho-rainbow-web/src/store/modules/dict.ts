@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { DictLabel, DictLabelDTO } from '@/api/system/model/dictLabelModel';
-import { flush, list } from '@/api/system/dict';
+import { flush, all } from '@/api/system/dict';
 import { DictDTO } from '@/api/system/model/dictModel';
 import { Persistent } from '@/utils/cache/persistent';
 import { DICTS_KEY } from '@/enums/cacheEnum';
@@ -33,7 +33,7 @@ export const useDictStore = defineStore({
       this.dicts = null;
     },
     async initDicts() {
-      list().then((res) => {
+      all().then((res) => {
         if (!res || res.length <= 0) {
           return;
         }

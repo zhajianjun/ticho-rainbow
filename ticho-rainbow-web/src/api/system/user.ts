@@ -6,23 +6,22 @@ import { RetryRequest } from '#/axios';
 enum Api {
   UserInfo = '/user',
   UserPage = '/user/page',
-  BindRole = '/user/bindRole',
-  UpdateForSelf = '/user/updateForSelf',
-  UpdatePassword = '/user/updatePassword',
-  UpdatePasswordForSelf = '/user/updatePasswordForSelf',
-  ResetUserPassword = '/user/resetPassword',
-  UploadAvatar = '/user/uploadAvatar',
-  LockUser = '/user/lock',
-  UnLockUser = '/user/unLock',
-  LogOutUser = '/user/logOut',
-  RemoveUser = '/user/remove',
-  ImpTemplate = '/user/impTemplate',
-  ImpExcel = '/user/impExcel',
-  Export = '/user/expExcel',
+  BindRole = '/user/role/bind',
+  UpdateForSelf = '/user/self',
+  UpdatePassword = '/user/password',
+  UpdatePasswordForSelf = '/user/self-password',
+  ResetUserPassword = '/user/password/reset',
+  UploadAvatar = '/user/avatar/upload',
+  LockUser = '/user/status/lock',
+  UnLockUser = '/user/status/un-lock',
+  LogOutUser = '/user/status/log-out',
+  ImpTemplate = '/user/excel-template/download',
+  ImpExcel = '/user/excel/import',
+  Export = '/user/excel/export',
 }
 
 export function userPage(params?: UserQuery) {
-  return defHttp.post<UserDTO>({ url: Api.UserPage, params }, { errorMessageMode: 'none' });
+  return defHttp.get<UserDTO>({ url: Api.UserPage, params }, { errorMessageMode: 'none' });
 }
 
 export function getUserInfo(username: string) {
@@ -35,29 +34,30 @@ export function saveUser(params: UserDTO) {
 }
 
 export function lockUser(params: string[]) {
-  return defHttp.post<any>(
+  return defHttp.patch<any>(
     { url: Api.LockUser, params },
     { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
 
 export function unlockUser(params: string[]) {
-  return defHttp.post<any>(
+  return defHttp.patch<any>(
     { url: Api.UnLockUser, params },
     { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
 
 export function logOutUser(params: string[]) {
-  return defHttp.post<any>(
+  return defHttp.patch<any>(
     { url: Api.LogOutUser, params },
     { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
 
-export function removeUser(params: string[]) {
-  return defHttp.post<any>(
-    { url: Api.RemoveUser, params },
+export function removeUser(username: string) {
+  const params = { username: username };
+  return defHttp.delete<any>(
+    { url: Api.UserInfo, params },
     { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
@@ -138,7 +138,7 @@ export function impExcel(file: File) {
 }
 
 export function expExcel(params?: UserQuery) {
-  return defHttp.post<any>(
+  return defHttp.get<any>(
     { url: Api.Export, params, responseType: 'blob' },
     {
       errorMessageMode: 'message',

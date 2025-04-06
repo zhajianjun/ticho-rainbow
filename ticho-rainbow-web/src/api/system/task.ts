@@ -5,11 +5,11 @@ import { RetryRequest } from '#/axios';
 enum Api {
   Task = '/task',
   TaskPage = '/task/page',
-  TaskList = '/task/list',
-  RunOnceTask = '/task/runOnce',
+  AllTasks = '/task/all',
+  RunOnceTask = '/task/run-once',
   PauseTask = '/task/pause',
   ResumeTask = '/task/resume',
-  Export = '/task/expExcel',
+  Export = '/task/excel/export',
 }
 
 export function saveTask(params: TaskDTO) {
@@ -29,11 +29,11 @@ export function modifyTask(params: TaskDTO) {
 }
 
 export function taskPage(params?: TaskQuery) {
-  return defHttp.post<TaskDTO[]>({ url: Api.TaskPage, params }, { errorMessageMode: 'none' });
+  return defHttp.get<TaskDTO[]>({ url: Api.TaskPage, params }, { errorMessageMode: 'none' });
 }
 
-export function taskList(params?: TaskQuery) {
-  return defHttp.get<TaskDTO[]>({ url: Api.TaskList, params }, { errorMessageMode: 'none' });
+export function allTasks(params?: TaskQuery) {
+  return defHttp.get<TaskDTO[]>({ url: Api.AllTasks, params }, { errorMessageMode: 'none' });
 }
 
 export function runOnceTask(params) {
@@ -54,7 +54,7 @@ export function resumeTask(id: string) {
 }
 
 export function expExcel(params?: TaskQuery) {
-  return defHttp.post<any>(
+  return defHttp.get<any>(
     { url: Api.Export, params, responseType: 'blob' },
     {
       errorMessageMode: 'message',
