@@ -11,6 +11,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.ticho.rainbow.application.dto.query.UserQuery;
+import top.ticho.rainbow.application.dto.response.UserDTO;
+import top.ticho.rainbow.application.repository.UserAppRepository;
 import top.ticho.rainbow.domain.entity.User;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
@@ -18,6 +20,8 @@ import top.ticho.rainbow.infrastructure.persistence.converter.UserConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.UserMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.UserPO;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
+import top.ticho.starter.datasource.util.TiPageUtil;
+import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.TiSpringUtil;
 
@@ -34,7 +38,7 @@ import java.util.Objects;
  */
 @Service
 @RequiredArgsConstructor
-public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> implements UserRepository {
+public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> implements UserRepository, UserAppRepository {
     private final UserConverter userConverter;
 
     @Override
@@ -130,7 +134,7 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
     }
 
     @Override
-    public List<User> list(UserQuery query) {
+    public TiPageResult<UserDTO> page(UserQuery query) {
         LambdaQueryWrapper<UserPO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(CollUtil.isNotEmpty(query.getIds()), UserPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), UserPO::getId, query.getId());
@@ -152,7 +156,7 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
         wrapper.eq(Objects.nonNull(query.getStatus()), UserPO::getStatus, query.getStatus());
         wrapper.like(StrUtil.isNotBlank(query.getRemark()), UserPO::getRemark, query.getRemark());
         wrapper.orderByDesc(UserPO::getId);
-        return userConverter.toEntitys(list(wrapper));
+        return TiPageUtil.page(() -> list(wrapper), query, userConverter::toDTO);
     }
 
     @Override

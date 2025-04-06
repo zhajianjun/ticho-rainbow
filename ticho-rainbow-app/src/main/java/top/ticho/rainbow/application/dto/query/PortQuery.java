@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import top.ticho.starter.view.core.TiPageQuery;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,7 +31,6 @@ public class PortQuery extends TiPageQuery {
     /** 域名 */
     private String domain;
     /** 状态;1-启用,0-停用 */
-    @NotNull(message = "是否开启不能为空")
     private Integer status;
     /** 过期时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

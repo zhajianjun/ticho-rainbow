@@ -1,6 +1,7 @@
 package top.ticho.rainbow.infrastructure.persistence.converter;
 
 import org.mapstruct.Mapper;
+import top.ticho.rainbow.application.dto.response.PortDTO;
 import top.ticho.rainbow.domain.entity.Port;
 import top.ticho.rainbow.infrastructure.persistence.po.PortPO;
 
@@ -20,4 +21,7 @@ public interface PortConverter {
     Port toEntity(PortPO portPO);
 
     PortPO toPo(Port port);
+
+    PortDTO toDTO(PortPO portPO);
+
 }

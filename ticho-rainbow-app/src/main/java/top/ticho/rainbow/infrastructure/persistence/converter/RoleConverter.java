@@ -1,6 +1,7 @@
 package top.ticho.rainbow.infrastructure.persistence.converter;
 
 import org.mapstruct.Mapper;
+import top.ticho.rainbow.application.dto.response.RoleDTO;
 import top.ticho.rainbow.domain.entity.Role;
 import top.ticho.rainbow.infrastructure.persistence.po.RolePO;
 
@@ -14,6 +15,8 @@ import java.util.List;
 public interface RoleConverter {
 
     List<Role> toEntitys(List<RolePO> list);
+
+    RoleDTO toDTO(RolePO rolePO);
 
     Role toEntity(RolePO rolePO);
 

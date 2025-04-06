@@ -45,6 +45,6 @@ public interface ClientAssembler {
     @Mapping(target = "statusName", ignore = true)
     @Mapping(target = "connectTime", ignore = true)
     @Mapping(target = "channelStatusName", ignore = true)
-    ClientExcelExport toExp(Client client);
+    ClientExcelExport toExcelExport(Client client);
 
 }

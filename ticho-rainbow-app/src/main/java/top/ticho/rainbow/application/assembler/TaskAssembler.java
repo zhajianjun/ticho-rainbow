@@ -21,7 +21,7 @@ public interface TaskAssembler {
 
     TaskDTO toDTO(Task entity);
 
-    TaskExcelExport toExp(Task entity);
+    TaskExcelExport toExcelExport(TaskDTO taskDTO);
 
     TaskModifyVo toVo(TaskModifyCommand taskModifyCommand);
 

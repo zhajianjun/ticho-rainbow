@@ -7,8 +7,6 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.beetl.core.GroupTemplate;
@@ -44,6 +42,7 @@ import top.ticho.rainbow.application.dto.response.UserDTO;
 import top.ticho.rainbow.application.dto.response.UserRoleMenuDtlDTO;
 import top.ticho.rainbow.application.executor.AuthExecutor;
 import top.ticho.rainbow.application.executor.DictExecutor;
+import top.ticho.rainbow.application.repository.UserAppRepository;
 import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.domain.entity.Role;
 import top.ticho.rainbow.domain.entity.User;
@@ -104,6 +103,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final UserAppRepository userAppRepository;
     private final UserAssembler userAssembler;
     private final RoleAssembler roleAssembler;
     private final PasswordEncoder passwordEncoder;
@@ -311,7 +311,7 @@ public class UserService {
         user.modifyPhoto(upload.getId().toString());
         userRepository.modify(user);
         FileInfo fileInfo = fileInfoAssembler.toEntity(upload);
-        return fileInfoService.getUrl(fileInfo, null, true);
+        return fileInfoService.presigned(fileInfo, null, true);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -350,15 +350,9 @@ public class UserService {
     }
 
     public TiPageResult<UserDTO> page(UserQuery query) {
-        query.checkPage();
-        Page<User> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
-        userRepository.list(query);
-        List<UserDTO> userDTOs = page.getResult()
-            .stream()
-            .map(userAssembler::toDTO)
-            .collect(Collectors.toList());
-        setRoles(userDTOs);
-        return new TiPageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), userDTOs);
+        TiPageResult<UserDTO> page = userAppRepository.page(query);
+        setRoles(page.getRows());
+        return page;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -396,9 +390,11 @@ public class UserService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void remove(List<String> usernames) {
+    public void removeBatch(String usernames) {
         TiAssert.isNotEmpty(usernames, "用户名不能为空");
-        usernames.forEach(this::remove);
+        for (String username : usernames.split(",")) {
+            remove(username);
+        }
     }
 
     public void remove(String username) {
@@ -463,17 +459,16 @@ public class UserService {
         String sheetName = "用户信息";
         String fileName = "用户信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.USER_STATUS, DictConst.SEX);
+        query.setCount(false);
         ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, UserExcelExport.class, response);
     }
 
     private Collection<UserExcelExport> excelExpHandle(UserQuery query, Map<String, String> labelMap) {
-        query.checkPage();
-        Page<User> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
-        userRepository.list(query);
-        return page.getResult()
+        TiPageResult<UserDTO> page = userAppRepository.page(query);
+        return page.getRows()
             .stream()
             .map(x -> {
-                UserExcelExport userExcelExport = userAssembler.toExp(x);
+                UserExcelExport userExcelExport = userAssembler.toExcelExport(x);
                 userExcelExport.setStatusName(labelMap.get(DictConst.USER_STATUS + x.getStatus()));
                 userExcelExport.setSexName(labelMap.get(DictConst.SEX + x.getSex()));
                 return userExcelExport;

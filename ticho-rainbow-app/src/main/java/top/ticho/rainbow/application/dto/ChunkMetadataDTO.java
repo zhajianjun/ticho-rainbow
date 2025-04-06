@@ -15,4 +15,5 @@ public class ChunkMetadataDTO {
     private Integer chunkCount;
     private Long chunkSize;
     private String chunkDirPath;
+
 }

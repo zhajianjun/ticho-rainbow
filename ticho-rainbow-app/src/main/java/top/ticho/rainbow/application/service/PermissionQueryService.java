@@ -1,14 +1,13 @@
-package top.ticho.rainbow.infrastructure.core.component;
+package top.ticho.rainbow.application.service;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import top.ticho.rainbow.application.dto.response.PermDTO;
-import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
+import top.ticho.rainbow.application.dto.response.PermissionDTO;
 import top.ticho.starter.web.util.TiSpringUtil;
 
 import java.util.ArrayList;
@@ -22,49 +21,33 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * 权限编码缓存处理
- *
  * @author zhajianjun
- * @date 2024-01-08 20:30
+ * @date 2025-04-06 13:40
  */
-@Component
-public class PermCacheHandle {
+@Service
+@RequiredArgsConstructor
+public class PermissionQueryService {
+    private final Map<String, String> MAP = new HashMap<>();
 
-    private final Map<String, Map<String, String>> MAP = new HashMap<>();
-
-    public void pushCurrentAppPerms() {
-        List<PermDTO> perms = listCurrentAppPerms();
-        if (CollUtil.isEmpty(perms)) {
-            return;
-        }
-        Map<String, String> map = perms
-            .stream()
-            .filter(Objects::nonNull)
-            .filter(item -> StrUtil.isNotBlank(item.getCode()))
-            .filter(item -> StrUtil.isNotBlank(item.getName()))
-            .collect(Collectors.toMap(PermDTO::getCode, PermDTO::getName, (v1, v2) -> v1, LinkedHashMap::new));
-        MAP.put(SecurityConst.MICRO_REDIS_ALL_PERMS, map);
-    }
-
-    public List<PermDTO> listAllAppPerms() {
-        Map<String, String> permsMap = getAllPermsMap();
-        PermDTO json = new PermDTO();
+    public List<PermissionDTO> tree() {
+        Map<String, String> permsMap = getMap();
+        PermissionDTO json = new PermissionDTO();
         json.setName("");
         json.setCode("");
         json.setChildren(new ArrayList<>());
         for (Map.Entry<String, String> entry : permsMap.entrySet()) {
             String entryKey = entry.getKey();
             String[] keys = entryKey.split(":");
-            PermDTO perm = json;
+            PermissionDTO perm = json;
             for (String key : keys) {
                 if (Objects.isNull(perm.getChildren())) {
                     perm.setChildren(new ArrayList<>());
                 }
-                List<PermDTO> children = perm.getChildren();
-                Optional<PermDTO> childOpt = children.stream().filter(x -> Objects.equals(x.getCode(), key)).findFirst();
-                PermDTO child;
+                List<PermissionDTO> children = perm.getChildren();
+                Optional<PermissionDTO> childOpt = children.stream().filter(x -> Objects.equals(x.getCode(), key)).findFirst();
+                PermissionDTO child;
                 if (!childOpt.isPresent()) {
-                    child = new PermDTO();
+                    child = new PermissionDTO();
                     child.setName(key);
                     child.setCode(key);
                     child.setChildren(new ArrayList<>());
@@ -78,28 +61,39 @@ public class PermCacheHandle {
         return json.getChildren();
     }
 
-    public Map<String, String> getAllPermsMap() {
-        return MAP.get(SecurityConst.MICRO_REDIS_ALL_PERMS);
+    public Map<String, String> getMap() {
+        return MAP;
+    }
+
+    public void cache() {
+        List<PermissionDTO> perms = all();
+        Map<String, String> map = perms
+            .stream()
+            .filter(Objects::nonNull)
+            .filter(item -> StrUtil.isNotBlank(item.getCode()))
+            .filter(item -> StrUtil.isNotBlank(item.getName()))
+            .collect(Collectors.toMap(PermissionDTO::getCode, PermissionDTO::getName, (v1, v2) -> v1, LinkedHashMap::new));
+        MAP.putAll(map);
     }
 
     /**
      * 获取当前应用的全部权限标识
      *
-     * @return {@link List}<{@link PermDTO}>
+     * @return {@link List}<{@link PermissionDTO}>
      */
-    public List<PermDTO> listCurrentAppPerms() {
+    public List<PermissionDTO> all() {
         RequestMappingHandlerMapping mapping = TiSpringUtil.getBean(RequestMappingHandlerMapping.class);
         // 获取url与类和方法的对应信息
         Map<RequestMappingInfo, HandlerMethod> map = mapping.getHandlerMethods();
         return map.values()
             .stream()
-            .map(this::getFunc)
+            .map(this::toPermission)
             .filter(Objects::nonNull)
-            .sorted(Comparator.comparing(PermDTO::getSort, Comparator.nullsLast(Comparator.naturalOrder())))
+            .sorted(Comparator.comparing(PermissionDTO::getSort, Comparator.nullsLast(Comparator.naturalOrder())))
             .collect(Collectors.toList());
     }
 
-    private PermDTO getFunc(HandlerMethod handlerMethod) {
+    private PermissionDTO toPermission(HandlerMethod handlerMethod) {
         PreAuthorize preAuthorize = handlerMethod.getMethodAnnotation(PreAuthorize.class);
         if (preAuthorize == null) {
             return null;
@@ -111,7 +105,7 @@ public class PermCacheHandle {
         int start = value.indexOf("'") + 1;
         int end = value.lastIndexOf("'");
         value = value.substring(start, end);
-        PermDTO perm = new PermDTO();
+        PermissionDTO perm = new PermissionDTO();
         perm.setCode(value);
         perm.setName(value);
         perm.setSort(10);

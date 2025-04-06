@@ -110,7 +110,7 @@ public class AuthExecutor {
             userRoleMenuDtlDTO.setPhoto(null);
             return;
         }
-        String url = fileInfoService.getUrl(fileInfo, null, true);
+        String url = fileInfoService.presigned(fileInfo, null, true);
         userRoleMenuDtlDTO.setPhoto(url);
     }
 

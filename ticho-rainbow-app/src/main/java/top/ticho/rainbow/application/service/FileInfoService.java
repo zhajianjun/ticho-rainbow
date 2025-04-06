@@ -7,8 +7,6 @@ import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +23,7 @@ import top.ticho.rainbow.application.dto.query.FileInfoQuery;
 import top.ticho.rainbow.application.dto.response.ChunkCacheDTO;
 import top.ticho.rainbow.application.dto.response.FileInfoDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
+import top.ticho.rainbow.application.repository.FileInfoAppRepository;
 import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.infrastructure.config.CacheConfig;
@@ -36,7 +35,6 @@ import top.ticho.rainbow.infrastructure.core.enums.FileInfoStatus;
 import top.ticho.rainbow.infrastructure.core.prop.FileProperty;
 import top.ticho.rainbow.infrastructure.core.util.CommonUtil;
 import top.ticho.starter.cache.component.TiCacheTemplate;
-import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.enums.TiBizErrCode;
 import top.ticho.starter.view.enums.TiHttpErrCode;
@@ -78,6 +76,7 @@ public class FileInfoService {
     private final TiCacheTemplate tiCacheTemplate;
     private final FileProperty fileProperty;
     private final FileInfoRepository fileInfoRepository;
+    private final FileInfoAppRepository fileInfoAppRepository;
     private final FileInfoAssembler fileInfoAssembler;
     private final DictExecutor dictExecutor;
 
@@ -190,7 +189,7 @@ public class FileInfoService {
         }
     }
 
-    public String getUrl(Long id, Long expire, Boolean limit) {
+    public String presigned(Long id, Long expire, Boolean limit) {
         long seconds = TimeUnit.DAYS.toSeconds(7);
         if (expire != null) {
             TiAssert.isTrue(expire <= seconds, TiBizErrCode.PARAM_ERROR, "过期时间最长为7天");
@@ -198,10 +197,10 @@ public class FileInfoService {
             expire = seconds;
         }
         FileInfo dbFileInfo = fileInfoRepository.find(id);
-        return getUrl(dbFileInfo, expire, limit);
+        return presigned(dbFileInfo, expire, limit);
     }
 
-    public String getUrl(FileInfo fileInfo, Long expire, Boolean limit) {
+    public String presigned(FileInfo fileInfo, Long expire, Boolean limit) {
         TiAssert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST);
         TiAssert.isTrue(fileInfo.isNormal(), FileErrCode.FILE_STATUS_ERROR);
         boolean normal = Objects.equals(fileInfo.getStatus(), FileInfoStatus.NORMAL.code());
@@ -472,26 +471,24 @@ public class FileInfoService {
     }
 
     public TiPageResult<FileInfoDTO> page(FileInfoQuery query) {
-        TiPageResult<FileInfo> page = fileInfoRepository.page(query);
-        return TiPageUtil.of(page, fileInfoAssembler::toDTO);
+        return fileInfoAppRepository.page(query);
     }
 
     public void exportExcel(FileInfoQuery query) throws IOException {
         String sheetName = "文件信息";
         String fileName = "文件信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.FILE_STATUS, DictConst.FILE_STORAGE_TYPE);
+        query.setCount(false);
         ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, FileInfoExcelExport.class, response);
     }
 
     private Collection<FileInfoExcelExport> excelExpHandle(FileInfoQuery query, Map<String, String> labelMap) {
-        query.checkPage();
-        Page<FileInfo> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
-        fileInfoRepository.list(query);
-        List<FileInfo> result = page.getResult();
+        TiPageResult<FileInfoDTO> page = fileInfoAppRepository.page(query);
+        List<FileInfoDTO> result = page.getRows();
         return result
             .stream()
             .map(x -> {
-                FileInfoExcelExport fileInfoExcelExport = fileInfoAssembler.toExp(x);
+                FileInfoExcelExport fileInfoExcelExport = fileInfoAssembler.toExcelExport(x);
                 fileInfoExcelExport.setTypeName(labelMap.get(DictConst.FILE_STORAGE_TYPE + x.getType()));
                 fileInfoExcelExport.setStatusName(labelMap.get(DictConst.FILE_STATUS + x.getStatus()));
                 return fileInfoExcelExport;

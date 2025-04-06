@@ -1,6 +1,5 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.application.dto.query.RoleQuery;
 import top.ticho.rainbow.domain.entity.DictLabel;
 import top.ticho.rainbow.domain.entity.Role;
 
@@ -51,14 +50,6 @@ public interface RoleRepository {
      * @return {@link List}<{@link Role}>
      */
     List<Role> cacheList();
-
-    /**
-     * 根据条件查询Role列表
-     *
-     * @param query 查询条件
-     * @return {@link List}<{@link Role}>
-     */
-    List<Role> list(RoleQuery query);
 
     /**
      * 根据角色code查询Role列表

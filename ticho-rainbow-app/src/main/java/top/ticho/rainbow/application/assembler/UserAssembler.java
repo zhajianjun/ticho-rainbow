@@ -33,7 +33,7 @@ public interface UserAssembler {
 
     UserRoleMenuDtlDTO toDtlDTO(User user);
 
-    UserExcelExport toExp(User user);
+    UserExcelExport toExcelExport(UserDTO userDTO);
 
     default User toEntity(UserExcelImport imp, String password, Integer status, Integer sex) {
         if (imp == null) {

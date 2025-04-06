@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class ExcelListener<M extends ExcelBaseImp> implements ReadListener<M> {
+    private static final int DEFAULT_BATCH_SIZE = 50;
 
     /** 执行id */
     private final String id = IdUtil.fastSimpleUUID();
@@ -47,7 +48,7 @@ public class ExcelListener<M extends ExcelBaseImp> implements ReadListener<M> {
     private List<M> cacheDatas = ListUtils.newArrayListWithExpectedSize(batchSize);
 
     public ExcelListener(BiConsumer<List<M>, Consumer<M>> consumer) {
-        this(50, consumer);
+        this(DEFAULT_BATCH_SIZE, consumer);
     }
 
     public ExcelListener(int batchSize, BiConsumer<List<M>, Consumer<M>> consumer) {

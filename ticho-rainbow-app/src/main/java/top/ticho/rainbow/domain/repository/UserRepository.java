@@ -1,6 +1,5 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.application.dto.query.UserQuery;
 import top.ticho.rainbow.domain.entity.User;
 
 import java.util.Collection;
@@ -21,14 +20,6 @@ public interface UserRepository {
     boolean modify(User user);
 
     User find(Long id);
-
-    /**
-     * 根据条件查询用户信息列表
-     *
-     * @param query 查询条件
-     * @return {@link List}<{@link User}>
-     */
-    List<User> list(UserQuery query);
 
     /**
      * 根据用户名查询(缓存)

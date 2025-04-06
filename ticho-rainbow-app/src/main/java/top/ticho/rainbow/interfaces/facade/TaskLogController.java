@@ -18,7 +18,7 @@ import java.io.IOException;
 
 
 /**
- * 计划任务日志信息
+ * 计划任务日志
  *
  * @author zhajianjun
  * @date 2024-05-06 16:41

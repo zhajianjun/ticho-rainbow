@@ -11,7 +11,7 @@ import java.util.List;
  * @date 2024-01-08 20:30
  */
 @Data
-public class PermDTO {
+public class PermissionDTO {
 
     /** 编码 */
     private String code;
@@ -20,6 +20,6 @@ public class PermDTO {
     /** 排序 */
     private Integer sort;
     /** 子对象 */
-    private List<PermDTO> children;
+    private List<PermissionDTO> children;
 
 }

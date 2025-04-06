@@ -1,10 +1,9 @@
 package top.ticho.rainbow.infrastructure.persistence.converter;
 
 import org.mapstruct.Mapper;
+import top.ticho.rainbow.application.dto.response.TaskDTO;
 import top.ticho.rainbow.domain.entity.Task;
 import top.ticho.rainbow.infrastructure.persistence.po.TaskPO;
-
-import java.util.List;
 
 /**
  * 客户端信息 转换器
@@ -17,8 +16,8 @@ public interface TaskConverter {
 
     Task toEntity(TaskPO taskPO);
 
-    List<Task> toEntitys(List<TaskPO> taskPOS);
-
     TaskPO toPo(Task task);
+
+    TaskDTO toDTO(TaskPO taskPO);
 
 }

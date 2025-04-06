@@ -10,6 +10,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.dto.query.RoleQuery;
+import top.ticho.rainbow.application.dto.response.RoleDTO;
+import top.ticho.rainbow.application.repository.RoleAppRepository;
 import top.ticho.rainbow.domain.entity.Role;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
@@ -18,6 +20,8 @@ import top.ticho.rainbow.infrastructure.persistence.converter.RoleConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.RoleMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.RolePO;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
+import top.ticho.starter.datasource.util.TiPageUtil;
+import top.ticho.starter.view.core.TiPageResult;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +36,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, RolePO> implements RoleRepository {
+public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, RolePO> implements RoleRepository, RoleAppRepository {
     private final RoleConverter roleConverter;
 
     @Override
@@ -63,12 +67,13 @@ public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, RolePO> imp
 
     @Override
     public Role find(Long id) {
-        return null;
+        RolePO rolePO = super.getById(id);
+        return roleConverter.toEntity(rolePO);
     }
 
 
     @Override
-    public List<Role> list(RoleQuery query) {
+    public TiPageResult<RoleDTO> page(RoleQuery query) {
         LambdaQueryWrapper<RolePO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(CollUtil.isNotEmpty(query.getIds()), RolePO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), RolePO::getId, query.getId());
@@ -77,8 +82,17 @@ public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, RolePO> imp
         wrapper.eq(Objects.nonNull(query.getStatus()), RolePO::getStatus, query.getStatus());
         wrapper.like(StrUtil.isNotBlank(query.getRemark()), RolePO::getRemark, query.getRemark());
         wrapper.orderByDesc(RolePO::getId);
-        return roleConverter.toEntitys(list(wrapper));
+        return TiPageUtil.page(() -> list(wrapper), query, roleConverter::toDTO);
     }
+
+    @Override
+    public List<RoleDTO> all() {
+        return list()
+            .stream()
+            .map(roleConverter::toDTO)
+            .collect(Collectors.toList());
+    }
+
 
     @Override
     public List<Role> listByCodes(List<String> codes) {

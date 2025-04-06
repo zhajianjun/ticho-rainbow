@@ -7,10 +7,10 @@ import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import top.ticho.starter.log.interceptor.TiWebLogInterceptor;
@@ -18,7 +18,7 @@ import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.view.enums.TiBizErrCode;
 import top.ticho.starter.view.enums.TiHttpErrCode;
 import top.ticho.starter.view.log.TiHttpLog;
-import top.ticho.starter.web.handle.TiResponseBodyAdvice;
+import top.ticho.starter.web.advice.TiResponseBodyAdvice;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
@@ -68,8 +68,8 @@ public class CustomResponseBodyAdvice {
     /**
      * 参数校验异常处理
      */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public TiResult<String> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException ex) {
+    @ExceptionHandler(BindException.class)
+    public TiResult<String> bindExceptionExceptionHandler(BindException ex) {
         BindingResult bindingResult = ex.getBindingResult();
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         StringJoiner joiner = new StringJoiner(",", "{", "}");
@@ -78,7 +78,7 @@ public class CustomResponseBodyAdvice {
             .sorted(Comparator.comparing(ObjectError::getObjectName))
             .peek(next -> joiner.add(next.getField() + ":" + next.getDefaultMessage()))
             .collect(Collectors.toList());
-        log.warn("catch MethodArgumentNotValidException error\t{}", joiner);
+        log.warn("catch BindException error\t{}", joiner);
         response.setStatus(HttpStatus.OK.value());
         return TiResult.fail(TiBizErrCode.PARAM_ERROR, errors.get(0).getDefaultMessage());
     }

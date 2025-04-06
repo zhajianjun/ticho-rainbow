@@ -6,13 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
 import top.ticho.rainbow.application.assembler.PortAssembler;
 import top.ticho.rainbow.application.dto.query.ClientQuery;
-import top.ticho.rainbow.application.dto.query.PortQuery;
 import top.ticho.rainbow.application.dto.response.FlowMonitorDTO;
 import top.ticho.rainbow.application.dto.response.FlowMonitorStatsDTO;
+import top.ticho.rainbow.application.dto.response.PortDTO;
+import top.ticho.rainbow.application.repository.PortAppRepository;
 import top.ticho.rainbow.domain.entity.Client;
-import top.ticho.rainbow.domain.entity.Port;
 import top.ticho.rainbow.domain.repository.ClientRepository;
-import top.ticho.rainbow.domain.repository.PortRepository;
 import top.ticho.tool.intranet.server.entity.AppDataCollector;
 import top.ticho.tool.intranet.server.entity.AppDataSummary;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
@@ -40,7 +39,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FlowMonitorService {
     private final ClientRepository clientRepository;
-    private final PortRepository portRepository;
+    private final PortAppRepository portRepository;
     private final ServerHandler serverHandler;
     private final PortAssembler portAssembler;
 
@@ -64,10 +63,10 @@ public class FlowMonitorService {
         List<AppDataSummary> dataSummaries = AppDataCollector.getAllData();
         Map<Integer, AppDataSummary> appDataMap = dataSummaries.stream().collect(Collectors.toMap(AppDataSummary::getPort, Function.identity()));
         // 所有端口
-        List<Port> ports = portRepository.list(new PortQuery());
+        List<PortDTO> ports = portRepository.all();
         List<FlowMonitorDTO> flowDetails = ports
             .stream()
-            .sorted(Comparator.comparing(Port::getSort).thenComparing(Port::getPort))
+            .sorted(Comparator.comparing(PortDTO::getSort).thenComparing(PortDTO::getPort))
             .map(x -> convertToFlowMonitor(x, appDataMap.get(x.getPort())))
             .collect(Collectors.toList());
         FlowMonitorStatsDTO flowMonitorStatsDTO = new FlowMonitorStatsDTO();
@@ -80,13 +79,13 @@ public class FlowMonitorService {
         return flowMonitorStatsDTO;
     }
 
-    public FlowMonitorDTO convertToFlowMonitor(Port port, AppDataSummary summary) {
-        if (Objects.isNull(port)) {
+    public FlowMonitorDTO convertToFlowMonitor(PortDTO portDTO, AppDataSummary summary) {
+        if (Objects.isNull(portDTO)) {
             return null;
         }
         FlowMonitorDTO flowMonitorDTO = new FlowMonitorDTO();
-        flowMonitorDTO.setPort(port.getPort());
-        flowMonitorDTO.setPortInfo(portAssembler.toDTO(port));
+        flowMonitorDTO.setPort(portDTO.getPort());
+        flowMonitorDTO.setPortInfo(portDTO);
         if (Objects.isNull(summary)) {
             flowMonitorDTO.setReadBytes(0);
             flowMonitorDTO.setWriteBytes(0);

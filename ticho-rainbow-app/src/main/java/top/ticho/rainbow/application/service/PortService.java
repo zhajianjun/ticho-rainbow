@@ -3,8 +3,6 @@ package top.ticho.rainbow.application.service;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.assembler.PortAssembler;
@@ -14,6 +12,7 @@ import top.ticho.rainbow.application.dto.excel.PortExcelExport;
 import top.ticho.rainbow.application.dto.query.PortQuery;
 import top.ticho.rainbow.application.dto.response.PortDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
+import top.ticho.rainbow.application.repository.PortAppRepository;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.domain.entity.Port;
 import top.ticho.rainbow.domain.entity.vo.PortModifyfVO;
@@ -51,6 +50,7 @@ import java.util.stream.Collectors;
 public class PortService {
 
     private final PortRepository portRepository;
+    private final PortAppRepository portAppRepository;
     private final PortAssembler portAssembler;
     private final ClientRepository clientRepository;
     private final ServerHandler serverHandler;
@@ -94,36 +94,29 @@ public class PortService {
     }
 
     public TiPageResult<PortDTO> page(PortQuery query) {
-        query.checkPage();
-        Page<Port> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
-        portRepository.list(query);
-        List<PortDTO> portDTOs = page.getResult()
-            .stream()
-            .map(portAssembler::toDTO)
-            .peek(this::fillChannelStatus)
-            .collect(Collectors.toList());
-        return new TiPageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), portDTOs);
+        TiPageResult<PortDTO> page = portAppRepository.page(query);
+        page.getRows().forEach(this::fillChannelStatus);
+        return page;
     }
 
     public void exportExcel(PortQuery query) throws IOException {
         String sheetName = "端口信息";
         String fileName = "端口信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.CHANNEL_STATUS, DictConst.HTTP_TYPE);
+        query.setCount(false);
         ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, PortExcelExport.class, response);
     }
 
     private Collection<PortExcelExport> excelExpHandle(PortQuery query, Map<String, String> labelMap) {
-        query.checkPage();
-        Page<Port> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
-        portRepository.list(query);
-        List<Port> result = page.getResult();
-        List<String> accessKeys = result.stream().map(Port::getAccessKey).collect(Collectors.toList());
+        TiPageResult<PortDTO> page = portAppRepository.page(query);
+        List<PortDTO> result = page.getRows();
+        List<String> accessKeys = result.stream().map(PortDTO::getAccessKey).collect(Collectors.toList());
         List<Client> clients = clientRepository.listByAccessKeys(accessKeys);
         Map<String, String> clientNameMap = clients.stream().collect(Collectors.toMap(Client::getAccessKey, Client::getName, (v1, v2) -> v1));
         return result
             .stream()
             .map(x -> {
-                PortExcelExport portExcelExport = portAssembler.toExp(x);
+                PortExcelExport portExcelExport = portAssembler.toExcelExport(x);
                 ClientInfo clientInfo = serverHandler.getClientByAccessKey(x.getAccessKey());
                 int clientChannelStatus = Objects.nonNull(clientInfo) && Objects.nonNull(clientInfo.getChannel()) ? 1 : 0;
                 AppHandler appHandler = serverHandler.getAppHandler();

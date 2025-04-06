@@ -1,14 +1,15 @@
-package top.ticho.rainbow.infrastructure.core.component;
+package top.ticho.rainbow.application.listen;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import top.ticho.rainbow.application.service.PermissionQueryService;
 import top.ticho.starter.web.event.TiApplicationReadyEvent;
 
 /**
@@ -21,17 +22,16 @@ import top.ticho.starter.web.event.TiApplicationReadyEvent;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class PermCacheEvent implements ApplicationListener<ApplicationReadyEvent> {
-
-    private final PermCacheHandle permCacheHandle;
+public class PermListener {
+    private final PermissionQueryService permissionQueryService;
 
     /**
      * 默认事件
      */
-    @Override
-    @Async
+    @Async("asyncTaskExecutor")
+    @EventListener(value = ApplicationReadyEvent.class)
     public void onApplicationEvent(@NonNull ApplicationReadyEvent event) {
-        permCacheHandle.pushCurrentAppPerms();
+        permissionQueryService.cache();
         ConfigurableApplicationContext applicationContext = event.getApplicationContext();
         Environment env = applicationContext.getEnvironment();
         String property = env.getProperty(TiApplicationReadyEvent.SPRING_APPLICATION_NAME_KEY, "application");

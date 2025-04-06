@@ -1,10 +1,8 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.application.dto.query.TaskQuery;
 import top.ticho.rainbow.domain.entity.Task;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * 计划任务信息 repository接口
@@ -21,14 +19,6 @@ public interface TaskRepository {
     boolean modify(Task task);
 
     Task find(Long id);
-
-    /**
-     * 根据条件查询计划任务信息列表
-     *
-     * @param query 查询条件
-     * @return {@link List}<{@link Task}>
-     */
-    List<Task> list(TaskQuery query);
 
     /**
      * 更新状态 (批量)

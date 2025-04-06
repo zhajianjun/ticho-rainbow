@@ -148,7 +148,7 @@ public class DictService {
                 List<DictLabel> labels = dictLabelRepository.getByCode(x.getCode());
                 return labels
                     .stream()
-                    .map(dictLabelAssembler::toExport)
+                    .map(dictLabelAssembler::toExcelExportort)
                     .peek(y -> y.setName(x.getName()))
                     .peek(y -> y.setStatusName(statusName))
                     .collect(Collectors.toList());

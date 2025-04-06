@@ -72,8 +72,8 @@ public class DictLabelController {
      */
     @PreAuthorize("@perm.hasPerms('system:dict-label:find')")
     @GetMapping
-    public TiResult<List<DictLabelDTO>> getByCode(@NotBlank(message = "字典编码不能为空") String code) {
-        return TiResult.ok(dictLabelService.getByCode(code));
+    public TiResult<List<DictLabelDTO>> find(@NotBlank(message = "字典编码不能为空") String code) {
+        return TiResult.ok(dictLabelService.find(code));
     }
 
 }

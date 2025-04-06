@@ -24,7 +24,7 @@ public interface PortAssembler {
 
     PortInfo toInfo(Port entity);
 
-    PortExcelExport toExp(Port port);
+    PortExcelExport toExcelExport(PortDTO portDTO);
 
     PortModifyfVO toModifyfVO(PortModifyfCommand portModifyfCommand);
 

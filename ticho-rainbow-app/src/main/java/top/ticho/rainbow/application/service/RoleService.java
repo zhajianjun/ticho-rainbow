@@ -2,8 +2,6 @@ package top.ticho.rainbow.application.service;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.NumberUtil;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +17,7 @@ import top.ticho.rainbow.application.dto.response.RoleDTO;
 import top.ticho.rainbow.application.dto.response.RoleMenuDtlDTO;
 import top.ticho.rainbow.application.executor.AuthExecutor;
 import top.ticho.rainbow.application.executor.DictExecutor;
+import top.ticho.rainbow.application.repository.RoleAppRepository;
 import top.ticho.rainbow.domain.entity.Role;
 import top.ticho.rainbow.domain.entity.vo.RoleModifyVO;
 import top.ticho.rainbow.domain.repository.RoleMenuRepository;
@@ -53,6 +52,7 @@ import java.util.stream.Collectors;
 @Service
 public class RoleService {
     private final RoleRepository roleRepository;
+    private final RoleAppRepository roleAppRepository;
     private final RoleAssembler roleAssembler;
     private final RoleMenuRepository roleMenuRepository;
     private final UserRoleRepository userRoleRepository;
@@ -113,22 +113,11 @@ public class RoleService {
     }
 
     public TiPageResult<RoleDTO> page(RoleQuery query) {
-        query.checkPage();
-        Page<Role> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
-        roleRepository.list(query);
-        List<RoleDTO> roleDTOs = page.getResult()
-            .stream()
-            .map(roleAssembler::toDTO)
-            .collect(Collectors.toList());
-        return new TiPageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), roleDTOs);
+        return roleAppRepository.page(query);
     }
 
-    public List<RoleDTO> list(RoleQuery query) {
-        List<Role> list = roleRepository.list(query);
-        return list
-            .stream()
-            .map(roleAssembler::toDTO)
-            .collect(Collectors.toList());
+    public List<RoleDTO> all() {
+        return roleAppRepository.all();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -146,17 +135,17 @@ public class RoleService {
         String sheetName = "角色信息";
         String fileName = "角色信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<Integer, String> labelMap = dictExecutor.getLabelMap(DictConst.COMMON_STATUS, NumberUtil::parseInt);
+        query.setCount(false);
         ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, RoleExcelExport.class, response);
     }
 
     private Collection<RoleExcelExport> excelExpHandle(RoleQuery query, Map<Integer, String> labelMap) {
         query.checkPage();
-        Page<Role> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
-        roleRepository.list(query);
-        return page.getResult()
+        TiPageResult<RoleDTO> page = roleAppRepository.page(query);
+        return page.getRows()
             .stream()
             .map(x -> {
-                RoleExcelExport roleExcelExport = roleAssembler.toExp(x);
+                RoleExcelExport roleExcelExport = roleAssembler.toExcelExport(x);
                 roleExcelExport.setStatusName(labelMap.get(x.getStatus()));
                 return roleExcelExport;
             })

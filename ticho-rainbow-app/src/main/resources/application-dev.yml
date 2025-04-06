@@ -15,6 +15,7 @@ ticho:
     ant-patterns:
       - /
       - /health
+      - /favicon.ico
       - ${ticho.rainbow.file.mvc-resource-path}
   cors:
     enable: true

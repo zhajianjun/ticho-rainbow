@@ -33,6 +33,6 @@ public interface DictLabelAssembler {
     @Mapping(target = "updateBy", ignore = true)
     @Mapping(target = "statusName", ignore = true)
     @Mapping(target = "name", ignore = true)
-    DictExcelExport toExport(DictLabel dictLabel);
+    DictExcelExport toExcelExportort(DictLabel dictLabel);
 
 }

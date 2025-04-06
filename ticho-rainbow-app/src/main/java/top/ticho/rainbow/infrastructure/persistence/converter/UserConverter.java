@@ -1,6 +1,7 @@
 package top.ticho.rainbow.infrastructure.persistence.converter;
 
 import org.mapstruct.Mapper;
+import top.ticho.rainbow.application.dto.response.UserDTO;
 import top.ticho.rainbow.domain.entity.User;
 import top.ticho.rainbow.infrastructure.persistence.po.UserPO;
 
@@ -22,5 +23,7 @@ public interface UserConverter {
     UserPO toPo(User user);
 
     List<UserPO> toPos(List<User> users);
+
+    UserDTO toDTO(UserPO userPO);
 
 }

@@ -1,6 +1,5 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.application.dto.query.PortQuery;
 import top.ticho.rainbow.domain.entity.Port;
 
 import java.util.Collection;
@@ -24,14 +23,6 @@ public interface PortRepository {
     boolean modify(Port port);
 
     Port find(Long id);
-
-    /**
-     * 根据条件查询端口信息列表
-     *
-     * @param query 查询条件
-     * @return {@link List}<{@link Port}>
-     */
-    List<Port> list(PortQuery query);
 
     /**
      * 根据端口号查询，排除id

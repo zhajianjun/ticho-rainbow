@@ -110,8 +110,8 @@ public class RoleController {
      */
     @PreAuthorize("@perm.hasPerms('system:role:all')")
     @GetMapping("all")
-    public TiResult<List<RoleDTO>> list(@Validated RoleQuery query) {
-        return TiResult.ok(roleService.list(query));
+    public TiResult<List<RoleDTO>> all() {
+        return TiResult.ok(roleService.all());
     }
 
     /**
@@ -119,6 +119,7 @@ public class RoleController {
      */
     @PreAuthorize("@perm.hasPerms('system:role:bind-menu')")
     @PostMapping("menu/bind")
+    @Deprecated
     public TiResult<Void> bindMenu(@Validated @RequestBody RoleBindMenuCommand bindMenuCommand) {
         roleService.bindMenu(bindMenuCommand);
         return TiResult.ok();

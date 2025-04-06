@@ -21,7 +21,7 @@ public interface RoleAssembler {
 
     RoleDTO toDTO(Role entity);
 
-    RoleExcelExport toExp(Role entity);
+    RoleExcelExport toExcelExport(RoleDTO roleDTO);
 
     RoleModifyVO toVo(RoleModifyCommand roleModifyCommand);
 

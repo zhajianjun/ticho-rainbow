@@ -52,6 +52,7 @@ public class OpLogService {
         String sheetName = "操作日志";
         String fileName = "操作日志导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<Integer, String> labelMap = dictExecutor.getLabelMap(DictConst.YES_OR_NO, NumberUtil::parseInt);
+        query.setCount(false);
         ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, OpLogExcelExport.class, response);
     }
 
@@ -60,7 +61,7 @@ public class OpLogService {
         return page.getRows()
             .stream()
             .map(x -> {
-                OpLogExcelExport opLogExcelExport = opLogAssembler.toExp(x);
+                OpLogExcelExport opLogExcelExport = opLogAssembler.toExcelExport(x);
                 opLogExcelExport.setIsErrName(labelMap.get(x.getIsErr()));
                 return opLogExcelExport;
             })

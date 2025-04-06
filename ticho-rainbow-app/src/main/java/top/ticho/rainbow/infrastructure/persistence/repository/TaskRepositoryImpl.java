@@ -8,16 +8,21 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.dto.query.TaskQuery;
+import top.ticho.rainbow.application.dto.response.TaskDTO;
+import top.ticho.rainbow.application.repository.TaskAppRepository;
 import top.ticho.rainbow.domain.entity.Task;
 import top.ticho.rainbow.domain.repository.TaskRepository;
 import top.ticho.rainbow.infrastructure.persistence.converter.TaskConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.TaskMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.TaskPO;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
+import top.ticho.starter.datasource.util.TiPageUtil;
+import top.ticho.starter.view.core.TiPageResult;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 计划任务信息 repository实现
@@ -27,7 +32,7 @@ import java.util.Objects;
  */
 @Service
 @RequiredArgsConstructor
-public class TaskRepositoryImpl extends TiRepositoryImpl<TaskMapper, TaskPO> implements TaskRepository {
+public class TaskRepositoryImpl extends TiRepositoryImpl<TaskMapper, TaskPO> implements TaskRepository, TaskAppRepository {
     private final TaskConverter taskConverter;
 
     @Override
@@ -53,7 +58,7 @@ public class TaskRepositoryImpl extends TiRepositoryImpl<TaskMapper, TaskPO> imp
     }
 
     @Override
-    public List<Task> list(TaskQuery query) {
+    public TiPageResult<TaskDTO> page(TaskQuery query) {
         LambdaQueryWrapper<TaskPO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(CollUtil.isNotEmpty(query.getIds()), TaskPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), TaskPO::getId, query.getId());
@@ -65,7 +70,15 @@ public class TaskRepositoryImpl extends TiRepositoryImpl<TaskMapper, TaskPO> imp
         wrapper.eq(Objects.nonNull(query.getStatus()), TaskPO::getStatus, query.getStatus());
         wrapper.eq(StrUtil.isNotBlank(query.getCreateBy()), TaskPO::getCreateBy, query.getCreateBy());
         wrapper.eq(Objects.nonNull(query.getCreateTime()), TaskPO::getCreateTime, query.getCreateTime());
-        return taskConverter.toEntitys(list(wrapper));
+        return TiPageUtil.page(() -> list(wrapper), query, taskConverter::toDTO);
+    }
+
+    @Override
+    public List<TaskDTO> all() {
+        return list()
+            .stream()
+            .map(taskConverter::toDTO)
+            .collect(Collectors.toList());
     }
 
     @Override

@@ -28,6 +28,7 @@ import java.io.IOException;
  * @author zhajianjun
  * @date 2023-12-17 20:12
  */
+@Validated
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("port")

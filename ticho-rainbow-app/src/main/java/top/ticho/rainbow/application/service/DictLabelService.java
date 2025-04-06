@@ -66,7 +66,7 @@ public class DictLabelService {
         TiAssert.isTrue(dictLabelRepository.modify(dictLabel), TiBizErrCode.FAIL, "修改失败");
     }
 
-    public List<DictLabelDTO> getByCode(String code) {
+    public List<DictLabelDTO> find(String code) {
         List<DictLabel> dictLabels = dictLabelRepository.getByCode(code);
         return dictLabels
             .stream()

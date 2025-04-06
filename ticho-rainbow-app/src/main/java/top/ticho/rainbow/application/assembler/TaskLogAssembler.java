@@ -16,6 +16,6 @@ public interface TaskLogAssembler {
 
     TaskLogDTO toDTO(TaskLog entity);
 
-    TaskLogExcelExport toExp(TaskLog entity);
+    TaskLogExcelExport toExcelExport(TaskLogDTO taskLogDTO);
 
 }

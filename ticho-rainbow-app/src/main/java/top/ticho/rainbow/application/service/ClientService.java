@@ -217,7 +217,7 @@ public class ClientService {
         return result
             .stream()
             .map(item -> {
-                ClientExcelExport clientExcelExport = clientAssembler.toExp(item);
+                ClientExcelExport clientExcelExport = clientAssembler.toExcelExport(item);
                 clientExcelExport.setStatusName(labelMap.get(DictConst.COMMON_STATUS + item.getStatus()));
                 ClientInfo clientInfo = serverHandler.getClientByAccessKey(item.getAccessKey());
                 int channelStatus = Optional.ofNullable(clientInfo).map(ClientInfo::getChannel).isPresent() ? 1 : 0;

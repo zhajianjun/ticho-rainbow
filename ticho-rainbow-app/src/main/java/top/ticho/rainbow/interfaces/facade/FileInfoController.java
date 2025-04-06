@@ -145,8 +145,8 @@ public class FileInfoController {
      */
     @PreAuthorize("@perm.hasPerms('storage:file:presigned')")
     @GetMapping("presigned")
-    public TiResult<String> getUrl(Long id, Long expire, Boolean limit) {
-        return TiResult.ok(fileInfoService.getUrl(id, expire, limit));
+    public TiResult<String> presigned(Long id, Long expire, Boolean limit) {
+        return TiResult.ok(fileInfoService.presigned(id, expire, limit));
     }
 
     /**

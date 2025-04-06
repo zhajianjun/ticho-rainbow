@@ -1,6 +1,5 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.application.dto.query.MenuQuery;
 import top.ticho.rainbow.domain.entity.Menu;
 
 import java.util.List;
@@ -50,14 +49,6 @@ public interface MenuRepository {
      * @return {@link List}<{@link Menu}>
      */
     List<Menu> cacheList();
-
-    /**
-     * 根据条件查询Menu列表
-     *
-     * @param query 查询条件
-     * @return {@link List}<{@link Menu}>
-     */
-    List<Menu> list(MenuQuery query);
 
     /**
      * 统计子节点某些类型和路由地址的数量

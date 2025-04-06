@@ -66,8 +66,9 @@ public interface FileInfoAssembler {
     /**
      * 将文件信息实体对象转换为导出对象。
      *
-     * @param fileInfo 文件信息
+     * @param fileInfoDTO 文件信息
      * @return {@link FileInfoExcelExport}
      */
-    FileInfoExcelExport toExp(FileInfo fileInfo);
+    FileInfoExcelExport toExcelExport(FileInfoDTO fileInfoDTO);
+
 }

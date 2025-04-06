@@ -7,12 +7,16 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.dto.query.PortQuery;
+import top.ticho.rainbow.application.dto.response.PortDTO;
+import top.ticho.rainbow.application.repository.PortAppRepository;
 import top.ticho.rainbow.domain.entity.Port;
 import top.ticho.rainbow.domain.repository.PortRepository;
 import top.ticho.rainbow.infrastructure.persistence.converter.PortConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.PortMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.PortPO;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
+import top.ticho.starter.datasource.util.TiPageUtil;
+import top.ticho.starter.view.core.TiPageResult;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -31,7 +35,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-public class PortRepositoryImpl extends TiRepositoryImpl<PortMapper, PortPO> implements PortRepository {
+public class PortRepositoryImpl extends TiRepositoryImpl<PortMapper, PortPO> implements PortRepository, PortAppRepository {
     private final PortConverter portConverter;
 
     @Override
@@ -57,7 +61,7 @@ public class PortRepositoryImpl extends TiRepositoryImpl<PortMapper, PortPO> imp
     }
 
     @Override
-    public List<Port> list(PortQuery query) {
+    public TiPageResult<PortDTO> page(PortQuery query) {
         LambdaQueryWrapper<PortPO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(CollUtil.isNotEmpty(query.getIds()), PortPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), PortPO::getId, query.getId());
@@ -71,7 +75,15 @@ public class PortRepositoryImpl extends TiRepositoryImpl<PortMapper, PortPO> imp
         wrapper.like(StrUtil.isNotBlank(query.getRemark()), PortPO::getRemark, query.getRemark());
         wrapper.orderByAsc(PortPO::getSort);
         wrapper.orderByAsc(PortPO::getPort);
-        return portConverter.toEntitys(list(wrapper));
+        return TiPageUtil.page(() -> list(wrapper), query, portConverter::toDTO);
+    }
+
+    @Override
+    public List<PortDTO> all() {
+        return list()
+            .stream()
+            .map(portConverter::toDTO)
+            .collect(Collectors.toList());
     }
 
     @Override

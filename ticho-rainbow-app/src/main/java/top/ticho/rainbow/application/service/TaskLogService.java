@@ -1,20 +1,18 @@
 package top.ticho.rainbow.application.service;
 
 import cn.hutool.core.date.DatePattern;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.assembler.TaskLogAssembler;
 import top.ticho.rainbow.application.dto.excel.TaskLogExcelExport;
 import top.ticho.rainbow.application.dto.query.TaskLogQuery;
-import top.ticho.rainbow.application.dto.query.TaskQuery;
+import top.ticho.rainbow.application.dto.response.TaskDTO;
 import top.ticho.rainbow.application.dto.response.TaskLogDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
-import top.ticho.rainbow.domain.entity.Task;
+import top.ticho.rainbow.application.repository.TaskAppRepository;
+import top.ticho.rainbow.application.repository.TaskLogAppRepository;
 import top.ticho.rainbow.domain.entity.TaskLog;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
-import top.ticho.rainbow.domain.repository.TaskRepository;
 import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.core.constant.DictConst;
 import top.ticho.starter.view.core.TiPageResult;
@@ -39,10 +37,11 @@ import java.util.stream.Collectors;
 public class TaskLogService {
 
     private final TaskLogRepository taskLogRepository;
+    private final TaskLogAppRepository taskLogAppRepository;
     private final TaskLogAssembler taskLogAssembler;
     private final DictExecutor dictExecutor;
     private final HttpServletResponse response;
-    private final TaskRepository taskRepository;
+    private final TaskAppRepository taskAppRepository;
 
     public TaskLogDTO find(Long id) {
         TaskLog taskLog = taskLogRepository.find(id);
@@ -50,34 +49,26 @@ public class TaskLogService {
     }
 
     public TiPageResult<TaskLogDTO> page(TaskLogQuery query) {
-        query.checkPage();
-        Page<TaskLog> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
-        taskLogRepository.list(query);
-        List<TaskLogDTO> taskLogDTOs = page.getResult()
-            .stream()
-            .map(taskLogAssembler::toDTO)
-            .collect(Collectors.toList());
-        return new TiPageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), taskLogDTOs);
+        return taskLogAppRepository.page(query);
     }
 
     public void exportExcel(TaskLogQuery query) throws IOException {
         String sheetName = "计划任务日志";
         String fileName = "计划任务日志导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.TASK_LOG_STATUS, DictConst.PLAN_TASK, DictConst.YES_OR_NO);
+        query.setCount(false);
         ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, TaskLogExcelExport.class, response);
     }
 
     private Collection<TaskLogExcelExport> excelExpHandle(TaskLogQuery query, Map<String, String> labelMap) {
-        query.checkPage();
-        Page<TaskLog> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
-        taskLogRepository.list(query);
-        List<TaskLog> result = page.getResult();
-        List<Long> taskIds = result.stream().map(TaskLog::getTaskId).collect(Collectors.toList());
+        TiPageResult<TaskLogDTO> page = taskLogAppRepository.page(query);
+        List<TaskLogDTO> result = page.getRows();
+        List<Long> taskIds = result.stream().map(TaskLogDTO::getTaskId).collect(Collectors.toList());
         Map<Long, String> taskMap = getTaskNameMap(taskIds);
         return result
             .stream()
             .map(x -> {
-                TaskLogExcelExport taskLogExcelExport = taskLogAssembler.toExp(x);
+                TaskLogExcelExport taskLogExcelExport = taskLogAssembler.toExcelExport(x);
                 taskLogExcelExport.setName(taskMap.get(x.getTaskId()));
                 taskLogExcelExport.setStatusName(labelMap.get(DictConst.TASK_LOG_STATUS + x.getStatus()));
                 taskLogExcelExport.setContent(labelMap.get(DictConst.PLAN_TASK + x.getContent()));
@@ -88,10 +79,11 @@ public class TaskLogService {
     }
 
     private Map<Long, String> getTaskNameMap(List<Long> taskIds) {
-        TaskQuery taskQuery = new TaskQuery();
-        taskQuery.setIds(taskIds);
-        List<Task> tasks = taskRepository.list(taskQuery);
-        return tasks.stream().collect(Collectors.toMap(Task::getId, Task::getName));
+        List<TaskDTO> tasks = taskAppRepository.all();
+        return tasks
+            .stream()
+            .filter(x -> taskIds.contains(x.getId()))
+            .collect(Collectors.toMap(TaskDTO::getId, TaskDTO::getName));
     }
 
 }

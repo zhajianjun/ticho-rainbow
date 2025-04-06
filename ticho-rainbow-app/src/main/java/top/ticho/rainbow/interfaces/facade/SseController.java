@@ -27,7 +27,7 @@ public class SseController {
     private final SseHandle sseHandle;
 
     /**
-     * sign
+     * 获取sse签名
      */
     @GetMapping("sign")
     public TiResult<String> sign() {
@@ -35,7 +35,7 @@ public class SseController {
     }
 
     /**
-     * connect
+     * 连接sse
      *
      * @param id 编号
      */
@@ -47,7 +47,7 @@ public class SseController {
     }
 
     /**
-     * 发送
+     * 发送sse消息
      *
      * @param id      编号
      * @param message 消息
@@ -60,7 +60,7 @@ public class SseController {
     }
 
     /**
-     * close
+     * 关闭sse
      *
      * @param id 编号
      */

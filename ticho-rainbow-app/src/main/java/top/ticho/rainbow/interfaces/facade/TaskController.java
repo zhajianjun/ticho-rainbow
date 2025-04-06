@@ -26,7 +26,7 @@ import java.util.List;
 
 
 /**
- * 定时任务调度
+ * 计划任务
  *
  * @author zhajianjun
  * @date 2024-03-23 23:38
@@ -144,8 +144,8 @@ public class TaskController {
      */
     @PreAuthorize("@perm.hasPerms('system:task:all')")
     @GetMapping("all")
-    public TiResult<List<TaskDTO>> list(@Validated TaskQuery query) {
-        return TiResult.ok(taskService.list(query));
+    public TiResult<List<TaskDTO>> all() {
+        return TiResult.ok(taskService.all());
     }
 
     /**

@@ -60,7 +60,7 @@ public class UserController {
      * @param file 文件
      */
     @PreAuthorize("@perm.hasPerms('system:user:upload-avatar')")
-    @PostMapping("avatar")
+    @PostMapping("avatar/upload")
     public TiResult<String> uploadAvatar(@NotNull(message = "请上传头像") MultipartFile file) {
         return TiResult.ok(userService.uploadAvatar(file));
     }
@@ -73,8 +73,8 @@ public class UserController {
      */
     @PreAuthorize("@perm.hasPerms('system:user:remove')")
     @DeleteMapping
-    public TiResult<Void> remove(@Validated @RequestBody List<String> usernames) {
-        userService.remove(usernames);
+    public TiResult<Void> remove(@NotNull(message = "用户名不能为空") String usernames) {
+        userService.removeBatch(usernames);
         return TiResult.ok();
     }
 
@@ -255,7 +255,7 @@ public class UserController {
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('system:user:export')")
     @GetMapping("excel/export")
-    public void exportExcel(@Validated @RequestBody UserQuery query) throws IOException {
+    public void exportExcel(@Validated UserQuery query) throws IOException {
         userService.exportExcel(query);
     }
 

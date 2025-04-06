@@ -7,15 +7,18 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.dto.query.TaskLogQuery;
+import top.ticho.rainbow.application.dto.response.TaskLogDTO;
+import top.ticho.rainbow.application.repository.TaskLogAppRepository;
 import top.ticho.rainbow.domain.entity.TaskLog;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.rainbow.infrastructure.persistence.converter.TaskLogConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.TaskLogMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.TaskLogPO;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
+import top.ticho.starter.datasource.util.TiPageUtil;
+import top.ticho.starter.view.core.TiPageResult;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -26,7 +29,7 @@ import java.util.Objects;
  */
 @Service
 @RequiredArgsConstructor
-public class TaskLogRepositoryImpl extends TiRepositoryImpl<TaskLogMapper, TaskLogPO> implements TaskLogRepository {
+public class TaskLogRepositoryImpl extends TiRepositoryImpl<TaskLogMapper, TaskLogPO> implements TaskLogRepository, TaskLogAppRepository {
     private final TaskLogConverter taskLogConverter;
 
     @Override
@@ -36,7 +39,7 @@ public class TaskLogRepositoryImpl extends TiRepositoryImpl<TaskLogMapper, TaskL
     }
 
     @Override
-    public List<TaskLog> list(TaskLogQuery query) {
+    public TiPageResult<TaskLogDTO> page(TaskLogQuery query) {
         LambdaQueryWrapper<TaskLogPO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(CollUtil.isNotEmpty(query.getIds()), TaskLogPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), TaskLogPO::getId, query.getId());
@@ -63,7 +66,7 @@ public class TaskLogRepositoryImpl extends TiRepositoryImpl<TaskLogMapper, TaskL
         wrapper.eq(Objects.nonNull(query.getIsErr()), TaskLogPO::getIsErr, query.getIsErr());
         wrapper.like(StrUtil.isNotBlank(query.getErrMessage()), TaskLogPO::getErrMessage, query.getErrMessage());
         wrapper.orderByDesc(TaskLogPO::getId);
-        return taskLogConverter.toEntitys(list(wrapper));
+        return TiPageUtil.page(() -> list(wrapper), query, taskLogConverter::toDTO);
     }
 
     @Override

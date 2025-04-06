@@ -2,8 +2,6 @@ package top.ticho.rainbow.application.service;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.StrUtil;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
@@ -15,6 +13,7 @@ import top.ticho.rainbow.application.dto.excel.TaskExcelExport;
 import top.ticho.rainbow.application.dto.query.TaskQuery;
 import top.ticho.rainbow.application.dto.response.TaskDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
+import top.ticho.rainbow.application.repository.TaskAppRepository;
 import top.ticho.rainbow.domain.entity.Task;
 import top.ticho.rainbow.domain.entity.vo.TaskModifyVo;
 import top.ticho.rainbow.domain.repository.TaskRepository;
@@ -48,7 +47,9 @@ import java.util.stream.Collectors;
 @Service
 public class TaskService implements InitializingBean {
     public static final String DEFAULT_JOB_GROUP = "DEFAULT_JOB_GROUP";
+
     private final TaskRepository taskRepository;
+    private final TaskAppRepository taskAppRepository;
     private final TaskAssembler taskAssembler;
     private final List<AbstracTask<?>> abstracTasks;
     private final TaskTemplate taskTemplate;
@@ -56,9 +57,9 @@ public class TaskService implements InitializingBean {
     private final HttpServletResponse response;
 
     public void afterPropertiesSet() {
-        List<Task> tasks = taskRepository.list(new TaskQuery());
+        List<TaskDTO> tasks = taskAppRepository.all();
         List<String> jobs = taskTemplate.listJobs();
-        for (Task task : tasks) {
+        for (TaskDTO task : tasks) {
             String jobId = task.getId().toString();
             if (!jobs.contains(jobId)) {
                 taskTemplate.addJob(task.getId().toString(), DEFAULT_JOB_GROUP, task.getContent(), task.getCronExpression(), task.getName(), task.getParam());
@@ -185,38 +186,27 @@ public class TaskService implements InitializingBean {
     }
 
     public TiPageResult<TaskDTO> page(TaskQuery query) {
-        query.checkPage();
-        Page<Task> page = PageHelper.startPage(query.getPageNum(), query.getPageSize());
-        taskRepository.list(query);
-        List<TaskDTO> taskModifyCommands = page.getResult()
-            .stream()
-            .map(taskAssembler::toDTO)
-            .collect(Collectors.toList());
-        return new TiPageResult<>(page.getPageNum(), page.getPageSize(), page.getTotal(), taskModifyCommands);
+        return taskAppRepository.page(query);
     }
 
-    public List<TaskDTO> list(TaskQuery query) {
-        List<Task> list = taskRepository.list(query);
-        return list.stream()
-            .map(taskAssembler::toDTO)
-            .collect(Collectors.toList());
+    public List<TaskDTO> all() {
+        return taskAppRepository.all();
     }
 
     public void exportExcel(TaskQuery query) throws IOException {
         String sheetName = "计划任务";
         String fileName = "计划任务导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.PLAN_TASK);
+        query.setCount(false);
         ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, TaskExcelExport.class, response);
     }
 
     private Collection<TaskExcelExport> excelExpHandle(TaskQuery query, Map<String, String> labelMap) {
-        query.checkPage();
-        Page<Task> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), false);
-        taskRepository.list(query);
-        return page.getResult()
+        TiPageResult<TaskDTO> page = taskAppRepository.page(query);
+        return page.getRows()
             .stream()
             .map(x -> {
-                TaskExcelExport taskExcelExport = taskAssembler.toExp(x);
+                TaskExcelExport taskExcelExport = taskAssembler.toExcelExport(x);
                 taskExcelExport.setStatusName(labelMap.get(DictConst.COMMON_STATUS + x.getStatus()));
                 taskExcelExport.setContent(labelMap.get(DictConst.PLAN_TASK + x.getContent()));
                 return taskExcelExport;

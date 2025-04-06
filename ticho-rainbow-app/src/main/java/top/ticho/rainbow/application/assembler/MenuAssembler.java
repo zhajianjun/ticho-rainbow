@@ -33,15 +33,6 @@ public interface MenuAssembler {
     MenuModifyVO toModifyVO(MenuModifyCommand menuModifyCommand);
 
     /**
-     * 菜单信息
-     *
-     * @param dto 菜单信息DTO
-     * @return {@link Menu}
-     */
-    @Mapping(target = "perms", expression = "java(CollUtil.join(dto.getPerms(), \",\"))")
-    Menu toEntity(MenuDTO dto);
-
-    /**
      * 菜单信息DTO
      *
      * @param entity 菜单信息

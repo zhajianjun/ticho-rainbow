@@ -10,6 +10,8 @@ import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.dto.query.FileInfoQuery;
+import top.ticho.rainbow.application.dto.response.FileInfoDTO;
+import top.ticho.rainbow.application.repository.FileInfoAppRepository;
 import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.infrastructure.core.enums.FileInfoStatus;
@@ -18,10 +20,14 @@ import top.ticho.rainbow.infrastructure.persistence.mapper.FileInfoMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.FileInfoPO;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
+import top.ticho.starter.view.core.TiPageQuery;
 import top.ticho.starter.view.core.TiPageResult;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * 文件信息 repository实现
@@ -31,7 +37,7 @@ import java.util.Objects;
  */
 @Service
 @RequiredArgsConstructor
-public class FileInfoRepositoryImpl extends TiRepositoryImpl<FileInfoMapper, FileInfoPO> implements FileInfoRepository {
+public class FileInfoRepositoryImpl extends TiRepositoryImpl<FileInfoMapper, FileInfoPO> implements FileInfoRepository, FileInfoAppRepository {
     private final FileInfoConverter fileInfoConverter;
 
     @Override
@@ -58,7 +64,7 @@ public class FileInfoRepositoryImpl extends TiRepositoryImpl<FileInfoMapper, Fil
     }
 
     @Override
-    public List<FileInfo> list(FileInfoQuery query) {
+    public TiPageResult<FileInfoDTO> page(FileInfoQuery query) {
         LambdaQueryWrapper<FileInfoPO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(CollUtil.isNotEmpty(query.getIds()), FileInfoPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), FileInfoPO::getId, query.getId());
@@ -83,15 +89,19 @@ public class FileInfoRepositoryImpl extends TiRepositoryImpl<FileInfoMapper, Fil
             wrapper.le(FileInfoPO::getUpdateTime, query.getUpdateTime()[1]);
         }
         wrapper.orderByDesc(FileInfoPO::getId);
-        return fileInfoConverter.toEntitys(list(wrapper));
+        return TiPageUtil.page(() -> list(wrapper), query, fileInfoConverter::toDTO);
     }
 
-    @Override
-    public TiPageResult<FileInfo> page(FileInfoQuery query) {
-        query.checkPage();
-        Page<FileInfoPO> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), query.getCount());
-        page.doSelectPage(() -> list(query));
-        return TiPageUtil.of(page, fileInfoConverter::toEntity);
+    public static <T, R> TiPageResult<R> page(Supplier<List<T>> supplier, TiPageQuery query, Function<T, R> function) {
+        Page<T> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), query.getCount());
+        page.doSelectPage(supplier::get);
+        TiPageResult<R> tiPageResult = new TiPageResult<>();
+        tiPageResult.setPageNum(page.getPageNum());
+        tiPageResult.setPageSize(page.getPageSize());
+        tiPageResult.setPages(page.getPages());
+        tiPageResult.setTotal(Long.valueOf(page.getTotal()).intValue());
+        tiPageResult.setRows(page.getResult().stream().map(function).collect(Collectors.toList()));
+        return tiPageResult;
     }
 
     @Override

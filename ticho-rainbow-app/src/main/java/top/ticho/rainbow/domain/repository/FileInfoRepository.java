@@ -1,10 +1,6 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.application.dto.query.FileInfoQuery;
 import top.ticho.rainbow.domain.entity.FileInfo;
-import top.ticho.starter.view.core.TiPageResult;
-
-import java.util.List;
 
 /**
  * 文件信息 repository接口
@@ -45,22 +41,6 @@ public interface FileInfoRepository {
      * @return {@link FileInfo }
      */
     FileInfo find(Long id);
-
-    /**
-     * 根据条件查询文件信息列表
-     *
-     * @param query 查询条件
-     * @return {@link List}<{@link FileInfo}>
-     */
-    List<FileInfo> list(FileInfoQuery query);
-
-    /**
-     * 分页查询文件信息列表
-     *
-     * @param query 查询条件
-     * @return {@link TiPageResult }<{@link FileInfo }>
-     */
-    TiPageResult<FileInfo> page(FileInfoQuery query);
 
     /**
      * 根据分片id查询文件信息
