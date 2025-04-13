@@ -13,12 +13,10 @@ import java.util.stream.Collectors;
  */
 public enum CommonStatus {
 
-    /** 正常 */
-    NORMAL(1, "正常"),
-
+    /** 启用 */
+    ENABLE(1, "启用"),
     /** 停用 */
-    NOT_ACTIVE(0, "停用"),
-
+    DISABLE(0, "停用"),
     ;
 
     private final int code;
@@ -33,14 +31,14 @@ public enum CommonStatus {
         return code;
     }
 
-    public String message() {
+    public String msg() {
         return msg;
     }
 
     private static final Map<Integer, String> map;
 
     static {
-        map = Arrays.stream(values()).collect(Collectors.toMap(CommonStatus::code, CommonStatus::message));
+        map = Arrays.stream(values()).collect(Collectors.toMap(CommonStatus::code, CommonStatus::msg));
     }
 
     public static Map<Integer, String> get() {

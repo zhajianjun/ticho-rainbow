@@ -1,5 +1,7 @@
 package top.ticho.rainbow.application.service.permission;
 
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.Order;
@@ -9,9 +11,6 @@ import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.security.auth.PermissionService;
 import top.ticho.starter.view.util.TiAssert;
-
-import javax.annotation.Resource;
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 接口权限实现(文件相关)

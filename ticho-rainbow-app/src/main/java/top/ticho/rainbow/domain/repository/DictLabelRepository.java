@@ -1,6 +1,5 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.application.dto.query.DictLabelQuery;
 import top.ticho.rainbow.domain.entity.DictLabel;
 
 import java.util.List;
@@ -46,12 +45,11 @@ public interface DictLabelRepository {
     DictLabel find(Long id);
 
     /**
-     * 根据条件查询Dict列表
+     * 查询启用的字典标签信息列表
      *
-     * @param query 查询条件
      * @return {@link List}<{@link DictLabel}>
      */
-    List<DictLabel> list(DictLabelQuery query);
+    List<DictLabel> listEnable();
 
     /**
      * 根据字典编码查询

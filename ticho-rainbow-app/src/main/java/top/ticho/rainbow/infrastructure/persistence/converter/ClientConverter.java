@@ -3,6 +3,7 @@ package top.ticho.rainbow.infrastructure.persistence.converter;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import top.ticho.rainbow.application.dto.response.ClientDTO;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.infrastructure.persistence.po.ClientPO;
 
@@ -26,6 +27,10 @@ public interface ClientConverter {
 
     List<Client> toEntitys(List<ClientPO> list);
 
-    Client toEntity(ClientPO one);
+    Client toEntity(ClientPO clientPO);
+
+    @Mapping(target = "connectTime", ignore = true)
+    @Mapping(target = "channelStatus", ignore = true)
+    ClientDTO toDTO(ClientPO clientPO);
 
 }

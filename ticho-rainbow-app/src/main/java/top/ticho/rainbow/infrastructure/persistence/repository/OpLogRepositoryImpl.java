@@ -4,11 +4,11 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.dto.query.OpLogQuery;
+import top.ticho.rainbow.application.dto.response.OpLogDTO;
+import top.ticho.rainbow.application.repository.OpLogAppRepository;
 import top.ticho.rainbow.domain.entity.OpLog;
 import top.ticho.rainbow.domain.repository.OpLogRepository;
 import top.ticho.rainbow.infrastructure.persistence.converter.OpLogConverter;
@@ -29,7 +29,7 @@ import java.util.Objects;
  */
 @Service
 @RequiredArgsConstructor
-public class OpLogRepositoryImpl extends TiRepositoryImpl<OpLogMapper, OpLogPO> implements OpLogRepository {
+public class OpLogRepositoryImpl extends TiRepositoryImpl<OpLogMapper, OpLogPO> implements OpLogRepository, OpLogAppRepository {
     private final OpLogConverter opLogConverter;
 
     @Override
@@ -44,7 +44,7 @@ public class OpLogRepositoryImpl extends TiRepositoryImpl<OpLogMapper, OpLogPO> 
     }
 
     @Override
-    public TiPageResult<OpLog> page(OpLogQuery query) {
+    public TiPageResult<OpLogDTO> page(OpLogQuery query) {
         LambdaQueryWrapper<OpLogPO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(CollUtil.isNotEmpty(query.getIds()), OpLogPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), OpLogPO::getId, query.getId());
@@ -54,13 +54,13 @@ public class OpLogRepositoryImpl extends TiRepositoryImpl<OpLogMapper, OpLogPO> 
         wrapper.like(StrUtil.isNotBlank(query.getReqBody()), OpLogPO::getReqBody, query.getReqBody());
         wrapper.like(StrUtil.isNotBlank(query.getReqParams()), OpLogPO::getReqParams, query.getReqParams());
         wrapper.like(StrUtil.isNotBlank(query.getResBody()), OpLogPO::getResBody, query.getResBody());
-        if (Objects.nonNull(query.getStartTime()) && query.getStartTime().length == 2) {
-            wrapper.ge(OpLogPO::getStartTime, query.getStartTime()[0]);
-            wrapper.le(OpLogPO::getStartTime, query.getStartTime()[1]);
-        }
         if (Objects.nonNull(query.getEndTime()) && query.getEndTime().length == 2) {
             wrapper.ge(OpLogPO::getEndTime, query.getEndTime()[0]);
             wrapper.le(OpLogPO::getEndTime, query.getEndTime()[1]);
+        }
+        if (Objects.nonNull(query.getStartTime()) && query.getStartTime().length == 2) {
+            wrapper.ge(OpLogPO::getStartTime, query.getStartTime()[0]);
+            wrapper.le(OpLogPO::getStartTime, query.getStartTime()[1]);
         }
         wrapper.ge(Objects.nonNull(query.getConsumeStart()), OpLogPO::getConsume, query.getConsumeStart());
         wrapper.le(Objects.nonNull(query.getConsumeEnd()), OpLogPO::getConsume, query.getConsumeEnd());
@@ -68,13 +68,10 @@ public class OpLogRepositoryImpl extends TiRepositoryImpl<OpLogMapper, OpLogPO> 
         wrapper.like(StrUtil.isNotBlank(query.getIp()), OpLogPO::getIp, query.getIp());
         wrapper.like(Objects.nonNull(query.getResStatus()), OpLogPO::getResStatus, query.getResStatus());
         wrapper.eq(StrUtil.isNotBlank(query.getOperateBy()), OpLogPO::getOperateBy, query.getOperateBy());
-        wrapper.eq(Objects.nonNull(query.getIsErr()), OpLogPO::getIsErr, query.getIsErr());
         wrapper.like(StrUtil.isNotBlank(query.getErrMessage()), OpLogPO::getErrMessage, query.getErrMessage());
+        wrapper.eq(Objects.nonNull(query.getIsErr()), OpLogPO::getIsErr, query.getIsErr());
         wrapper.orderByDesc(OpLogPO::getId);
-        query.checkPage();
-        Page<OpLogPO> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), query.getCount());
-        page.doSelectPage(() -> list(wrapper));
-        return TiPageUtil.of(page, opLogConverter::toEntity);
+        return TiPageUtil.page(() -> list(wrapper), query, opLogConverter::toDTO);
     }
 
     @Override

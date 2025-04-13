@@ -140,7 +140,6 @@ public class RoleService {
     }
 
     private Collection<RoleExcelExport> excelExpHandle(RoleQuery query, Map<Integer, String> labelMap) {
-        query.checkPage();
         TiPageResult<RoleDTO> page = roleAppRepository.page(query);
         return page.getRows()
             .stream()

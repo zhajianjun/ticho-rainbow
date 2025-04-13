@@ -9,11 +9,11 @@ import top.ticho.rainbow.application.dto.excel.OpLogExcelExport;
 import top.ticho.rainbow.application.dto.query.OpLogQuery;
 import top.ticho.rainbow.application.dto.response.OpLogDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
+import top.ticho.rainbow.application.repository.OpLogAppRepository;
 import top.ticho.rainbow.domain.entity.OpLog;
 import top.ticho.rainbow.domain.repository.OpLogRepository;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
-import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OpLogService {
     private final OpLogRepository opLogRepository;
+    private final OpLogAppRepository opLogAppRepository;
     private final OpLogAssembler opLogAssembler;
     private final DictExecutor dictExecutor;
     private final HttpServletResponse response;
@@ -44,8 +45,7 @@ public class OpLogService {
     }
 
     public TiPageResult<OpLogDTO> page(OpLogQuery query) {
-        TiPageResult<OpLog> page = opLogRepository.page(query);
-        return TiPageUtil.of(page, opLogAssembler::toDTO);
+        return opLogAppRepository.page(query);
     }
 
     public void exportExcel(OpLogQuery query) throws IOException {
@@ -57,7 +57,7 @@ public class OpLogService {
     }
 
     private Collection<OpLogExcelExport> excelExpHandle(OpLogQuery query, Map<Integer, String> labelMap) {
-        TiPageResult<OpLog> page = opLogRepository.page(query);
+        TiPageResult<OpLogDTO> page = opLogAppRepository.page(query);
         return page.getRows()
             .stream()
             .map(x -> {

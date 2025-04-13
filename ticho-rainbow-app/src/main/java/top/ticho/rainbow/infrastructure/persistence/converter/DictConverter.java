@@ -1,6 +1,7 @@
 package top.ticho.rainbow.infrastructure.persistence.converter;
 
 import org.mapstruct.Mapper;
+import top.ticho.rainbow.application.dto.response.DictDTO;
 import top.ticho.rainbow.domain.entity.Dict;
 import top.ticho.rainbow.infrastructure.persistence.po.DictPO;
 
@@ -20,5 +21,7 @@ public interface DictConverter {
     Dict toEntity(DictPO dictPO);
 
     DictPO toPO(Dict dict);
+
+    DictDTO toDTO(DictPO dictPO);
 
 }

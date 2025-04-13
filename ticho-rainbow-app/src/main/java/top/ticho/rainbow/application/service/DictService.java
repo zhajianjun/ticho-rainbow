@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -12,11 +13,11 @@ import top.ticho.rainbow.application.assembler.DictLabelAssembler;
 import top.ticho.rainbow.application.dto.command.DictModifyCommand;
 import top.ticho.rainbow.application.dto.command.DictSaveCommand;
 import top.ticho.rainbow.application.dto.excel.DictExcelExport;
-import top.ticho.rainbow.application.dto.query.DictLabelQuery;
 import top.ticho.rainbow.application.dto.query.DictQuery;
 import top.ticho.rainbow.application.dto.response.DictDTO;
 import top.ticho.rainbow.application.dto.response.DictLabelDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
+import top.ticho.rainbow.application.repository.DictAppRepository;
 import top.ticho.rainbow.domain.entity.Dict;
 import top.ticho.rainbow.domain.entity.DictLabel;
 import top.ticho.rainbow.domain.entity.vo.DictModifyVO;
@@ -26,13 +27,11 @@ import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
 import top.ticho.starter.cache.component.TiCacheTemplate;
-import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.enums.TiBizErrCode;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.TiSpringUtil;
 
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -57,6 +56,7 @@ public class DictService {
     private final DictAssembler dictAssembler;
     private final DictLabelAssembler dictLabelAssembler;
     private final DictRepository dictRepository;
+    private final DictAppRepository dictAppRepository;
     private final DictLabelRepository dictLabelRepository;
     private final TiCacheTemplate tiCacheTemplate;
     private final HttpServletResponse response;
@@ -91,21 +91,16 @@ public class DictService {
     }
 
     public TiPageResult<DictDTO> page(DictQuery query) {
-        TiPageResult<Dict> page = dictRepository.page(query);
-        return TiPageUtil.of(page, dictAssembler::toDTO);
+        return dictAppRepository.page(query);
     }
 
     @Cacheable(value = CacheConst.COMMON, key = "'ticho-rainbow:dict:list'")
     public List<DictDTO> list() {
-        DictQuery dictQuery = new DictQuery();
-        dictQuery.setStatus(1);
-        List<Dict> dicts = dictRepository.list(dictQuery);
+        List<Dict> dicts = dictRepository.listEnable();
         if (CollUtil.isEmpty(dicts)) {
             return Collections.emptyList();
         }
-        DictLabelQuery dictLabelQuery = new DictLabelQuery();
-        dictLabelQuery.setStatus(1);
-        List<DictLabel> dictLabels = dictLabelRepository.list(dictLabelQuery);
+        List<DictLabel> dictLabels = dictLabelRepository.listEnable();
         if (CollUtil.isEmpty(dictLabels)) {
             return Collections.emptyList();
         }
@@ -140,7 +135,7 @@ public class DictService {
     }
 
     private Collection<DictExcelExport> excelExpHandle(DictQuery query, Map<Integer, String> labelMap) {
-        TiPageResult<Dict> page = dictRepository.page(query);
+        TiPageResult<DictDTO> page = dictAppRepository.page(query);
         return page.getRows()
             .stream()
             .map(x -> {

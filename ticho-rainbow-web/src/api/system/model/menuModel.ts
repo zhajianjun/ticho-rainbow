@@ -38,7 +38,7 @@ export interface MenuDtlDTO {
   icon: string;
   /** 排序 */
   sort: number;
-  /** 状态;1-正常,0-禁用 */
+  /** 状态;1-启用,0-停用 */
   status: number;
   /** 备注信息 */
   remark: string;

@@ -93,8 +93,8 @@ public class ClientController {
      */
     @PreAuthorize("@perm.hasPerms('intranet:client:all')")
     @GetMapping("all")
-    public TiResult<List<ClientDTO>> list(@Validated ClientQuery query) {
-        return TiResult.ok(clientService.list(query));
+    public TiResult<List<ClientDTO>> all() {
+        return TiResult.ok(clientService.all());
     }
 
 

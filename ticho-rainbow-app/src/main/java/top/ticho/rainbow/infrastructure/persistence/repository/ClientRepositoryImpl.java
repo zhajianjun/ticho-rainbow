@@ -4,13 +4,14 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.dto.query.ClientQuery;
+import top.ticho.rainbow.application.dto.response.ClientDTO;
+import top.ticho.rainbow.application.repository.ClientAppRepository;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.domain.repository.ClientRepository;
+import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.rainbow.infrastructure.persistence.converter.ClientConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.ClientMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.ClientPO;
@@ -18,9 +19,11 @@ import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 客户端信息 repository实现
@@ -30,7 +33,7 @@ import java.util.Objects;
  */
 @Service
 @RequiredArgsConstructor
-public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, ClientPO> implements ClientRepository {
+public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, ClientPO> implements ClientRepository, ClientAppRepository {
     private final ClientConverter clientConverter;
 
     @Override
@@ -53,8 +56,7 @@ public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, ClientP
         return clientConverter.toEntity(super.getById(id));
     }
 
-    @Override
-    public List<Client> list(ClientQuery query) {
+    public List<ClientPO> list(ClientQuery query) {
         LambdaQueryWrapper<ClientPO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(CollUtil.isNotEmpty(query.getIds()), ClientPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), ClientPO::getId, query.getId());
@@ -65,15 +67,20 @@ public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, ClientP
         wrapper.like(StrUtil.isNotBlank(query.getRemark()), ClientPO::getRemark, query.getRemark());
         wrapper.orderByAsc(ClientPO::getSort);
         wrapper.orderByDesc(ClientPO::getId);
-        return clientConverter.toEntitys(list(wrapper));
+        return list(wrapper);
     }
 
     @Override
-    public TiPageResult<Client> page(ClientQuery query) {
-        query.checkPage();
-        Page<ClientPO> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), query.getCount());
-        page.doSelectPage(() -> list(query));
-        return TiPageUtil.of(page, clientConverter::toEntity);
+    public List<ClientDTO> all() {
+        return list()
+            .stream()
+            .map(clientConverter::toDTO)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public TiPageResult<ClientDTO> page(ClientQuery query) {
+        return TiPageUtil.page(() -> list(query), query, clientConverter::toDTO);
     }
 
     @Override
@@ -94,6 +101,14 @@ public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, ClientP
         }
         LambdaQueryWrapper<ClientPO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(ClientPO::getAccessKey, accessKeys);
+        return clientConverter.toEntitys(list(wrapper));
+    }
+
+    @Override
+    public List<Client> listEffect() {
+        LambdaQueryWrapper<ClientPO> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(ClientPO::getStatus, CommonStatus.ENABLE.code());
+        wrapper.ge(ClientPO::getExpireAt, LocalDateTime.now());
         return clientConverter.toEntitys(list(wrapper));
     }
 

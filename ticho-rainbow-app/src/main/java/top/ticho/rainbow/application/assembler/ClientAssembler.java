@@ -35,16 +35,16 @@ public interface ClientAssembler {
 
     @Mapping(target = "connectTime", ignore = true)
     @Mapping(target = "channelStatus", ignore = true)
-    ClientDTO toDTO(Client entity);
+    ClientDTO toDTO(Client client);
 
     @Mapping(target = "portMap", ignore = true)
     @Mapping(target = "connectTime", ignore = true)
     @Mapping(target = "channel", ignore = true)
-    ClientInfo toInfo(Client entity);
+    ClientInfo toInfo(Client client);
 
     @Mapping(target = "statusName", ignore = true)
     @Mapping(target = "connectTime", ignore = true)
     @Mapping(target = "channelStatusName", ignore = true)
-    ClientExcelExport toExcelExport(Client client);
+    ClientExcelExport toExcelExport(ClientDTO clientDTO);
 
 }

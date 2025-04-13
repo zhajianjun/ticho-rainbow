@@ -25,14 +25,6 @@ public interface OpLogRepository {
      */
     OpLog find(Long id);
 
-    /**
-     * 根据条件查询日志信息列表
-     *
-     * @param query 查询条件
-     * @return {@link List}<{@link OpLog}>
-     */
-    TiPageResult<OpLog> page(OpLogQuery query);
-
     void removeBefeoreDays(Integer days);
 
 

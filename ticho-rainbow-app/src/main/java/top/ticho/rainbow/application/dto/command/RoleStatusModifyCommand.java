@@ -16,7 +16,7 @@ public class RoleStatusModifyCommand {
     /** 编号 */
     @NotNull(message = "编号不能为空")
     private Long id;
-    /** 状态;1-正常,0-禁用 */
+    /** 状态;1-启用,0-停用 */
     @NotNull(message = "角色状态不能为空")
     private Integer status;
     /** 版本号 */

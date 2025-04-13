@@ -36,3 +36,5 @@ build/
 logs/
 /conf
 /data/
+.fastRequest/
+.flattened-pom.xml
