@@ -14,7 +14,7 @@ import top.ticho.rainbow.application.dto.response.FileInfoDTO;
 import top.ticho.rainbow.application.repository.FileInfoAppRepository;
 import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
-import top.ticho.rainbow.infrastructure.core.enums.FileInfoStatus;
+import top.ticho.rainbow.infrastructure.common.enums.FileInfoStatus;
 import top.ticho.rainbow.infrastructure.persistence.converter.FileInfoConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.FileInfoMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.FileInfoPO;

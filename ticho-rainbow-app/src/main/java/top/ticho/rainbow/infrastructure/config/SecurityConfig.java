@@ -3,7 +3,7 @@ package top.ticho.rainbow.infrastructure.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import top.ticho.rainbow.infrastructure.core.prop.SecurityProperty;
+import top.ticho.rainbow.infrastructure.common.prop.SecurityProperty;
 import top.ticho.starter.security.handle.jwt.JwtSigner;
 import top.ticho.starter.web.util.TiIdUtil;
 

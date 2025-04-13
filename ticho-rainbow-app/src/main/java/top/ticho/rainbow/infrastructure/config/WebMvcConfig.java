@@ -13,8 +13,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import top.ticho.rainbow.application.service.IntranetAppListenFilter;
-import top.ticho.rainbow.infrastructure.core.interceptor.CustomTraceInterceptor;
-import top.ticho.rainbow.infrastructure.core.prop.FileProperty;
+import top.ticho.rainbow.infrastructure.common.interceptor.CustomTraceInterceptor;
+import top.ticho.rainbow.infrastructure.common.prop.FileProperty;
 import top.ticho.tool.intranet.prop.ServerProperty;
 import top.ticho.tool.intranet.server.handler.ServerHandler;
 

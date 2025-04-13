@@ -5,7 +5,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.service.ClientService;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
-import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 import top.ticho.tool.intranet.server.handler.ServerHandler;
 import top.ticho.trace.common.prop.TraceProperty;

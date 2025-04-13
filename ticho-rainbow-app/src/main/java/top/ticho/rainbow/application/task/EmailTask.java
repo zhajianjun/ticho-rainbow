@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.dto.MailContentDTO;
 import top.ticho.rainbow.domain.repository.EmailRepository;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
-import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
 import top.ticho.starter.mail.component.TiMailContent;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.valid.TiValidUtil;

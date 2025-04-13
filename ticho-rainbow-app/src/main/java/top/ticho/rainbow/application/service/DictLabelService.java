@@ -11,7 +11,7 @@ import top.ticho.rainbow.domain.entity.DictLabel;
 import top.ticho.rainbow.domain.entity.vo.DictLabelModifyVO;
 import top.ticho.rainbow.domain.repository.DictLabelRepository;
 import top.ticho.rainbow.domain.repository.DictRepository;
-import top.ticho.rainbow.infrastructure.core.enums.YesOrNo;
+import top.ticho.rainbow.infrastructure.common.enums.YesOrNo;
 import top.ticho.starter.view.enums.TiBizErrCode;
 import top.ticho.starter.view.util.TiAssert;
 

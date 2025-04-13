@@ -11,7 +11,7 @@ import top.ticho.starter.security.annotation.IgnoreJwtCheck;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * sse

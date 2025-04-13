@@ -6,8 +6,7 @@ import org.quartz.JobExecutionContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
-import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
-import top.ticho.rainbow.infrastructure.core.prop.FileProperty;
+import top.ticho.rainbow.infrastructure.common.prop.FileProperty;
 import top.ticho.trace.common.prop.TraceProperty;
 
 import java.io.File;

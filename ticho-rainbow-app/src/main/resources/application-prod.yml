@@ -65,6 +65,11 @@ ticho:
       max-file-size: 20MB
       max-part-size: 50MB
       max-big-file-size: 100MB
+    opLog:
+      ignorePatterns:
+        - /op-log/page
+        - /file/chunk/upload
+        - /oauth/img-code
 
 spring:
   quartz:

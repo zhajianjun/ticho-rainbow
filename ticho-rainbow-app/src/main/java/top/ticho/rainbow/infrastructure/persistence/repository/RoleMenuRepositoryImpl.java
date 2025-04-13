@@ -9,7 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.ticho.rainbow.domain.repository.RoleMenuRepository;
-import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.persistence.mapper.RoleMenuMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.RoleMenuPO;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;

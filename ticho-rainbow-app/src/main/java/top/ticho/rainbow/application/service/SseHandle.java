@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import top.ticho.rainbow.application.dto.SseMessage;
 import top.ticho.rainbow.application.event.SseEvent;
-import top.ticho.rainbow.infrastructure.core.component.SseTemplate;
-import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
-import top.ticho.rainbow.infrastructure.core.util.CommonUtil;
-import top.ticho.rainbow.infrastructure.core.util.UserUtil;
+import top.ticho.rainbow.infrastructure.common.component.SseTemplate;
+import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.common.util.CommonUtil;
+import top.ticho.rainbow.infrastructure.common.util.UserUtil;
 import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.view.util.TiAssert;
 

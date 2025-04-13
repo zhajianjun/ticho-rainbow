@@ -3,8 +3,8 @@ package top.ticho.rainbow.domain.entity;
 import lombok.Builder;
 import lombok.Getter;
 import top.ticho.rainbow.domain.entity.vo.RoleModifyVO;
-import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
-import top.ticho.rainbow.infrastructure.core.enums.CommonStatus;
+import top.ticho.rainbow.infrastructure.common.constant.SecurityConst;
+import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

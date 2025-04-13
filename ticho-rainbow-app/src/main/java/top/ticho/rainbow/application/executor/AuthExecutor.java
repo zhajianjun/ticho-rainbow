@@ -22,8 +22,8 @@ import top.ticho.rainbow.domain.repository.RoleMenuRepository;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
-import top.ticho.rainbow.infrastructure.core.enums.MenuType;
-import top.ticho.rainbow.infrastructure.core.util.UserUtil;
+import top.ticho.rainbow.infrastructure.common.enums.MenuType;
+import top.ticho.rainbow.infrastructure.common.util.UserUtil;
 import top.ticho.starter.web.util.TiTreeUtil;
 
 import javax.annotation.Resource;

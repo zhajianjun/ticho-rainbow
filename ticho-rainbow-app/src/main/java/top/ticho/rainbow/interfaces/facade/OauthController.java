@@ -21,7 +21,7 @@ import top.ticho.starter.security.handle.LoginUserHandle;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.security.Principal;
 

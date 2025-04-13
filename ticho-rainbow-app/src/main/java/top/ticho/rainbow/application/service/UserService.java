@@ -42,6 +42,7 @@ import top.ticho.rainbow.application.dto.response.UserDTO;
 import top.ticho.rainbow.application.dto.response.UserRoleMenuDtlDTO;
 import top.ticho.rainbow.application.executor.AuthExecutor;
 import top.ticho.rainbow.application.executor.DictExecutor;
+import top.ticho.rainbow.application.executor.UserExecutor;
 import top.ticho.rainbow.application.repository.UserAppRepository;
 import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.domain.entity.Role;
@@ -52,14 +53,14 @@ import top.ticho.rainbow.domain.repository.EmailRepository;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
-import top.ticho.rainbow.infrastructure.core.component.excel.ExcelHandle;
-import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
-import top.ticho.rainbow.infrastructure.core.constant.CommConst;
-import top.ticho.rainbow.infrastructure.core.constant.DictConst;
-import top.ticho.rainbow.infrastructure.core.constant.SecurityConst;
-import top.ticho.rainbow.infrastructure.core.enums.UserStatus;
-import top.ticho.rainbow.infrastructure.core.util.BeetlUtil;
-import top.ticho.rainbow.infrastructure.core.util.UserUtil;
+import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
+import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.common.constant.CommConst;
+import top.ticho.rainbow.infrastructure.common.constant.DictConst;
+import top.ticho.rainbow.infrastructure.common.constant.SecurityConst;
+import top.ticho.rainbow.infrastructure.common.enums.UserStatus;
+import top.ticho.rainbow.infrastructure.common.util.BeetlUtil;
+import top.ticho.rainbow.infrastructure.common.util.UserUtil;
 import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.mail.component.TiMailContent;
 import top.ticho.starter.mail.component.TiMailInines;
@@ -74,7 +75,7 @@ import top.ticho.starter.web.util.valid.TiValidUtil;
 import top.ticho.tool.json.util.TiJsonUtil;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -110,12 +111,13 @@ public class UserService {
     private final UserRoleRepository userRoleRepository;
     private final HttpServletResponse response;
     private final RoleRepository roleRepository;
-    private final TiCacheTemplate springCacheTemplate;
+    private final TiCacheTemplate tiCacheTemplate;
     private final EmailRepository emailRepository;
     private final FileInfoService fileInfoService;
     private final FileInfoAssembler fileInfoAssembler;
     private final DictExecutor dictExecutor;
     private final AuthExecutor authExecutor;
+    private final UserExecutor userExecutor;
 
     public void imgCode(String imgKey) throws IOException {
         response.setHeader("Pragma", "No-cache");
@@ -126,7 +128,7 @@ public class UserService {
             LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
             gifCaptcha.createCode();
             String code = gifCaptcha.getCode();
-            springCacheTemplate.put(CacheConst.VERIFY_CODE, imgKey, code);
+            tiCacheTemplate.put(CacheConst.VERIFY_CODE, imgKey, code);
             BufferedImage buffImg = gifCaptcha.getImage();
             ImageIO.write(buffImg, "png", out);
         } catch (Exception e) {
@@ -147,10 +149,7 @@ public class UserService {
     }
 
     public void imgCodeValid(String key, String imgCode) {
-        String cacheImgCode = springCacheTemplate.get(CacheConst.VERIFY_CODE, key, String.class);
-        TiAssert.isNotBlank(cacheImgCode, "验证码已过期");
-        springCacheTemplate.evict(CacheConst.VERIFY_CODE, key);
-        TiAssert.isTrue(imgCode.equalsIgnoreCase(cacheImgCode), "验证码不正确");
+        userExecutor.imgCodeValid(key, imgCode);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -161,12 +160,12 @@ public class UserService {
         String email = signUpEmailSendCommand.getEmail();
         User dbUser = userRepository.getByEmail(email);
         TiAssert.isNull(dbUser, "用户已存在");
-        String code = springCacheTemplate.get(CacheConst.SIGN_UP_CODE, email, String.class);
+        String code = tiCacheTemplate.get(CacheConst.SIGN_UP_CODE, email, String.class);
         TiAssert.isBlank(code, "验证码已发送，请稍后再试");
         LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
         gifCaptcha.createCode();
         code = gifCaptcha.getCode();
-        springCacheTemplate.put(CacheConst.SIGN_UP_CODE, email, code);
+        tiCacheTemplate.put(CacheConst.SIGN_UP_CODE, email, code);
         GroupTemplate groupTemplate = BeetlUtil.getGroupTemplate(true);
         Template template = groupTemplate.getTemplate("/template/signUpEmailSend.html");
         TiMailInines mailInines = new TiMailInines();
@@ -185,9 +184,9 @@ public class UserService {
     public UserLoginDTO signUp(ResetPasswordCommand resetPasswordCommand) {
         TiValidUtil.valid(resetPasswordCommand);
         String email = resetPasswordCommand.getEmail();
-        String cacheEmailCode = springCacheTemplate.get(CacheConst.SIGN_UP_CODE, email, String.class);
+        String cacheEmailCode = tiCacheTemplate.get(CacheConst.SIGN_UP_CODE, email, String.class);
         TiAssert.isNotBlank(cacheEmailCode, "验证码已过期");
-        springCacheTemplate.evict(CacheConst.SIGN_UP_CODE, email);
+        tiCacheTemplate.evict(CacheConst.SIGN_UP_CODE, email);
         TiAssert.isTrue(resetPasswordCommand.getEmailCode().equalsIgnoreCase(cacheEmailCode), "验证码不正确");
         String username = resetPasswordCommand.getUsername();
         String password = resetPasswordCommand.getPassword();
@@ -214,12 +213,12 @@ public class UserService {
         String email = resetPassworEmailSendCommand.getEmail();
         User dbUser = userRepository.getByEmail(email);
         TiAssert.isNotNull(dbUser, "用户不存在");
-        String code = springCacheTemplate.get(CacheConst.RESET_PASSWORD_CODE, email, String.class);
+        String code = tiCacheTemplate.get(CacheConst.RESET_PASSWORD_CODE, email, String.class);
         TiAssert.isBlank(code, "验证码已发送，请稍后再试");
         LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
         gifCaptcha.createCode();
         code = gifCaptcha.getCode();
-        springCacheTemplate.put(CacheConst.RESET_PASSWORD_CODE, email, code);
+        tiCacheTemplate.put(CacheConst.RESET_PASSWORD_CODE, email, code);
         GroupTemplate groupTemplate = BeetlUtil.getGroupTemplate(true);
         Template template = groupTemplate.getTemplate("/template/resetPasswordEmailSend.html");
         TiMailInines mailInines = new TiMailInines();
@@ -237,9 +236,9 @@ public class UserService {
 
     public UserLoginDTO resetPassword(ResetPasswordCommand resetPasswordCommand) {
         String email = resetPasswordCommand.getEmail();
-        String cacheEmailCode = springCacheTemplate.get(CacheConst.RESET_PASSWORD_CODE, email, String.class);
+        String cacheEmailCode = tiCacheTemplate.get(CacheConst.RESET_PASSWORD_CODE, email, String.class);
         TiAssert.isNotBlank(cacheEmailCode, "验证码已过期");
-        springCacheTemplate.evict(CacheConst.RESET_PASSWORD_CODE, email);
+        tiCacheTemplate.evict(CacheConst.RESET_PASSWORD_CODE, email);
         TiAssert.isTrue(resetPasswordCommand.getEmailCode().equalsIgnoreCase(cacheEmailCode), "验证码不正确");
         User user = userRepository.getByEmail(email);
         TiAssert.isNotNull(
@@ -277,7 +276,7 @@ public class UserService {
         LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
         gifCaptcha.createCode();
         String code = gifCaptcha.getCode();
-        springCacheTemplate.put(CacheConst.VERIFY_CODE, imgKey, code);
+        tiCacheTemplate.put(CacheConst.VERIFY_CODE, imgKey, code);
         UserLoginDTO userLoginDTO = new UserLoginDTO();
         userLoginDTO.setUsername(username);
         userLoginDTO.setImgKey(imgKey);

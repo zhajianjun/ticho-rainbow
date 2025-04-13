@@ -10,7 +10,7 @@ import top.ticho.rainbow.application.service.FlowMonitorService;
 import top.ticho.starter.view.core.TiResult;
 
 /**
- * 流量监控
+ * 内网穿透流量信息
  *
  * @author zhajianjun
  * @date 2023-12-17 20:12
@@ -23,7 +23,7 @@ public class FlowMonitorController {
     private final FlowMonitorService flowMonitorService;
 
     /**
-     * 查询流量监控
+     * 查询流量
      */
     @PreAuthorize("@perm.hasPerms('intranet:flow-monitor:info')")
     @GetMapping("info")

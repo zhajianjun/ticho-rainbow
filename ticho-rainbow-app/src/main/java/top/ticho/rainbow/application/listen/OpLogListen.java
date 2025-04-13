@@ -1,5 +1,6 @@
 package top.ticho.rainbow.application.listen;
 
+import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -9,13 +10,12 @@ import org.springframework.util.AntPathMatcher;
 import top.ticho.rainbow.application.assembler.OpLogAssembler;
 import top.ticho.rainbow.domain.entity.OpLog;
 import top.ticho.rainbow.domain.repository.OpLogRepository;
+import top.ticho.rainbow.infrastructure.common.prop.OpLogProperty;
 import top.ticho.starter.log.event.TiWebLogEvent;
 import top.ticho.starter.view.log.TiHttpLog;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author zhajianjun
@@ -25,15 +25,10 @@ import java.util.stream.Stream;
 @Slf4j
 @Component
 public class OpLogListen {
-    private final AntPathMatcher antPathMatcher = new AntPathMatcher();
-    private final List<String> ignorePaths = Stream.of(
-        "/opLog/page",
-        "/file/uploadChunk",
-        "/oauth/imgCode"
-    ).collect(Collectors.toList());
-
+    private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
     private final OpLogRepository opLogRepository;
     private final OpLogAssembler opLogAssembler;
+    private final OpLogProperty opLogProperty;
 
     @Async("asyncTaskExecutor")
     @EventListener(value = TiWebLogEvent.class)
@@ -42,7 +37,9 @@ public class OpLogListen {
         if (Objects.isNull(httpLog)) {
             return;
         }
-        boolean anyMatch = ignorePaths.stream().anyMatch(x -> antPathMatcher.match(x, httpLog.getUrl()));
+        List<String> ignorePatterns = opLogProperty.getIgnorePatterns();
+        boolean anyMatch = CollUtil.isNotEmpty(ignorePatterns)
+            && ignorePatterns.stream().anyMatch(x -> ANT_PATH_MATCHER.match(x, httpLog.getUrl()));
         if (anyMatch) {
             return;
         }

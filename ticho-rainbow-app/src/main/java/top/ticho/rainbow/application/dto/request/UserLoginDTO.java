@@ -3,7 +3,7 @@ package top.ticho.rainbow.application.dto.request;
 import lombok.Data;
 import top.ticho.starter.security.dto.LoginRequest;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * 登录DTO

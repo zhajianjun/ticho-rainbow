@@ -2,7 +2,7 @@ package top.ticho.rainbow.application.dto.query;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**

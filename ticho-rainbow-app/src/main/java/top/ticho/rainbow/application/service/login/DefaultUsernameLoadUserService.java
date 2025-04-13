@@ -12,7 +12,7 @@ import top.ticho.rainbow.domain.entity.User;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
-import top.ticho.rainbow.infrastructure.core.enums.UserStatus;
+import top.ticho.rainbow.infrastructure.common.enums.UserStatus;
 import top.ticho.starter.security.handle.load.LoadUserService;
 import top.ticho.starter.view.enums.TiHttpErrCode;
 import top.ticho.starter.view.util.TiAssert;

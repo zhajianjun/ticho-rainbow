@@ -7,7 +7,7 @@ import top.ticho.rainbow.application.dto.excel.FileInfoExcelExport;
 import top.ticho.rainbow.application.dto.response.ChunkCacheDTO;
 import top.ticho.rainbow.application.dto.response.FileInfoDTO;
 import top.ticho.rainbow.domain.entity.FileInfo;
-import top.ticho.rainbow.infrastructure.core.enums.FileInfoStatus;
+import top.ticho.rainbow.infrastructure.common.enums.FileInfoStatus;
 import top.ticho.tool.json.util.TiJsonUtil;
 
 /**

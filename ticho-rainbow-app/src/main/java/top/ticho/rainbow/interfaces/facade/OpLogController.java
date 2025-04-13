@@ -12,7 +12,7 @@ import top.ticho.rainbow.application.service.OpLogService;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 
 

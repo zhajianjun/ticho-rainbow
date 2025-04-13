@@ -4,14 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
-import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
-import top.ticho.rainbow.infrastructure.core.constant.CommConst;
+import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.security.auth.PermissionService;
 import top.ticho.starter.view.util.TiAssert;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 接口权限实现(文件相关)

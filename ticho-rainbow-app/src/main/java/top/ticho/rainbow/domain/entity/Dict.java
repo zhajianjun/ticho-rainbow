@@ -3,7 +3,7 @@ package top.ticho.rainbow.domain.entity;
 import lombok.Builder;
 import lombok.Getter;
 import top.ticho.rainbow.domain.entity.vo.DictModifyVO;
-import top.ticho.rainbow.infrastructure.core.enums.YesOrNo;
+import top.ticho.rainbow.infrastructure.common.enums.YesOrNo;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

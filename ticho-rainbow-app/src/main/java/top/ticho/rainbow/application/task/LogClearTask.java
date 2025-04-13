@@ -5,7 +5,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.domain.repository.OpLogRepository;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
-import top.ticho.rainbow.infrastructure.core.component.AbstracTask;
 import top.ticho.trace.common.prop.TraceProperty;
 
 /**

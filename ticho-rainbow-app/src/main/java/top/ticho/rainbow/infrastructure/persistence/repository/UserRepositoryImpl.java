@@ -15,7 +15,7 @@ import top.ticho.rainbow.application.dto.response.UserDTO;
 import top.ticho.rainbow.application.repository.UserAppRepository;
 import top.ticho.rainbow.domain.entity.User;
 import top.ticho.rainbow.domain.repository.UserRepository;
-import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.persistence.converter.UserConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.UserMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.UserPO;

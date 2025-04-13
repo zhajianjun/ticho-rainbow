@@ -18,7 +18,7 @@ import top.ticho.rainbow.application.dto.response.RouteDTO;
 import top.ticho.rainbow.application.service.MenuService;
 import top.ticho.starter.view.core.TiResult;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 /**

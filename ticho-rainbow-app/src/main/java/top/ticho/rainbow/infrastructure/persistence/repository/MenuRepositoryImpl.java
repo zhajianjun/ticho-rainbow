@@ -10,7 +10,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.domain.entity.Menu;
 import top.ticho.rainbow.domain.repository.MenuRepository;
-import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.persistence.converter.MenuConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.MenuMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.MenuPO;

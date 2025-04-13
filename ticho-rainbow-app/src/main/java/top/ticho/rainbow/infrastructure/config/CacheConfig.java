@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import top.ticho.rainbow.application.dto.FileCacheDTO;
-import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.starter.cache.config.TiCache;
 import top.ticho.starter.cache.config.TiCacheBatch;
 

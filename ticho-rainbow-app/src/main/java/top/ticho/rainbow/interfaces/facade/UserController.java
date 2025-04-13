@@ -27,7 +27,7 @@ import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 

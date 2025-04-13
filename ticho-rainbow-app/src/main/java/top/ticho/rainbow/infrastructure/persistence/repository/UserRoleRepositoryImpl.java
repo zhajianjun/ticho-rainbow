@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.ticho.rainbow.domain.entity.UserRole;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
-import top.ticho.rainbow.infrastructure.core.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.persistence.mapper.UserRoleMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.UserRolePO;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;

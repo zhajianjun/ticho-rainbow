@@ -16,8 +16,8 @@ import top.ticho.rainbow.application.dto.response.DictLabelDTO;
 import top.ticho.rainbow.application.service.DictLabelService;
 import top.ticho.starter.view.core.TiResult;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 /**
