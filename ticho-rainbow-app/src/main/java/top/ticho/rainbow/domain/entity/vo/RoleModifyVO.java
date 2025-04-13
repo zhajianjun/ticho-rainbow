@@ -11,7 +11,7 @@ public class RoleModifyVO {
 
     /** 角色名称 */
     String name;
-    /** 状态;1-正常,0-禁用 */
+    /** 状态;1-启用,0-停用 */
     Integer status;
     /** 备注信息 */
     String remark;

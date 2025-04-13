@@ -37,7 +37,7 @@ public class MenuModifyVO {
     String icon;
     /** 排序 */
     Integer sort;
-    /** 状态;1-正常,0-禁用 */
+    /** 状态;1-启用,0-停用 */
     Integer status;
     /** 备注信息 */
     String remark;

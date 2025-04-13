@@ -4,13 +4,14 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.dto.query.DictQuery;
+import top.ticho.rainbow.application.dto.response.DictDTO;
+import top.ticho.rainbow.application.repository.DictAppRepository;
 import top.ticho.rainbow.domain.entity.Dict;
 import top.ticho.rainbow.domain.repository.DictRepository;
+import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.rainbow.infrastructure.persistence.converter.DictConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.DictMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.DictPO;
@@ -29,7 +30,7 @@ import java.util.Objects;
  */
 @Service
 @RequiredArgsConstructor
-public class DictRepositoryImpl extends TiRepositoryImpl<DictMapper, DictPO> implements DictRepository {
+public class DictRepositoryImpl extends TiRepositoryImpl<DictMapper, DictPO> implements DictRepository, DictAppRepository {
     private final DictConverter dictConverter;
 
     @Override
@@ -53,25 +54,25 @@ public class DictRepositoryImpl extends TiRepositoryImpl<DictMapper, DictPO> imp
     }
 
     @Override
-    public List<Dict> list(DictQuery query) {
+    public List<Dict> listEnable() {
         LambdaQueryWrapper<DictPO> wrapper = Wrappers.lambdaQuery();
-        wrapper.in(CollUtil.isNotEmpty(query.getIds()), DictPO::getId, query.getIds());
-        wrapper.eq(Objects.nonNull(query.getId()), DictPO::getId, query.getId());
-        wrapper.like(StrUtil.isNotBlank(query.getCode()), DictPO::getCode, query.getCode());
-        wrapper.like(StrUtil.isNotBlank(query.getName()), DictPO::getName, query.getName());
-        wrapper.eq(Objects.nonNull(query.getIsSys()), DictPO::getIsSys, query.getIsSys());
-        wrapper.eq(Objects.nonNull(query.getStatus()), DictPO::getStatus, query.getStatus());
-        wrapper.like(StrUtil.isNotBlank(query.getRemark()), DictPO::getRemark, query.getRemark());
+        wrapper.eq(DictPO::getStatus, CommonStatus.ENABLE.code());
         wrapper.orderByDesc(DictPO::getId);
         return dictConverter.toEntitys(list(wrapper));
     }
 
     @Override
-    public TiPageResult<Dict> page(DictQuery query) {
-        query.checkPage();
-        Page<DictPO> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), query.getCount());
-        page.doSelectPage(() -> list(query));
-        return TiPageUtil.of(page, dictConverter::toEntity);
+    public TiPageResult<DictDTO> page(DictQuery query) {
+        LambdaQueryWrapper<DictPO> wrapper = Wrappers.lambdaQuery();
+        wrapper.like(StrUtil.isNotBlank(query.getRemark()), DictPO::getRemark, query.getRemark());
+        wrapper.eq(Objects.nonNull(query.getId()), DictPO::getId, query.getId());
+        wrapper.in(CollUtil.isNotEmpty(query.getIds()), DictPO::getId, query.getIds());
+        wrapper.like(StrUtil.isNotBlank(query.getCode()), DictPO::getCode, query.getCode());
+        wrapper.like(StrUtil.isNotBlank(query.getName()), DictPO::getName, query.getName());
+        wrapper.eq(Objects.nonNull(query.getIsSys()), DictPO::getIsSys, query.getIsSys());
+        wrapper.eq(Objects.nonNull(query.getStatus()), DictPO::getStatus, query.getStatus());
+        wrapper.orderByDesc(DictPO::getId);
+        return TiPageUtil.page(() -> list(wrapper), query, dictConverter::toDTO);
     }
 
     @Override

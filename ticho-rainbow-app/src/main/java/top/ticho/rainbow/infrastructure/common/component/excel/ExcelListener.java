@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.ticho.starter.web.util.valid.TiValidUtil;
 import top.ticho.tool.json.util.TiJsonUtil;
 
-import jakarta.validation.ConstraintViolation;
+import javax.validation.ConstraintViolation;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;

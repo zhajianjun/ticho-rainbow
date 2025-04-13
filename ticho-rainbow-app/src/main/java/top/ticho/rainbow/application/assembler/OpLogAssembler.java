@@ -42,6 +42,6 @@ public interface OpLogAssembler {
 
     OpLogDTO toDTO(OpLog entity);
 
-    OpLogExcelExport toExcelExport(OpLog opLog);
+    OpLogExcelExport toExcelExport(OpLogDTO opLogDTO);
 
 }

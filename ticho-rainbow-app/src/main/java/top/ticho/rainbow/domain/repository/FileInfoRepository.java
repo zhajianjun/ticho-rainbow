@@ -52,13 +52,13 @@ public interface FileInfoRepository {
 
     /**
      * 启用
-     * 状态;1-正常,2-停用,3-分片上传,99-作废
+     * 状态;1-启用,2-停用,3-分片上传,99-作废
      */
     boolean enable(Long id);
 
     /**
      * 停用
-     * 状态;1-正常,2-停用,3-分片上传,99-作废
+     * 状态;1-启用,2-停用,3-分片上传,99-作废
      */
     boolean disable(Long id);
 

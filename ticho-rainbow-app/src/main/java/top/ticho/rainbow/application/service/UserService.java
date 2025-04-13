@@ -75,7 +75,7 @@ import top.ticho.starter.web.util.valid.TiValidUtil;
 import top.ticho.tool.json.util.TiJsonUtil;
 
 import javax.imageio.ImageIO;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;

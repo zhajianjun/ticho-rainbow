@@ -50,7 +50,7 @@ public class Menu {
     private String icon;
     /** 排序 */
     private Integer sort;
-    /** 状态;1-正常,0-禁用 */
+    /** 状态;1-启用,0-停用 */
     private Integer status;
     /** 备注信息 */
     private String remark;

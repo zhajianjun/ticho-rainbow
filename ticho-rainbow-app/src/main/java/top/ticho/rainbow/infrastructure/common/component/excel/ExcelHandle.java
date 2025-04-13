@@ -13,7 +13,7 @@ import top.ticho.starter.view.core.TiPageQuery;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.tool.json.util.TiJsonUtil;
 
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;

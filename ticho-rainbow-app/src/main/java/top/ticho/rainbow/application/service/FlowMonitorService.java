@@ -5,13 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
 import top.ticho.rainbow.application.assembler.PortAssembler;
-import top.ticho.rainbow.application.dto.query.ClientQuery;
+import top.ticho.rainbow.application.dto.response.ClientDTO;
 import top.ticho.rainbow.application.dto.response.FlowMonitorDTO;
 import top.ticho.rainbow.application.dto.response.FlowMonitorStatsDTO;
 import top.ticho.rainbow.application.dto.response.PortDTO;
+import top.ticho.rainbow.application.repository.ClientAppRepository;
 import top.ticho.rainbow.application.repository.PortAppRepository;
-import top.ticho.rainbow.domain.entity.Client;
-import top.ticho.rainbow.domain.repository.ClientRepository;
 import top.ticho.tool.intranet.server.entity.AppDataCollector;
 import top.ticho.tool.intranet.server.entity.AppDataSummary;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
@@ -38,7 +37,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FlowMonitorService {
-    private final ClientRepository clientRepository;
+    private final ClientAppRepository clientAppRepository;
     private final PortAppRepository portRepository;
     private final ServerHandler serverHandler;
     private final PortAssembler portAssembler;
@@ -47,9 +46,9 @@ public class FlowMonitorService {
         AppHandler appHandler = serverHandler.getAppHandler();
         Map<String, ClientInfo> clientMap = serverHandler.getClientMap();
         // 客户端数
-        List<Client> clientPOS = clientRepository.list(new ClientQuery());
+        List<ClientDTO> clientDTOS = clientAppRepository.all();
         // 激活的客户端数
-        long count = clientPOS
+        long count = clientDTOS
             .stream()
             .map(x -> clientMap.get(x.getAccessKey()))
             .filter(Objects::nonNull)
@@ -70,7 +69,7 @@ public class FlowMonitorService {
             .map(x -> convertToFlowMonitor(x, appDataMap.get(x.getPort())))
             .collect(Collectors.toList());
         FlowMonitorStatsDTO flowMonitorStatsDTO = new FlowMonitorStatsDTO();
-        flowMonitorStatsDTO.setClients(clientPOS.size());
+        flowMonitorStatsDTO.setClients(clientDTOS.size());
         flowMonitorStatsDTO.setActiveClients(activeClients);
         flowMonitorStatsDTO.setPorts(ports.size());
         flowMonitorStatsDTO.setActivePorts(portNums.size());

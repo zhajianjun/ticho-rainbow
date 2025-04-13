@@ -1,7 +1,6 @@
 package top.ticho.rainbow.infrastructure.common.advice;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -21,8 +20,9 @@ import top.ticho.starter.view.enums.TiHttpErrCode;
 import top.ticho.starter.view.log.TiHttpLog;
 import top.ticho.starter.web.advice.TiResponseBodyAdvice;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;

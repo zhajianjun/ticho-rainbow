@@ -1,6 +1,7 @@
 package top.ticho.rainbow.infrastructure.persistence.converter;
 
 import org.mapstruct.Mapper;
+import top.ticho.rainbow.application.dto.response.OpLogDTO;
 import top.ticho.rainbow.domain.entity.OpLog;
 import top.ticho.rainbow.infrastructure.persistence.po.OpLogPO;
 
@@ -16,5 +17,7 @@ public interface OpLogConverter {
     OpLog toEntity(OpLogPO opLogPO);
 
     OpLogPO toPo(OpLog entity);
+
+    OpLogDTO toDTO(OpLogPO opLogPO);
 
 }

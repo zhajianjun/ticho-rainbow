@@ -19,7 +19,7 @@ public class TaskModifyVo {
     String cronExpression;
     /** 备注信息 */
     String remark;
-    /** 任务状态;1-正常,0-停用 */
+    /** 任务状态;1-启用,0-停用 */
     Integer status;
     /** 版本号 */
     Long version;

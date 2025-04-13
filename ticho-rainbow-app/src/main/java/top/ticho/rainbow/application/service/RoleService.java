@@ -31,7 +31,7 @@ import top.ticho.starter.view.enums.TiBizErrCode;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.valid.TiValidUtil;
 
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -140,7 +140,6 @@ public class RoleService {
     }
 
     private Collection<RoleExcelExport> excelExpHandle(RoleQuery query, Map<Integer, String> labelMap) {
-        query.checkPage();
         TiPageResult<RoleDTO> page = roleAppRepository.page(query);
         return page.getRows()
             .stream()

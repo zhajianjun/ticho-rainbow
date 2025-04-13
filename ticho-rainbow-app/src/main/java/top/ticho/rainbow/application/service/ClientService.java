@@ -13,21 +13,21 @@ import top.ticho.rainbow.application.dto.excel.ClientExcelExport;
 import top.ticho.rainbow.application.dto.query.ClientQuery;
 import top.ticho.rainbow.application.dto.response.ClientDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
+import top.ticho.rainbow.application.repository.ClientAppRepository;
+import top.ticho.rainbow.application.repository.PortAppRepository;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.domain.entity.Port;
 import top.ticho.rainbow.domain.entity.vo.ClientModifyVO;
 import top.ticho.rainbow.domain.repository.ClientRepository;
-import top.ticho.rainbow.domain.repository.PortRepository;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
-import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.tool.intranet.server.entity.ClientInfo;
 import top.ticho.tool.intranet.server.entity.PortInfo;
 import top.ticho.tool.intranet.server.handler.ServerHandler;
 
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -52,7 +52,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ClientService {
     private final ClientRepository clientRepository;
-    private final PortRepository portRepository;
+    private final ClientAppRepository clientAppRepository;
+    private final PortAppRepository portAppRepository;
     private final ClientAssembler clientAssembler;
     private final PortAssembler portAssembler;
     private final ServerHandler serverHandler;
@@ -111,7 +112,7 @@ public class ClientService {
         String accessKey = client.getAccessKey();
         if (enabled) {
             Predicate<Port> filter = x -> Objects.equals(x.getStatus(), 1) && LocalDateTime.now().isBefore(x.getExpireAt());
-            Map<String, List<PortInfo>> protMap = portRepository.listAndGroupByAccessKey(Collections.singletonList(accessKey), portAssembler::toInfo, filter);
+            Map<String, List<PortInfo>> protMap = portAppRepository.listAndGroupByAccessKey(Collections.singletonList(accessKey), portAssembler::toInfo, filter);
             List<PortInfo> portInfos = protMap.getOrDefault(accessKey, Collections.emptyList());
             Map<Integer, PortInfo> portInfoMap = portInfos
                 .stream()
@@ -143,26 +144,20 @@ public class ClientService {
      * @return {@link TiPageResult}<{@link ClientDTO}>
      */
     public TiPageResult<ClientDTO> page(ClientQuery query) {
-        TiPageResult<Client> page = clientRepository.page(query);
-        return TiPageUtil.of(page, (s) -> {
-            ClientDTO clientDTO = clientAssembler.toDTO(s);
-            fillChannelStatus(clientDTO);
-            return clientDTO;
-        });
+        TiPageResult<ClientDTO> page = clientAppRepository.page(query);
+        page.getRows().forEach(this::fillChannelStatus);
+        return page;
     }
 
     /**
      * 查询客户端信息列表
      *
-     * @param query 查询条件
      * @return {@link List}<{@link ClientDTO}>
      */
-    public List<ClientDTO> list(ClientQuery query) {
-        return clientRepository.list(query)
-            .stream()
-            .map(clientAssembler::toDTO)
-            .peek(this::fillChannelStatus)
-            .collect(Collectors.toList());
+    public List<ClientDTO> all() {
+        List<ClientDTO> clientDTOS = clientAppRepository.all();
+        clientDTOS.forEach(this::fillChannelStatus);
+        return clientDTOS;
     }
 
     /**
@@ -174,11 +169,11 @@ public class ClientService {
         ClientQuery clientQuery = new ClientQuery();
         clientQuery.setStatus(1);
         clientQuery.setExpireAt(LocalDateTime.now());
-        List<Client> clientPOS = clientRepository.list(clientQuery);
-        List<String> accessKeys = clientPOS.stream().map(Client::getAccessKey).collect(Collectors.toList());
+        List<Client> dtos = clientRepository.listEffect();
+        List<String> accessKeys = dtos.stream().map(Client::getAccessKey).collect(Collectors.toList());
         Predicate<Port> filter = x -> Objects.equals(x.getStatus(), 1) && LocalDateTime.now().isBefore(x.getExpireAt());
-        Map<String, List<PortInfo>> protMap = portRepository.listAndGroupByAccessKey(accessKeys, portAssembler::toInfo, filter);
-        return clientPOS
+        Map<String, List<PortInfo>> protMap = portAppRepository.listAndGroupByAccessKey(accessKeys, portAssembler::toInfo, filter);
+        return dtos
             .stream()
             .map(clientAssembler::toInfo)
             .peek(x -> setPortMap(x, protMap))
@@ -211,9 +206,8 @@ public class ClientService {
     }
 
     private Collection<ClientExcelExport> excelExpHandle(ClientQuery query, Map<String, String> labelMap) {
-        query.checkPage();
-        TiPageResult<Client> page = clientRepository.page(query);
-        List<Client> result = page.getRows();
+        TiPageResult<ClientDTO> page = clientAppRepository.page(query);
+        List<ClientDTO> result = page.getRows();
         return result
             .stream()
             .map(item -> {

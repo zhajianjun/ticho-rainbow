@@ -25,7 +25,7 @@ public class Role {
     private String code;
     /** 角色名称 */
     private String name;
-    /** 状态;1-正常,0-禁用 */
+    /** 状态;1-启用,0-停用 */
     private Integer status;
     /** 备注信息 */
     private String remark;
@@ -53,7 +53,7 @@ public class Role {
         this.version = version;
         // 管理员角色一定是正常状态
         if (Objects.equals(SecurityConst.ADMIN, code)) {
-            this.status = CommonStatus.NORMAL.code();
+            this.status = CommonStatus.ENABLE.code();
         }
     }
 

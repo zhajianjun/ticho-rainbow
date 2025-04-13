@@ -2,8 +2,8 @@ package top.ticho.rainbow.application.dto.command;
 
 import lombok.Data;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * 计划任务修改
@@ -30,7 +30,7 @@ public class TaskModifyCommand {
     private String cronExpression;
     /** 备注信息 */
     private String remark;
-    /** 任务状态;1-正常,0-停用 */
+    /** 任务状态;1-启用,0-停用 */
     private Integer status;
     /** 版本号 */
     @NotNull(message = "版本号不能为空")

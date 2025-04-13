@@ -19,7 +19,7 @@ export interface FileInfoDTO {
   chunkId: string;
   /** 文件元数据 */
   metadata: string;
-  /** 状态;1-正常,2-停用,3-分片上传,99-作废 */
+  /** 状态;1-启用,2-停用,3-分片上传,99-作废 */
   status: number;
   /** 备注信息 */
   remark: string;
@@ -62,7 +62,7 @@ export interface FileInfoQuery {
   originalFileName: string;
   /** 文件元数据 */
   metadata: string;
-  /** 状态;1-正常,2-停用,3-分片上传,99-作废 */
+  /** 状态;1-启用,2-停用,3-分片上传,99-作废 */
   status: number;
   /** 备注信息 */
   remark: string;

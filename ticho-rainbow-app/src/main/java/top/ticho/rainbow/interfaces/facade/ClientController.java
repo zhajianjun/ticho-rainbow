@@ -19,7 +19,7 @@ import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
-import jakarta.validation.constraints.NotNull;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 
@@ -93,8 +93,8 @@ public class ClientController {
      */
     @PreAuthorize("@perm.hasPerms('intranet:client:all')")
     @GetMapping("all")
-    public TiResult<List<ClientDTO>> list(@Validated ClientQuery query) {
-        return TiResult.ok(clientService.list(query));
+    public TiResult<List<ClientDTO>> all() {
+        return TiResult.ok(clientService.all());
     }
 
 

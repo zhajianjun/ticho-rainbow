@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 /**
  * 文件状态
- * <p>文件状态;1-正常,2-停用,3-分片上传,99-作废</p>
+ * <p>文件状态;1-启用,2-停用,3-分片上传,99-作废</p>
  *
  * @author zhajianjun
  * @date 2024-04-29 18:19

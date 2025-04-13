@@ -11,7 +11,7 @@ export interface TaskDTO {
   cronExpression: string;
   /** 备注信息 */
   remark: string;
-  /** 任务状态;1-正常,0-停用 */
+  /** 任务状态;1-启用,0-停用 */
   status: number;
   /** 创建人 */
   createBy: string;
@@ -42,7 +42,7 @@ export interface TaskQuery {
   cronExpression: string;
   /** 备注信息 */
   remark: string;
-  /** 任务状态;1-正常,0-停用 */
+  /** 任务状态;1-启用,0-停用 */
   status: number;
   /** 乐观锁;控制版本更改 */
   version: string;

@@ -2,9 +2,9 @@ package top.ticho.rainbow.application.dto.command;
 
 import lombok.Data;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 /**
  * 重置用户密码

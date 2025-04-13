@@ -1,9 +1,7 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.application.dto.query.DictQuery;
 import top.ticho.rainbow.domain.entity.Dict;
 import top.ticho.rainbow.domain.entity.DictLabel;
-import top.ticho.starter.view.core.TiPageResult;
 
 import java.util.List;
 
@@ -24,20 +22,11 @@ public interface DictRepository {
     Dict find(Long id);
 
     /**
-     * 根据条件查询DictType列表
+     * 查询启用的字典列表
      *
-     * @param query 查询条件
      * @return {@link List}<{@link Dict}>
      */
-    List<Dict> list(DictQuery query);
-
-    /**
-     * 根据条件查询DictType列表(分页)
-     *
-     * @param query 查询条件
-     * @return {@link List}<{@link Dict}>
-     */
-    TiPageResult<Dict> page(DictQuery query);
+    List<Dict> listEnable();
 
     /**
      * 根据字典编码排除主键编号查询

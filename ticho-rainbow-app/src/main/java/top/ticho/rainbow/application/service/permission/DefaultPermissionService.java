@@ -2,7 +2,6 @@ package top.ticho.rainbow.application.service.permission;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -17,6 +16,7 @@ import top.ticho.rainbow.infrastructure.common.util.UserUtil;
 import top.ticho.starter.security.auth.PermissionService;
 import top.ticho.starter.security.constant.TiSecurityConst;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;

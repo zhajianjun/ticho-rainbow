@@ -2,7 +2,7 @@ package top.ticho.rainbow.domain.entity.vo;
 
 import lombok.Value;
 
-import jakarta.validation.constraints.NotNull;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author zhajianjun

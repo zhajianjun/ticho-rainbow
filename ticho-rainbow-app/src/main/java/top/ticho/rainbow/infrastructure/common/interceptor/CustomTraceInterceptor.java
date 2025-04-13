@@ -10,8 +10,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import top.ticho.rainbow.infrastructure.common.util.UserUtil;
 import top.ticho.trace.common.prop.TraceProperty;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 自定义链路拦截器

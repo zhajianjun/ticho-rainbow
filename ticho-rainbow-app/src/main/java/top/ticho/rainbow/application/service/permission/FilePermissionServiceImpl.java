@@ -11,7 +11,7 @@ import top.ticho.starter.security.auth.PermissionService;
 import top.ticho.starter.view.util.TiAssert;
 
 import javax.annotation.Resource;
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 接口权限实现(文件相关)
