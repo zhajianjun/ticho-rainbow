@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 /**
  * 通用状态
- * <p>通用状态;1-正常,0-停用</p>
+ * <p>通用状态;1-启用,0-停用</p>
  *
  * @author zhajianjun
  * @date 2024-05-13 18:30

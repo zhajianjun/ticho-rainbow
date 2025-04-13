@@ -32,7 +32,7 @@ public class TaskQuery extends TiPageQuery {
     private String cronExpression;
     /** 备注信息 */
     private String remark;
-    /** 任务状态;1-正常,0-停用 */
+    /** 任务状态;1-启用,0-停用 */
     private Integer status;
     /** 创建人 */
     private String createBy;
