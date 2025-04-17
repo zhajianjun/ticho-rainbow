@@ -1,7 +1,5 @@
 package top.ticho.rainbow.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldStrategy;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.Version;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,19 +26,16 @@ public class Port {
     /** 客户端地址 */
     private String endpoint;
     /** 域名 */
-    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String domain;
     /** 状态;1-启用,0-停用 */
     private Integer status;
     /** 过期时间 */
-    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private LocalDateTime expireAt;
     /** 协议类型 */
     private Integer type;
     /** 排序 */
     private Integer sort;
     /** 备注信息 */
-    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String remark;
     /** 版本号 */
     @Version
