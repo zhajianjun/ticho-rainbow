@@ -102,6 +102,7 @@ public class FileInfoService {
             .map(s -> s + File.separator + fileName)
             .orElse(fileName);
         FileInfo fileInfo = FileInfo.builder()
+            .id(TiIdUtil.getId())
             .type(type)
             .fileName(fileName)
             .originalFileName(originalFileName)

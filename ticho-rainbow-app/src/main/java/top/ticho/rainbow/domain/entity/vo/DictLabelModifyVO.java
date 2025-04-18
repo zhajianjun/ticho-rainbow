@@ -1,31 +1,28 @@
 package top.ticho.rainbow.domain.entity.vo;
 
-import lombok.Value;
-
 /**
+ * @param code    字典编码
+ * @param label   字典标签
+ * @param value   字典值
+ * @param icon    图标
+ * @param color   颜色
+ * @param sort    排序
+ * @param status  状态;1-启用,0-停用
+ * @param remark  备注信息
+ * @param version 版本号
  * @author zhajianjun
  * @date 2025-03-02 19:59
  */
-@Value
-public class DictLabelModifyVO {
-
-    /** 字典编码 */
-    String code;
-    /** 字典标签 */
-    String label;
-    /** 字典值 */
-    String value;
-    /** 图标 */
-    String icon;
-    /** 颜色 */
-    String color;
-    /** 排序 */
-    Integer sort;
-    /** 状态;1-启用,0-停用 */
-    Integer status;
-    /** 备注信息 */
-    String remark;
-    /** 版本号 */
-    Long version;
+public record DictLabelModifyVO(
+    String code,
+    String label,
+    String value,
+    String icon,
+    String color,
+    Integer sort,
+    Integer status,
+    String remark,
+    Long version
+) {
 
 }

@@ -200,5 +200,11 @@ export function getModalFormColumns(): FormSchema[] {
         span: 24,
       },
     },
+    {
+      field: `version`,
+      label: `版本号`,
+      component: 'Input',
+      show: false,
+    },
   ];
 }

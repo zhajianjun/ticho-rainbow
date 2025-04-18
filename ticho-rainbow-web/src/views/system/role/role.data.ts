@@ -169,4 +169,10 @@ export const formSchema: FormSchema[] = [
     field: 'menu',
     slot: 'menuSlot',
   },
+  {
+    field: `version`,
+    label: `版本号`,
+    component: 'Input',
+    show: false,
+  },
 ];

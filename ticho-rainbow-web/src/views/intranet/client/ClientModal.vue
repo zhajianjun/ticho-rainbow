@@ -15,7 +15,7 @@
   import { BasicForm, useForm } from '@/components/Form';
   import { getModalFormColumns } from './client.data';
   import { modifyClient, saveClient } from '@/api/intranet/client';
-  import { ClientDTO } from '@/api/intranet/model/clientModel';
+  import { ClientModifyCommand, ClientSaveCommand } from '@/api/intranet/model/clientModel';
   import { useMessage } from '@/hooks/web/useMessage';
 
   export default defineComponent({
@@ -57,11 +57,12 @@
 
       async function handleSubmit() {
         try {
-          const values = (await validate()) as ClientDTO;
           setModalProps({ confirmLoading: true });
           if (unref(isUpdate)) {
+            const values = (await validate()) as ClientModifyCommand;
             await modifyClient(values);
           } else {
+            const values = (await validate()) as ClientSaveCommand;
             await saveClient(values);
           }
           const { createMessage } = useMessage();

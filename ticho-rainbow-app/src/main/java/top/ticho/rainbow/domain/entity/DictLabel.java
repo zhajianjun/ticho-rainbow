@@ -42,14 +42,14 @@ public class DictLabel {
     private LocalDateTime createTime;
 
     public void modify(DictLabelModifyVO dictLabelModifyVO, boolean isSysDict) {
-        this.code = dictLabelModifyVO.getCode();
-        this.label = dictLabelModifyVO.getLabel();
-        this.value = dictLabelModifyVO.getValue();
-        this.icon = dictLabelModifyVO.getIcon();
-        this.color = dictLabelModifyVO.getColor();
-        this.sort = dictLabelModifyVO.getSort();
-        this.status = dictLabelModifyVO.getStatus();
-        this.remark = dictLabelModifyVO.getRemark();
+        this.code = dictLabelModifyVO.code();
+        this.label = dictLabelModifyVO.label();
+        this.value = dictLabelModifyVO.value();
+        this.icon = dictLabelModifyVO.icon();
+        this.color = dictLabelModifyVO.color();
+        this.sort = dictLabelModifyVO.sort();
+        this.status = dictLabelModifyVO.status();
+        this.remark = dictLabelModifyVO.remark();
         if (isSysDict) {
             this.code = null;
             this.label = null;

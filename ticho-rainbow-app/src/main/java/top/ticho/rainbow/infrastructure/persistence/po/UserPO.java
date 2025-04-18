@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -68,6 +69,7 @@ public class UserPO extends Model<UserPO> {
     /** 备注信息 */
     private String remark;
     /** 版本号 */
+    @Version
     private Long version;
     /** 创建人 */
     @TableField(fill = FieldFill.INSERT)

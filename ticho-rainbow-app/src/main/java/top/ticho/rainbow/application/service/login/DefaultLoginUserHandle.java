@@ -23,8 +23,7 @@ public class DefaultLoginUserHandle extends TiLoginUserHandle {
 
     @Override
     public TiToken token(LoginRequest loginRequest) {
-        if (loginRequest instanceof UserLoginDTO) {
-            UserLoginDTO userLogin = (UserLoginDTO) loginRequest;
+        if (loginRequest instanceof UserLoginDTO userLogin) {
             TiValidUtil.valid(userLogin);
             userExecutor.imgCodeValid(userLogin.getImgKey(), userLogin.getImgCode());
         }

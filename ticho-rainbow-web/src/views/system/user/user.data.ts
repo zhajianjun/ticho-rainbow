@@ -136,7 +136,6 @@ export const userFormSchema: FormSchema[] = [
     componentProps: {
       fieldNames: {
         label: 'deptName',
-        key: 'id',
         value: 'id',
       },
       getPopupContainer: () => document.body,
@@ -270,6 +269,12 @@ export function getPasswordModalFormColumns(): FormSchema[] {
           },
         ];
       },
+    },
+    {
+      field: `version`,
+      label: `版本号`,
+      component: 'Input',
+      show: false,
     },
   ];
 }

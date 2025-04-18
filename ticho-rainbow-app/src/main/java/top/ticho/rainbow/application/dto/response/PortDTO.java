@@ -39,6 +39,8 @@ public class PortDTO {
     private Integer sort;
     /** 备注信息 */
     private String remark;
+            /** 版本号 */
+    private Long version;
     /** 创建人 */
     private String createBy;
     /** 创建时间 */

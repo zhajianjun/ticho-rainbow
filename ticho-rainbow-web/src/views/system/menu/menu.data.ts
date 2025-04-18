@@ -112,7 +112,6 @@ export const formSchema: FormSchema[] = [
     componentProps: {
       fieldNames: {
         label: 'name',
-        key: 'id',
         value: 'id',
       },
       getPopupContainer: () => document.body,
@@ -221,5 +220,11 @@ export const formSchema: FormSchema[] = [
     label: '激活的菜单',
     component: 'Input',
     ifShow: ({ values }) => !isButton(values.type) && values.invisible !== 1,
+  },
+  {
+    field: `version`,
+    label: `版本号`,
+    component: 'Input',
+    show: false,
   },
 ];

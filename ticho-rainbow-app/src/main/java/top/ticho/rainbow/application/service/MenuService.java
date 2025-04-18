@@ -62,7 +62,7 @@ public class MenuService {
         checkData(menu);
         MenuModifyVO menuModifyVO = menuAssembler.toModifyVO(menuModifyCommand);
         menu.modify(menuModifyVO);
-        TiAssert.isTrue(menuRepository.modify(menu), TiBizErrCode.FAIL, "修改失败");
+        TiAssert.isTrue(menuRepository.modify(menu), TiBizErrCode.FAIL, "修改失败，请刷新后重试");
     }
 
     @Transactional(rollbackFor = Exception.class)

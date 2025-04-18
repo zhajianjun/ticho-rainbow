@@ -75,21 +75,21 @@ public class Menu {
     }
 
     public void modify(MenuModifyVO menuModifyVO) {
-        this.perms = menuModifyVO.getPerms();
-        this.name = menuModifyVO.getName();
-        this.path = menuModifyVO.getPath();
-        this.component = menuModifyVO.getComponent();
-        this.componentName = menuModifyVO.getComponentName();
-        this.redirect = menuModifyVO.getRedirect();
-        this.extFlag = menuModifyVO.getExtFlag();
-        this.keepAlive = menuModifyVO.getKeepAlive();
-        this.invisible = menuModifyVO.getInvisible();
-        this.currentActiveMenu = menuModifyVO.getCurrentActiveMenu();
-        this.closable = menuModifyVO.getClosable();
-        this.icon = menuModifyVO.getIcon();
-        this.sort = menuModifyVO.getSort();
-        this.status = menuModifyVO.getStatus();
-        this.remark = menuModifyVO.getRemark();
+        this.perms = menuModifyVO.perms();
+        this.name = menuModifyVO.name();
+        this.path = menuModifyVO.path();
+        this.component = menuModifyVO.component();
+        this.componentName = menuModifyVO.componentName();
+        this.redirect = menuModifyVO.redirect();
+        this.extFlag = menuModifyVO.extFlag();
+        this.keepAlive = menuModifyVO.keepAlive();
+        this.invisible = menuModifyVO.invisible();
+        this.currentActiveMenu = menuModifyVO.currentActiveMenu();
+        this.closable = menuModifyVO.closable();
+        this.icon = menuModifyVO.icon();
+        this.sort = menuModifyVO.sort();
+        this.status = menuModifyVO.status();
+        this.remark = menuModifyVO.remark();
     }
 
 }

@@ -72,11 +72,11 @@ public class User implements UserHelper {
     private LocalDateTime updateTime;
 
     public void modify(UserModifyVO modifyVo) {
-        this.nickname = modifyVo.getNickname();
-        this.email = modifyVo.getEmail();
-        this.mobile = modifyVo.getMobile();
-        this.remark = modifyVo.getRemark();
-        this.version = modifyVo.getVersion();
+        this.nickname = modifyVo.nickname();
+        this.email = modifyVo.email();
+        this.mobile = modifyVo.mobile();
+        this.remark = modifyVo.remark();
+        this.version = modifyVo.version();
     }
 
     public void modifyPassword(String password) {

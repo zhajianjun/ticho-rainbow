@@ -66,6 +66,8 @@ public class UserDTO {
     private Integer status;
     /** 备注信息 */
     private String remark;
+            /** 版本号 */
+    private Long version;
     /** 创建时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;

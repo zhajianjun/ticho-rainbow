@@ -121,7 +121,7 @@ public class TaskService implements InitializingBean {
         Task task = taskRepository.find(id);
         TaskModifyVo taskModifyVo = taskAssembler.toVo(taskModifyCommand);
         task.modify(taskModifyVo);
-        TiAssert.isTrue(taskRepository.modify(task), TiBizErrCode.FAIL, "修改失败");
+        TiAssert.isTrue(taskRepository.modify(task), TiBizErrCode.FAIL, "修改失败，请刷新后重试");
         boolean exists = taskTemplate.checkExists(id.toString(), DEFAULT_JOB_GROUP);
         if (exists) {
             boolean deleteJob = taskTemplate.deleteJob(task.getId().toString(), DEFAULT_JOB_GROUP);

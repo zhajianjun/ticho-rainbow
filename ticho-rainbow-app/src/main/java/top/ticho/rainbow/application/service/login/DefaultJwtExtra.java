@@ -23,8 +23,7 @@ public class DefaultJwtExtra implements JwtExtra {
         Map<String, Object> extMap = new HashMap<>();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
-        if (principal instanceof SecurityUser) {
-            SecurityUser securityUser = (SecurityUser) principal;
+        if (principal instanceof SecurityUser securityUser) {
             extMap.put("status", securityUser.getStatus());
         }
         return extMap;

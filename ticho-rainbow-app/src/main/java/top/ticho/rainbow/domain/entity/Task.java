@@ -42,13 +42,13 @@ public class Task {
     private LocalDateTime updateTime;
 
     public void modify(TaskModifyVo taskModifyVo) {
-        this.name = taskModifyVo.getName();
-        this.content = taskModifyVo.getContent();
-        this.param = taskModifyVo.getParam();
-        this.cronExpression = taskModifyVo.getCronExpression();
-        this.remark = taskModifyVo.getRemark();
-        this.status = taskModifyVo.getStatus();
-        this.version = taskModifyVo.getVersion();
+        this.name = taskModifyVo.name();
+        this.content = taskModifyVo.content();
+        this.param = taskModifyVo.param();
+        this.cronExpression = taskModifyVo.cronExpression();
+        this.remark = taskModifyVo.remark();
+        this.status = taskModifyVo.status();
+        this.version = taskModifyVo.version();
     }
 
 }

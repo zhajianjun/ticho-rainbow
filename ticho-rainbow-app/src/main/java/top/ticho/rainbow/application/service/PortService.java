@@ -82,7 +82,7 @@ public class PortService {
         check(portModifyfCommand.getId(), portModifyfCommand.getAccessKey(), portModifyfCommand.getPort(), portModifyfCommand.getDomain(), portModifyfCommand.getType());
         PortModifyfVO portModifyfVO = portAssembler.toModifyfVO(portModifyfCommand);
         port.modify(portModifyfVO);
-        TiAssert.isTrue(portRepository.modify(port), "修改失败");
+        TiAssert.isTrue(portRepository.modify(port), "修改失败，请刷新后重试");
         updatePortInfo(port);
     }
 

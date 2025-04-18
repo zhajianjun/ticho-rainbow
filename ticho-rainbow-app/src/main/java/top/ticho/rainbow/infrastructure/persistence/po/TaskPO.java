@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,6 +40,7 @@ public class TaskPO extends Model<TaskPO> {
     /** 任务状态;1-启用,0-停用 */
     private Integer status;
     /** 版本号 */
+    @Version
     private Long version;
     /** 创建人 */
     @TableField(fill = FieldFill.INSERT)

@@ -102,7 +102,7 @@ public class ClientService {
         TiAssert.isNotNull(client, "修改失败，数据不存在");
         ClientModifyVO vo = clientAssembler.toVO(clientModifyCommand);
         client.modify(vo);
-        TiAssert.isTrue(clientRepository.modify(client), "修改失败");
+        TiAssert.isTrue(clientRepository.modify(client), "修改失败，请刷新后重试");
         modifyClientInfo(client);
     }
 

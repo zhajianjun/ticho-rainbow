@@ -1,6 +1,7 @@
 package top.ticho.rainbow.application.dto.command;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Future;
 import lombok.Data;
 
 import jakarta.validation.constraints.Email;
@@ -26,6 +27,8 @@ public class ClientSaveCommand {
     @NotBlank(message = "客户端名称不能为空")
     private String name;
     /** 过期时间 */
+    @NotNull(message = "过期时间不能为空")
+    @Future(message = "过期时间必须大于当前时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime expireAt;
     /** 状态;1-启用,0-停用 */

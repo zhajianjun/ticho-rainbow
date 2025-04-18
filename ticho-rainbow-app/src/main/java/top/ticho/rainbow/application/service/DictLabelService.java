@@ -63,7 +63,7 @@ public class DictLabelService {
         }
         DictLabelModifyVO dictLabelModifyVO = dictLabelAssembler.toVO(dictLabelModifyCommand);
         dictLabel.modify(dictLabelModifyVO, isSysDict);
-        TiAssert.isTrue(dictLabelRepository.modify(dictLabel), TiBizErrCode.FAIL, "修改失败");
+        TiAssert.isTrue(dictLabelRepository.modify(dictLabel), TiBizErrCode.FAIL, "修改失败，请刷新后重试");
     }
 
     public List<DictLabelDTO> find(String code) {

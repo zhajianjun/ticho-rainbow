@@ -4,6 +4,7 @@ import { Tag } from 'ant-design-vue';
 import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
 import { isNull } from '@/utils/is';
 import { formatToDateTime } from '@/utils/dateUtil';
+import dayjs from 'dayjs';
 
 const commonStatus = 'commonStatus';
 const channelStatus = 'channelStatus';
@@ -166,6 +167,9 @@ export function getModalFormColumns(): FormSchema[] {
         placeholder: '请输入过期时间',
         showTime: true,
         valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        disabledDate: (current) => {
+          return current && current <= dayjs().subtract(1, 'days').endOf('day');
+        },
       },
       colProps: {
         span: 24,
@@ -199,6 +203,12 @@ export function getModalFormColumns(): FormSchema[] {
       colProps: {
         span: 24,
       },
+    },
+    {
+      field: `version`,
+      label: `版本号`,
+      component: 'Input',
+      show: false,
     },
   ];
 }

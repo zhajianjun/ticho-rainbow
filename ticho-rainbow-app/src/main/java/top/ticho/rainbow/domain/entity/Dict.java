@@ -38,12 +38,12 @@ public class Dict {
     private LocalDateTime createTime;
 
     public void modify(DictModifyVO dictModifyVO) {
-        this.name = dictModifyVO.getName();
-        this.isSys = dictModifyVO.getIsSys();
-        this.status = dictModifyVO.getStatus();
-        this.remark = dictModifyVO.getRemark();
-        this.version = dictModifyVO.getVersion();
-        if (Objects.equals(YesOrNo.YES.code(), dictModifyVO.getIsSys())) {
+        this.name = dictModifyVO.name();
+        this.isSys = dictModifyVO.isSys();
+        this.status = dictModifyVO.status();
+        this.remark = dictModifyVO.remark();
+        this.version = dictModifyVO.version();
+        if (Objects.equals(YesOrNo.YES.code(), dictModifyVO.isSys())) {
             this.status = 1;
         }
     }

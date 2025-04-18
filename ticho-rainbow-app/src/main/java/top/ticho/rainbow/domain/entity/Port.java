@@ -50,16 +50,16 @@ public class Port {
     private LocalDateTime updateTime;
 
     public void modify(PortModifyfVO portModifyfVO) {
-        this.accessKey = portModifyfVO.getAccessKey();
-        this.port = portModifyfVO.getPort();
-        this.endpoint = portModifyfVO.getEndpoint();
-        this.domain = portModifyfVO.getDomain();
-        this.status = portModifyfVO.getStatus();
-        this.expireAt = portModifyfVO.getExpireAt();
-        this.type = portModifyfVO.getType();
-        this.sort = portModifyfVO.getSort();
-        this.remark = portModifyfVO.getRemark();
-        this.version = portModifyfVO.getVersion();
+        this.accessKey = portModifyfVO.accessKey();
+        this.port = portModifyfVO.port();
+        this.endpoint = portModifyfVO.endpoint();
+        this.domain = portModifyfVO.domain();
+        this.status = portModifyfVO.status();
+        this.expireAt = portModifyfVO.expireAt();
+        this.type = portModifyfVO.type();
+        this.sort = portModifyfVO.sort();
+        this.remark = portModifyfVO.remark();
+        this.version = portModifyfVO.version();
     }
 
 }

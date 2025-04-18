@@ -42,12 +42,12 @@ public class Client {
     private LocalDateTime updateTime;
 
     public void modify(ClientModifyVO vo) {
-        this.name = vo.getName();
-        this.expireAt = vo.getExpireAt();
-        this.status = vo.getStatus();
-        this.sort = vo.getSort();
-        this.remark = vo.getRemark();
-        this.version = vo.getVersion();
+        this.name = vo.name();
+        this.expireAt = vo.expireAt();
+        this.status = vo.status();
+        this.sort = vo.sort();
+        this.remark = vo.remark();
+        this.version = vo.version();
     }
 
 }

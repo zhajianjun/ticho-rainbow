@@ -135,8 +135,7 @@ public class UserService {
             log.error("获取验证码失败，error {}", e.getMessage(), e);
             String message = e.getMessage();
             int code = TiBizErrCode.FAIL.getCode();
-            if (e instanceof TiBizException) {
-                TiBizException TiBizException = ((TiBizException) e);
+            if (e instanceof TiBizException TiBizException) {
                 code = TiBizException.getCode();
                 message = TiBizException.getMsg();
             }
@@ -334,7 +333,7 @@ public class UserService {
         List<String> errors = checkRepeat(user);
         TiAssert.isEmpty(errors, TiBizErrCode.FAIL, () -> errors.get(0));
         user.modify(modifyVo);
-        TiAssert.isTrue(userRepository.modify(user), TiBizErrCode.FAIL, "修改失败");
+        TiAssert.isTrue(userRepository.modify(user), TiBizErrCode.FAIL, "修改失败，请刷新后重试");
     }
 
     public UserDTO getInfoByUsername(String username) {

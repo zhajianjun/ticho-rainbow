@@ -1,21 +1,13 @@
 package top.ticho.rainbow.domain.entity.vo;
 
-import lombok.Value;
-
 /**
+ * @param name    角色名称
+ * @param status  状态;1-启用,0-停用
+ * @param remark  备注信息
+ * @param version 版本号
  * @author zhajianjun
  * @date 2025-03-08 14:44
  */
-@Value
-public class RoleModifyVO {
-
-    /** 角色名称 */
-    String name;
-    /** 状态;1-启用,0-停用 */
-    Integer status;
-    /** 备注信息 */
-    String remark;
-    /** 版本号 */
-    Long version;
+public record RoleModifyVO(String name, Integer status, String remark, Long version) {
 
 }

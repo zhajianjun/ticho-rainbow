@@ -1,13 +1,14 @@
 package top.ticho.rainbow.application.dto.command;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
 /**
@@ -27,6 +28,8 @@ public class ClientModifyCommand {
     @NotBlank(message = "客户端名称不能为空")
     private String name;
     /** 过期时间 */
+    @NotNull(message = "过期时间不能为空")
+    @Future(message = "过期时间必须大于当前时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime expireAt;
     /** 状态;1-启用,0-停用 */

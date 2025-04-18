@@ -41,11 +41,11 @@ public class Role {
     private LocalDateTime updateTime;
 
     public void modify(RoleModifyVO modifyVO) {
-        this.name = modifyVO.getName();
-        this.status = modifyVO.getStatus();
-        this.remark = modifyVO.getRemark();
-        this.version = modifyVO.getVersion();
-        modifyStatus(modifyVO.getStatus(), modifyVO.getVersion());
+        this.name = modifyVO.name();
+        this.status = modifyVO.status();
+        this.remark = modifyVO.remark();
+        this.version = modifyVO.version();
+        modifyStatus(modifyVO.status(), modifyVO.version());
     }
 
     public void modifyStatus(Integer status, Long version) {

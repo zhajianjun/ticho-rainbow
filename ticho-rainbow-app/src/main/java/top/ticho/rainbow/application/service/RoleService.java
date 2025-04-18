@@ -92,7 +92,7 @@ public class RoleService {
         TiAssert.isNotNull(role, TiBizErrCode.FAIL, "修改失败，角色已存在");
         RoleModifyVO modifyVO = roleAssembler.toVo(roleModifyCommand);
         role.modify(modifyVO);
-        TiAssert.isTrue(roleRepository.modify(role), TiBizErrCode.FAIL, "修改失败");
+        TiAssert.isTrue(roleRepository.modify(role), TiBizErrCode.FAIL, "修改失败，请刷新后重试");
         List<Long> menuIds = roleModifyCommand.getMenuIds();
         RoleBindMenuCommand roleBindMenuCommand = new RoleBindMenuCommand();
         roleBindMenuCommand.setRoleId(role.getId());

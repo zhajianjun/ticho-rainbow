@@ -2,6 +2,8 @@ package top.ticho.rainbow.infrastructure.common.advice;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -21,14 +23,11 @@ import top.ticho.starter.view.enums.TiHttpErrCode;
 import top.ticho.starter.view.log.TiHttpLog;
 import top.ticho.starter.web.advice.TiResponseBodyAdvice;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 /**
  * 自定义异常处理
@@ -77,7 +76,7 @@ public class CustomResponseBodyAdvice {
             .stream()
             .sorted(Comparator.comparing(ObjectError::getObjectName))
             .peek(next -> joiner.add(next.getField() + ":" + next.getDefaultMessage()))
-            .collect(Collectors.toList());
+            .toList();
         log.warn("catch BindException error\t{}", joiner);
         response.setStatus(HttpStatus.OK.value());
         return TiResult.fail(TiBizErrCode.PARAM_ERROR, errors.get(0).getDefaultMessage());
@@ -94,7 +93,7 @@ public class CustomResponseBodyAdvice {
             .stream()
             .sorted(Comparator.comparing(ConstraintViolation::getMessage))
             .peek(next -> joiner.add(next.getPropertyPath() + ":" + next.getMessage()))
-            .collect(Collectors.toList());
+            .toList();
         log.warn("catch ConstraintViolationException error\t{}", joiner);
         response.setStatus(HttpStatus.OK.value());
         return TiResult.fail(TiBizErrCode.PARAM_ERROR, errors.get(0).getMessage());

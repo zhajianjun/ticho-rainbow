@@ -82,7 +82,7 @@ public class DictService {
         TiAssert.isNotNull(dict, TiBizErrCode.FAIL, "修改失败，字典不存在");
         DictModifyVO dictModifyVO = dictAssembler.toVO(dictModifyCommand);
         dict.modify(dictModifyVO);
-        TiAssert.isTrue(dictRepository.modify(dict), TiBizErrCode.FAIL, "修改失败");
+        TiAssert.isTrue(dictRepository.modify(dict), TiBizErrCode.FAIL, "修改失败，请刷新后重试");
     }
 
     public DictDTO find(Long id) {
