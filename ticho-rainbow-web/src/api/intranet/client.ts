@@ -1,5 +1,10 @@
 import { defHttp } from '@/utils/http/axios';
-import { ClientDTO, ClientQuery } from './model/clientModel';
+import {
+  ClientDTO,
+  ClientModifyCommand,
+  ClientQuery,
+  ClientSaveCommand,
+} from './model/clientModel';
 import { RetryRequest } from '#/axios';
 
 enum Api {
@@ -9,7 +14,7 @@ enum Api {
   Export = '/client/excel/export',
 }
 
-export function saveClient(params: ClientDTO) {
+export function saveClient(params: ClientSaveCommand) {
   return defHttp.post<void>({ url: Api.Client, params }, { errorMessageMode: 'message' });
 }
 
@@ -20,7 +25,7 @@ export function delClient(params: string) {
   );
 }
 
-export function modifyClient(params: ClientDTO) {
+export function modifyClient(params: ClientModifyCommand) {
   return defHttp.put<void>({ url: Api.Client, params }, { errorMessageMode: 'message' });
 }
 
@@ -29,10 +34,7 @@ export function modifyClientStatus(params: ClientDTO) {
 }
 
 export function clientPage(params?: ClientQuery) {
-  return defHttp.get<ClientDTO[]>(
-    { url: Api.ClientPage, params },
-    { errorMessageMode: 'message' },
-  );
+  return defHttp.get<ClientDTO[]>({ url: Api.ClientPage, params }, { errorMessageMode: 'message' });
 }
 
 export function clientAll(params?: ClientQuery) {

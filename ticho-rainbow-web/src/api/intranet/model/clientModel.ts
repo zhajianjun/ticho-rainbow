@@ -37,3 +37,22 @@ export interface ClientQuery {
   /** 备注信息 */
   remark: string;
 }
+
+export interface ClientSaveCommand {
+  accessKey: string;
+  name: string;
+  expireAt: string;
+  status: number;
+  sort: number;
+  remark: string;
+}
+
+export interface ClientModifyCommand {
+  id: number;
+  name: string;
+  expireAt: string;
+  status: number;
+  sort: number;
+  remark: string;
+  version: number;
+}
