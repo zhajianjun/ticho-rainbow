@@ -1,40 +1,90 @@
-# ticho-rainbow
+# Ticho-Rainbow
 
-#### 介绍
+## 项目说明
 
-{**以下是 Gitee 平台说明，您可以替换此简介**
-Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用 Gitee
-实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
+Ticho-Rainbow 基于[Ticho-Boot2.0](https://github.com/zhajianjun/ticho-rainbow)、Spring Boot 3 +
+Vue3的现代化前后端分离后台管理系统，整合前沿技术栈，提供RBAC权限管理、动态菜单、定时任务、数据字典、邮件发送、内网穿透等功能。
 
-#### 软件架构
+**前端技术栈**：
 
-软件架构说明
+- 框架：Vue 3.2 + TypeScript
+- UI组件库：Ant Design Vue 3.x
+- 工程化：Vite 4.x + Vue-Vben-Admin脚手架
+- 状态管理：Pinia 2.x
+- 构建工具：pnpm + ESLint
 
-#### 安装教程
+**后端技术栈**：
 
-1. xxxx
-2. xxxx
-3. xxxx
+- 核心框架：Spring Boot 3.1.4 + Ticho-Boot 2.0
+- 安全框架：Spring Security 6.1.4
+- ORM框架：Mybatis-Plus 3.5.3
+- 数据库：MySQL 8.0
+- 开发环境：JDK17 + Maven 3.8+
 
-#### 使用说明
+---
 
-1. xxxx
-2. xxxx
-3. xxxx
+## 🚀 快速开始
 
-#### 参与贡献
+### ☑️ 环境要求
 
-1. Fork 本仓库
-2. 新建 Feat_xxx 分支
-3. 提交代码
-4. 新建 Pull Request
+在开始使用 ticho-rainbow 前，请确保满足以下运行环境要求：
 
-#### 特技
+- **编程语言**: TypeScript
+- **包管理器**: Npm
+- **容器运行时**: Docker
 
-1. 使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2. Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3. 你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4. [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5. Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6. Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+### ⚙️ 安装
+
+通过以下任一方式安装 ticho-rainbow：
+
+**从源码构建**:
+
+1. 克隆仓库代码：
+
+```sh
+❯ git clone https://github.com/zhajianjun/ticho-rainbow
+```
+
+2. 进入项目目录：
+
+```sh
+❯ cd ticho-rainbow
+```
+
+3. 安装项目依赖：
+
+**Using `npm`**
+&nbsp; [<img align="center" src="https://img.shields.io/badge/npm-CB3837.svg?style={badge_style}&logo=npm&logoColor=white" />](https://www.npmjs.com/)
+
+```sh
+❯ npm install
+```
+
+**使用 `docker`**
+&nbsp; [<img align="center" src="https://img.shields.io/badge/Docker-2CA5E0.svg?style={badge_style}&logo=docker&logoColor=white" />](https://www.docker.com/)
+
+```sh
+❯ docker build -t zhajianjun/ticho-rainbow .
+```
+
+### 🤖 使用说明
+
+运行以下命令启动项目：
+**Using `npm`**
+&nbsp; [<img align="center" src="https://img.shields.io/badge/npm-CB3837.svg?style={badge_style}&logo=npm&logoColor=white" />](https://www.npmjs.com/)
+
+```sh
+❯ npm start
+```
+
+**使用 `docker`**
+&nbsp; [<img align="center" src="https://img.shields.io/badge/Docker-2CA5E0.svg?style={badge_style}&logo=docker&logoColor=white" />](https://www.docker.com/)
+
+```sh
+❯ docker run -it {image_name}
+```
+
+## 🎗 许可证
+
+本项目采用 [MIT 许可证](https://choosealicense.com/licenses/mit/)
+，更多细节请参阅 [LICENSE](https://github.com/zhajianjun/ticho-boot/blob/main/LICENSE) 文件。

@@ -1,38 +1,92 @@
-# ticho-rainbow
+# Ticho-Rainbow
 
-#### Description
+## Project Overview
 
-{**When you're done, you can delete the content in this README and update the file with details for others getting
-started with your repository**}
+Ticho-Rainbow is a modern frontend-backend separated admin system based
+on [Ticho-Boot2.0](https://github.com/zhajianjun/ticho-rainbow), Spring Boot 3, and Vue3. It integrates cutting-edge
+technology stacks, offering features including RBAC permissions management, dynamic menus, scheduled tasks, data
+dictionary, email service, and intranet penetration.
 
-#### Software Architecture
+**Frontend Tech Stack**:
 
-Software architecture description
+- Framework: Vue 3.2 + TypeScript
+- UI Library: Ant Design Vue 3.x
+- Engineering: Vite 4.x + Vue-Vben-Admin Scaffolding
+- State Management: Pinia 2.x
+- Build Tools: pnpm + ESLint
 
-#### Installation
+**Backend Tech Stack**:
 
-1. xxxx
-2. xxxx
-3. xxxx
+- Core Framework: Spring Boot 3.1.4 + Ticho-Boot 2.0
+- Security Framework: Spring Security 6.1.4
+- ORM Framework: Mybatis-Plus 3.5.3
+- Database: MySQL 8.0
+- Development Environment: JDK17 + Maven 3.8+
 
-#### Instructions
+---
 
-1. xxxx
-2. xxxx
-3. xxxx
+## 🚀 Quick Start
 
-#### Contribution
+### ☑️ Prerequisites
 
-1. Fork the repository
-2. Create Feat_xxx branch
-3. Commit your code
-4. Create Pull Request
+Before getting started with ticho-rainbow, ensure your runtime environment meets the following requirements:
 
-#### Gitee Feature
+- **Programming Language:** TypeScript
+- **Package Manager:** Npm
+- **Container Runtime:** Docker
 
-1. You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2. Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3. Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4. The most valuable open source project [GVP](https://gitee.com/gvp)
-5. The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6. The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+### ⚙️ Installation
+
+Install ticho-rainbow using one of the following methods:
+
+**Build from source:**
+
+1. Clone the ticho-rainbow repository:
+
+```sh
+❯ git clone https://github.com/zhajianjun/ticho-rainbow
+```
+
+2. Navigate to the project directory:
+
+```sh
+❯ cd ticho-rainbow
+```
+
+3. Install the project dependencies:
+
+**Using `npm`**
+&nbsp; [<img align="center" src="https://img.shields.io/badge/npm-CB3837.svg?style={badge_style}&logo=npm&logoColor=white" />](https://www.npmjs.com/)
+
+```sh
+❯ npm install
+```
+
+**Using `docker`**
+&nbsp; [<img align="center" src="https://img.shields.io/badge/Docker-2CA5E0.svg?style={badge_style}&logo=docker&logoColor=white" />](https://www.docker.com/)
+
+```sh
+❯ docker build -t zhajianjun/ticho-rainbow .
+```
+
+### 🤖 Usage
+
+Run ticho-rainbow using the following command:
+**Using `npm`**
+&nbsp; [<img align="center" src="https://img.shields.io/badge/npm-CB3837.svg?style={badge_style}&logo=npm&logoColor=white" />](https://www.npmjs.com/)
+
+```sh
+❯ npm start
+```
+
+**Using `docker`**
+&nbsp; [<img align="center" src="https://img.shields.io/badge/Docker-2CA5E0.svg?style={badge_style}&logo=docker&logoColor=white" />](https://www.docker.com/)
+
+```sh
+❯ docker run -it {image_name}
+```
+
+## 🎗 License
+
+This project is protected under the [MIT License](https://choosealicense.com/licenses/mit/) License. For more details,
+refer to the [LICENSE](https://github.com/zhajianjun/ticho-rainbow/blob/main/LICENSE) file.
