@@ -1,57 +1,59 @@
 # Ticho-Rainbow
 
-## 项目说明
+## Project Overview
 
-Ticho-Rainbow 基于[Ticho-Boot2.0](https://github.com/zhajianjun/ticho-rainbow)、Spring Boot 3 +
-Vue3的现代化前后端分离后台管理系统，整合前沿技术栈，提供RBAC权限管理、动态菜单、定时任务、数据字典、邮件发送、内网穿透等功能。
+Ticho-Rainbow is a modern frontend-backend separated admin system based
+on [Ticho-Boot2.0](https://github.com/zhajianjun/ticho-rainbow), Spring Boot 3, and Vue3. It integrates cutting-edge
+technology stacks, offering features including RBAC permissions management, dynamic menus, scheduled tasks, data
+dictionary, email service, and intranet penetration.
 
-**前端技术栈**：
+**Frontend Tech Stack**:
 
-- 框架：Vue 3.2 + TypeScript
-- UI组件库：Ant Design Vue 3.x
-- 工程化：Vite 4.x + Vue-Vben-Admin脚手架
-- 状态管理：Pinia 2.x
-- 构建工具：pnpm + ESLint
+- Framework: Vue 3.2 + TypeScript
+- UI Library: Ant Design Vue 3.x
+- Engineering: Vite 4.x + Vue-Vben-Admin Scaffolding
+- State Management: Pinia 2.x
+- Build Tools: pnpm + ESLint
 
-**后端技术栈**：
+**Backend Tech Stack**:
 
-- 核心框架：Spring Boot 3.1.4 + Ticho-Boot 2.0
-- 安全框架：Spring Security 6.1.4
-- ORM框架：Mybatis-Plus 3.5.3
-- 数据库：MySQL 8.0
-- 开发环境：JDK17 + Maven 3.8+
+- Core Framework: Spring Boot 3.1.4 + Ticho-Boot 2.0
+- Security Framework: Spring Security 6.1.4
+- ORM Framework: Mybatis-Plus 3.5.3
+- Database: MySQL 8.0
+- Development Environment: JDK17 + Maven 3.8+
 
 ---
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### ☑️ 环境要求
+### ☑️ Prerequisites
 
-在开始使用 ticho-rainbow 前，请确保满足以下运行环境要求：
+Before getting started with ticho-rainbow, ensure your runtime environment meets the following requirements:
 
-- **编程语言**: TypeScript
-- **包管理器**: Npm
-- **容器运行时**: Docker
+- **Programming Language:** TypeScript
+- **Package Manager:** Npm
+- **Container Runtime:** Docker
 
-### ⚙️ 安装
+### ⚙️ Installation
 
-通过以下任一方式安装 ticho-rainbow：
+Install ticho-rainbow using one of the following methods:
 
-**从源码构建**:
+**Build from source:**
 
-1. 克隆仓库代码：
+1. Clone the ticho-rainbow repository:
 
 ```sh
 ❯ git clone https://github.com/zhajianjun/ticho-rainbow
 ```
 
-2. 进入项目目录：
+2. Navigate to the project directory:
 
 ```sh
 ❯ cd ticho-rainbow
 ```
 
-3. 安装项目依赖：
+3. Install the project dependencies:
 
 **Using `npm`**
 &nbsp; [<img align="center" src="https://img.shields.io/badge/npm-CB3837.svg?style={badge_style}&logo=npm&logoColor=white" />](https://www.npmjs.com/)
@@ -60,16 +62,16 @@ Vue3的现代化前后端分离后台管理系统，整合前沿技术栈，提�
 ❯ npm install
 ```
 
-**使用 `docker`**
+**Using `docker`**
 &nbsp; [<img align="center" src="https://img.shields.io/badge/Docker-2CA5E0.svg?style={badge_style}&logo=docker&logoColor=white" />](https://www.docker.com/)
 
 ```sh
 ❯ docker build -t zhajianjun/ticho-rainbow .
 ```
 
-### 🤖 使用说明
+### 🤖 Usage
 
-运行以下命令启动项目：
+Run ticho-rainbow using the following command:
 **Using `npm`**
 &nbsp; [<img align="center" src="https://img.shields.io/badge/npm-CB3837.svg?style={badge_style}&logo=npm&logoColor=white" />](https://www.npmjs.com/)
 
@@ -77,14 +79,14 @@ Vue3的现代化前后端分离后台管理系统，整合前沿技术栈，提�
 ❯ npm start
 ```
 
-**使用 `docker`**
+**Using `docker`**
 &nbsp; [<img align="center" src="https://img.shields.io/badge/Docker-2CA5E0.svg?style={badge_style}&logo=docker&logoColor=white" />](https://www.docker.com/)
 
 ```sh
 ❯ docker run -it {image_name}
 ```
 
-## 🎗 许可证
+## 🎗 License
 
-本项目采用 [MIT 许可证](https://choosealicense.com/licenses/mit/)
-，更多细节请参阅 [LICENSE](https://github.com/zhajianjun/ticho-boot/blob/main/LICENSE) 文件。
+This project is protected under the [MIT License](https://choosealicense.com/licenses/mit/) License. For more details,
+refer to the [LICENSE](https://github.com/zhajianjun/ticho-rainbow/blob/main/LICENSE) file.
