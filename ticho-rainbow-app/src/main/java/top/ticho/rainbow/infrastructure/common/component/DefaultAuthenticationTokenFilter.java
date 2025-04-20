@@ -16,7 +16,7 @@ import java.util.Optional;
  * @author zhajianjun
  * @date 2022-09-24 14:14:06
  */
-@Component(TiSecurityConst.OAUTH2_TOKEN_FILTER_BEAN_NAME)
+@Component
 public class DefaultAuthenticationTokenFilter extends AbstractAuthTokenFilter<SecurityUser> {
 
     @Override

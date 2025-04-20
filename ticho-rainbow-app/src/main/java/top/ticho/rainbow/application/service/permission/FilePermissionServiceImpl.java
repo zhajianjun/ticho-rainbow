@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.cache.component.TiCacheTemplate;
-import top.ticho.starter.security.auth.PermissionService;
+import top.ticho.starter.security.auth.TiPermissionService;
 import top.ticho.starter.view.util.TiAssert;
 
 /**
@@ -21,11 +21,11 @@ import top.ticho.starter.view.util.TiAssert;
 @Slf4j
 @Service(CommConst.FILE_PERM_KEY)
 @Order(1)
-public class FilePermissionServiceImpl implements PermissionService {
+public class FilePermissionServiceImpl implements TiPermissionService {
 
     @Qualifier(CommConst.PERM_KEY)
     @Resource
-    private PermissionService permissionService;
+    private TiPermissionService tiPermissionService;
     @Resource
     private HttpServletRequest request;
     @Resource
@@ -39,7 +39,7 @@ public class FilePermissionServiceImpl implements PermissionService {
         if (hasCache) {
             return true;
         }
-        return permissionService.hasPerms(permissions);
+        return tiPermissionService.hasPerms(permissions);
     }
 
 }

@@ -10,7 +10,6 @@ import top.ticho.starter.view.core.TiSecurityUser;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class SecurityUser extends TiSecurityUser implements UserHelper {

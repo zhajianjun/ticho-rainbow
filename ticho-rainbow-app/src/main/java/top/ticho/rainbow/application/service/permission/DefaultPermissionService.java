@@ -14,7 +14,7 @@ import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.rainbow.infrastructure.common.constant.SecurityConst;
 import top.ticho.rainbow.infrastructure.common.enums.UserStatus;
 import top.ticho.rainbow.infrastructure.common.util.UserUtil;
-import top.ticho.starter.security.auth.PermissionService;
+import top.ticho.starter.security.auth.TiPermissionService;
 import top.ticho.starter.security.constant.TiSecurityConst;
 
 import java.util.Arrays;
@@ -31,7 +31,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Service(CommConst.PERM_KEY)
 @Order(1)
-public class DefaultPermissionService implements PermissionService {
+public class DefaultPermissionService implements TiPermissionService {
 
     private final HttpServletRequest request;
     private final AuthExecutor authExecutor;

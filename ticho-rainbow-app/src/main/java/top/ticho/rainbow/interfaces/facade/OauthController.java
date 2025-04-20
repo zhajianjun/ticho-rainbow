@@ -1,5 +1,6 @@
 package top.ticho.rainbow.interfaces.facade;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -14,14 +15,12 @@ import top.ticho.rainbow.application.dto.command.ResetPasswordCommand;
 import top.ticho.rainbow.application.dto.command.SignUpEmailSendCommand;
 import top.ticho.rainbow.application.dto.request.UserLoginDTO;
 import top.ticho.rainbow.application.service.UserService;
+import top.ticho.rainbow.application.service.login.DefaultLoginService;
 import top.ticho.starter.security.annotation.IgnoreJwtCheck;
-import top.ticho.starter.security.constant.TiSecurityConst;
 import top.ticho.starter.security.dto.TiToken;
-import top.ticho.starter.security.handle.LoginUserHandle;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
-import jakarta.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.security.Principal;
 
@@ -32,10 +31,10 @@ import java.security.Principal;
  * @date 2024-01-08 20:30
  */
 @RequiredArgsConstructor
-@RestController(TiSecurityConst.OAUTH2_CONTROLLER)
+@RestController
 @RequestMapping("oauth")
 public class OauthController {
-    private final LoginUserHandle loginUserHandle;
+    private final DefaultLoginService loginService;
     private final UserService userService;
 
     /**
@@ -94,7 +93,7 @@ public class OauthController {
     @IgnoreJwtCheck
     @PostMapping("token")
     public TiResult<TiToken> token(@Validated UserLoginDTO userLoginDTO) {
-        return TiResult.ok(loginUserHandle.token(userLoginDTO));
+        return TiResult.ok(loginService.token(userLoginDTO));
     }
 
     /**
@@ -103,7 +102,7 @@ public class OauthController {
     @IgnoreJwtCheck
     @PostMapping("token/refresh")
     public TiResult<TiToken> refreshToken(@NotBlank(message = "refreshToken不能为空") String refreshToken) {
-        return TiResult.ok(loginUserHandle.refreshToken(refreshToken));
+        return TiResult.ok(loginService.refreshToken(refreshToken));
     }
 
     /**
@@ -121,7 +120,7 @@ public class OauthController {
      */
     @GetMapping("public-key")
     public TiResult<String> publicKey() {
-        return TiResult.ok(loginUserHandle.publicKey());
+        return TiResult.ok(loginService.publicKey());
     }
 
 }

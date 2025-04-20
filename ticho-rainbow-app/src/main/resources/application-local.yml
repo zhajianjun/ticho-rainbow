@@ -1,6 +1,6 @@
 ticho:
   async:
-    enable-async: true
+    enable: true
     thread-name-prefix: Rainbow-
   datasource:
     url: ENC(1/d6Y0rrGcknVxFMtf3GlMnw2IBvleJbToH0qXkQ/HrVEX2dmxLCfJVO156SKZ5/90F0QVCpW/zi3Yoj3WC8aZTiOvtu5XuMZIwJh80hQ0noELlnCfxFlvIx5Dd2epG4Bj5bvlOqKzA01buQKpl/ZR8qgKXRbJ+L6YICCcZkOT6wE2mFlOeNdwu+HfPmSgybZuWT+4HHQnV0aVjZGDvqXPdwuHvZJaliadbFTZFe9Ezt8fvGKn4KRnWeZzP/XxT/UYUciHX/K2aqdPS0E1x5kxUmRTji6WlsO3vjEgVdCpHDs8qa2acnIgKlvQUZULZidh96GseEnlyOnSzujt7T24jzzkZin6zJCCLe7JY7fsA=)
@@ -17,6 +17,7 @@ ticho:
       - /
       - /health
       - /favicon.ico
+      - /oauth/**
       - ${ticho.rainbow.file.mvc-resource-path}
   cors:
     enable: true

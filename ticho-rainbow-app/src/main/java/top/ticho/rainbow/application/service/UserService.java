@@ -7,6 +7,7 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.beetl.core.GroupTemplate;
@@ -75,7 +76,6 @@ import top.ticho.starter.web.util.valid.TiValidUtil;
 import top.ticho.tool.json.util.TiJsonUtil;
 
 import javax.imageio.ImageIO;
-import jakarta.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -107,7 +107,7 @@ public class UserService {
     private final UserAppRepository userAppRepository;
     private final UserAssembler userAssembler;
     private final RoleAssembler roleAssembler;
-    private final PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
     private final UserRoleRepository userRoleRepository;
     private final HttpServletResponse response;
     private final RoleRepository roleRepository;

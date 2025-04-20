@@ -1,6 +1,6 @@
 ticho:
   async:
-    enable-async: true
+    enable: true
     thread-name-prefix: Rainbow-
   datasource:
     url: jdbc:mysql://192.168.243.138:10030/ticho_rainbow?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true
