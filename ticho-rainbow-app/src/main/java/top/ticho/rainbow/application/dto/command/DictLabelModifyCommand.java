@@ -1,10 +1,11 @@
 package top.ticho.rainbow.application.dto.command;
 
+import lombok.Data;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 
 /**
  * 字典标签修改

@@ -1,7 +1,8 @@
 package top.ticho.rainbow.application.dto.command;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+
+import jakarta.validation.constraints.NotNull;
 
 /**
  * 用户信息DTO

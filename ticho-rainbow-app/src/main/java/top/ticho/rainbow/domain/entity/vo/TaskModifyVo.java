@@ -1,7 +1,5 @@
 package top.ticho.rainbow.domain.entity.vo;
 
-import lombok.Value;
-
 /**
  * @param name           任务名称
  * @param content        任务内容

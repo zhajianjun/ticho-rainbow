@@ -1,6 +1,5 @@
 package top.ticho.rainbow.interfaces.facade;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -21,6 +20,7 @@ import top.ticho.starter.security.dto.TiToken;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
+import jakarta.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.security.Principal;
 

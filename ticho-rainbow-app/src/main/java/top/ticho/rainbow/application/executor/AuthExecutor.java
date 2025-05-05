@@ -2,7 +2,6 @@ package top.ticho.rainbow.application.executor;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.assembler.MenuAssembler;
 import top.ticho.rainbow.application.assembler.RoleAssembler;
@@ -27,6 +26,7 @@ import top.ticho.rainbow.infrastructure.common.enums.MenuType;
 import top.ticho.rainbow.infrastructure.common.util.UserUtil;
 import top.ticho.starter.web.util.TiTreeUtil;
 
+import jakarta.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

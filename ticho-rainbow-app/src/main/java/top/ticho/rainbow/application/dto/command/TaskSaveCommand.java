@@ -1,7 +1,8 @@
 package top.ticho.rainbow.application.dto.command;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * 计划任务创建

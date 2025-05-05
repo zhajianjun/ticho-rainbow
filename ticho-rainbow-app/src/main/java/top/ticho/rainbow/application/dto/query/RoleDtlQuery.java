@@ -1,8 +1,8 @@
 package top.ticho.rainbow.application.dto.query;
 
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
+import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
