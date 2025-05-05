@@ -1,6 +1,5 @@
 package top.ticho.rainbow.application.dto.response;
 
-import com.baomidou.mybatisplus.annotation.Version;
 import lombok.Data;
 
 import java.util.List;
@@ -52,7 +51,7 @@ public class MenuDTO {
     private Integer status;
     /** 备注信息 */
     private String remark;
-        /** 版本号 */
+    /** 版本号 */
     private Long version;
 
 }

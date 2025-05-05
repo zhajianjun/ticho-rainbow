@@ -5,8 +5,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import top.ticho.tool.intranet.server.entity.AppDataCollector;
-import top.ticho.tool.intranet.server.filter.AppListenFilter;
+import top.ticho.intranet.server.entity.AppDataCollector;
+import top.ticho.intranet.server.filter.AppListenFilter;
 
 import java.net.InetSocketAddress;
 

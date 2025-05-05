@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.starter.view.core.TiResult;
@@ -29,7 +30,7 @@ public class ToolController {
      * @param message 加密信息
      */
     @PreAuthorize("@perm.hasPerms('system:tool:encrypt')")
-    @GetMapping("encrypt")
+    @PostMapping("encrypt")
     public TiResult<String> encrypt(@NotBlank(message = "参数不能为空") String message) {
         return TiResult.ok(stringEncryptor.encrypt(message));
     }
@@ -40,7 +41,7 @@ public class ToolController {
      * @param message 解密信息
      */
     @PreAuthorize("@perm.hasPerms('system:tool:decrypt')")
-    @GetMapping("decrypt")
+    @PostMapping("decrypt")
     public TiResult<String> decrypt(@NotBlank(message = "参数不能为空") String message) {
         return TiResult.ok(stringEncryptor.decrypt(message));
     }

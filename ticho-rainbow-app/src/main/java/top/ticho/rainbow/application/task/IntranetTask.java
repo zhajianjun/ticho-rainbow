@@ -3,10 +3,10 @@ package top.ticho.rainbow.application.task;
 import org.quartz.JobExecutionContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import top.ticho.intranet.server.entity.ClientInfo;
+import top.ticho.intranet.server.handler.ServerHandler;
 import top.ticho.rainbow.application.service.ClientService;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
-import top.ticho.tool.intranet.server.entity.ClientInfo;
-import top.ticho.tool.intranet.server.handler.ServerHandler;
 import top.ticho.trace.common.prop.TraceProperty;
 
 import java.util.List;

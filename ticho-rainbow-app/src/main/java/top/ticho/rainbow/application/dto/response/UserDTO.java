@@ -2,11 +2,11 @@ package top.ticho.rainbow.application.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import top.ticho.starter.web.util.valid.TiValidGroup;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -66,7 +66,7 @@ public class UserDTO {
     private Integer status;
     /** 备注信息 */
     private String remark;
-            /** 版本号 */
+    /** 版本号 */
     private Long version;
     /** 创建时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

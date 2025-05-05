@@ -4,6 +4,7 @@ import cn.hutool.core.util.IdUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
+import top.ticho.intranet.server.entity.ClientInfo;
 import top.ticho.rainbow.application.dto.command.ClientModifyCommand;
 import top.ticho.rainbow.application.dto.command.ClientSaveCommand;
 import top.ticho.rainbow.application.dto.excel.ClientExcelExport;
@@ -11,7 +12,6 @@ import top.ticho.rainbow.application.dto.response.ClientDTO;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.domain.entity.vo.ClientModifyVO;
 import top.ticho.starter.web.util.TiIdUtil;
-import top.ticho.tool.intranet.server.entity.ClientInfo;
 
 /**
  * 客户端信息 转换

@@ -12,11 +12,11 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import top.ticho.intranet.common.prop.ServerProperty;
+import top.ticho.intranet.server.handler.ServerHandler;
 import top.ticho.rainbow.application.service.IntranetAppListenFilter;
 import top.ticho.rainbow.infrastructure.common.interceptor.CustomTraceInterceptor;
 import top.ticho.rainbow.infrastructure.common.prop.FileProperty;
-import top.ticho.tool.intranet.prop.ServerProperty;
-import top.ticho.tool.intranet.server.handler.ServerHandler;
 
 /**
  * 通用配置

@@ -1,9 +1,8 @@
 package top.ticho.rainbow.application.dto.command;
 
-import lombok.Data;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
 /**
  * 注册邮箱发送验证码

@@ -25,8 +25,9 @@
         </dependency>
 
         <dependency>
-            <groupId>top.ticho.tool</groupId>
-            <artifactId>ticho-tool-intranet</artifactId>
+            <groupId>top.ticho.intranet</groupId>
+            <artifactId>ticho-intranet-server</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

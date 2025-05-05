@@ -4,19 +4,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
-import top.ticho.rainbow.application.assembler.PortAssembler;
+import top.ticho.intranet.common.util.IntranetUtil;
+import top.ticho.intranet.server.entity.AppDataCollector;
+import top.ticho.intranet.server.entity.AppDataSummary;
+import top.ticho.intranet.server.entity.ClientInfo;
+import top.ticho.intranet.server.handler.AppHandler;
+import top.ticho.intranet.server.handler.ServerHandler;
 import top.ticho.rainbow.application.dto.response.ClientDTO;
 import top.ticho.rainbow.application.dto.response.FlowMonitorDTO;
 import top.ticho.rainbow.application.dto.response.FlowMonitorStatsDTO;
 import top.ticho.rainbow.application.dto.response.PortDTO;
 import top.ticho.rainbow.application.repository.ClientAppRepository;
 import top.ticho.rainbow.application.repository.PortAppRepository;
-import top.ticho.tool.intranet.server.entity.AppDataCollector;
-import top.ticho.tool.intranet.server.entity.AppDataSummary;
-import top.ticho.tool.intranet.server.entity.ClientInfo;
-import top.ticho.tool.intranet.server.handler.AppHandler;
-import top.ticho.tool.intranet.server.handler.ServerHandler;
-import top.ticho.tool.intranet.util.IntranetUtil;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -40,7 +39,6 @@ public class FlowMonitorService {
     private final ClientAppRepository clientAppRepository;
     private final PortAppRepository portRepository;
     private final ServerHandler serverHandler;
-    private final PortAssembler portAssembler;
 
     public FlowMonitorStatsDTO info() {
         AppHandler appHandler = serverHandler.getAppHandler();

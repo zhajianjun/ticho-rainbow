@@ -3,7 +3,7 @@ ticho:
     enable: true
     thread-name-prefix: Rainbow-
   datasource:
-    url: ENC(1/d6Y0rrGcknVxFMtf3GlMnw2IBvleJbToH0qXkQ/HrVEX2dmxLCfJVO156SKZ5/90F0QVCpW/zi3Yoj3WC8aZTiOvtu5XuMZIwJh80hQ0noELlnCfxFlvIx5Dd2epG4Bj5bvlOqKzA01buQKpl/ZR8qgKXRbJ+L6YICCcZkOT6wE2mFlOeNdwu+HfPmSgybZuWT+4HHQnV0aVjZGDvqXPdwuHvZJaliadbFTZFe9Ezt8fvGKn4KRnWeZzP/XxT/UYUciHX/K2aqdPS0E1x5kxUmRTji6WlsO3vjEgVdCpHDs8qa2acnIgKlvQUZULZidh96GseEnlyOnSzujt7T24jzzkZin6zJCCLe7JY7fsA=)
+    url: ENC(qrUATK/3rTxbDcXipSKIEzgdfjAeIhzhz74LEWUIbHcbdmfNItYPEOnvNHTajyGPnGnLKXHbnwEF2Hq3wqDMXgoMf7O6IhIumHfh9KRhbh2nElVTHhlt9mE/M6hGOZMAq71uVdTC1w0jmmaG7mTp7giNiMTAMLuqe4bqtf2NrmdT/ibDmK6OXGGn0QHiGNn3mKjRw58idPMUhstyAMoPZFV/FMX/s4bd3L7EZpXkhfMhCtj4NCYuDeIWLTF74x7u28kuShRZF2YgTdDm5vA8RYf52D2bXdksA8DBvUWlrTebGW6EruccCufC8jWu7VclrbKu4oLHE5SgpSZqylRv1wfNKXa2ve5nkCGVMJZs2mM=)
     username: ENC(OQHWicNP2vKtZXsHL895SA==)
     password: ENC(D1IEXGr1w4AZNqQGvNz4aPhb1YViyeVT)
     driver-class-name: com.mysql.cj.jdbc.Driver
