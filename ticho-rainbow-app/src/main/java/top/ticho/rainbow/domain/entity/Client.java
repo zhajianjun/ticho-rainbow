@@ -5,6 +5,7 @@ import lombok.Getter;
 import top.ticho.rainbow.domain.entity.vo.ClientModifyVO;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * 客户端信息
@@ -48,6 +49,10 @@ public class Client {
         this.sort = vo.sort();
         this.remark = vo.remark();
         this.version = vo.version();
+    }
+
+    public boolean equalStatus(Integer status) {
+        return Objects.equals(this.status, status);
     }
 
 }

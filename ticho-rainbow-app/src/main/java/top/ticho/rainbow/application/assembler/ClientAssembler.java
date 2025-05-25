@@ -4,7 +4,6 @@ import cn.hutool.core.util.IdUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
-import top.ticho.intranet.server.entity.ClientInfo;
 import top.ticho.rainbow.application.dto.command.ClientModifyCommand;
 import top.ticho.rainbow.application.dto.command.ClientSaveCommand;
 import top.ticho.rainbow.application.dto.excel.ClientExcelExport;
@@ -36,11 +35,6 @@ public interface ClientAssembler {
     @Mapping(target = "connectTime", ignore = true)
     @Mapping(target = "channelStatus", ignore = true)
     ClientDTO toDTO(Client client);
-
-    @Mapping(target = "portMap", ignore = true)
-    @Mapping(target = "connectTime", ignore = true)
-    @Mapping(target = "channel", ignore = true)
-    ClientInfo toInfo(Client client);
 
     @Mapping(target = "statusName", ignore = true)
     @Mapping(target = "connectTime", ignore = true)

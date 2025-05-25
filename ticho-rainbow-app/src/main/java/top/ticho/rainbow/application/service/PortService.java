@@ -5,10 +5,8 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import top.ticho.intranet.server.core.ServerHandler;
 import top.ticho.intranet.server.entity.ClientInfo;
-import top.ticho.intranet.server.entity.PortInfo;
-import top.ticho.intranet.server.handler.AppHandler;
-import top.ticho.intranet.server.handler.ServerHandler;
 import top.ticho.rainbow.application.assembler.PortAssembler;
 import top.ticho.rainbow.application.dto.command.PortModifyfCommand;
 import top.ticho.rainbow.application.dto.command.PortSaveCommand;
@@ -37,6 +35,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -69,7 +68,7 @@ public class PortService {
         Port dbPort = portRepository.find(id);
         TiAssert.isNotNull(dbPort, "删除失败，数据不存在");
         TiAssert.isTrue(portRepository.remove(id), "删除失败");
-        serverHandler.deleteApp(dbPort.getAccessKey(), dbPort.getPort());
+        serverHandler.unbind(dbPort.getAccessKey(), dbPort.getPort());
 
     }
 
@@ -115,17 +114,14 @@ public class PortService {
         Map<String, String> clientNameMap = clients.stream().collect(Collectors.toMap(Client::getAccessKey, Client::getName, (v1, v2) -> v1));
         return result
             .stream()
-            .map(x -> {
-                PortExcelExport portExcelExport = portAssembler.toExcelExport(x);
-                ClientInfo clientInfo = serverHandler.getClientByAccessKey(x.getAccessKey());
-                int clientChannelStatus = Objects.nonNull(clientInfo) && Objects.nonNull(clientInfo.getChannel()) ? 1 : 0;
-                AppHandler appHandler = serverHandler.getAppHandler();
-                int channelStatus = appHandler.exists(x.getPort()) ? 1 : 0;
-                portExcelExport.setClientName(clientNameMap.get(x.getAccessKey()));
-                portExcelExport.setStatusName(labelMap.get(DictConst.COMMON_STATUS + x.getStatus()));
-                portExcelExport.setTypeName(labelMap.get(DictConst.HTTP_TYPE + x.getType()));
-                portExcelExport.setClientChannelStatusName(labelMap.get(DictConst.CHANNEL_STATUS + clientChannelStatus));
-                portExcelExport.setAppChannelStatusName(labelMap.get(DictConst.CHANNEL_STATUS + channelStatus));
+            .map(item -> {
+                fillChannelStatus(item);
+                PortExcelExport portExcelExport = portAssembler.toExcelExport(item);
+                portExcelExport.setClientName(clientNameMap.get(item.getAccessKey()));
+                portExcelExport.setStatusName(labelMap.get(DictConst.COMMON_STATUS + item.getStatus()));
+                portExcelExport.setTypeName(labelMap.get(DictConst.HTTP_TYPE + item.getType()));
+                portExcelExport.setClientChannelStatusName(labelMap.get(DictConst.CHANNEL_STATUS + item.getClientChannelStatus()));
+                portExcelExport.setAppChannelStatusName(labelMap.get(DictConst.CHANNEL_STATUS + item.getAppChannelStatus()));
                 return portExcelExport;
             })
             .collect(Collectors.toList());
@@ -158,24 +154,21 @@ public class PortService {
         if (Objects.isNull(port) || !isEnabled(port)) {
             return;
         }
-        PortInfo portInfo = portAssembler.toInfo(port);
-        serverHandler.createApp(portInfo);
+        serverHandler.bind(port.getAccessKey(), port.getPort(), port.getEndpoint());
     }
 
     public void updatePortInfo(Port oldPort) {
         Port port = portRepository.find(oldPort.getId());
         // 端口号或者客户端地址不一致时，删除旧的app，再创建新的app
         if ((!Objects.equals(oldPort.getPort(), port.getPort()) || !Objects.equals(oldPort.getEndpoint(), port.getEndpoint())) && isEnabled(oldPort)) {
-            serverHandler.deleteApp(oldPort.getAccessKey(), oldPort.getPort());
+            serverHandler.unbind(oldPort.getAccessKey(), oldPort.getPort());
         }
-        AppHandler appHandler = serverHandler.getAppHandler();
         // 端口信息有效时才重新创建
-        if (isEnabled(port) && !appHandler.exists(port.getPort())) {
-            PortInfo portInfo = portAssembler.toInfo(port);
-            serverHandler.createApp(portInfo);
+        if (isEnabled(port) && !serverHandler.exists(port.getPort())) {
+            serverHandler.bind(port.getAccessKey(), port.getPort(), port.getEndpoint());
         }
-        if (!isEnabled(port) && appHandler.exists(port.getPort())) {
-            serverHandler.deleteApp(port.getAccessKey(), port.getPort());
+        if (!isEnabled(port) && serverHandler.exists(port.getPort())) {
+            serverHandler.unbind(port.getAccessKey(), port.getPort());
         }
 
     }
@@ -190,10 +183,13 @@ public class PortService {
         if (Objects.isNull(portDTO)) {
             return;
         }
-        ClientInfo clientInfo = serverHandler.getClientByAccessKey(portDTO.getAccessKey());
-        Integer clientChannelStatus = Objects.nonNull(clientInfo) && Objects.nonNull(clientInfo.getChannel()) ? 1 : 0;
-        AppHandler appHandler = serverHandler.getAppHandler();
-        Integer channelStatus = appHandler.exists(portDTO.getPort()) ? 1 : 0;
+        Optional<ClientInfo> clientInfoOpt = serverHandler.findByAccessKey(portDTO.getAccessKey());
+        if (clientInfoOpt.isEmpty()) {
+            return;
+        }
+        ClientInfo clientInfo = clientInfoOpt.get();
+        Integer clientChannelStatus = Objects.nonNull(clientInfo.getChannel()) ? 1 : 0;
+        Integer channelStatus = serverHandler.exists(portDTO.getPort()) ? 1 : 0;
         portDTO.setClientChannelStatus(clientChannelStatus);
         portDTO.setAppChannelStatus(channelStatus);
     }

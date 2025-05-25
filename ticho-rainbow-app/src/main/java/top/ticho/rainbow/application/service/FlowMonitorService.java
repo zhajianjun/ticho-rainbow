@@ -1,15 +1,15 @@
 package top.ticho.rainbow.application.service;
 
+import cn.hutool.core.collection.CollStreamUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
 import top.ticho.intranet.common.util.IntranetUtil;
+import top.ticho.intranet.server.core.ServerHandler;
 import top.ticho.intranet.server.entity.AppDataCollector;
 import top.ticho.intranet.server.entity.AppDataSummary;
 import top.ticho.intranet.server.entity.ClientInfo;
-import top.ticho.intranet.server.handler.AppHandler;
-import top.ticho.intranet.server.handler.ServerHandler;
 import top.ticho.rainbow.application.dto.response.ClientDTO;
 import top.ticho.rainbow.application.dto.response.FlowMonitorDTO;
 import top.ticho.rainbow.application.dto.response.FlowMonitorStatsDTO;
@@ -22,7 +22,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -41,8 +40,8 @@ public class FlowMonitorService {
     private final ServerHandler serverHandler;
 
     public FlowMonitorStatsDTO info() {
-        AppHandler appHandler = serverHandler.getAppHandler();
-        Map<String, ClientInfo> clientMap = serverHandler.getClientMap();
+        List<ClientInfo> clientInfos = serverHandler.findAll();
+        Map<String, ClientInfo> clientMap = CollStreamUtil.toMap(clientInfos, ClientInfo::getAccessKey, Function.identity());
         // 客户端数
         List<ClientDTO> clientDTOS = clientAppRepository.all();
         // 激活的客户端数
@@ -55,7 +54,11 @@ public class FlowMonitorService {
             .count();
         int activeClients = Long.valueOf(count).intValue();
         // 激活的端口号总数
-        Set<Integer> portNums = appHandler.getBindPortChannelMap().keySet();
+        Integer portNums = clientInfos
+            .stream()
+            .map(ClientInfo::getPortMap)
+            .mapToInt(Map::size)
+            .sum();
         // 激活的端口流量信息
         List<AppDataSummary> dataSummaries = AppDataCollector.getAllData();
         Map<Integer, AppDataSummary> appDataMap = dataSummaries.stream().collect(Collectors.toMap(AppDataSummary::getPort, Function.identity()));
@@ -70,7 +73,7 @@ public class FlowMonitorService {
         flowMonitorStatsDTO.setClients(clientDTOS.size());
         flowMonitorStatsDTO.setActiveClients(activeClients);
         flowMonitorStatsDTO.setPorts(ports.size());
-        flowMonitorStatsDTO.setActivePorts(portNums.size());
+        flowMonitorStatsDTO.setActivePorts(portNums);
         flowMonitorStatsDTO.setDateTime(LocalDateTime.now());
         flowMonitorStatsDTO.setFlowDetails(flowDetails);
         return flowMonitorStatsDTO;

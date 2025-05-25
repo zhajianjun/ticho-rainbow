@@ -7,11 +7,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import top.ticho.intranet.server.entity.ClientInfo;
-import top.ticho.intranet.server.handler.ServerHandler;
-import top.ticho.rainbow.application.service.ClientService;
-
-import java.util.List;
+import top.ticho.rainbow.application.executor.IntranetExecutor;
 
 /**
  * 网络应用程序
@@ -24,15 +20,14 @@ import java.util.List;
 @Component
 public class IntranetApplicationReadyEvent {
 
-    private final ServerHandler serverHandler;
-    private final ClientService clientService;
+    private final IntranetExecutor intranetExecutor;
 
     @Async("asyncTaskExecutor")
     @EventListener(value = ApplicationReadyEvent.class)
     public void onApplicationEvent(@NonNull ApplicationReadyEvent event) {
-        log.info("内网应用程序启动");
-        List<ClientInfo> clientInfos = clientService.listEffectClientInfo();
-        serverHandler.saveClientBatch(clientInfos);
+        intranetExecutor.init();
+        intranetExecutor.enable();
+        log.info("内网应用程序启动成功");
     }
 
 }
