@@ -22,8 +22,8 @@ export function rolePage(params?: RoleQuery) {
   return defHttp.get<RoleDTO>({ url: Api.RolePage, params }, { errorMessageMode: 'none' });
 }
 
-export function listRoles(params?: RoleDTO) {
-  return defHttp.post<RoleDTO[]>({ url: Api.RoleList, params }, { errorMessageMode: 'none' });
+export function listRoles() {
+  return defHttp.get<RoleDTO[]>({ url: Api.RoleList }, { errorMessageMode: 'none' });
 }
 
 export function saveRole(params: any) {
@@ -47,7 +47,7 @@ export function modifyRoleStatus(params: any) {
 }
 
 export function listRoleMenu(params?: RoleMenuQueryDTO) {
-  return defHttp.post<RoleMenuDtlDTO>(
+  return defHttp.get<RoleMenuDtlDTO>(
     { url: Api.ListRoleMenu, params },
     { errorMessageMode: 'message' },
   );

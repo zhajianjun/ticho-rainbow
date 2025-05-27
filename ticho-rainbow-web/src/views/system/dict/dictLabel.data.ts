@@ -111,12 +111,14 @@ export function getModalFormColumns(): FormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入字典编码',
-        disabled: true,
       },
       colProps: {
         span: 24,
       },
       required: true,
+      dynamicDisabled: ({ values }) => {
+        return !!values?.id;
+      },
     },
     {
       field: `label`,

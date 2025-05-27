@@ -119,7 +119,7 @@ export const formSchema: FormSchema[] = [
       },
     ],
     dynamicDisabled: ({ values }) => {
-      return values.id !== null;
+      return !!values?.id;
     },
   },
   {

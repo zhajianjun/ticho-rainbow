@@ -138,6 +138,12 @@ export function getModalFormColumns(): FormSchema[] {
       colProps: {
         span: 24,
       },
+      rules: [
+        {
+          required: true,
+          message: '请输入客户端秘钥',
+        },
+      ],
     },
     {
       field: `name`,

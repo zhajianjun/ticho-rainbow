@@ -101,7 +101,7 @@ export const userFormSchema: FormSchema[] = [
       },
     ],
     dynamicDisabled: ({ values }) => {
-      return values.id !== null;
+      return !!values?.id;
     },
   },
   {
@@ -126,7 +126,7 @@ export const userFormSchema: FormSchema[] = [
       span: 24,
     },
     dynamicDisabled: ({ values }) => {
-      return values.username === 'admin' && values.id;
+      return values?.username === 'admin' && !!values?.id;
     },
   },
   {

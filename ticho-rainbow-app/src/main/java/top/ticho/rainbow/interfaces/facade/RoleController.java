@@ -131,7 +131,7 @@ public class RoleController {
     @IgnoreJwtCheck(IgnoreType.INNER)
     @PreAuthorize("@perm.hasPerms('system:role:list-role-menu')")
     @GetMapping("menu/list")
-    public TiResult<RoleMenuDtlDTO> listRoleMenu(@Validated RoleDtlQuery roleDtlQuery) {
+    public TiResult<RoleMenuDtlDTO> listRoleMenu(RoleDtlQuery roleDtlQuery) {
         return TiResult.ok(roleService.listRoleMenu(roleDtlQuery));
     }
 

@@ -92,9 +92,10 @@ public class UserUtil {
     }
 
     public static void userTrace(String username) {
-        if (Objects.nonNull(username)) {
-            MDC.put(CommConst.USERNAME_KEY, username);
+        if (Objects.isNull(username)) {
+            return;
         }
+        MDC.put(CommConst.USERNAME_KEY, username);
         String traceKey = Optional.ofNullable(MDC.get("trace")).orElse(StrUtil.EMPTY) + ".${username!}";
         String trace = BeetlUtil.render(traceKey, MDC.getCopyOfContextMap());
         MDC.put("trace", trace);
