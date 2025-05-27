@@ -1,4 +1,4 @@
-FROM frolvlad/alpine-java:jdk8-slim
+FROM openjdk:17-jdk-alpine
 MAINTAINER zhajianjun '1019319473@qq.com'
 # 暴露端口
 EXPOSE 5122
