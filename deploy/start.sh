@@ -6,7 +6,6 @@ echo "web 项目开始启动"
 nohup \
 /jre/bin/java \
 ${JAVA_OPTS} \
---add-opens java.base/java.lang.reflect=ALL-UNNAMED \
 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data/heapdump.hprof \
 -Dfile.encoding=UTF-8 \
 -Djasypt.encryptor.password="${JASYPT_ENCRYPTOR_PASSWORD}" \

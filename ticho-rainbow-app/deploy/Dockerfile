@@ -37,7 +37,6 @@ COPY ./ticho-rainbow-app/target/ticho-rainbow.jar app.jar
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENTRYPOINT java \
 ${JAVA_OPTS} \
---add-opens java.base/java.lang.reflect=ALL-UNNAMED \
 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data/heapdump.hprof \
 -Dfile.encoding=UTF-8 \
 -Djasypt.encryptor.password="${JASYPT_ENCRYPTOR_PASSWORD}" \
