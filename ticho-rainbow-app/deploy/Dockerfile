@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-alpine
+FROM eclipse-temurin:17-jdk-alpine
 MAINTAINER zhajianjun '1019319473@qq.com'
 # 暴露端口
 EXPOSE 5122
@@ -35,6 +35,8 @@ ENV JAVA_OPTS="-Xms256m -Xmx512m -Xmn170m"
 WORKDIR /data
 COPY ./ticho-rainbow-app/target/ticho-rainbow.jar app.jar
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# 解决验证码问题
+RUN apk add --no-cache fontconfig ttf-dejavu
 ENTRYPOINT java \
 ${JAVA_OPTS} \
 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data/heapdump.hprof \
