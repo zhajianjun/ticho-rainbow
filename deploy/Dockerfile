@@ -35,7 +35,7 @@ ENV JAVA_OPTS="-Xms256m -Xmx512m -Xmn170m"
 
 WORKDIR /data
 COPY ./jre /jre
-COPY ./ticho-rainbow-app/target/*.jar app.jar
+COPY ./ticho-rainbow-app/target/ticho-rainbow.jar app.jar
 COPY ./ticho-rainbow-web/dist /usr/share/nginx/html
 COPY ./ticho-rainbow-web/nginx.conf /etc/nginx/conf.d/default.conf
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
