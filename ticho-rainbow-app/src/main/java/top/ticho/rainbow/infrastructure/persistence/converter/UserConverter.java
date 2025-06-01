@@ -5,6 +5,7 @@ import top.ticho.rainbow.application.dto.response.UserDTO;
 import top.ticho.rainbow.domain.entity.User;
 import top.ticho.rainbow.infrastructure.persistence.po.UserPO;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,13 +17,13 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface UserConverter {
 
-    List<User> toEntitys(List<UserPO> list);
+    List<User> toEntity(Collection<UserPO> list);
 
     User toEntity(UserPO userPO);
 
     UserPO toPo(User user);
 
-    List<UserPO> toPos(List<User> users);
+    List<UserPO> toPo(Collection<User> users);
 
     UserDTO toDTO(UserPO userPO);
 

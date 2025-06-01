@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import top.ticho.rainbow.application.dto.SecurityUser;
-import top.ticho.rainbow.application.dto.request.UserLoginDTO;
+import top.ticho.rainbow.application.dto.request.LoginDTO;
 import top.ticho.rainbow.application.executor.UserExecutor;
 import top.ticho.rainbow.domain.entity.Role;
 import top.ticho.rainbow.domain.entity.User;
@@ -18,7 +18,6 @@ import top.ticho.starter.security.service.impl.AbstractLoginService;
 import top.ticho.starter.view.core.TiSecurityUser;
 import top.ticho.starter.view.enums.TiHttpErrCode;
 import top.ticho.starter.view.util.TiAssert;
-import top.ticho.starter.web.util.valid.TiValidUtil;
 
 import java.util.List;
 import java.util.Objects;
@@ -43,7 +42,7 @@ public class DefaultLoginService extends AbstractLoginService {
             return null;
         }
         // 用户信息校验
-        User user = userRepository.getCacheByUsername(account);
+        User user = userRepository.findCacheByUsername(account);
         TiAssert.isNotNull(user, TiHttpErrCode.NOT_LOGIN, "用户或者密码不正确");
         Integer status = user.getStatus();
         String message = UserStatus.getByCode(status);
@@ -64,8 +63,7 @@ public class DefaultLoginService extends AbstractLoginService {
         return securityUser;
     }
 
-    public TiToken token(UserLoginDTO userLogin) {
-        TiValidUtil.valid(userLogin);
+    public TiToken token(LoginDTO userLogin) {
         userExecutor.imgCodeValid(userLogin.getImgKey(), userLogin.getImgCode());
         String account = userLogin.getUsername();
         String credentials = userLogin.getPassword();

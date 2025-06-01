@@ -1,13 +1,17 @@
 package top.ticho.rainbow.domain.entity;
 
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
-import top.ticho.rainbow.application.dto.UserHelper;
 import top.ticho.rainbow.domain.entity.vo.UserModifyVO;
+import top.ticho.rainbow.infrastructure.common.constant.SecurityConst;
+import top.ticho.rainbow.infrastructure.common.enums.UserStatus;
+import top.ticho.starter.view.util.TiAssert;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * 用户信息
@@ -17,11 +21,11 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Builder
-public class User implements UserHelper {
+public class User implements Entity, UserHelper {
 
     /** 主键编号 */
     private Long id;
-    /** 账户;账户具有唯一性 */
+    /** 账号;具有唯一性 */
     private String username;
     /** 密码 */
     private String password;
@@ -73,10 +77,10 @@ public class User implements UserHelper {
 
     public void modify(UserModifyVO modifyVo) {
         this.nickname = modifyVo.nickname();
+        this.realname = modifyVo.realname();
         this.email = modifyVo.email();
         this.mobile = modifyVo.mobile();
         this.remark = modifyVo.remark();
-        this.version = modifyVo.version();
     }
 
     public void modifyPassword(String password) {
@@ -85,6 +89,35 @@ public class User implements UserHelper {
 
     public void modifyPhoto(String photo) {
         this.photo = photo;
+    }
+
+    private void checkAdmin() {
+        TiAssert.isTrue(!SecurityConst.ADMIN.equals(username), StrUtil.format("管理员账号无法操作，用户：{}", username));
+    }
+
+    public void lock() {
+        checkAdmin();
+        UserStatus userStatus = UserStatus.NORMAL;
+        TiAssert.isTrue(Objects.equals(status, userStatus.code()),
+            StrUtil.format("只有[{}]状态的用户才能执行锁定操作，用户：{}", userStatus.message(), username));
+        this.status = UserStatus.LOCKED.code();
+    }
+
+
+    public void unLock() {
+        checkAdmin();
+        UserStatus userStatus = UserStatus.LOCKED;
+        TiAssert.isTrue(Objects.equals(status, userStatus.code()),
+            StrUtil.format("只有[{}]状态的用户才能执行解锁操作，用户：{}", userStatus.message(), username));
+        this.status = UserStatus.NORMAL.code();
+    }
+
+    public void logOut() {
+        checkAdmin();
+        UserStatus userStatus = UserStatus.NORMAL;
+        TiAssert.isTrue(Objects.equals(status, userStatus.code()),
+            StrUtil.format("只有[{}]状态的用户才能执行注销操作，用户：{}", userStatus.message(), username));
+        this.status = UserStatus.LOG_OUT.code();
     }
 
 }

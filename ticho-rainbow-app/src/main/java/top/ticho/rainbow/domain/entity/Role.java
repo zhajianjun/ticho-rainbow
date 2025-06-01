@@ -17,7 +17,7 @@ import java.util.Objects;
  */
 @Getter
 @Builder
-public class Role {
+public class Role implements Entity {
 
     /** 主键编号 */
     private Long id;
@@ -44,13 +44,11 @@ public class Role {
         this.name = modifyVO.name();
         this.status = modifyVO.status();
         this.remark = modifyVO.remark();
-        this.version = modifyVO.version();
-        modifyStatus(modifyVO.status(), modifyVO.version());
+        modifyStatus(modifyVO.status());
     }
 
-    public void modifyStatus(Integer status, Long version) {
+    public void modifyStatus(Integer status) {
         this.status = status;
-        this.version = version;
         // 管理员角色一定是正常状态
         if (Objects.equals(SecurityConst.ADMIN, code)) {
             this.status = CommonStatus.ENABLE.code();

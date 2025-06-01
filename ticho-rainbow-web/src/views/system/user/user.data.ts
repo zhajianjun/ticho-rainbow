@@ -161,8 +161,8 @@ export const userFormSchema: FormSchema[] = [
     required: true,
   },
   {
-    field: `remark`,
     label: `备注信息`,
+    field: `remark`,
     component: 'InputTextArea',
     defaultValue: '',
     componentProps: {
@@ -175,10 +175,22 @@ export const userFormSchema: FormSchema[] = [
       span: 24,
     },
   },
+  {
+    label: '版本号',
+    field: 'version',
+    component: 'Input',
+    show: false,
+  },
 ];
 
 export function getPasswordModalFormColumns(): FormSchema[] {
   return [
+    {
+      field: `id`,
+      label: `编号`,
+      component: 'Input',
+      show: false,
+    },
     {
       field: `username`,
       label: `用户名`,
@@ -202,7 +214,6 @@ export function getPasswordModalFormColumns(): FormSchema[] {
         placeholder: '请输入密码',
       },
       required: true,
-      ifShow: ({ values }) => !values.id,
       rules: [
         {
           trigger: 'change',

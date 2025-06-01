@@ -32,7 +32,7 @@
   import { useI18n } from '@/hooks/web/useI18n';
   import { buildUUID } from '@/utils/uuid';
   import { getImgCode } from '@/api/system/login';
-  import { ImgCodeDTO } from '@/api/system/model/userModel';
+  import { ImgCodeDTO } from '@/api/system/model/loginModel';
 
   export default defineComponent({
     name: 'ImgCodeModal',

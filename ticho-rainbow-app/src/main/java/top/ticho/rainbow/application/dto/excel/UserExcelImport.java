@@ -29,7 +29,7 @@ import java.time.LocalDate;
 @ContentFontStyle(fontHeightInPoints = 10)
 public class UserExcelImport extends ExcelBaseImp {
 
-    /** 账户;账户具有唯一性 */
+    /** 账号;具有唯一性 */
     @ColumnWidth(20)
     @ExcelProperty(value = "用户名")
     @NotBlank(message = "用户名不能为空")

@@ -29,7 +29,7 @@ public class UserPO extends Model<UserPO> {
     /** 主键编号 */
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
-    /** 账户;账户具有唯一性 */
+    /** 账号;具有唯一性 */
     private String username;
     /** 密码 */
     private String password;
@@ -84,7 +84,7 @@ public class UserPO extends Model<UserPO> {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
     /** 删除标识;0-未删除,1-已删除 */
-    @TableField(fill = FieldFill.INSERT)
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     @TableLogic
     private Integer isDelete;
 }

@@ -1,4 +1,4 @@
-package top.ticho.rainbow.application.dto;
+package top.ticho.rainbow.domain.entity;
 
 /**
  * @author zhajianjun

@@ -4,8 +4,7 @@ import { store } from '@/store';
 import { PageEnum } from '@/enums/pageEnum';
 import { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '@/enums/cacheEnum';
 import { getAuthCache, setAuthCache } from '@/utils/auth';
-import { UserRoleMenuDtlDTO, UserLoginDTO, UserProfileDTO } from '@/api/system/model/userModel';
-import { userDtlForSelf, loginApi } from '@/api/system/login';
+import { findUser, loginApi } from '@/api/system/login';
 import { useI18n } from '@/hooks/web/useI18n';
 import { useMessage } from '@/hooks/web/useMessage';
 import { router } from '@/router';
@@ -15,9 +14,11 @@ import { PAGE_NOT_FOUND_ROUTE } from '@/router/routes/basic';
 import { h } from 'vue';
 import { RoleDTO } from '@/api/system/model/roleModel';
 import { useDictStore } from '@/store/modules/dict';
+import { LoginDTO, LoginUserDetailDTO, LoginUserDTO } from '@/api/system/model/loginModel';
+import headerImg from '@/assets/images/header.jpg';
 
 interface UserState {
-  userInfo: Nullable<UserRoleMenuDtlDTO>;
+  userInfo: Nullable<LoginUserDTO>;
   token?: string;
   roleList: RoleDTO[];
   sessionTimeout?: boolean;
@@ -39,8 +40,8 @@ export const useUserStore = defineStore({
     lastUpdateTime: 0,
   }),
   getters: {
-    getUserInfo(state): UserRoleMenuDtlDTO {
-      return state.userInfo || getAuthCache<UserRoleMenuDtlDTO>(USER_INFO_KEY) || {};
+    getUserInfo(state): LoginUserDTO {
+      return state.userInfo || getAuthCache<LoginUserDTO>(USER_INFO_KEY) || {};
     },
     getToken(state): string {
       return state.token || getAuthCache<string>(TOKEN_KEY);
@@ -64,28 +65,19 @@ export const useUserStore = defineStore({
       this.roleList = roles;
       setAuthCache(ROLES_KEY, roles);
     },
-    setUserInfo(info: UserRoleMenuDtlDTO | null) {
+    setUserInfo(info: LoginUserDTO | null) {
       this.userInfo = info;
       this.lastUpdateTime = new Date().getTime();
       setAuthCache(USER_INFO_KEY, info);
     },
-    updateUserInfo(info: UserProfileDTO | null) {
+    updateUserInfo(info: LoginUserDetailDTO | null) {
       const userInfo = getAuthCache(USER_INFO_KEY);
       if (userInfo) {
         // 对象属性拷贝
         const newUserInfo = {};
         Object.assign(newUserInfo, userInfo, info);
         setAuthCache(USER_INFO_KEY, newUserInfo);
-        this.userInfo = newUserInfo as UserRoleMenuDtlDTO;
-      }
-    },
-    updateUserAvatar(url: string) {
-      const userInfo = getAuthCache<UserRoleMenuDtlDTO>(USER_INFO_KEY);
-      if (userInfo) {
-        // 对象属性拷贝
-        userInfo.photo = url;
-        setAuthCache(USER_INFO_KEY, userInfo);
-        this.userInfo = userInfo;
+        this.userInfo = newUserInfo as LoginUserDTO;
       }
     },
     setSessionTimeout(flag: boolean) {
@@ -101,10 +93,10 @@ export const useUserStore = defineStore({
      * @description: login
      */
     async login(
-      params: UserLoginDTO,
+      params: LoginDTO,
       goHome: boolean = false,
       mode: ErrorMessageMode = 'none',
-    ): Promise<UserRoleMenuDtlDTO | null> {
+    ): Promise<LoginUserDTO | null> {
       try {
         const data = await loginApi(params, mode);
         const { access_token } = data;
@@ -114,7 +106,7 @@ export const useUserStore = defineStore({
         return Promise.reject(error);
       }
     },
-    async afterLoginAction(goHome?: boolean): Promise<UserRoleMenuDtlDTO | null> {
+    async afterLoginAction(goHome?: boolean): Promise<LoginUserDTO | null> {
       if (!this.getToken) {
         return null;
       }
@@ -139,13 +131,12 @@ export const useUserStore = defineStore({
       }
       return userInfo;
     },
-    async getUserInfoAction(): Promise<UserRoleMenuDtlDTO | null> {
+    async getUserInfoAction(): Promise<LoginUserDTO | null> {
       if (!this.getToken) {
         return null;
       }
-      const userInfo = await userDtlForSelf();
-      const { roles } = userInfo;
-      this.setRoleList(roles);
+      const userInfo = await findUser();
+      userInfo.photo = userInfo.photo ?? headerImg;
       this.setUserInfo(userInfo);
       const dictStore = useDictStore();
       await dictStore.initDicts();
@@ -155,13 +146,6 @@ export const useUserStore = defineStore({
      * @description: logout
      */
     async logout(goLogin = false) {
-      // if (this.getToken) {
-      //   try {
-      //     await doLogout();
-      //   } catch {
-      //     console.log('注销Token失败');
-      //   }
-      // }
       const dictStore = useDictStore();
       dictStore.clearDicts();
       this.setToken(undefined);

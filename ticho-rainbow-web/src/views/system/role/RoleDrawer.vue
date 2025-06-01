@@ -34,7 +34,7 @@
   import { BasicTree, TreeItem } from '@/components/Tree';
 
   import { listRoleMenu, modifyRole, saveRole } from '@/api/system/role';
-  import { RoleMenuQueryDTO } from '@/api/system/model/roleModel';
+  import { RoleDtlQuery, RoleModifyCommand, RoleSaveCommand } from '@/api/system/model/roleModel';
 
   export default defineComponent({
     name: 'RoleDrawer',
@@ -62,7 +62,7 @@
           roleIds: roleIds,
           showAll: true,
           treeHandle: true,
-        } as unknown as RoleMenuQueryDTO;
+        } as unknown as RoleDtlQuery;
         const { menuIds, menus } = await listRoleMenu(query);
         treeData.value = menus as any as TreeItem[];
         checkedKeys.value = menuIds;
@@ -82,9 +82,11 @@
           setDrawerProps({ confirmLoading: true });
           values.menuIds = checkedKeys.value;
           if (unref(isUpdate)) {
-            await modifyRole(values);
+            const modifys = values as RoleModifyCommand;
+            await modifyRole(modifys);
           } else {
-            await saveRole(values);
+            const saves = values as RoleSaveCommand;
+            await saveRole(saves);
           }
           closeDrawer();
           emit('success');

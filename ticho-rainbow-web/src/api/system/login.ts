@@ -1,23 +1,31 @@
 import { defHttp } from '@/utils/http/axios';
-import {
-  ImgCodeEmailDTO,
-  UserLoginDTO,
-  UserRoleMenuDtlDTO,
-  UserSignUpDTO,
-} from './model/userModel';
 import { ContentTypeEnum } from '@/enums/httpEnum';
-import { LoginRequest, Oauth2AccessToken } from '@/api/system/model/loginModel';
+import {
+  LoginDTO,
+  LoginUserModifyCommand,
+  LoginUserModifyPasswordCommand,
+  UserSignUpCommand,
+  ResetPasswordCommand,
+  TiToken,
+  UserSignUpEmailSendCommand,
+  ResetPassworEmailSendCommand,
+  LoginUserDetailDTO,
+  LoginUserDTO,
+} from '@/api/system/model/loginModel';
 
 import { ErrorMessageMode, RetryRequest } from '#/axios';
 
 enum Api {
   Login = '/oauth/token',
   ImgCode = '/oauth/img-code',
-  SignUpEmailSend = '/oauth/sign-up-email/send',
+  SignUpEmailSend = '/oauth/sign-up/email/send',
   SignUp = '/oauth/sign-up',
-  ResetPasswordEmailSend = '/oauth/reset-password-email/send',
-  ResetPassword = '/oauth/reset-password',
-  UserDtlForSelf = '/user/self-info',
+  ResetPasswordEmailSend = '/oauth/reset-password/email/send',
+  ResetPassword = '/oauth/password/reset',
+  UserDetail = '/oauth/user/detail',
+  User = '/oauth/user',
+  ModifyPassword = '/oauth/user/password',
+  UploadAvatar = '/oauth/user/avatar/upload',
 }
 
 export function getImgCode(imgKey: string, mode: ErrorMessageMode = 'modal') {
@@ -37,7 +45,10 @@ export function getImgCode(imgKey: string, mode: ErrorMessageMode = 'modal') {
   );
 }
 
-export function signUpEmailSend(params: ImgCodeEmailDTO, mode: ErrorMessageMode = 'none') {
+export function signUpEmailSend(
+  params: UserSignUpEmailSendCommand,
+  mode: ErrorMessageMode = 'none',
+) {
   return defHttp.post<any>(
     {
       url: Api.SignUpEmailSend,
@@ -50,12 +61,12 @@ export function signUpEmailSend(params: ImgCodeEmailDTO, mode: ErrorMessageMode 
   );
 }
 
-export function signUp(params: UserSignUpDTO, mode: ErrorMessageMode = 'none') {
-  return defHttp.post<UserLoginDTO>({ url: Api.SignUp, params }, { errorMessageMode: mode });
+export function signUp(params: UserSignUpCommand, mode: ErrorMessageMode = 'none') {
+  return defHttp.post<LoginDTO>({ url: Api.SignUp, params }, { errorMessageMode: mode });
 }
 
-export function loginApi(params: LoginRequest, mode: ErrorMessageMode = 'modal') {
-  return defHttp.post<Oauth2AccessToken>(
+export function loginApi(params: LoginDTO, mode: ErrorMessageMode = 'modal') {
+  return defHttp.post<TiToken>(
     {
       url: Api.Login,
       headers: { 'Content-Type': ContentTypeEnum.FORM_URLENCODED },
@@ -67,7 +78,10 @@ export function loginApi(params: LoginRequest, mode: ErrorMessageMode = 'modal')
   );
 }
 
-export function resetPasswordEmailSend(params: ImgCodeEmailDTO, mode: ErrorMessageMode = 'none') {
+export function resetPasswordEmailSend(
+  params: ResetPassworEmailSendCommand,
+  mode: ErrorMessageMode = 'none',
+) {
   return defHttp.post<any>(
     {
       url: Api.ResetPasswordEmailSend,
@@ -80,10 +94,36 @@ export function resetPasswordEmailSend(params: ImgCodeEmailDTO, mode: ErrorMessa
   );
 }
 
-export function resetPassword(params: UserSignUpDTO, mode: ErrorMessageMode = 'none') {
-  return defHttp.post<UserLoginDTO>({ url: Api.ResetPassword, params }, { errorMessageMode: mode });
+export function resetPassword(params: ResetPasswordCommand, mode: ErrorMessageMode = 'none') {
+  return defHttp.post<LoginDTO>({ url: Api.ResetPassword, params }, { errorMessageMode: mode });
 }
 
-export function userDtlForSelf() {
-  return defHttp.get<UserRoleMenuDtlDTO>({ url: Api.UserDtlForSelf }, { errorMessageMode: 'none' });
+export function findUser() {
+  return defHttp.get<LoginUserDTO>({ url: Api.User }, { errorMessageMode: 'none' });
+}
+
+export function findUserDetail() {
+  return defHttp.get<LoginUserDetailDTO>({ url: Api.UserDetail }, { errorMessageMode: 'none' });
+}
+
+export function modifyUser(params: LoginUserModifyCommand) {
+  return defHttp.put<void>({ url: Api.User, params }, { errorMessageMode: 'message' });
+}
+
+export function modifyPassword(params: LoginUserModifyPasswordCommand) {
+  return defHttp.patch<void>({ url: Api.ModifyPassword, params }, { errorMessageMode: 'message' });
+}
+
+export function uploadAvatar(file: File) {
+  const params = { file: file };
+  return defHttp.post<string>(
+    {
+      url: Api.UploadAvatar,
+      headers: {
+        'Content-type': ContentTypeEnum.FORM_DATA,
+      },
+      params,
+    },
+    { errorMessageMode: 'message' },
+  );
 }

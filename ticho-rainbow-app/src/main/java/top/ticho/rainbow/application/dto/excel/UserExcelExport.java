@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 @ContentFontStyle(fontHeightInPoints = 10)
 public class UserExcelExport {
 
-    /** 账户;账户具有唯一性 */
+    /** 账号;具有唯一性 */
     @ColumnWidth(20)
     @ExcelProperty(value = "用户名")
     private String username;

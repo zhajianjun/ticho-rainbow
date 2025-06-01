@@ -57,8 +57,6 @@ public class ClientService {
 
     @Transactional(rollbackFor = Exception.class)
     public void save(ClientSaveCommand clientSaveCommand) {
-        Client clientFromDb = clientRepository.findByAccessKey(clientSaveCommand.getAccessKey());
-        TiAssert.isNull(clientFromDb, "保存失败，客户端已存在");
         Client client = clientAssembler.toEntity(clientSaveCommand);
         TiAssert.isTrue(clientRepository.save(client), "保存失败");
         createClient(client);

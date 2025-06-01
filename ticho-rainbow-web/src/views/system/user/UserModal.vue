@@ -15,7 +15,7 @@
   import { BasicForm, useForm } from '@/components/Form/index';
   import { userFormSchema } from './user.data';
   import { modifyUser, saveUser } from '@/api/system/user';
-  import { UserDTO } from '@/api/system/model/userModel';
+  import { UserModifyCommand, UseSaveCommand } from '@/api/system/model/userModel';
   import { useMessage } from '@/hooks/web/useMessage';
 
   export default defineComponent({
@@ -65,12 +65,14 @@
       async function handleSubmit() {
         const { createMessage } = useMessage();
         try {
-          const values = (await validate()) as UserDTO;
+          const values = await validate();
           setModalProps({ confirmLoading: true });
           if (unref(isUpdate)) {
-            await modifyUser(values);
+            const saves = values as UserModifyCommand;
+            await modifyUser(saves);
           } else {
-            await saveUser(values);
+            const modifys = values as UseSaveCommand;
+            await saveUser(modifys);
           }
           closeModal();
           createMessage.success('操作成功');

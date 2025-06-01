@@ -14,20 +14,19 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import top.ticho.rainbow.application.dto.command.UseModifyCommand;
-import top.ticho.rainbow.application.dto.command.UseModifySelfCommand;
 import top.ticho.rainbow.application.dto.command.UseSaveCommand;
-import top.ticho.rainbow.application.dto.command.UserBindRoleCommand;
+import top.ticho.rainbow.application.dto.command.UseVersionModifyCommand;
 import top.ticho.rainbow.application.dto.command.UserModifyPasswordCommand;
-import top.ticho.rainbow.application.dto.command.UserModifySelfPasswordCommand;
 import top.ticho.rainbow.application.dto.query.UserQuery;
 import top.ticho.rainbow.application.dto.response.UserDTO;
-import top.ticho.rainbow.application.dto.response.UserRoleMenuDtlDTO;
 import top.ticho.rainbow.application.service.UserService;
+import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.io.IOException;
 import java.util.List;
 
@@ -41,7 +40,6 @@ import java.util.List;
 @RestController
 @RequestMapping("user")
 public class UserController {
-
     private final UserService userService;
 
     /**
@@ -55,26 +53,12 @@ public class UserController {
     }
 
     /**
-     * 上传用户头像
-     *
-     * @param file 文件
-     */
-    @PreAuthorize("@perm.hasPerms('system:user:upload-avatar')")
-    @PostMapping("avatar/upload")
-    public TiResult<String> uploadAvatar(@NotNull(message = "请上传头像") MultipartFile file) {
-        return TiResult.ok(userService.uploadAvatar(file));
-    }
-
-    /**
      * 删除用户
-     *
-     * @param usernames 用户名, 多个用逗号隔开
-     * @return {@link TiResult }<{@link Void }>
      */
     @PreAuthorize("@perm.hasPerms('system:user:remove')")
     @DeleteMapping
-    public TiResult<Void> remove(@NotNull(message = "用户名不能为空") String usernames) {
-        userService.removeBatch(usernames);
+    public TiResult<Void> remove(@NotNull(message = "编号不能为空") Long id, @NotNull(message = "版本号不能为空") Long version) {
+        userService.remove(id, version);
         return TiResult.ok();
     }
 
@@ -89,123 +73,71 @@ public class UserController {
     }
 
     /**
-     * 修改用户(登录人)
-     */
-    @PreAuthorize("@perm.hasPerms('system:user:modify-self')")
-    @PutMapping("self")
-    public TiResult<Void> modifySelf(@Validated @RequestBody UseModifySelfCommand useModifySelfCommand) {
-        userService.modifyForSelf(useModifySelfCommand);
-        return TiResult.ok();
-    }
-
-    /**
      * 锁定用户
-     *
-     * @param usernames 用户名, 多个用逗号隔开
      */
     @PreAuthorize("@perm.hasPerms('system:user:lock')")
     @PatchMapping("status/lock")
-    public TiResult<Void> lock(@NotNull(message = "用户名不能为空") @RequestBody List<String> usernames) {
-        userService.lock(usernames);
+    public TiResult<Void> lock(
+        @NotNull(message = "用户信息不能为空")
+        @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
+        @RequestBody List<UseVersionModifyCommand> modifys
+    ) {
+        userService.lock(modifys);
         return TiResult.ok();
     }
 
     /**
      * 解锁用户
-     *
-     * @param usernames 用户名, 多个用逗号隔开
      */
     @PreAuthorize("@perm.hasPerms('system:user:unLock')")
     @PatchMapping("status/un-lock")
-    public TiResult<Void> unLock(@NotNull(message = "用户名不能为空") @RequestBody List<String> usernames) {
-        userService.unLock(usernames);
+    public TiResult<Void> unLock(
+        @NotNull(message = "用户信息不能为空")
+        @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
+        @RequestBody List<UseVersionModifyCommand> modifys
+    ) {
+        userService.unLock(modifys);
         return TiResult.ok();
     }
 
 
     /**
      * 注销用户
-     *
-     * @param usernames 用户名, 多个用逗号隔开
      */
     @PreAuthorize("@perm.hasPerms('system:user:log-out')")
     @PatchMapping("status/log-out")
-    public TiResult<Void> logOut(@NotNull(message = "用户名不能为空") @RequestBody List<String> usernames) {
-        userService.logOut(usernames);
+    public TiResult<Void> logOut(
+        @NotNull(message = "用户信息不能为空")
+        @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
+        @RequestBody List<UseVersionModifyCommand> modifys
+    ) {
+        userService.logOut(modifys);
         return TiResult.ok();
     }
 
     /**
      * 修改用户密码
      */
-    @PreAuthorize("@perm.hasPerms('system:user:modify-password')")
+    @PreAuthorize("@perm.hasPerms('system:user:password:modify')")
     @PatchMapping("password")
     public TiResult<Void> modifyPassword(@Validated @RequestBody UserModifyPasswordCommand userModifyPasswordCommand) {
         userService.modifyPassword(userModifyPasswordCommand);
         return TiResult.ok();
     }
 
-    /**
-     * 修改用户密码(登录人)
-     */
-    @PreAuthorize("@perm.hasPerms('system:user:modify-self-passwordf')")
-    @PatchMapping("self-password")
-    public TiResult<Void> modifySelfPassword(@Validated @RequestBody UserModifySelfPasswordCommand userModifySelfPasswordCommand) {
-        userService.modifyPasswordForSelf(userModifySelfPasswordCommand);
-        return TiResult.ok();
-    }
 
     /**
      * 重置用户密码
-     *
-     * @param username 用户名
      */
-    @PreAuthorize("@perm.hasPerms('system:user:reset-password')")
+    @PreAuthorize("@perm.hasPerms('system:user:password:reset')")
     @PatchMapping("password/reset")
-    public TiResult<Void> resetPassword(String username) {
-        userService.resetPassword(username);
+    public TiResult<Void> resetPassword(
+        @NotNull(message = "用户信息不能为空")
+        @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
+        @RequestBody List<UseVersionModifyCommand> modifys
+    ) {
+        userService.resetPassword(modifys);
         return TiResult.ok();
-    }
-
-
-    /**
-     * 查询用户
-     *
-     * @param username 用户名
-     */
-    @PreAuthorize("@perm.hasPerms('system:user:find-info')")
-    @GetMapping("info")
-    public TiResult<UserDTO> info(String username) {
-        return TiResult.ok(userService.getInfoByUsername(username));
-    }
-
-    /**
-     * 查询用户(登录人)
-     */
-    @PreAuthorize("@perm.hasPerms('system:user:find-self-info')")
-    @GetMapping("self-info")
-    public TiResult<UserDTO> selfInfo() {
-        return TiResult.ok(userService.getInfo());
-    }
-
-    /**
-     * 查询用户角色菜单权限
-     *
-     * @param username 用户名
-     */
-    @PreAuthorize("@perm.hasPerms('system:user:find-detail')")
-    @GetMapping("detail")
-    public TiResult<UserRoleMenuDtlDTO> detail(String username) {
-        return TiResult.ok(userService.getUserDtl(username));
-    }
-
-    /**
-     * 查询用户角色菜单权限(登录人)
-     */
-    @PreAuthorize("@perm.hasPerms('system:user:find-self-detail')")
-    @GetMapping("self-detail")
-    public TiResult<UserRoleMenuDtlDTO> selfDetail() {
-        return TiResult.ok(userService.getUserDtl());
     }
 
     /**
@@ -218,20 +150,10 @@ public class UserController {
     }
 
     /**
-     * 绑定用户角色
-     */
-    @PreAuthorize("@perm.hasPerms('system:user:bind-role')")
-    @PostMapping("role/bind")
-    public TiResult<Void> bindRole(@Validated @RequestBody UserBindRoleCommand userBindRoleCommand) {
-        userService.bindRole(userBindRoleCommand);
-        return TiResult.ok();
-    }
-
-    /**
      * 下载导入模板
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:user:download-import-template')")
+    @PreAuthorize("@perm.hasPerms('system:user:import-template:download')")
     @GetMapping("excel-template/download")
     public void excelTemplateDownload() throws IOException {
         userService.excelTemplateDownload();

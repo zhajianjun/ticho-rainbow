@@ -10,8 +10,8 @@ enum Api {
   Presigned = '/file/presigned',
   UploadChunk = '/file/uploadChunk',
   ComposeChunk = '/file/composeChunk',
-  EnableFileInfo = '/file/enable',
-  DisableFileInfo = '/file/disable',
+  EnableFileInfo = '/file/status/enable',
+  DisableFileInfo = '/file/status/disable',
   CancelFileInfo = '/file/cancel',
   FileInfo = '/file',
   FileInfoPage = '/file/page',
@@ -89,7 +89,7 @@ export function presigned(id: string, expire?: number | null, limit?: boolean | 
 
 export function enableFileInfo(id: string) {
   const params = { id: id };
-  return defHttp.put<any>(
+  return defHttp.patch<any>(
     { url: Api.EnableFileInfo, params },
     { errorMessageMode: 'message', successMessageMode: 'message', joinParamsToUrl: true },
   );
@@ -97,7 +97,7 @@ export function enableFileInfo(id: string) {
 
 export function disableFileInfo(id: string) {
   const params = { id: id };
-  return defHttp.put<any>(
+  return defHttp.patch<any>(
     { url: Api.DisableFileInfo, params },
     { errorMessageMode: 'message', successMessageMode: 'message', joinParamsToUrl: true },
   );
@@ -105,7 +105,7 @@ export function disableFileInfo(id: string) {
 
 export function cancelFileInfo(id: string) {
   const params = { id: id };
-  return defHttp.put<any>(
+  return defHttp.patch<any>(
     { url: Api.CancelFileInfo, params },
     { errorMessageMode: 'message', successMessageMode: 'message', joinParamsToUrl: true },
   );

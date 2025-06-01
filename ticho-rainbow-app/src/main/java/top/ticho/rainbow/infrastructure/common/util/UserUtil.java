@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.slf4j.MDC;
 import top.ticho.rainbow.application.dto.SecurityUser;
-import top.ticho.rainbow.application.dto.UserHelper;
+import top.ticho.rainbow.domain.entity.UserHelper;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.rainbow.infrastructure.common.constant.SecurityConst;
 import top.ticho.starter.security.util.TiUserUtil;

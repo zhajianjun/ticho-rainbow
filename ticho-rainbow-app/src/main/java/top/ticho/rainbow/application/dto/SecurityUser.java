@@ -2,6 +2,7 @@ package top.ticho.rainbow.application.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import top.ticho.rainbow.domain.entity.UserHelper;
 import top.ticho.starter.view.core.TiSecurityUser;
 
 /**

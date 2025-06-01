@@ -86,7 +86,7 @@ public class CacheConfig {
 
     @Bean
     public TiCache<String, FileCacheDTO> fileInfoCache() {
-        return new TiCache<String, FileCacheDTO>() {
+        return new TiCache<>() {
             @Override
             public String getName() {
                 return CacheConst.FILE_URL_CACHE;

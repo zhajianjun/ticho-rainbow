@@ -4,6 +4,7 @@ import { Switch } from 'ant-design-vue';
 import { useMessage } from '@/hooks/web/useMessage';
 import { modifyRoleStatus } from '@/api/system/role';
 import { getDictByCode, getDictLabelByCodeAndValue } from '@/store/modules/dict';
+import { RoleStatusModifyCommand } from '@/api/system/model/roleModel';
 
 const commonStatus = 'commonStatus';
 
@@ -41,7 +42,8 @@ export const columns: BasicColumn[] = [
           record.pendingStatus = true;
           const newStatus = checked ? 1 : 0;
           const { createMessage } = useMessage();
-          const params = { id: record.id, status: newStatus };
+          const { id, version } = record;
+          const params = { id: id, status: newStatus, version: version } as RoleStatusModifyCommand;
           modifyRoleStatus(params)
             .then(() => {
               record.status = newStatus;

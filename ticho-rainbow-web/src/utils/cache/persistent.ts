@@ -19,12 +19,12 @@ import {
 import { DEFAULT_CACHE_TIME } from '@/settings/encryptionSetting';
 import { toRaw } from 'vue';
 import { pick, omit } from 'lodash-es';
-import { UserRoleMenuDtlDTO } from '@/api/system/model/userModel';
+import { LoginUserDTO } from '@/api/system/model/loginModel';
 import { DictLabelDTO } from '@/api/system/model/dictLabelModel';
 
 interface BasicStore {
   [TOKEN_KEY]: string | number | null | undefined;
-  [USER_INFO_KEY]: UserRoleMenuDtlDTO;
+  [USER_INFO_KEY]: LoginUserDTO;
   [ROLES_KEY]: string[];
   [DICTS_KEY]: Map<string, Map<string, DictLabelDTO>>;
   [LOCK_INFO_KEY]: LockInfo;

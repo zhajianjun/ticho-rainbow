@@ -12,7 +12,7 @@ import jakarta.validation.constraints.NotBlank;
  * @date 2024-01-08 20:30
  */
 @Data
-public class UserLoginDTO implements LoginRequest {
+public class LoginDTO implements LoginRequest {
 
     /** 验证码秘钥 */
     @NotBlank(message = "验证码秘钥不能为空")

@@ -20,4 +20,5 @@ public class UserRolePO extends Model<UserRolePO> {
     private Long userId;
     /** 角色id */
     private Long roleId;
+
 }

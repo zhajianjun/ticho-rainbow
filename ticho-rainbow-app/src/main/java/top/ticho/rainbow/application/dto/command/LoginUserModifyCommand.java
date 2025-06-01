@@ -4,10 +4,8 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import java.util.List;
 
 /**
  * 用户信息DTO
@@ -16,11 +14,8 @@ import java.util.List;
  * @date 2024-01-08 20:30
  */
 @Data
-public class UseModifyCommand {
+public class LoginUserModifyCommand {
 
-    /** 编号 */
-    @NotNull(message = "编号不能为空")
-    private Long id;
     /** 昵称 */
     @Length(max = 32, message = "昵称长度不能超过{max}个字符")
     private String nickname;
@@ -39,8 +34,5 @@ public class UseModifyCommand {
     /** 版本号 */
     @NotNull(message = "版本号不能为空")
     private Long version;
-    /** 角色编号列表 */
-    @NotEmpty(message = "角色编号不能为空")
-    private List<Long> roleIds;
 
 }

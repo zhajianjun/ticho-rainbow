@@ -17,7 +17,7 @@
           v-auth="'UserLock'"
           preIcon="ant-design:lock-outlined"
           :loading="lockLoading"
-          @click="handleBatch(Action.lockUser)"
+          @click="handleBatch(Action.lock)"
         >
           锁定
         </a-button>
@@ -26,9 +26,19 @@
           v-auth="'UserUnLock'"
           preIcon="ant-design:unlock-outlined"
           :loading="unLockLoading"
-          @click="handleBatch(Action.unLockUser)"
+          @click="handleBatch(Action.unLock)"
         >
           解锁
+        </a-button>
+        <a-button
+          type="primary"
+          danger
+          v-auth="'UserLogOut'"
+          preIcon="ant-design:logout-outlined"
+          :loading="logOutLoading"
+          @click="handleBatch(Action.logOut)"
+        >
+          注销
         </a-button>
         <a-button
           type="primary"
@@ -71,6 +81,12 @@
               tooltip: '修改',
             },
             {
+              icon: 'ant-design:eye-outlined',
+              auth: 'UserEditPassword',
+              onClick: handleEditPassword.bind(null, record),
+              tooltip: '修改密码',
+            },
+            {
               icon: 'ant-design:security-scan-outlined',
               auth: 'UserResetPwd',
               popConfirm: {
@@ -107,6 +123,7 @@
       </template>
     </BasicTable>
     <UserModel @register="registerModal" @success="handleSuccess" />
+    <UserPasswordModal @register="registerPasswordModal" @success="handleSuccess" />
     <ImpModal
       title="用户导入"
       :download-model-api="impTemplate"
@@ -133,26 +150,38 @@
   import { PageWrapper } from '@/components/Page';
   import { useModal } from '@/components/Modal';
   import UserModel from './UserModal.vue';
+  import UserPasswordModal from './UserPasswordModal.vue';
   import ImpModal from '@/views/component/imp/ImpModal.vue';
   import { columns, searchFormSchema } from './user.data';
   import { usePermission } from '@/hooks/web/usePermission';
   import { Tag, Space } from 'ant-design-vue';
   import { useMessage } from '@/hooks/web/useMessage';
   import { downloadByData } from '@/utils/file/download';
-  import { UserQuery } from '@/api/system/model/userModel';
+  import { UserQuery, UseVersionModifyCommand } from '@/api/system/model/userModel';
 
   enum Action {
-    lockUser,
-    unLockUser,
+    lock,
+    unLock,
+    logOut,
   }
 
   export default defineComponent({
     name: 'UserManagement',
-    components: { BasicTable, PageWrapper, UserModel, ImpModal, TableAction, Tag, Space },
+    components: {
+      BasicTable,
+      PageWrapper,
+      UserModel,
+      UserPasswordModal,
+      ImpModal,
+      TableAction,
+      Tag,
+      Space,
+    },
     setup() {
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('UserSelect');
       const [registerModal, { openModal }] = useModal();
+      const [registerPasswordModal, { openModal: openPasswordModal }] = useModal();
       const [registerImpModal, { openModal: openImpModal }] = useModal();
       const searchInfo = reactive<Recordable>({});
       const [registerTable, { reload, getSelectRows, getSelectRowKeys, getForm }] = useTable({
@@ -215,45 +244,62 @@
         });
       }
 
+      function handleEditPassword(record: Recordable) {
+        openPasswordModal(true, {
+          record,
+          isUpdate: true,
+        });
+      }
+
       function resetPassword(record: Recordable) {
-        resetUserPassword(record.username).then(() => {
+        resetUserPassword([{ id: record.id, version: record.version }]).then(() => {
           createMessage.success(`重置${record.nickname}密码成功`);
         });
       }
 
       function handleLogOut(record: Recordable) {
-        logOutUser([record.username]).then(() => {
+        logOutUser([{ id: record.id, version: record.version }]).then(() => {
           reload();
         });
       }
 
       function handleRemove(record: Recordable) {
-        removeUser(record.username).then(() => {
+        removeUser({ id: record.id, version: record.version }).then(() => {
           reload();
         });
       }
 
       const lockLoading = ref<Boolean>(false);
       const unLockLoading = ref<Boolean>(false);
+      const logOutLoading = ref<Boolean>(false);
       const exportLoding = ref<Boolean>(false);
 
       async function handleBatch(type: Action) {
         const selectRows = getSelectRows();
-        const usernames = selectRows.map((item) => item.username) as string[];
-        if (!usernames || usernames.length === 0) {
+        const commands = selectRows.map((item) => {
+          return {
+            id: item.id,
+            version: item.version,
+          };
+        }) as UseVersionModifyCommand[];
+        if (!commands || commands.length === 0) {
           createMessage.warn(`至少选择一条数据`);
           return;
         }
         let api: Promise<any>;
         let loading: any;
         switch (type) {
-          case Action.lockUser:
+          case Action.lock:
             loading = lockLoading;
-            api = lockUser(usernames);
+            api = lockUser(commands);
             break;
-          case Action.unLockUser:
+          case Action.unLock:
             loading = unLockLoading;
-            api = unlockUser(usernames);
+            api = unlockUser(commands);
+            break;
+          case Action.logOut:
+            loading = unLockLoading;
+            api = logOutUser(commands);
             break;
           default:
             return;
@@ -307,8 +353,10 @@
       return {
         registerTable,
         registerModal,
+        registerPasswordModal,
         handleCreate,
         handleEdit,
+        handleEditPassword,
         resetPassword,
         handleBatch,
         handleLogOut,
@@ -320,6 +368,7 @@
         exportLoding,
         lockLoading,
         unLockLoading,
+        logOutLoading,
         registerImpModal,
         handleImp,
         impTemplate,

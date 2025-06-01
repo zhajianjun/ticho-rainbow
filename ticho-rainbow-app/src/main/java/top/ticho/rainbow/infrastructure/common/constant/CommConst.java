@@ -18,5 +18,7 @@ public class CommConst {
     public static final String GUEST_ROLE_CODE = "guest";
     public static final String USERNAME_KEY = "username";
     public static final String DEFAULT_PASSWORD = "123456";
+    // 最大操作数量
+    public static final int MAX_OPERATION_COUNT = 100;
 
 }

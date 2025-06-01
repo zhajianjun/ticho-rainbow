@@ -16,7 +16,7 @@
   import { getPasswordModalFormColumns } from './user.data';
   import { modifyUserPassword } from '@/api/system/user';
   import { useMessage } from '@/hooks/web/useMessage';
-  import { UserPasswordDTO } from '@/api/system/model/userModel';
+  import { UserModifyPasswordCommand } from '@/api/system/model/userModel';
 
   export default defineComponent({
     name: 'UserPasswordModal',
@@ -42,7 +42,7 @@
 
       async function handleSubmit() {
         try {
-          const values = (await validate()) as UserPasswordDTO;
+          const values = (await validate()) as UserModifyPasswordCommand;
           setModalProps({ confirmLoading: true });
           await modifyUserPassword(values);
           const { createMessage } = useMessage();

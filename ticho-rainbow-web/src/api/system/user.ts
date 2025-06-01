@@ -1,17 +1,20 @@
 import { defHttp } from '@/utils/http/axios';
-import { PasswordDTO, UserDTO, UserPasswordDTO, UserQuery, UserRoleDTO } from './model/userModel';
+import {
+  UserQuery,
+  UserDTO,
+  UseSaveCommand,
+  UserModifyCommand,
+  UserModifyPasswordCommand,
+  UseVersionModifyCommand,
+} from './model/userModel';
 import { ContentTypeEnum } from '@/enums/httpEnum';
 import { RetryRequest } from '#/axios';
 
 enum Api {
   UserInfo = '/user',
   UserPage = '/user/page',
-  BindRole = '/user/role/bind',
-  UpdateForSelf = '/user/self',
-  UpdatePassword = '/user/password',
-  UpdatePasswordForSelf = '/user/self-password',
+  ModifyPassword = '/user/password',
   ResetUserPassword = '/user/password/reset',
-  UploadAvatar = '/user/avatar/upload',
   LockUser = '/user/status/lock',
   UnLockUser = '/user/status/un-lock',
   LogOutUser = '/user/status/log-out',
@@ -24,86 +27,50 @@ export function userPage(params?: UserQuery) {
   return defHttp.get<UserDTO>({ url: Api.UserPage, params }, { errorMessageMode: 'none' });
 }
 
-export function getUserInfo(username: string) {
-  const params = { username: username };
-  return defHttp.get<UserDTO>({ url: Api.UserInfo, params }, { errorMessageMode: 'none' });
-}
-
-export function saveUser(params: UserDTO) {
+export function saveUser(params: UseSaveCommand) {
   return defHttp.post<any>({ url: Api.UserInfo, params }, { errorMessageMode: 'message' });
 }
 
-export function lockUser(params: string[]) {
+export function lockUser(params: UseVersionModifyCommand[]) {
   return defHttp.patch<any>(
     { url: Api.LockUser, params },
     { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
 
-export function unlockUser(params: string[]) {
+export function unlockUser(params: UseVersionModifyCommand[]) {
   return defHttp.patch<any>(
     { url: Api.UnLockUser, params },
     { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
 
-export function logOutUser(params: string[]) {
+export function logOutUser(params: UseVersionModifyCommand[]) {
   return defHttp.patch<any>(
     { url: Api.LogOutUser, params },
     { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
 
-export function removeUser(username: string) {
-  const params = { username: username };
+export function removeUser(params: UseVersionModifyCommand) {
   return defHttp.delete<any>(
     { url: Api.UserInfo, params },
-    { errorMessageMode: 'message', successMessageMode: 'message' },
+    { errorMessageMode: 'message', successMessageMode: 'message', joinParamsToUrl: true },
   );
 }
 
-export function modifyUser(params: UserDTO) {
+export function modifyUser(params: UserModifyCommand) {
   return defHttp.put<void>({ url: Api.UserInfo, params }, { errorMessageMode: 'message' });
 }
 
-export function modifyUserForSelf(params: UserDTO) {
-  return defHttp.put<void>({ url: Api.UpdateForSelf, params }, { errorMessageMode: 'message' });
+export function modifyUserPassword(params: UserModifyPasswordCommand) {
+  return defHttp.patch<void>({ url: Api.ModifyPassword, params }, { errorMessageMode: 'message' });
 }
 
-export function modifyUserPassword(params: UserPasswordDTO) {
-  return defHttp.put<void>({ url: Api.UpdatePassword, params }, { errorMessageMode: 'message' });
-}
-
-export function modifyPasswordForSelf(params: PasswordDTO) {
-  return defHttp.put<void>(
-    { url: Api.UpdatePasswordForSelf, params },
-    { errorMessageMode: 'message' },
-  );
-}
-
-export function resetUserPassword(username: string) {
-  const params = { username: username };
-  return defHttp.put<void>(
+export function resetUserPassword(params: UseVersionModifyCommand[]) {
+  return defHttp.patch<void>(
     { url: Api.ResetUserPassword, params },
     { errorMessageMode: 'message', joinParamsToUrl: true },
-  );
-}
-
-export function bindRole(params: UserRoleDTO) {
-  return defHttp.post<void>({ url: Api.BindRole, params }, { errorMessageMode: 'message' });
-}
-
-export function uploadAvatar(file: File) {
-  const params = { file: file };
-  return defHttp.post<string>(
-    {
-      url: Api.UploadAvatar,
-      headers: {
-        'Content-type': ContentTypeEnum.FORM_DATA,
-      },
-      params,
-    },
-    { errorMessageMode: 'message' },
   );
 }
 

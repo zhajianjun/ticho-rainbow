@@ -33,7 +33,6 @@
 
   import { useUserStore } from '@/store/modules/user';
   import { useLockStore } from '@/store/modules/lock';
-  import headerImg from '@/assets/images/header.jpg';
 
   defineOptions({ name: 'LockModal' });
 
@@ -76,8 +75,8 @@
   };
 
   const avatar = computed(() => {
-    const { avatar } = userStore.getUserInfo;
-    return avatar || headerImg;
+    const { photo } = userStore.getUserInfo;
+    return photo;
   });
 </script>
 <style lang="less">

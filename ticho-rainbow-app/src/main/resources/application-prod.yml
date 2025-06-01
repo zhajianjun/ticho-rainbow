@@ -16,7 +16,6 @@ ticho:
       - /
       - /health
       - /favicon.ico
-      - /oauth/**
       - ${ticho.rainbow.file.mvc-resource-path}
   cors:
     enable: true

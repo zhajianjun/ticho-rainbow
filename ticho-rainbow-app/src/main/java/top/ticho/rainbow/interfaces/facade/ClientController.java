@@ -5,6 +5,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,6 +66,17 @@ public class ClientController {
     @PutMapping
     public TiResult<Void> modify(@Validated @RequestBody ClientModifyCommand clientModifyCommand) {
         clientService.modify(clientModifyCommand);
+        return TiResult.ok();
+    }
+
+    /**
+     * 锁定用户
+     *
+     * @param ids 编号, 多个用逗号隔开
+     */
+    @PreAuthorize("@perm.hasPerms('intranet:client:enable')")
+    @PatchMapping("status/enable")
+    public TiResult<Void> enable(@NotNull(message = "用户名不能为空") @RequestBody List<String> ids) {
         return TiResult.ok();
     }
 

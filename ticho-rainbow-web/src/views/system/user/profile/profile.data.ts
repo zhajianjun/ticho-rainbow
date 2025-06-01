@@ -9,22 +9,22 @@ export const basicFormSchema: FormSchema[] = [
   },
   {
     field: 'username',
-    label: '用户名',
+    label: '账号',
     component: 'Input',
     componentProps: {
       disabled: true,
     },
-    show: false,
+    show: true,
   },
   {
-    field: 'nickname',
-    label: '昵称',
+    field: 'realname',
+    label: '用户姓名',
     component: 'Input',
     required: true,
   },
   {
-    field: 'realname',
-    label: '姓名',
+    field: 'nickname',
+    label: '用户昵称',
     component: 'Input',
     required: true,
   },
@@ -44,6 +44,12 @@ export const basicFormSchema: FormSchema[] = [
     label: '备注',
     field: 'remark',
     component: 'InputTextArea',
+  },
+  {
+    label: '版本号',
+    field: 'version',
+    component: 'Input',
+    show: false,
   },
 ];
 

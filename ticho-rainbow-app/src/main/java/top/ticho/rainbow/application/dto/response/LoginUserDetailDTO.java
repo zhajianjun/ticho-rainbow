@@ -5,20 +5,19 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
- * 用户角色菜单功能号详情
+ * 登录用户详细信息
  *
  * @author zhajianjun
- * @date 2023-12-17 08:30
+ * @date 2025-06-01 00:15
  */
 @Data
-public class UserRoleMenuDtlDTO {
+public class LoginUserDetailDTO {
 
     /** 主键编号 */
     private Long id;
-    /** 账户;账户具有唯一性 */
+    /** 账号;具有唯一性 */
     private String username;
     /** 昵称 */
     private String nickname;
@@ -56,17 +55,10 @@ public class UserRoleMenuDtlDTO {
     private Integer status;
     /** 备注信息 */
     private String remark;
-    /** 角色id列表 */
-    private List<Long> roleIds;
-    /** 角色code列表 */
-    private List<String> roleCodes;
-    /** 菜单id列表 */
-    private List<Long> menuIds;
-    /** 权限标识 */
-    private List<String> perms;
-    /** 角色信息 */
-    private List<RoleDTO> roles;
-    /** 菜单信息 */
-    private List<MenuDtlDTO> menus;
+    /** 版本号 */
+    private Long version;
+    /** 创建时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime createTime;
 
 }

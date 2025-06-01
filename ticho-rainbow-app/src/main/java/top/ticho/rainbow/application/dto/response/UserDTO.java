@@ -1,12 +1,8 @@
 package top.ticho.rainbow.application.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import top.ticho.starter.web.util.valid.TiValidGroup;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,15 +17,9 @@ import java.util.List;
 public class UserDTO {
 
     /** 主键编号 */
-    @NotNull(message = "主键编号不能为空", groups = TiValidGroup.Upd.class)
     private Long id;
-    /** 账户;账户具有唯一性 */
-    @NotBlank(message = "账户不能为空")
+    /** 账号;具有唯一性 */
     private String username;
-    /** 密码 */
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @NotBlank(message = "密码不能为空", groups = TiValidGroup.Add.class)
-    private String password;
     /** 昵称 */
     private String nickname;
     /** 真实姓名 */
@@ -73,7 +63,5 @@ public class UserDTO {
     private LocalDateTime createTime;
     /** 角色编号列表 */
     private List<Long> roleIds;
-    /** 角色信息 */
-    private List<RoleDTO> roles;
 
 }

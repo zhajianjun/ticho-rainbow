@@ -1,10 +1,11 @@
 import { defHttp } from '@/utils/http/axios';
 import {
   RoleDTO,
-  RoleMenuBindDTO,
   RoleMenuDtlDTO,
-  RoleMenuQueryDTO,
+  RoleDtlQuery,
   RoleQuery,
+  RoleSaveCommand,
+  RoleModifyCommand, RoleStatusModifyCommand,
 } from '@/api/system/model/roleModel';
 import { RetryRequest } from '#/axios';
 
@@ -13,7 +14,6 @@ enum Api {
   RolePage = '/role/page',
   RoleList = '/role/all',
   ListRoleMenu = '/role/menu/list',
-  BindMenu = '/role/menu/bind',
   ModifyStatus = '/role/status',
   Export = '/role/expExcel',
 }
@@ -26,7 +26,7 @@ export function listRoles() {
   return defHttp.get<RoleDTO[]>({ url: Api.RoleList }, { errorMessageMode: 'none' });
 }
 
-export function saveRole(params: any) {
+export function saveRole(params: RoleSaveCommand) {
   return defHttp.post<any>({ url: Api.Role, params }, { errorMessageMode: 'message' });
 }
 
@@ -38,23 +38,19 @@ export function delRole(id: string) {
   );
 }
 
-export function modifyRole(params: any) {
+export function modifyRole(params: RoleModifyCommand) {
   return defHttp.put<any>({ url: Api.Role, params }, { errorMessageMode: 'message' });
 }
 
-export function modifyRoleStatus(params: any) {
+export function modifyRoleStatus(params: RoleStatusModifyCommand) {
   return defHttp.patch<any>({ url: Api.ModifyStatus, params }, { errorMessageMode: 'message' });
 }
 
-export function listRoleMenu(params?: RoleMenuQueryDTO) {
+export function listRoleMenu(params?: RoleDtlQuery) {
   return defHttp.get<RoleMenuDtlDTO>(
     { url: Api.ListRoleMenu, params },
     { errorMessageMode: 'message' },
   );
-}
-
-export function bindMenu(params?: RoleMenuBindDTO) {
-  return defHttp.post<any>({ url: Api.BindMenu, params }, { errorMessageMode: 'message' });
 }
 
 export function expExcel(params?: RoleQuery) {

@@ -23,6 +23,7 @@ import top.ticho.rainbow.application.dto.query.FileInfoQuery;
 import top.ticho.rainbow.application.dto.response.ChunkCacheDTO;
 import top.ticho.rainbow.application.dto.response.FileInfoDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
+import top.ticho.rainbow.application.executor.FileInfoExecutor;
 import top.ticho.rainbow.application.repository.FileInfoAppRepository;
 import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
@@ -41,7 +42,6 @@ import top.ticho.starter.view.enums.TiHttpErrCode;
 import top.ticho.starter.view.exception.TiBizException;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.TiIdUtil;
-import top.ticho.starter.web.util.valid.TiValidUtil;
 import top.ticho.tool.json.util.TiJsonUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -57,7 +57,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -79,49 +78,10 @@ public class FileInfoService {
     private final FileInfoAppRepository fileInfoAppRepository;
     private final FileInfoAssembler fileInfoAssembler;
     private final DictExecutor dictExecutor;
+    private final FileInfoExecutor fileInfoExecutor;
 
     public FileInfoDTO upload(FileUploadCommand fileUploadCommand) {
-        String remark = fileUploadCommand.getRemark();
-        Integer type = fileUploadCommand.getType();
-        MultipartFile file = fileUploadCommand.getFile();
-        // 原始文件名，logo.svg
-        String originalFileName = file.getOriginalFilename();
-        DataSize fileSize = fileProperty.getMaxFileSize();
-        TiAssert.isTrue(file.getSize() <= fileSize.toBytes(), FileErrCode.FILE_SIZE_TO_LARGER, "文件大小不能超出" + fileSize.toMegabytes() + "MB");
-        // 主文件名 logo.svg -> logo
-        String mainName = FileNameUtil.mainName(originalFileName);
-        // 后缀名 svg
-        String extName = FileNameUtil.extName(originalFileName);
-        // 存储文件名 logo.svg -> logo-wKpdqhmC.svg
-        String fileName = mainName + StrUtil.DASHED + CommonUtil.fastShortUUID() + StrUtil.DOT + extName;
-        // 相对路径
-        String relativePath = Optional.ofNullable(fileUploadCommand.getRelativePath())
-            .filter(StrUtil::isNotBlank)
-            // 去除两边的斜杠
-            .map(x -> StrUtil.strip(x, "/"))
-            .map(s -> s + File.separator + fileName)
-            .orElse(fileName);
-        FileInfo fileInfo = FileInfo.builder()
-            .id(TiIdUtil.getId())
-            .type(type)
-            .fileName(fileName)
-            .originalFileName(originalFileName)
-            .path(relativePath)
-            .size(file.getSize())
-            .ext(extName)
-            .contentType(file.getContentType())
-            .remark(remark)
-            .status(FileInfoStatus.NORMAL.code())
-            .build();
-        // 文件存储
-        String absolutePath = getAbsolutePath(fileInfo);
-        try {
-            FileUtil.writeBytes(file.getBytes(), absolutePath);
-        } catch (IOException e) {
-            throw new TiBizException(TiHttpErrCode.FAIL, "文件上传失败");
-        }
-        fileInfoRepository.save(fileInfo);
-        return fileInfoAssembler.toDTO(fileInfo);
+        return fileInfoExecutor.upload(fileUploadCommand);
     }
 
     public void enable(Long id) {
@@ -172,7 +132,7 @@ public class FileInfoService {
     private void download(FileInfo fileInfo) {
         TiAssert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST);
         TiAssert.isTrue(fileInfo.isNormal(), FileErrCode.FILE_STATUS_ERROR);
-        String absolutePath = getAbsolutePath(fileInfo.getType(), fileInfo.getPath());
+        String absolutePath = fileInfoExecutor.getAbsolutePath(fileInfo.getType(), fileInfo.getPath());
         File file = new File(absolutePath);
         TiAssert.isTrue(FileUtil.exist(file), FileErrCode.FILE_NOT_EXIST);
         try {
@@ -191,46 +151,10 @@ public class FileInfoService {
     }
 
     public String presigned(Long id, Long expire, Boolean limit) {
-        long seconds = TimeUnit.DAYS.toSeconds(7);
-        if (expire != null) {
-            TiAssert.isTrue(expire <= seconds, TiBizErrCode.PARAM_ERROR, "过期时间最长为7天");
-        } else {
-            expire = seconds;
-        }
-        FileInfo dbFileInfo = fileInfoRepository.find(id);
-        return presigned(dbFileInfo, expire, limit);
-    }
-
-    public String presigned(FileInfo fileInfo, Long expire, Boolean limit) {
-        TiAssert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST);
-        TiAssert.isTrue(fileInfo.isNormal(), FileErrCode.FILE_STATUS_ERROR);
-        boolean normal = Objects.equals(fileInfo.getStatus(), FileInfoStatus.NORMAL.code());
-        if (!normal) {
-            return null;
-        }
-        String absolutePath = getAbsolutePath(fileInfo.getType(), fileInfo.getPath());
-        File file = new File(absolutePath);
-        if (!file.exists()) {
-            return null;
-        }
-        String domain = StrUtil.removeSuffix(fileProperty.getDomain(), "/");
-        if (Objects.equals(fileInfo.getType(), 1)) {
-            String mvcResourcePath = StrUtil.removeSuffix(fileProperty.getMvcResourcePath(), "/**");
-            mvcResourcePath = StrUtil.removePrefix(mvcResourcePath, "/");
-            return domain + "/" + mvcResourcePath + "/" + fileInfo.getPath();
-        }
-        String sign = CommonUtil.fastShortUUID();
-        FileCacheDTO fileCacheDTO = new FileCacheDTO();
-        fileCacheDTO.setSign(sign);
-        fileCacheDTO.setFileInfo(fileInfo);
-        fileCacheDTO.setExpire(expire);
-        fileCacheDTO.setLimit(limit);
-        tiCacheTemplate.put(CacheConst.FILE_URL_CACHE, sign, fileCacheDTO);
-        return domain + "/file/download?sign=" + sign;
+        return fileInfoExecutor.presigned(id, expire, limit);
     }
 
     public ChunkCacheDTO uploadChunk(FileChunkUploadCommand fileChunkUploadCommand) {
-        TiValidUtil.valid(fileChunkUploadCommand);
         MultipartFile chunkfile = fileChunkUploadCommand.getChunkfile();
         DataSize maxFileSize = fileProperty.getMaxPartSize();
         Integer index = fileChunkUploadCommand.getIndex();
@@ -250,7 +174,7 @@ public class FileInfoService {
             log.info("分片文件已上传");
             return chunkCacheDTO;
         }
-        String chunkFilePath = getAbsolutePath(chunkCacheDTO.getType(), chunkCacheDTO.getChunkDirPath()) + index;
+        String chunkFilePath = fileInfoExecutor.getAbsolutePath(chunkCacheDTO.getType(), chunkCacheDTO.getChunkDirPath()) + index;
         try {
             File chunkFile = new File(chunkFilePath);
             if (!chunkFile.exists()) {
@@ -342,7 +266,7 @@ public class FileInfoService {
         chunkCacheDTO.setExtName(dbFileInfo.getExt());
         chunkCacheDTO.setUploadedChunkCount(new AtomicInteger(0));
         chunkCacheDTO.setIndexs(new ConcurrentSkipListSet<>());
-        String absolutePath = getAbsolutePath(chunkCacheDTO.getType(), chunkCacheDTO.getChunkDirPath());
+        String absolutePath = fileInfoExecutor.getAbsolutePath(chunkCacheDTO.getType(), chunkCacheDTO.getChunkDirPath());
         File chunkDirFile = new File(absolutePath);
         if (!chunkDirFile.exists()) {
             return chunkCacheDTO;
@@ -426,8 +350,8 @@ public class FileInfoService {
         // 分片上传是否完成
         boolean complete = Boolean.TRUE.equals(chunkCacheDTO.getComplete());
         TiAssert.isTrue(complete, "分片文件未全部上传");
-        String chunkFileDirPath = getAbsolutePath(chunkCacheDTO.getType(), chunkCacheDTO.getChunkDirPath());
-        String filePath = getAbsolutePath(chunkCacheDTO.getType(), chunkCacheDTO.getRelativeFullPath());
+        String chunkFileDirPath = fileInfoExecutor.getAbsolutePath(chunkCacheDTO.getType(), chunkCacheDTO.getChunkDirPath());
+        String filePath = fileInfoExecutor.getAbsolutePath(chunkCacheDTO.getType(), chunkCacheDTO.getRelativeFullPath());
         FileInfo fileInfo = fileInfoRepository.find(chunkCacheDTO.getId());
         try {
             RandomAccessFile mergedFile = new RandomAccessFile(filePath, "rw");
@@ -456,7 +380,7 @@ public class FileInfoService {
     }
 
     public void moveToTmp(Integer type, String relativePath) {
-        String absolutePath = getAbsolutePath(type, relativePath);
+        String absolutePath = fileInfoExecutor.getAbsolutePath(type, relativePath);
         File source = new File(absolutePath);
         if (!source.exists()) {
             return;
@@ -495,31 +419,6 @@ public class FileInfoService {
                 return fileInfoExcelExport;
             })
             .collect(Collectors.toList());
-    }
-
-    /**
-     * 获取绝对路径
-     */
-    public String getAbsolutePath(FileInfo fileInfo) {
-        return getAbsolutePath(fileInfo.getType(), fileInfo.getPath());
-    }
-
-    /**
-     * 获取绝对路径
-     *
-     * @param type 存储类型
-     * @param path 文件相对路径
-     * @return {@link String}
-     */
-    public String getAbsolutePath(Integer type, String path) {
-        String prefixPath;
-        // 文件存储
-        if (Objects.equals(type, 1)) {
-            prefixPath = fileProperty.getPublicPath();
-        } else {
-            prefixPath = fileProperty.getPrivatePath();
-        }
-        return prefixPath + path;
     }
 
 }

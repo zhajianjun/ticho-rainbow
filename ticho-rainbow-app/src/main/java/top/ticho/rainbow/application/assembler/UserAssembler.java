@@ -1,15 +1,20 @@
 package top.ticho.rainbow.application.assembler;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import top.ticho.rainbow.application.dto.command.LoginUserModifyCommand;
 import top.ticho.rainbow.application.dto.command.UseModifyCommand;
-import top.ticho.rainbow.application.dto.command.UseModifySelfCommand;
 import top.ticho.rainbow.application.dto.command.UseSaveCommand;
+import top.ticho.rainbow.application.dto.command.UserSignUpCommand;
 import top.ticho.rainbow.application.dto.excel.UserExcelExport;
 import top.ticho.rainbow.application.dto.excel.UserExcelImport;
+import top.ticho.rainbow.application.dto.response.LoginUserDTO;
+import top.ticho.rainbow.application.dto.response.LoginUserDetailDTO;
 import top.ticho.rainbow.application.dto.response.UserDTO;
-import top.ticho.rainbow.application.dto.response.UserRoleMenuDtlDTO;
 import top.ticho.rainbow.domain.entity.User;
 import top.ticho.rainbow.domain.entity.vo.UserModifyVO;
+import top.ticho.rainbow.infrastructure.common.enums.UserStatus;
+import top.ticho.starter.web.util.TiIdUtil;
 
 /**
  * 用户信息 转换
@@ -17,46 +22,31 @@ import top.ticho.rainbow.domain.entity.vo.UserModifyVO;
  * @author zhajianjun
  * @date 2023-12-17 20:12
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", imports = {UserStatus.class, TiIdUtil.class})
 public interface UserAssembler {
 
-    /**
-     * 用户信息
-     */
+    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
     User toEntity(UseSaveCommand useSaveCommand);
+
+    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
+    @Mapping(target = "status", expression = "java(UserStatus.NORMAL.code())")
+    @Mapping(target = "nickname", source = "username")
+    User toEntity(UserSignUpCommand userSignUpCommand);
+
+    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
+    @Mapping(target = "status", expression = "java(UserStatus.NORMAL.code())")
+    User toEntity(UserExcelImport imp, String password, Integer sex);
 
     UserModifyVO toModifyVo(UseModifyCommand useModifyCommand);
 
-    UserModifyVO toModifyVo(UseModifySelfCommand useModifyCommand);
+    UserModifyVO toModifyVo(LoginUserModifyCommand useModifyCommand);
 
-    UserDTO toDTO(User entity);
+    UserDTO toDTO(User user);
 
-    UserRoleMenuDtlDTO toDtlDTO(User user);
+    LoginUserDTO toLoginUserDTO(User user);
+
+    LoginUserDetailDTO toLoginUserDetailDTO(User user);
 
     UserExcelExport toExcelExport(UserDTO userDTO);
-
-    default User toEntity(UserExcelImport imp, String password, Integer status, Integer sex) {
-        if (imp == null) {
-            return null;
-        }
-        User.UserBuilder user = User.builder();
-        user.username(imp.getUsername());
-        user.nickname(imp.getNickname());
-        user.realname(imp.getRealname());
-        user.idcard(imp.getIdcard());
-        user.age(imp.getAge());
-        user.birthday(imp.getBirthday());
-        user.address(imp.getAddress());
-        user.education(imp.getEducation());
-        user.email(imp.getEmail());
-        user.qq(imp.getQq());
-        user.wechat(imp.getWechat());
-        user.mobile(imp.getMobile());
-        user.password(password);
-        user.sex(sex);
-        user.status(status);
-        return user.build();
-    }
-
 
 }

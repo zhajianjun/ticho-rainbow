@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.rainbow.application.dto.command.RoleBindMenuCommand;
 import top.ticho.rainbow.application.dto.command.RoleModifyCommand;
 import top.ticho.rainbow.application.dto.command.RoleSaveCommand;
 import top.ticho.rainbow.application.dto.command.RoleStatusModifyCommand;
@@ -112,17 +111,6 @@ public class RoleController {
     @GetMapping("all")
     public TiResult<List<RoleDTO>> all() {
         return TiResult.ok(roleService.all());
-    }
-
-    /**
-     * 绑定角色菜单
-     */
-    @PreAuthorize("@perm.hasPerms('system:role:bind-menu')")
-    @PostMapping("menu/bind")
-    @Deprecated
-    public TiResult<Void> bindMenu(@Validated @RequestBody RoleBindMenuCommand bindMenuCommand) {
-        roleService.bindMenu(bindMenuCommand);
-        return TiResult.ok();
     }
 
     /**

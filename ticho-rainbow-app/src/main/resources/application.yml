@@ -13,6 +13,7 @@ spring:
 
 
 
+
 server:
   port: 5122
   undertow:
@@ -25,3 +26,9 @@ jasypt:
   encryptor:
     iv-generator-classname: org.jasypt.iv.NoIvGenerator
     algorithm: PBEWithMD5AndTripleDES
+
+mybatis-plus:
+  global-config:
+    db-config:
+      insert-strategy: always
+      update-strategy: always

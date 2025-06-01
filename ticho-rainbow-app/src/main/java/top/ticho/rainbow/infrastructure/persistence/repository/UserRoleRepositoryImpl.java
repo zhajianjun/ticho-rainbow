@@ -79,7 +79,7 @@ public class UserRoleRepositoryImpl extends TiRepositoryImpl<UserRoleMapper, Use
             .stream()
             .map(x -> convertToUserRole(userId, x))
             .collect(Collectors.toList());
-        saveBatch(userRolePOS);
+        super.saveBatch(userRolePOS);
     }
 
     @Override

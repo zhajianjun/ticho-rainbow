@@ -1,15 +1,14 @@
 package top.ticho.rainbow.application.assembler;
 
-import cn.hutool.core.util.IdUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.NullValueCheckStrategy;
 import top.ticho.rainbow.application.dto.command.ClientModifyCommand;
 import top.ticho.rainbow.application.dto.command.ClientSaveCommand;
 import top.ticho.rainbow.application.dto.excel.ClientExcelExport;
 import top.ticho.rainbow.application.dto.response.ClientDTO;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.domain.entity.vo.ClientModifyVO;
+import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.starter.web.util.TiIdUtil;
 
 /**
@@ -18,11 +17,12 @@ import top.ticho.starter.web.util.TiIdUtil;
  * @author zhajianjun
  * @date 2023-12-17 20:12
  */
-@Mapper(componentModel = "spring", imports = {IdUtil.class, TiIdUtil.class})
+@Mapper(componentModel = "spring", imports = {TiIdUtil.class, CommonStatus.class})
 public interface ClientAssembler {
 
+    @Mapping(target = "status", expression = "java(CommonStatus.DISABLE.code())")
     @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
-    @Mapping(target = "accessKey", expression = "java(IdUtil.fastSimpleUUID())", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+    @Mapping(target = "accessKey", expression = "java(TiIdUtil.getSimpleUuid())")
     @Mapping(target = "createTime", ignore = true)
     @Mapping(target = "createBy", ignore = true)
     @Mapping(target = "updateTime", ignore = true)

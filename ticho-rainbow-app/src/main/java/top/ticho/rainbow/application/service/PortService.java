@@ -25,7 +25,6 @@ import top.ticho.rainbow.infrastructure.common.constant.DictConst;
 import top.ticho.rainbow.infrastructure.common.enums.ProtocolType;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.util.TiAssert;
-import top.ticho.starter.web.util.valid.TiValidUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -57,7 +56,6 @@ public class PortService {
     private final HttpServletResponse response;
 
     public void save(PortSaveCommand portSaveCommand) {
-        TiValidUtil.valid(portSaveCommand);
         check(null, portSaveCommand.getAccessKey(), portSaveCommand.getPort(), portSaveCommand.getDomain(), portSaveCommand.getType());
         Port port = portAssembler.toEntity(portSaveCommand);
         TiAssert.isTrue(portRepository.save(port), "保存失败");
@@ -73,7 +71,6 @@ public class PortService {
     }
 
     public void modify(PortModifyfCommand portModifyfCommand) {
-        TiValidUtil.valid(portModifyfCommand);
         Port port = portRepository.find(portModifyfCommand.getId());
         TiAssert.isNotNull(port, "修改失败，数据不存在");
         // accessKey不可修改

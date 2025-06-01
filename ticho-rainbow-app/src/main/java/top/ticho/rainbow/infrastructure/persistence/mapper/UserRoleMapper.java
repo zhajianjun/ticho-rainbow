@@ -13,5 +13,4 @@ import top.ticho.starter.datasource.mapper.TiMapper;
 @Repository
 public interface UserRoleMapper extends TiMapper<UserRolePO> {
 
-
 }

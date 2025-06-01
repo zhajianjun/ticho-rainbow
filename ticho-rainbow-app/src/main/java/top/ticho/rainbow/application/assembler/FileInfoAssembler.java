@@ -8,6 +8,7 @@ import top.ticho.rainbow.application.dto.response.ChunkCacheDTO;
 import top.ticho.rainbow.application.dto.response.FileInfoDTO;
 import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.infrastructure.common.enums.FileInfoStatus;
+import top.ticho.starter.web.util.TiIdUtil;
 import top.ticho.tool.json.util.TiJsonUtil;
 
 /**
@@ -16,7 +17,7 @@ import top.ticho.tool.json.util.TiJsonUtil;
  * @author zhajianjun
  * @date 2024-04-23 10:41
  */
-@Mapper(componentModel = "spring", imports = {FileInfoStatus.class, TiJsonUtil.class})
+@Mapper(componentModel = "spring", imports = {FileInfoStatus.class, TiJsonUtil.class, TiIdUtil.class})
 public interface FileInfoAssembler {
 
     /**
@@ -25,6 +26,7 @@ public interface FileInfoAssembler {
      * @param dto 文件信息DTO
      * @return {@link FileInfo}
      */
+    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
     FileInfo toEntity(FileInfoDTO dto);
 
     /**

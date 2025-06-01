@@ -22,7 +22,6 @@ public class MateMetaObjectHandler implements MetaObjectHandler {
         this.setFieldValByName("createBy", TiUserUtil.getCurrentUsername(), metaObject);
         this.setFieldValByName("createTime", LocalDateTime.now(), metaObject);
         this.setFieldValByName("isDelete", 0, metaObject);
-
     }
 
     @Override
@@ -30,6 +29,7 @@ public class MateMetaObjectHandler implements MetaObjectHandler {
         // 针对非主键的字段,只有该表注解了fill 并且 字段名和字段属性 能匹配到才会进行填充(就算有值，也会被覆盖)
         this.setFieldValByName("updateBy", TiUserUtil.getCurrentUsername(), metaObject);
         this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
+        this.setFieldValByName("isDelete", 0, metaObject);
     }
 
 }

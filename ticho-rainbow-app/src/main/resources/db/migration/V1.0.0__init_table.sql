@@ -612,7 +612,7 @@ DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user`
 (
     `id`          bigint NOT NULL COMMENT '主键编号',
-    `username`    varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '账户;账户具有唯一性',
+    `username`    varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '账号;具有唯一性',
     `password`    varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '密码',
     `nickname`    varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '昵称',
     `realname`    varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '真实姓名',

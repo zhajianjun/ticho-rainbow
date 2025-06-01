@@ -13,6 +13,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import top.ticho.starter.log.interceptor.TiWebLogInterceptor;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.view.enums.TiBizErrCode;
@@ -107,6 +108,15 @@ public class CustomResponseBodyAdvice {
         prefix(ex);
         TiResult<String> result = TiResult.of(TiHttpErrCode.FAIL);
         result.setMsg("数据库异常");
+        response.setStatus(result.getCode());
+        log.error("catch error\t{}", ex.getMessage(), ex);
+        return result;
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public TiResult<String> noResourceFoundExceptionHandler(NoResourceFoundException ex) {
+        prefix(ex);
+        TiResult<String> result = TiResult.of(TiHttpErrCode.NOT_FOUND);
         response.setStatus(result.getCode());
         log.error("catch error\t{}", ex.getMessage(), ex);
         return result;

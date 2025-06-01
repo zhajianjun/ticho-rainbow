@@ -1,22 +1,24 @@
 package top.ticho.rainbow.application.dto.command;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 /**
- * 重置用户密码
+ * 注册用户
  *
  * @author zhajianjun
- * @date 2024-01-08 20:30
+ * @date 2025-05-31 18:57
  */
 @Data
-public class ResetPasswordCommand {
+public class UserSignUpCommand {
 
-    /** 用户名 */
-    @NotBlank(message = "用户名不能为空")
+    /** 账号 */
+    @NotBlank(message = "账号不能为空")
+    @Length(max = 32, message = "账号长度不能超过{max}个字符")
     private String username;
     /** 密码 */
     @NotBlank(message = "密码不能为空")

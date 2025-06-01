@@ -64,9 +64,9 @@
   import {
     ImgCodeDTO,
     ImgCodeEmailDTO,
-    UserLoginDTO,
+    LoginDTO,
     UserSignUpDTO,
-  } from '@/api/system/model/userModel';
+  } from '@/api/system/model/loginModel';
   import { useMessage } from '@/hooks/web/useMessage';
   import { useDesign } from '@/hooks/web/useDesign';
   import { useUserStore } from '@/store/modules/user';

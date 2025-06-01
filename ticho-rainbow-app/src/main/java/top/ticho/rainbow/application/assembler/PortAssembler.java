@@ -1,6 +1,7 @@
 package top.ticho.rainbow.application.assembler;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import top.ticho.intranet.server.entity.PortInfo;
 import top.ticho.rainbow.application.dto.command.PortModifyfCommand;
 import top.ticho.rainbow.application.dto.command.PortSaveCommand;
@@ -8,6 +9,7 @@ import top.ticho.rainbow.application.dto.excel.PortExcelExport;
 import top.ticho.rainbow.application.dto.response.PortDTO;
 import top.ticho.rainbow.domain.entity.Port;
 import top.ticho.rainbow.domain.entity.vo.PortModifyfVO;
+import top.ticho.starter.web.util.TiIdUtil;
 
 /**
  * 端口信息 转换
@@ -15,9 +17,10 @@ import top.ticho.rainbow.domain.entity.vo.PortModifyfVO;
  * @author zhajianjun
  * @date 2023-12-17 20:12
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", imports = {TiIdUtil.class})
 public interface PortAssembler {
 
+    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
     Port toEntity(PortSaveCommand dto);
 
     PortDTO toDTO(Port entity);

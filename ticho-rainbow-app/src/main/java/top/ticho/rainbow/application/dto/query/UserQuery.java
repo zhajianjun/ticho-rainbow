@@ -23,7 +23,7 @@ public class UserQuery extends TiPageQuery {
     private List<Long> ids;
     /** 主键编号 */
     private Long id;
-    /** 账户;账户具有唯一性 */
+    /** 账号;具有唯一性 */
     private String username;
     /** 昵称 */
     private String nickname;

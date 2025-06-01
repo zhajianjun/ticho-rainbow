@@ -89,7 +89,8 @@ public class RoleService {
     @Transactional(rollbackFor = Exception.class)
     public void modify(RoleModifyCommand roleModifyCommand) {
         Role role = roleRepository.find(roleModifyCommand.getId());
-        TiAssert.isNotNull(role, TiBizErrCode.FAIL, "修改失败，角色已存在");
+        TiAssert.isNotNull(role, TiBizErrCode.FAIL, "修改失败，角色不存在");
+        role.checkVersion(roleModifyCommand.getVersion(), "修改失败，角色已修改，请刷新后重试");
         RoleModifyVO modifyVO = roleAssembler.toVo(roleModifyCommand);
         role.modify(modifyVO);
         TiAssert.isTrue(roleRepository.modify(role), TiBizErrCode.FAIL, "修改失败，请刷新后重试");
@@ -103,7 +104,8 @@ public class RoleService {
     public void modifyStatus(RoleStatusModifyCommand roleStatusModifyCommand) {
         Role role = roleRepository.find(roleStatusModifyCommand.getId());
         TiAssert.isNotNull(role, TiBizErrCode.FAIL, "修改失败，角色不存在");
-        role.modifyStatus(roleStatusModifyCommand.getStatus(), roleStatusModifyCommand.getVersion());
+        role.checkVersion(roleStatusModifyCommand.getVersion(), "修改失败，角色已修改，请刷新后重试");
+        role.modifyStatus(roleStatusModifyCommand.getStatus());
         roleRepository.modify(role);
     }
 

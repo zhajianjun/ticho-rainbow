@@ -3,7 +3,6 @@ package top.ticho.rainbow.infrastructure.persistence.repository;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -22,7 +21,6 @@ import top.ticho.rainbow.infrastructure.persistence.po.UserPO;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
-import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.TiSpringUtil;
 
 import java.util.Collection;
@@ -42,9 +40,7 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
     private final UserConverter userConverter;
 
     @Override
-    @CacheEvict(value = CacheConst.USER_INFO, key = "#user.username")
     public boolean save(User user) {
-        TiAssert.isNotBlank(user.getUsername(), "用户名不能为空");
         UserPO userPO = userConverter.toPo(user);
         return save(userPO);
     }
@@ -52,17 +48,28 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
     @Override
     @Transactional
     public boolean saveBatch(List<User> users) {
-        List<UserPO> userPOs = userConverter.toPos(users);
-        return saveBatch(userPOs);
+        List<UserPO> userPOs = userConverter.toPo(users);
+        return super.saveBatch(userPOs);
+    }
+
+    @Override
+    @CacheEvict(value = CacheConst.USER_INFO, key = "#user.username")
+    public boolean remove(User user) {
+        return super.removeById(user.getId());
     }
 
     @Override
     @CacheEvict(value = CacheConst.USER_INFO, key = "#user.username")
     public boolean modify(User user) {
-        // 为了保证缓存，用户名不能为空
-        TiAssert.isNotBlank(user.getUsername(), "用户名不能为空");
         UserPO userPO = userConverter.toPo(user);
         return super.updateById(userPO);
+    }
+
+    @Override
+    @Transactional
+    public boolean modifyBatch(List<User> users) {
+        List<UserPO> userPOs = userConverter.toPo(users);
+        return super.updateBatchById(userPOs);
     }
 
     @Override
@@ -72,45 +79,25 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
     }
 
     @Override
-    @Cacheable(value = CacheConst.USER_INFO, key = "#username")
-    public User getCacheByUsername(String username) {
-        return getByUsername(username);
+    public List<User> list(List<Long> ids) {
+        List<UserPO> pos = super.listByIds(ids);
+        return userConverter.toEntity(pos);
     }
 
     @Override
-    public User getByUsername(String username) {
+    @Cacheable(value = CacheConst.USER_INFO, key = "#username")
+    public User findCacheByUsername(String username) {
+        return findByUsername(username);
+    }
+
+    @Override
+    public User findByUsername(String username) {
         if (StrUtil.isBlank(username)) {
             return null;
         }
         LambdaQueryWrapper<UserPO> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(UserPO::getUsername, username);
         return userConverter.toEntity(getOne(wrapper));
-    }
-
-    @Override
-    @CacheEvict(value = CacheConst.USER_INFO, key = "#username")
-    public boolean removeByUsername(String username) {
-        if (StrUtil.isBlank(username)) {
-            return false;
-        }
-        LambdaQueryWrapper<UserPO> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(UserPO::getUsername, username);
-        return remove(wrapper);
-    }
-
-    @Override
-    public Integer modifyStatus(Collection<String> usernames, Integer status, Collection<Integer> eqDbStatus, Collection<Integer> neDbStatus) {
-        if (CollUtil.isEmpty(usernames)) {
-            return 0;
-        }
-        LambdaUpdateWrapper<UserPO> wrapper = Wrappers.lambdaUpdate();
-        wrapper.in(UserPO::getUsername, usernames);
-        wrapper.in(CollUtil.isNotEmpty(eqDbStatus), UserPO::getStatus, eqDbStatus);
-        wrapper.notIn(CollUtil.isNotEmpty(neDbStatus), UserPO::getStatus, neDbStatus);
-        wrapper.set(UserPO::getStatus, status);
-        int update = baseMapper.update(null, wrapper);
-        clearCache(usernames);
-        return update;
     }
 
     private void clearCache(Collection<String> usernames) {
@@ -124,7 +111,7 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
 
     @Override
     @Cacheable(value = CacheConst.USER_INFO, unless = "#result == null", key = "#result==null ? '' : result.username")
-    public User getByEmail(String email) {
+    public User findByEmail(String email) {
         if (StrUtil.isBlank(email)) {
             return null;
         }
@@ -160,7 +147,7 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
     }
 
     @Override
-    public List<User> getByAccount(String username, String email, String mobile) {
+    public List<User> findByAccount(String username, String email, String mobile) {
         if (StrUtil.isAllBlank(username, email, mobile)) {
             return Collections.emptyList();
         }
@@ -173,7 +160,7 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
                     .or()
                     .eq(StrUtil.isNotBlank(mobile), UserPO::getMobile, mobile)
             );
-        return userConverter.toEntitys(list(wrapper));
+        return userConverter.toEntity(list(wrapper));
     }
 
 }

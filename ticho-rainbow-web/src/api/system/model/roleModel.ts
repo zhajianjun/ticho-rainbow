@@ -28,14 +28,7 @@ export interface RoleQuery {
   remark: string;
 }
 
-export interface RoleMenuBindDTO {
-  /** 角色编号 */
-  roleId: string;
-  /** 菜单编号 */
-  menuIds: string[];
-}
-
-export interface RoleMenuQueryDTO {
+export interface RoleDtlQuery {
   /** 角色编号列表 */
   roleIds: string[];
   /** 角色编码列表 */
@@ -59,4 +52,28 @@ export interface RoleMenuDtlDTO {
   roles: RoleDTO[];
   /** 菜单信息 */
   menus: MenuDtlDTO[];
+}
+
+export interface RoleSaveCommand {
+  code: string;
+  name: string;
+  status: number;
+  remark: string;
+  createTime: string;
+  menuIds: number[];
+}
+
+export interface RoleModifyCommand {
+  id: number;
+  name: string;
+  status: number;
+  remark: string;
+  version: number;
+  menuIds: number[];
+}
+
+export interface RoleStatusModifyCommand {
+  id: number;
+  status: number;
+  version: number;
 }

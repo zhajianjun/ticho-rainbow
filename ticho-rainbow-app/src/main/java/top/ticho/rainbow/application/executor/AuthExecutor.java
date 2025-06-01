@@ -1,32 +1,21 @@
 package top.ticho.rainbow.application.executor;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.assembler.MenuAssembler;
 import top.ticho.rainbow.application.assembler.RoleAssembler;
-import top.ticho.rainbow.application.assembler.UserAssembler;
 import top.ticho.rainbow.application.dto.response.MenuDtlDTO;
 import top.ticho.rainbow.application.dto.response.RoleDTO;
 import top.ticho.rainbow.application.dto.response.RoleMenuDtlDTO;
-import top.ticho.rainbow.application.dto.response.UserDTO;
-import top.ticho.rainbow.application.dto.response.UserRoleMenuDtlDTO;
-import top.ticho.rainbow.application.service.FileInfoService;
-import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.domain.entity.Menu;
 import top.ticho.rainbow.domain.entity.Role;
-import top.ticho.rainbow.domain.entity.User;
-import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.domain.repository.MenuRepository;
 import top.ticho.rainbow.domain.repository.RoleMenuRepository;
 import top.ticho.rainbow.domain.repository.RoleRepository;
-import top.ticho.rainbow.domain.repository.UserRepository;
-import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.common.enums.MenuType;
-import top.ticho.rainbow.infrastructure.common.util.UserUtil;
 import top.ticho.starter.web.util.TiTreeUtil;
 
-import jakarta.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -46,82 +35,14 @@ import java.util.stream.Stream;
  * @author zhajianjun
  * @date 2023-12-17 08:30
  */
+@RequiredArgsConstructor
 @Component
 public class AuthExecutor {
-    @Resource
-    private UserRepository userRepository;
-    @Resource
-    private UserAssembler userAssembler;
-    @Resource
-    private UserRoleRepository userRoleRepository;
-    @Resource
-    private RoleRepository roleRepository;
-    @Resource
-    private RoleAssembler roleAssembler;
-    @Resource
-    private RoleMenuRepository roleMenuRepository;
-    @Resource
-    private MenuRepository menuRepository;
-    @Resource
-    private MenuAssembler menuAssembler;
-    @Resource
-    private FileInfoRepository fileInfoRepository;
-    @Resource
-    private FileInfoService fileInfoService;
-
-    public UserDTO getUser(String username) {
-        User user = userRepository.getCacheByUsername(username);
-        return userAssembler.toDTO(user);
-    }
-
-    /**
-     * 查询用户角色菜单权限标识信息
-     *
-     * @param username 用户名
-     * @return {@link UserRoleMenuDtlDTO}
-     */
-    public UserRoleMenuDtlDTO getUserDtl(String username) {
-        User user = userRepository.getCacheByUsername(username);
-        UserRoleMenuDtlDTO userRoleMenuDtlDTO = userAssembler.toDtlDTO(user);
-        if (userRoleMenuDtlDTO == null) {
-            return null;
-        }
-        setPhoto(userRoleMenuDtlDTO);
-        List<Long> roleIds = userRoleRepository.listByUserId(user.getId());
-        RoleMenuDtlDTO roleMenuFuncDtl = mergeRoleByIds(roleIds, false, false);
-        if (roleMenuFuncDtl == null) {
-            return null;
-        }
-        userRoleMenuDtlDTO.setRoleIds(roleMenuFuncDtl.getRoleIds());
-        userRoleMenuDtlDTO.setRoleCodes(roleMenuFuncDtl.getRoleCodes());
-        userRoleMenuDtlDTO.setMenuIds(roleMenuFuncDtl.getMenuIds());
-        userRoleMenuDtlDTO.setRoles(roleMenuFuncDtl.getRoles());
-        userRoleMenuDtlDTO.setMenus(roleMenuFuncDtl.getMenus());
-        return userRoleMenuDtlDTO;
-    }
-
-    private void setPhoto(UserRoleMenuDtlDTO userRoleMenuDtlDTO) {
-        if (userRoleMenuDtlDTO == null || !StrUtil.isNumeric(userRoleMenuDtlDTO.getPhoto())) {
-            return;
-        }
-        Long fileId = Long.parseLong(userRoleMenuDtlDTO.getPhoto());
-        FileInfo fileInfo = fileInfoRepository.find(fileId);
-        if (fileInfo == null) {
-            userRoleMenuDtlDTO.setPhoto(null);
-            return;
-        }
-        String url = fileInfoService.presigned(fileInfo, null, true);
-        userRoleMenuDtlDTO.setPhoto(url);
-    }
-
-    /**
-     * 查询登录人用户角色菜单权限标识信息
-     *
-     * @return {@link UserRoleMenuDtlDTO}
-     */
-    public UserRoleMenuDtlDTO getUserDtl() {
-        return getUserDtl(UserUtil.getCurrentUsername());
-    }
+    private final RoleRepository roleRepository;
+    private final RoleAssembler roleAssembler;
+    private final RoleMenuRepository roleMenuRepository;
+    private final MenuRepository menuRepository;
+    private final MenuAssembler menuAssembler;
 
     /**
      * 获取状态正常的菜单流

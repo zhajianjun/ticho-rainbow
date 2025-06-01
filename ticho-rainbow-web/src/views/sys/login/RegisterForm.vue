@@ -1,7 +1,13 @@
 <template>
   <div v-if="getShow">
     <LoginFormTitle class="enter-x" />
-    <Form class="p-4 enter-x" :model="formData" :rules="getFormRules" ref="formRef" :loading="loading">
+    <Form
+      class="p-4 enter-x"
+      :model="formData"
+      :rules="getFormRules"
+      ref="formRef"
+      :loading="loading"
+    >
       <FormItem name="username" class="enter-x">
         <Input
           class="fix-auto-fill"
@@ -51,13 +57,7 @@
         </Checkbox>
       </FormItem>
 
-      <Button
-        type="primary"
-        class="enter-x"
-        size="large"
-        block
-        @click="handleRegister"
-      >
+      <Button type="primary" class="enter-x" size="large" block @click="handleRegister">
         {{ t('sys.login.registerButton') }}
       </Button>
       <Button size="large" block class="mt-4 enter-x" @click="handleBackLogin">
@@ -76,17 +76,17 @@
   import { useI18n } from '@/hooks/web/useI18n';
   import { useLoginState, useFormRules, useFormValid, LoginStateEnum } from './useLogin';
   import { signUp, signUpEmailSend } from '@/api/system/login';
-  import {
-    ImgCodeDTO,
-    ImgCodeEmailDTO,
-    UserLoginDTO,
-    UserSignUpDTO,
-  } from '@/api/system/model/userModel';
   import { useMessage } from '@/hooks/web/useMessage';
   import { useDesign } from '@/hooks/web/useDesign';
   import { useUserStore } from '@/store/modules/user';
   import ImgCodeModal from './ImgCodeModal.vue';
   import { useModal } from '@/components/Modal';
+  import {
+    ImgCodeDTO,
+    LoginDTO,
+    UserSignUpCommand,
+    UserSignUpEmailSendCommand,
+  } from '@/api/system/model/loginModel';
 
   const { notification, createErrorModal } = useMessage();
   const { prefixCls } = useDesign('login');
@@ -128,7 +128,7 @@
     try {
       loading.value = true;
       // 1.注册
-      const signData = data as UserSignUpDTO;
+      const signData = data as UserSignUpCommand;
       const res = await signUp(signData).then((res) => {
         notification.success({
           message: t('sys.api.successTip'),
@@ -142,7 +142,7 @@
         return res;
       });
       // 2.登录
-      const userLoginDTO = res as UserLoginDTO;
+      const userLoginDTO = res as LoginDTO;
       userLoginDTO.password = formData.password;
       const userInfo = await userStore.login(userLoginDTO, true);
       if (userInfo) {
@@ -188,7 +188,9 @@
       openModal();
       return Promise.resolve(false);
     }
-    const data = Object.assign(imgCodeData, { email: emailData.email }) as ImgCodeEmailDTO;
+    const data = Object.assign(imgCodeData, {
+      email: emailData.email,
+    }) as UserSignUpEmailSendCommand;
     return await signUpEmailSend(data)
       .then(() => {
         notification.success({

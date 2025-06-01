@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.dto.SecurityUser;
 import top.ticho.rainbow.application.dto.response.UserDTO;
 import top.ticho.rainbow.application.executor.AuthExecutor;
+import top.ticho.rainbow.application.executor.UserExecutor;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.rainbow.infrastructure.common.constant.SecurityConst;
 import top.ticho.rainbow.infrastructure.common.enums.UserStatus;
@@ -35,6 +36,7 @@ public class DefaultPermissionService implements TiPermissionService {
 
     private final HttpServletRequest request;
     private final AuthExecutor authExecutor;
+    private final UserExecutor userExecutor;
 
     public boolean hasPerms(String... permissions) {
         log.debug("权限校验，permissions = {}", String.join(",", permissions));
@@ -56,7 +58,7 @@ public class DefaultPermissionService implements TiPermissionService {
         if (roleCodes.contains(SecurityConst.ADMIN)) {
             return true;
         }
-        UserDTO user = authExecutor.getUser(currentUser.getUsername());
+        UserDTO user = userExecutor.find(currentUser.getUsername());
         if (Objects.isNull(user) || !Objects.equals(user.getStatus(), UserStatus.NORMAL.code())) {
             return false;
         }

@@ -6,13 +6,13 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 /**
- * 注册邮箱发送验证码
+ * 用户注册邮箱发送验证码
  *
  * @author zhajianjun
  * @date 2024-02-12 20:19
  */
 @Data
-public class SignUpEmailSendCommand {
+public class UserSignUpEmailSendCommand {
 
     @NotBlank(message = "邮箱不能为空")
     @Email(message = "邮箱格式不正确")
@@ -23,4 +23,5 @@ public class SignUpEmailSendCommand {
     /** 验证码 */
     @NotBlank(message = "验证码不能为空")
     private String imgCode;
+
 }
