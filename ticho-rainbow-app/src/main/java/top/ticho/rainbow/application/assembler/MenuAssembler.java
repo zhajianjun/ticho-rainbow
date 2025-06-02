@@ -27,7 +27,6 @@ import java.util.Objects;
 public interface MenuAssembler {
 
     @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
-    @Mapping(target = "status", expression = "java(CommonStatus.DISABLE.code())")
     @Mapping(target = "perms", expression = "java(CollUtil.join(menuSaveCommand.getPerms(), \",\"))")
     Menu toEntity(MenuSaveCommand menuSaveCommand);
 
