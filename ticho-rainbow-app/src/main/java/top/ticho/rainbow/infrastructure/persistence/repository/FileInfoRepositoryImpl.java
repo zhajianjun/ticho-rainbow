@@ -3,7 +3,6 @@ package top.ticho.rainbow.infrastructure.persistence.repository;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -14,7 +13,6 @@ import top.ticho.rainbow.application.dto.response.FileInfoDTO;
 import top.ticho.rainbow.application.repository.FileInfoAppRepository;
 import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
-import top.ticho.rainbow.infrastructure.common.enums.FileInfoStatus;
 import top.ticho.rainbow.infrastructure.persistence.converter.FileInfoConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.FileInfoMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.FileInfoPO;
@@ -55,6 +53,16 @@ public class FileInfoRepositoryImpl extends TiRepositoryImpl<FileInfoMapper, Fil
     public boolean modify(FileInfo fileInfo) {
         FileInfoPO fileInfoPO = fileInfoConverter.toPo(fileInfo);
         return updateById(fileInfoPO);
+    }
+
+    @Override
+    public boolean modifyBatch(List<FileInfo> fileInfos) {
+        return super.updateBatchById(fileInfoConverter.toPo(fileInfos));
+    }
+
+    @Override
+    public List<FileInfo> list(List<Long> ids) {
+        return fileInfoConverter.toEntity(super.listByIds(ids));
     }
 
     @Override
@@ -111,42 +119,5 @@ public class FileInfoRepositoryImpl extends TiRepositoryImpl<FileInfoMapper, Fil
         wrapper.last("limit 1");
         return fileInfoConverter.toEntity(getOne(wrapper));
     }
-
-    @Override
-    public boolean enable(Long id) {
-        if (Objects.isNull(id)) {
-            return false;
-        }
-        LambdaUpdateWrapper<FileInfoPO> wrapper = Wrappers.lambdaUpdate();
-        wrapper.eq(FileInfoPO::getId, id);
-        wrapper.eq(FileInfoPO::getStatus, FileInfoStatus.DISABLED.code());
-        wrapper.set(FileInfoPO::getStatus, FileInfoStatus.NORMAL.code());
-        return update(wrapper);
-    }
-
-    @Override
-    public boolean disable(Long id) {
-        if (Objects.isNull(id)) {
-            return false;
-        }
-        LambdaUpdateWrapper<FileInfoPO> wrapper = Wrappers.lambdaUpdate();
-        wrapper.eq(FileInfoPO::getId, id);
-        wrapper.eq(FileInfoPO::getStatus, FileInfoStatus.NORMAL.code());
-        wrapper.set(FileInfoPO::getStatus, FileInfoStatus.DISABLED.code());
-        return update(wrapper);
-    }
-
-    @Override
-    public boolean cancel(Long id) {
-        if (Objects.isNull(id)) {
-            return false;
-        }
-        LambdaUpdateWrapper<FileInfoPO> wrapper = Wrappers.lambdaUpdate();
-        wrapper.eq(FileInfoPO::getId, id);
-        wrapper.ne(FileInfoPO::getStatus, FileInfoStatus.CANCE.code());
-        wrapper.set(FileInfoPO::getStatus, FileInfoStatus.CANCE.code());
-        return update(wrapper);
-    }
-
 
 }

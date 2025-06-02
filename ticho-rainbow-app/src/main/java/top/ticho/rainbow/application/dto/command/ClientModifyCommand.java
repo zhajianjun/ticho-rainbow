@@ -32,9 +32,6 @@ public class ClientModifyCommand {
     @Future(message = "过期时间必须大于当前时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime expireAt;
-    /** 状态;1-启用,0-停用 */
-    @NotNull(message = "状态不能为空")
-    private Integer status;
     /** 排序 */
     @Max(value = 65535, message = "排序最大值为{value}")
     @NotNull(message = "排序不能为空")

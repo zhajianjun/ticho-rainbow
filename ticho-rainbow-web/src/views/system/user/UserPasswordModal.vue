@@ -15,7 +15,6 @@
   import { BasicForm, useForm } from '@/components/Form/index';
   import { getPasswordModalFormColumns } from './user.data';
   import { modifyUserPassword } from '@/api/system/user';
-  import { useMessage } from '@/hooks/web/useMessage';
   import { UserModifyPasswordCommand } from '@/api/system/model/userModel';
 
   export default defineComponent({
@@ -45,8 +44,6 @@
           const values = (await validate()) as UserModifyPasswordCommand;
           setModalProps({ confirmLoading: true });
           await modifyUserPassword(values);
-          const { createMessage } = useMessage();
-          createMessage.success('操作成功');
           closeModal();
           // 触发父组件success方法
           emit('success');

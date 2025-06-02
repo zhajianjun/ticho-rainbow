@@ -30,7 +30,7 @@ public class DictLabel {
     private String color;
     /** 排序 */
     private Integer sort;
-    /** 状态;1-启用,0-停用 */
+    /** 状态;1-启用,0-禁用 */
     private Integer status;
     /** 备注信息 */
     private String remark;

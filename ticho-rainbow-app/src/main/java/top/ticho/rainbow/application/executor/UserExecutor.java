@@ -12,7 +12,6 @@ import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.starter.cache.component.TiCacheTemplate;
-import top.ticho.starter.view.enums.TiBizErrCode;
 import top.ticho.starter.view.util.TiAssert;
 
 import java.util.ArrayList;
@@ -48,10 +47,10 @@ public class UserExecutor {
 
     public void modifyPassword(String password, String newPassword, User user) {
         boolean matches = passwordEncoder.matches(password, user.getPassword());
-        TiAssert.isTrue(matches, TiBizErrCode.FAIL, "密码错误");
+        TiAssert.isTrue(matches, "密码错误");
         String encodedPasswordNew = passwordEncoder.encode(newPassword);
         user.modifyPassword(encodedPasswordNew);
-        TiAssert.isTrue(userRepository.modify(user), TiBizErrCode.FAIL, "更新密码失败");
+        TiAssert.isTrue(userRepository.modify(user), "更新密码失败");
     }
 
     public UserDTO find(String username) {

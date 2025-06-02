@@ -9,7 +9,6 @@ import top.ticho.rainbow.application.assembler.MenuAssembler;
 import top.ticho.rainbow.application.dto.SecurityUser;
 import top.ticho.rainbow.application.dto.command.MenuModifyCommand;
 import top.ticho.rainbow.application.dto.command.MenuSaveCommand;
-import top.ticho.rainbow.application.dto.response.MenuDTO;
 import top.ticho.rainbow.application.dto.response.MenuDtlDTO;
 import top.ticho.rainbow.application.dto.response.RouteDTO;
 import top.ticho.rainbow.application.dto.response.RouteMetaDTO;
@@ -20,7 +19,9 @@ import top.ticho.rainbow.domain.repository.MenuRepository;
 import top.ticho.rainbow.domain.repository.RoleMenuRepository;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.rainbow.infrastructure.common.constant.SecurityConst;
+import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.rainbow.infrastructure.common.enums.MenuType;
+import top.ticho.rainbow.infrastructure.common.enums.YesOrNo;
 import top.ticho.rainbow.infrastructure.common.util.UserUtil;
 import top.ticho.starter.view.enums.TiBizErrCode;
 import top.ticho.starter.view.util.TiAssert;
@@ -53,16 +54,16 @@ public class MenuService {
     public void save(MenuSaveCommand menuSaveCommand) {
         Menu menu = menuAssembler.toEntity(menuSaveCommand);
         checkData(menu);
-        TiAssert.isTrue(menuRepository.save(menu), TiBizErrCode.FAIL, "保存失败");
+        TiAssert.isTrue(menuRepository.save(menu), "保存失败");
     }
 
     public void modify(MenuModifyCommand menuModifyCommand) {
         Menu menu = menuRepository.find(menuModifyCommand.getId());
-        TiAssert.isNotNull(menu, TiBizErrCode.FAIL, "菜单不存在");
+        TiAssert.isNotNull(menu, "菜单不存在");
         checkData(menu);
         MenuModifyVO menuModifyVO = menuAssembler.toModifyVO(menuModifyCommand);
         menu.modify(menuModifyVO);
-        TiAssert.isTrue(menuRepository.modify(menu), TiBizErrCode.FAIL, "修改失败，请刷新后重试");
+        TiAssert.isTrue(menuRepository.modify(menu), "修改失败，请刷新后重试");
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -70,13 +71,8 @@ public class MenuService {
         // 子节点为空才能删除
         List<Long> menuIds = Collections.singletonList(id);
         boolean existsByMenuIds = roleMenuRepository.existsByMenuIds(menuIds);
-        TiAssert.isTrue(!existsByMenuIds, TiBizErrCode.FAIL, "删除失败,请解绑所有的角色菜单");
-        TiAssert.isTrue(menuRepository.remove(id), TiBizErrCode.FAIL, "删除失败");
-    }
-
-    public MenuDTO find(Long id) {
-        Menu menu = menuRepository.find(id);
-        return menuAssembler.toDTO(menu);
+        TiAssert.isTrue(!existsByMenuIds, "删除失败,请解绑所有的角色菜单");
+        TiAssert.isTrue(menuRepository.remove(id), "删除失败");
     }
 
     public List<MenuDtlDTO> list() {
@@ -111,12 +107,12 @@ public class MenuService {
         }
         List<RouteDTO> routes = menus
             .stream()
-            .filter(x -> Objects.equals(1, x.getStatus()))
+            .filter(x -> Objects.equals(CommonStatus.ENABLE.code(), x.getStatus()))
             .sorted(Comparator.comparing(Menu::getParentId).thenComparing(Comparator.nullsLast(Comparator.comparing(Menu::getSort))))
             .map(this::getEntityToRouteDto)
             .collect(Collectors.toList());
         Consumer<RouteDTO> afterConsumer = (root) -> {
-            if (!Objects.equals(root.getType(), 2)) {
+            if (!Objects.equals(root.getType(), MenuType.MENU.code())) {
                 return;
             }
             List<RouteDTO> children = root.getChildren();
@@ -152,8 +148,8 @@ public class MenuService {
         Long parentId = menu.getParentId();
         boolean isRoot = Objects.equals(CommConst.PARENT_ID, parentId);
         Menu parentMenu = null;
-        Integer parentType = 1;
-        String parentTypeName = "目录";
+        Integer parentType = MenuType.DIR.code();
+        String parentTypeName = MenuType.DIR.message();
         if (!isRoot) {
             parentMenu = menuRepository.find(parentId);
             TiAssert.isNotNull(parentMenu, TiBizErrCode.PARAM_ERROR, "父节点不存在");
@@ -163,42 +159,42 @@ public class MenuService {
         // 1-目录，父亲一定是目录，目录和路由的路由地址不能重复
         if (Objects.equals(MenuType.DIR.code(), type)) {
             checkDirectory(menu);
-            TiAssert.isTrue(Objects.equals(parentType, MenuType.DIR.code()), TiBizErrCode.FAIL, StrUtil.format("{}下不能新建目录", parentTypeName));
+            TiAssert.isTrue(Objects.equals(parentType, MenuType.DIR.code()), StrUtil.format("{}下不能新建目录", parentTypeName));
             Menu getByTypesAndPath = menuRepository.getByTypesAndPath(MenuType.dirOrMenus(), menu.getPath(), menu.getId());
             // 菜单或路由path不能重复
-            TiAssert.isNull(getByTypesAndPath, TiBizErrCode.FAIL, "目录路由重复");
+            TiAssert.isNull(getByTypesAndPath, "目录路由重复");
             if (!Objects.equals(menu.getExtFlag(), 1)) {
-                TiAssert.isNotBlank(menu.getComponentName(), TiBizErrCode.FAIL, "组件名称不能为空");
+                TiAssert.isNotBlank(menu.getComponentName(), "组件名称不能为空");
                 Menu repeatCompMenu = menuRepository.getByTypesAndComNameExcludeId(MenuType.dirOrMenus(), menu.getComponentName(), menu.getId());
                 // 按钮名称不能重复
-                TiAssert.isNull(repeatCompMenu, TiBizErrCode.FAIL, "组件名称重复");
+                TiAssert.isNull(repeatCompMenu, "组件名称重复");
             }
         }
         // 2-菜单，父亲一定是目录，目录和路由的路由地址不能重复
         else if (Objects.equals(MenuType.MENU.code(), type)) {
             checkMenu(menu);
             // 不是外部链接，则组件路径和组件名称不能为空
-            if (!Objects.equals(menu.getExtFlag(), 1)) {
+            if (!Objects.equals(YesOrNo.YES.code(), menu.getExtFlag())) {
                 checkExt(menu);
             }
-            if (Objects.equals(menu.getInvisible(), 1)) {
+            if (Objects.equals(YesOrNo.YES.code(), menu.getInvisible())) {
                 menu.modifyCurrentActiveMenu("");
             }
-            TiAssert.isTrue(Objects.equals(parentType, MenuType.DIR.code()), TiBizErrCode.FAIL, StrUtil.format("{}下不能新建菜单", parentTypeName));
+            TiAssert.isTrue(Objects.equals(parentType, MenuType.DIR.code()), StrUtil.format("{}下不能新建菜单", parentTypeName));
             Menu getByTypesAndPath = menuRepository.getByTypesAndPath(MenuType.dirOrMenus(), menu.getPath(), menu.getId());
             // 菜单或路由path不能重复
-            TiAssert.isNull(getByTypesAndPath, TiBizErrCode.FAIL, "菜单路由重复");
+            TiAssert.isNull(getByTypesAndPath, "菜单路由重复");
             Menu repeatCompMenu = menuRepository.getByTypesAndComNameExcludeId(MenuType.dirOrMenus(), menu.getComponentName(), menu.getId());
             // 按钮名称不能重复
-            TiAssert.isNull(repeatCompMenu, TiBizErrCode.FAIL, "组件名称重复");
+            TiAssert.isNull(repeatCompMenu, "组件名称重复");
         }
         // 3-按钮，父亲一定是菜单, 组件名称不能重复
         else if (Objects.equals(MenuType.BUTTON.code(), type)) {
             checkButton(menu);
-            TiAssert.isTrue(Objects.equals(parentType, MenuType.MENU.code()), TiBizErrCode.FAIL, StrUtil.format("{}下不能新建按钮", parentTypeName));
+            TiAssert.isTrue(Objects.equals(parentType, MenuType.MENU.code()), StrUtil.format("{}下不能新建按钮", parentTypeName));
             Menu repeatCompMenu = menuRepository.getByTypesAndComNameExcludeId(Collections.singletonList(MenuType.BUTTON.code()), menu.getComponentName(), menu.getId());
             // 按钮名称不能重复
-            TiAssert.isNull(repeatCompMenu, TiBizErrCode.FAIL, "按钮名称重复");
+            TiAssert.isNull(repeatCompMenu, "按钮名称重复");
         } else {
             TiAssert.cast(TiBizErrCode.PARAM_ERROR, "未知菜单类型");
         }

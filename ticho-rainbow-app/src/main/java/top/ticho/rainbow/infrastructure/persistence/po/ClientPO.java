@@ -33,7 +33,7 @@ public class ClientPO extends Model<ClientPO> {
     private String name;
     /** 过期时间 */
     private LocalDateTime expireAt;
-    /** 状态;1-启用,0-停用 */
+    /** 状态;1-启用,0-禁用 */
     private Integer status;
     /** 排序 */
     private Integer sort;
@@ -41,6 +41,7 @@ public class ClientPO extends Model<ClientPO> {
     private String remark;
     /** 版本号 */
     @Version
+    @TableField(fill = FieldFill.INSERT)
     private Long version;
     /** 创建人 */
     @TableField(fill = FieldFill.INSERT)

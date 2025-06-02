@@ -22,7 +22,11 @@ public interface PortRepository {
 
     boolean modify(Port port);
 
+    boolean modifyBatch(List<Port> ports);
+
     Port find(Long id);
+
+    List<Port> list(List<Long> ids);
 
     /**
      * 根据端口号查询，排除id

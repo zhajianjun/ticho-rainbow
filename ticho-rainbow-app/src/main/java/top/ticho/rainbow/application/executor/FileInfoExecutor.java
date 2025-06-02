@@ -77,7 +77,7 @@ public class FileInfoExecutor {
             .ext(extName)
             .contentType(file.getContentType())
             .remark(remark)
-            .status(FileInfoStatus.NORMAL.code())
+            .status(FileInfoStatus.ENABLE.code())
             .build();
         // 文件存储
         String absolutePath = getAbsolutePath(fileInfo);
@@ -105,8 +105,7 @@ public class FileInfoExecutor {
         if (fileInfo == null) {
             return null;
         }
-        boolean normal = Objects.equals(fileInfo.getStatus(), FileInfoStatus.NORMAL.code());
-        if (!normal) {
+        if (!fileInfo.isEnable()) {
             return null;
         }
         String absolutePath = getAbsolutePath(fileInfo.getType(), fileInfo.getPath());

@@ -123,6 +123,7 @@
   import { downloadByData, downloadByUrl } from '@/utils/file/download';
   import { FileItem } from '@/components/Upload/src/types/typing';
   import { FileInfoQuery } from '@/api/storage/model/fileInfoModel';
+  import { VersionModifyCommand } from '@/api/system/model/baseModel';
 
   export default defineComponent({
     name: 'FileInfo',
@@ -176,6 +177,7 @@
       });
 
       const { createMessage } = useMessage();
+
       function handleSave(fileItems: FileItem[]) {
         console.log(fileItems);
         reload();
@@ -216,28 +218,32 @@
       }
 
       function handleDelete(record: Recordable) {
-        delFileInfo(record.id).then(() => {
+        const param = { ...record } as VersionModifyCommand;
+        delFileInfo(param).then(() => {
           reload();
         });
       }
 
       /** 启用 */
       function handleEnable(record: Recordable) {
-        enableFileInfo(record.id).then(() => {
+        const param = { ...record } as VersionModifyCommand;
+        enableFileInfo([param]).then(() => {
           reload();
         });
       }
 
       /** 停用 */
       function handleDisable(record: Recordable) {
-        disableFileInfo(record.id).then(() => {
+        const param = { ...record } as VersionModifyCommand;
+        disableFileInfo([param]).then(() => {
           reload();
         });
       }
 
       /** 作废 */
       function handleCancel(record: Recordable) {
-        cancelFileInfo(record.id).then(() => {
+        const param = { ...record } as VersionModifyCommand;
+        cancelFileInfo([param]).then(() => {
           reload();
         });
       }

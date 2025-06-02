@@ -34,7 +34,7 @@ public class FileInfoDTO {
     private String metadata;
     /** 分片id */
     private String chunkId;
-    /** 状态;1-正常,2-停用,3-分片上传,99-作废 */
+    /** 状态;1-启用,2-停用,3-分片上传,99-作废 */
     private Integer status;
     /** 备注信息 */
     private String remark;

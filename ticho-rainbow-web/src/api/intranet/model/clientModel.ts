@@ -39,7 +39,6 @@ export interface ClientQuery {
 }
 
 export interface ClientSaveCommand {
-  accessKey: string;
   name: string;
   expireAt: string;
   status: number;

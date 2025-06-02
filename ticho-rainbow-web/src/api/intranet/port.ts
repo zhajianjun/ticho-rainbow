@@ -1,23 +1,43 @@
 import { defHttp } from '@/utils/http/axios';
 import { PortDTO, PortQuery } from './model/portModel';
 import { RetryRequest } from '#/axios';
+import { VersionModifyCommand } from '@/api/system/model/baseModel';
 
 enum Api {
   Port = '/port',
+  PortEnable = '/port/status/enable',
+  PortDisable = '/port/status/disable',
   PortPage = '/port/page',
   Export = '/port/excel/export',
 }
 
 export function savePort(params: PortDTO) {
-  return defHttp.post<void>({ url: Api.Port, params }, { errorMessageMode: 'message' });
+  return defHttp.post<void>(
+    { url: Api.Port, params },
+    { successMessageMode: 'message', errorMessageMode: 'message' },
+  );
 }
 
-export function delPort(params: string) {
-  return defHttp.delete<void>({ url: Api.Port + '?id=', params }, { errorMessageMode: 'message' });
+export function delPort(params: VersionModifyCommand) {
+  return defHttp.delete<void>(
+    { url: Api.Port, params },
+    { successMessageMode: 'message', errorMessageMode: 'message' },
+  );
 }
 
 export function modifyPort(params: PortDTO) {
-  return defHttp.put<void>({ url: Api.Port, params }, { errorMessageMode: 'message' });
+  return defHttp.put<void>(
+    { url: Api.Port, params },
+    { successMessageMode: 'message', errorMessageMode: 'message' },
+  );
+}
+
+export function enablePort(params: VersionModifyCommand[]) {
+  return defHttp.patch<void>({ url: Api.PortEnable, params }, { errorMessageMode: 'message' });
+}
+
+export function disablePort(params: VersionModifyCommand[]) {
+  return defHttp.patch<void>({ url: Api.PortDisable, params }, { errorMessageMode: 'message' });
 }
 
 export function portPage(params?: PortQuery) {

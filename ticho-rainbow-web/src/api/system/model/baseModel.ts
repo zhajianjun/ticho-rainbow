@@ -10,3 +10,8 @@ export interface PageResult<T> {
   /** 查询数据列表 */
   rows: T[];
 }
+
+export interface VersionModifyCommand {
+  id: number;
+  version: number;
+}

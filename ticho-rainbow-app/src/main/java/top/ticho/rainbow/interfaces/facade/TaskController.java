@@ -12,15 +12,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.dto.command.TaskModifyCommand;
+import top.ticho.rainbow.application.dto.command.TaskRunOnceCommand;
 import top.ticho.rainbow.application.dto.command.TaskSaveCommand;
+import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.query.TaskQuery;
 import top.ticho.rainbow.application.dto.response.TaskDTO;
 import top.ticho.rainbow.application.service.TaskService;
+import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.io.IOException;
 import java.util.List;
 
@@ -49,13 +53,11 @@ public class TaskController {
 
     /**
      * 删除计划任务
-     *
-     * @param id 编号
      */
     @PreAuthorize("@perm.hasPerms('system:task:remove')")
     @DeleteMapping
-    public TiResult<Void> remove(@NotNull(message = "编号不能为空") Long id) {
-        taskService.remove(id);
+    public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
+        taskService.remove(command);
         return TiResult.ok();
     }
 
@@ -71,39 +73,39 @@ public class TaskController {
 
     /**
      * 暂停计划任务
-     *
-     * @param id 编号
-     * @return {@link TiResult }<{@link Void }>
      */
-    @PreAuthorize("@perm.hasPerms('system:task:pause')")
-    @PatchMapping("status/pause")
-    public TiResult<Void> pause(@NotNull(message = "编号不能为空") Long id) {
-        taskService.pause(id);
+    @PreAuthorize("@perm.hasPerms('system:task:enable')")
+    @PatchMapping("status/enable")
+    public TiResult<Void> enable(
+        @NotNull(message = "角色信息不能为空")
+        @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
+        @RequestBody List<VersionModifyCommand> datas
+    ) {
+        taskService.enable(datas);
         return TiResult.ok();
     }
 
     /**
      * 恢复计划任务
-     *
-     * @param id 编号
      */
-    @PreAuthorize("@perm.hasPerms('system:task:resume')")
-    @PatchMapping("status/resume")
-    public TiResult<Void> resume(@NotNull(message = "编号不能为空") Long id) {
-        taskService.resume(id);
+    @PreAuthorize("@perm.hasPerms('system:task:disable')")
+    @PatchMapping("status/disable")
+    public TiResult<Void> disable(
+        @NotNull(message = "角色信息不能为空")
+        @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
+        @RequestBody List<VersionModifyCommand> datas
+    ) {
+        taskService.disable(datas);
         return TiResult.ok();
     }
 
     /**
      * 执行一次计划任务
-     *
-     * @param id    编号
-     * @param param 参数
      */
     @PreAuthorize("@perm.hasPerms('system:task:run-once')")
-    @GetMapping("run-once")
-    public TiResult<Void> runOnce(@NotNull(message = "编号不能为空") Long id, String param) {
-        taskService.runOnce(id, param);
+    @PostMapping("run-once")
+    public TiResult<Void> runOnce(@Validated @RequestBody TaskRunOnceCommand taskRunOnceCommand) {
+        taskService.runOnce(taskRunOnceCommand);
         return TiResult.ok();
     }
 

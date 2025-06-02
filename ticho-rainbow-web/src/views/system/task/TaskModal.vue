@@ -23,7 +23,7 @@
   import { BasicForm, useForm } from '@/components/Form/index';
   import { getModalFormColumns } from './task.data';
   import { modifyTask, saveTask } from '@/api/system/task';
-  import { TaskDTO } from '@/api/system/model/taskModel';
+  import { TaskModifyCommand, TaskSaveCommand } from '@/api/system/model/taskModel';
   import TaskCron from './TaskCron.vue';
 
   export default defineComponent({
@@ -53,19 +53,20 @@
         }
       });
 
-      const getTitle = computed(() => (!unref(isUpdate) ? '新增定时任务调度' : '编辑定时任务调度'));
+      const getTitle = computed(() => (!unref(isUpdate) ? '新增定时任务' : '编辑定时任务'));
 
       async function handleSubmit() {
         try {
-          const values = (await validate()) as TaskDTO;
+          const values = await validate();
           setModalProps({ confirmLoading: true });
           if (unref(isUpdate)) {
-            await modifyTask(values);
+            const saves = values as TaskModifyCommand;
+            await modifyTask(saves);
           } else {
-            await saveTask(values);
+            const modifys = values as TaskSaveCommand;
+            await saveTask(modifys);
           }
           closeModal();
-          // 触发父组件方法
           emit('success');
         } finally {
           setModalProps({ confirmLoading: false });

@@ -50,7 +50,7 @@ public class DictExcelExport {
     @ColumnWidth(20)
     @ExcelProperty(value = "排序")
     private Integer sort;
-    /** 状态;1-启用,0-停用 */
+    /** 状态;1-启用,0-禁用 */
     @ColumnWidth(20)
     @ExcelProperty(value = "字典状态")
     private String statusName;

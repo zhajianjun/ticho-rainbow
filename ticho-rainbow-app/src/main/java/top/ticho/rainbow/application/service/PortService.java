@@ -1,5 +1,6 @@
 package top.ticho.rainbow.application.service;
 
+import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
@@ -10,6 +11,7 @@ import top.ticho.intranet.server.entity.ClientInfo;
 import top.ticho.rainbow.application.assembler.PortAssembler;
 import top.ticho.rainbow.application.dto.command.PortModifyfCommand;
 import top.ticho.rainbow.application.dto.command.PortSaveCommand;
+import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.excel.PortExcelExport;
 import top.ticho.rainbow.application.dto.query.PortQuery;
 import top.ticho.rainbow.application.dto.response.PortDTO;
@@ -35,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -59,34 +62,42 @@ public class PortService {
         check(null, portSaveCommand.getAccessKey(), portSaveCommand.getPort(), portSaveCommand.getDomain(), portSaveCommand.getType());
         Port port = portAssembler.toEntity(portSaveCommand);
         TiAssert.isTrue(portRepository.save(port), "保存失败");
-        savePortInfo(portSaveCommand.getPort());
     }
 
-    public void remove(Long id) {
-        Port dbPort = portRepository.find(id);
-        TiAssert.isNotNull(dbPort, "删除失败，数据不存在");
-        TiAssert.isTrue(portRepository.remove(id), "删除失败");
-        serverHandler.unbind(dbPort.getAccessKey(), dbPort.getPort());
-
+    public void remove(VersionModifyCommand command) {
+        Port port = portRepository.find(command.getId());
+        TiAssert.isNotNull(port, "删除失败，数据不存在");
+        port.checkVersion(command.getVersion(), "数据已被修改，请刷新后重试");
+        TiAssert.isTrue(!port.isEnable(), "删除失败，请先禁用该端口");
+        TiAssert.isTrue(portRepository.remove(command.getId()), "删除失败，请刷新后重试");
     }
 
     public void modify(PortModifyfCommand portModifyfCommand) {
         Port port = portRepository.find(portModifyfCommand.getId());
         TiAssert.isNotNull(port, "修改失败，数据不存在");
-        // accessKey不可修改
-        portModifyfCommand.setAccessKey(port.getAccessKey());
+        port.checkVersion(portModifyfCommand.getVersion(), "数据已被修改，请刷新后重试");
         check(portModifyfCommand.getId(), portModifyfCommand.getAccessKey(), portModifyfCommand.getPort(), portModifyfCommand.getDomain(), portModifyfCommand.getType());
         PortModifyfVO portModifyfVO = portAssembler.toModifyfVO(portModifyfCommand);
         port.modify(portModifyfVO);
         TiAssert.isTrue(portRepository.modify(port), "修改失败，请刷新后重试");
-        updatePortInfo(port);
     }
 
-    public PortDTO find(Long id) {
-        Port port = portRepository.find(id);
-        PortDTO portDTO = portAssembler.toDTO(port);
-        fillChannelStatus(portDTO);
-        return portDTO;
+    public void enable(List<VersionModifyCommand> datas) {
+        boolean enable = modifyBatch(datas, Port::enable, port -> {
+            if (!serverHandler.exists(port.getPort())) {
+                serverHandler.bind(port.getAccessKey(), port.getPort(), port.getEndpoint());
+            }
+        });
+        TiAssert.isTrue(enable, "启用失败，请刷新后重试");
+    }
+
+    public void disable(List<VersionModifyCommand> datas) {
+        boolean disable = modifyBatch(datas, Port::disable, port -> {
+            if (serverHandler.exists(port.getPort())) {
+                serverHandler.unbind(port.getAccessKey(), port.getPort());
+            }
+        });
+        TiAssert.isTrue(disable, "禁用失败，请刷新后重试");
     }
 
     public TiPageResult<PortDTO> page(PortQuery query) {
@@ -143,39 +154,6 @@ public class PortService {
         }
     }
 
-    public void savePortInfo(Integer portNum) {
-        if (Objects.isNull(portNum)) {
-            return;
-        }
-        Port port = portRepository.getByPortExcludeId(null, portNum);
-        if (Objects.isNull(port) || !isEnabled(port)) {
-            return;
-        }
-        serverHandler.bind(port.getAccessKey(), port.getPort(), port.getEndpoint());
-    }
-
-    public void updatePortInfo(Port oldPort) {
-        Port port = portRepository.find(oldPort.getId());
-        // 端口号或者客户端地址不一致时，删除旧的app，再创建新的app
-        if ((!Objects.equals(oldPort.getPort(), port.getPort()) || !Objects.equals(oldPort.getEndpoint(), port.getEndpoint())) && isEnabled(oldPort)) {
-            serverHandler.unbind(oldPort.getAccessKey(), oldPort.getPort());
-        }
-        // 端口信息有效时才重新创建
-        if (isEnabled(port) && !serverHandler.exists(port.getPort())) {
-            serverHandler.bind(port.getAccessKey(), port.getPort(), port.getEndpoint());
-        }
-        if (!isEnabled(port) && serverHandler.exists(port.getPort())) {
-            serverHandler.unbind(port.getAccessKey(), port.getPort());
-        }
-
-    }
-
-    private boolean isEnabled(Port port) {
-        boolean enabled = Objects.equals(port.getStatus(), 1);
-        boolean isNotExpire = Objects.nonNull(port.getExpireAt()) && LocalDateTime.now().isBefore(port.getExpireAt());
-        return enabled && isNotExpire;
-    }
-
     private void fillChannelStatus(PortDTO portDTO) {
         if (Objects.isNull(portDTO)) {
             return;
@@ -189,6 +167,24 @@ public class PortService {
         Integer channelStatus = serverHandler.exists(portDTO.getPort()) ? 1 : 0;
         portDTO.setClientChannelStatus(clientChannelStatus);
         portDTO.setAppChannelStatus(channelStatus);
+    }
+
+    private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<Port> modifyHandle, Consumer<Port> modifyToDbAfterHandle) {
+        List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
+        List<Port> ports = portRepository.list(ids);
+        Map<Long, Port> userMap = CollStreamUtil.toIdentityMap(ports, Port::getId);
+        for (VersionModifyCommand modify : modifys) {
+            Port port = userMap.get(modify.getId());
+            TiAssert.isNotNull(port, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
+            port.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 端口: {}", port.getPort()));
+            // 修改逻辑
+            modifyHandle.accept(port);
+        }
+        boolean modifyBatch = portRepository.modifyBatch(ports);
+        if (modifyBatch) {
+            ports.forEach(modifyToDbAfterHandle);
+        }
+        return modifyBatch;
     }
 
 }

@@ -3,7 +3,6 @@ package top.ticho.rainbow.infrastructure.persistence.repository;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,10 +18,8 @@ import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * 计划任务信息 repository实现
@@ -53,8 +50,18 @@ public class TaskRepositoryImpl extends TiRepositoryImpl<TaskMapper, TaskPO> imp
     }
 
     @Override
+    public boolean modifyBatch(List<Task> tasks) {
+        return super.updateBatchById(taskConverter.toPo(tasks));
+    }
+
+    @Override
     public Task find(Long id) {
         return taskConverter.toEntity(super.getById(id));
+    }
+
+    @Override
+    public List<Task> list(List<Long> ids) {
+        return taskConverter.toEntity(super.listByIds(ids));
     }
 
     @Override
@@ -74,22 +81,8 @@ public class TaskRepositoryImpl extends TiRepositoryImpl<TaskMapper, TaskPO> imp
     }
 
     @Override
-    public List<TaskDTO> all() {
-        return list()
-            .stream()
-            .map(taskConverter::toDTO)
-            .collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean modifyStatusBatch(Collection<Long> ids, Integer status) {
-        if (CollUtil.isEmpty(ids) || Objects.isNull(status)) {
-            return false;
-        }
-        LambdaUpdateWrapper<TaskPO> wrapper = Wrappers.lambdaUpdate();
-        wrapper.in(TaskPO::getId, ids);
-        wrapper.set(TaskPO::getStatus, status);
-        return update(wrapper);
+    public List<Task> all() {
+        return taskConverter.toEntity(list());
     }
 
 }

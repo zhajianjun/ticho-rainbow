@@ -53,7 +53,7 @@ public class DefaultLoginService extends AbstractLoginService {
 
     private SecurityUser getSecurityUser(User user) {
         List<Long> roleIds = userRoleRepository.listByUserId(user.getId());
-        List<Role> roles = roleRepository.listByIds(roleIds);
+        List<Role> roles = roleRepository.list(roleIds);
         List<String> codes = roles.stream().filter(x -> Objects.equals(1, x.getStatus())).map(Role::getCode).collect(Collectors.toList());
         SecurityUser securityUser = new SecurityUser();
         securityUser.setUsername(user.getUsername());

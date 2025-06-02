@@ -26,6 +26,7 @@ import top.ticho.starter.web.util.TiIdUtil;
 public interface UserAssembler {
 
     @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
+    @Mapping(target = "status", expression = "java(UserStatus.NORMAL.code())")
     User toEntity(UseSaveCommand useSaveCommand);
 
     @Mapping(target = "id", expression = "java(TiIdUtil.getId())")

@@ -1,5 +1,6 @@
 package top.ticho.rainbow.application.service;
 
+import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
@@ -18,6 +19,7 @@ import top.ticho.rainbow.application.dto.ChunkMetadataDTO;
 import top.ticho.rainbow.application.dto.FileCacheDTO;
 import top.ticho.rainbow.application.dto.command.FileChunkUploadCommand;
 import top.ticho.rainbow.application.dto.command.FileUploadCommand;
+import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.excel.FileInfoExcelExport;
 import top.ticho.rainbow.application.dto.query.FileInfoQuery;
 import top.ticho.rainbow.application.dto.response.ChunkCacheDTO;
@@ -58,6 +60,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 
@@ -84,38 +87,37 @@ public class FileInfoService {
         return fileInfoExecutor.upload(fileUploadCommand);
     }
 
-    public void enable(Long id) {
-        boolean enable = fileInfoRepository.enable(id);
-        TiAssert.isTrue(enable, TiBizErrCode.FAIL, "启用失败");
+    public void enable(List<VersionModifyCommand> datas) {
+        boolean enable = modifyBatch(datas, FileInfo::enable);
+        TiAssert.isTrue(enable, "启用失败，请刷新后重试");
     }
 
-    public void disable(Long id) {
-        boolean enable = fileInfoRepository.disable(id);
-        TiAssert.isTrue(enable, TiBizErrCode.FAIL, "停用失败");
+    public void disable(List<VersionModifyCommand> datas) {
+        boolean disable = modifyBatch(datas, FileInfo::disable);
+        TiAssert.isTrue(disable, "停用失败，请刷新后重试");
     }
 
-    public void cancel(Long id) {
-        boolean enable = fileInfoRepository.cancel(id);
-        TiAssert.isTrue(enable, TiBizErrCode.FAIL, "作废失败");
+    public void cancel(List<VersionModifyCommand> datas) {
+        boolean cancel = modifyBatch(datas, FileInfo::cancel);
+        TiAssert.isTrue(cancel, "作废失败，请刷新后重试");
     }
 
-    public void remove(Long id) {
-        FileInfo dbFileInfo = fileInfoRepository.find(id);
-        TiAssert.isNotNull(dbFileInfo, FileErrCode.FILE_NOT_EXIST, "删除失败, 文件信息不存在");
-        boolean isCancel = Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CANCE.code());
-        boolean isChunk = Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CHUNK.code());
-        TiAssert.isTrue(isCancel || isChunk, "删除失败, 分片或者作废状态文件才能删除");
+    public void remove(VersionModifyCommand command) {
+        FileInfo fileInfo = fileInfoRepository.find(command.getId());
+        TiAssert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST, "删除失败, 文件信息不存在");
+        fileInfo.checkVersion(command.getVersion(), "数据已被修改，请刷新后重试");
+        TiAssert.isTrue(fileInfo.isCancel() || fileInfo.isChunk(), "删除失败, 分片或者作废状态文件才能删除");
         String path;
-        if (Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CHUNK.code())) {
-            boolean isUploadChunkIng = tiCacheTemplate.contain(CacheConst.UPLOAD_CHUNK, dbFileInfo.getChunkId());
+        if (fileInfo.isChunk()) {
+            boolean isUploadChunkIng = tiCacheTemplate.contain(CacheConst.UPLOAD_CHUNK, fileInfo.getChunkId());
             TiAssert.isTrue(!isUploadChunkIng, "删除失败, 分片文件正在上传中");
-            ChunkMetadataDTO metadata = TiJsonUtil.toJavaObject(dbFileInfo.getChunkMetadata(), ChunkMetadataDTO.class);
+            ChunkMetadataDTO metadata = TiJsonUtil.toJavaObject(fileInfo.getChunkMetadata(), ChunkMetadataDTO.class);
             path = metadata.getChunkDirPath();
         } else {
-            path = dbFileInfo.getPath();
+            path = fileInfo.getPath();
         }
-        moveToTmp(dbFileInfo.getType(), path);
-        fileInfoRepository.remove(id);
+        moveToTmp(fileInfo.getType(), path);
+        fileInfoRepository.remove(command.getId());
     }
 
     public void download(String sign) {
@@ -131,7 +133,7 @@ public class FileInfoService {
 
     private void download(FileInfo fileInfo) {
         TiAssert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST);
-        TiAssert.isTrue(fileInfo.isNormal(), FileErrCode.FILE_STATUS_ERROR);
+        TiAssert.isTrue(fileInfo.isEnable(), FileErrCode.FILE_STATUS_ERROR);
         String absolutePath = fileInfoExecutor.getAbsolutePath(fileInfo.getType(), fileInfo.getPath());
         File file = new File(absolutePath);
         TiAssert.isTrue(FileUtil.exist(file), FileErrCode.FILE_NOT_EXIST);
@@ -419,6 +421,20 @@ public class FileInfoService {
                 return fileInfoExcelExport;
             })
             .collect(Collectors.toList());
+    }
+
+    private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<FileInfo> modifyHandle) {
+        List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
+        List<FileInfo> fileInfos = fileInfoRepository.list(ids);
+        Map<Long, FileInfo> userMap = CollStreamUtil.toIdentityMap(fileInfos, FileInfo::getId);
+        for (VersionModifyCommand modify : modifys) {
+            FileInfo fileInfo = userMap.get(modify.getId());
+            TiAssert.isNotNull(fileInfo, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
+            fileInfo.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 文件: {}", fileInfo.getFileName()));
+            // 修改逻辑
+            modifyHandle.accept(fileInfo);
+        }
+        return fileInfoRepository.modifyBatch(fileInfos);
     }
 
 }

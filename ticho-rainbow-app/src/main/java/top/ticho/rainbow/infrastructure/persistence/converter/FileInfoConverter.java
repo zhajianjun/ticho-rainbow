@@ -16,11 +16,13 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface FileInfoConverter {
 
-    List<FileInfo> toEntitys(List<FileInfoPO> list);
+    List<FileInfo> toEntity(List<FileInfoPO> list);
 
     FileInfo toEntity(FileInfoPO fileInfoPO);
 
     FileInfoPO toPo(FileInfo fileInfo);
+
+    List<FileInfoPO> toPo(List<FileInfo> fileInfos);
 
     FileInfoDTO toDTO(FileInfoPO fileInfoPO);
 

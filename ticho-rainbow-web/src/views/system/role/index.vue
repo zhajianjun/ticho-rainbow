@@ -22,6 +22,17 @@
           导出
         </a-button>
       </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'status'">
+          <Switch
+            :checked-children="getDictLabelByCodeAndValue('commonStatus', 1)"
+            :un-checked-children="getDictLabelByCodeAndValue('commonStatus', 0)"
+            :checked="record.status === 1"
+            :loading="record.pendingStatus"
+            @change="handleSwitchChange(record)"
+          />
+        </template>
+      </template>
       <template #action="{ record }">
         <TableAction
           :actions="[
@@ -48,19 +59,22 @@
 </template>
 <script lang="ts">
   import { defineComponent, ref } from 'vue';
-  import { BasicTable, useTable, TableAction } from '@/components/Table';
+  import { BasicTable, TableAction, useTable } from '@/components/Table';
   import { useDrawer } from '@/components/Drawer';
   import RoleDrawer from './RoleDrawer.vue';
   import { columns, searchFormSchema } from './role.data';
-  import { rolePage, delRole, expExcel } from '@/api/system/role';
+  import { delRole, disableRole, enableRole, expExcel, rolePage } from '@/api/system/role';
   import { usePermission } from '@/hooks/web/usePermission';
   import { downloadByData } from '@/utils/file/download';
   import { RoleQuery } from '@/api/system/model/roleModel';
   import { useMessage } from '@/hooks/web/useMessage';
+  import { VersionModifyCommand } from '@/api/system/model/baseModel';
+  import { Switch } from 'ant-design-vue';
+  import { getDictLabelByCodeAndValue } from '@/store/modules/dict';
 
   export default defineComponent({
     name: 'RoleManagement',
-    components: { BasicTable, RoleDrawer, TableAction },
+    components: { Switch, BasicTable, RoleDrawer, TableAction },
     setup() {
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('RoleSelect');
@@ -122,7 +136,8 @@
       }
 
       function handleDelete(record: Recordable) {
-        delRole(record.id).then(() => {
+        const params = { ...record } as VersionModifyCommand;
+        delRole(params).then(() => {
           reload();
         });
       }
@@ -158,6 +173,44 @@
           });
       }
 
+      function handleSwitchChange(record: Recordable) {
+        if (!record || typeof record.status !== 'number') {
+          console.warn('Invalid record provided to handleSwitchChange');
+          return;
+        }
+        const { createMessage } = useMessage();
+        const checked = record.status === 1;
+        let oprate: Promise<any>;
+        let messagePrefix: string;
+        record.pendingStatus = true;
+
+        try {
+          if (checked) {
+            messagePrefix = '禁用';
+            const param = { ...record } as VersionModifyCommand;
+            oprate = disableRole([param]);
+          } else {
+            messagePrefix = '启用';
+            const param = { ...record } as VersionModifyCommand;
+            oprate = enableRole([param]);
+          }
+        } catch (error) {
+          createMessage.error('操作失败：参数构造异常');
+          record.pendingStatus = false;
+          return;
+        }
+        oprate
+          .then(() => {
+            // 仅在请求成功后更新状态
+            record.status = checked ? 0 : 1;
+            createMessage.success(messagePrefix + `成功`);
+          })
+          .finally(() => {
+            record.pendingStatus = false;
+            reload();
+          });
+      }
+
       return {
         registerTable,
         registerDrawer,
@@ -168,7 +221,9 @@
         hasPermission,
         exportLoding,
         handleExport,
+        handleSwitchChange,
       };
     },
+    methods: { getDictLabelByCodeAndValue },
   });
 </script>

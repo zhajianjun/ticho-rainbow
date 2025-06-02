@@ -66,6 +66,12 @@ public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, RolePO> imp
     }
 
     @Override
+    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:role:list'")
+    public boolean modifyBatch(List<Role> roles) {
+        return super.updateBatchById(roleConverter.toPo(roles));
+    }
+
+    @Override
     public Role find(Long id) {
         RolePO rolePO = super.getById(id);
         return roleConverter.toEntity(rolePO);
@@ -122,7 +128,7 @@ public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, RolePO> imp
     }
 
     @Override
-    public List<Role> listByIds(List<Long> ids) {
+    public List<Role> list(List<Long> ids) {
         if (CollUtil.isEmpty(ids)) {
             return Collections.emptyList();
         }

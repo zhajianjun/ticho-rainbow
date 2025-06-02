@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 /**
  * 通用状态
- * <p>通用状态;1-启用,0-停用</p>
+ * <p>通用状态;1-启用,0-禁用</p>
  *
  * @author zhajianjun
  * @date 2024-05-13 18:30
@@ -20,25 +20,25 @@ public enum CommonStatus {
     ;
 
     private final int code;
-    private final String msg;
+    private final String message;
 
-    CommonStatus(int code, String msg) {
+    CommonStatus(int code, String message) {
         this.code = code;
-        this.msg = msg;
+        this.message = message;
     }
 
     public int code() {
         return code;
     }
 
-    public String msg() {
-        return msg;
+    public String message() {
+        return message;
     }
 
     private static final Map<Integer, String> map;
 
     static {
-        map = Arrays.stream(values()).collect(Collectors.toMap(CommonStatus::code, CommonStatus::msg));
+        map = Arrays.stream(values()).collect(Collectors.toMap(CommonStatus::code, CommonStatus::message));
     }
 
     public static Map<Integer, String> get() {

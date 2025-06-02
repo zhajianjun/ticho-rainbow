@@ -5,6 +5,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,15 +13,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.dto.command.PortModifyfCommand;
 import top.ticho.rainbow.application.dto.command.PortSaveCommand;
+import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.query.PortQuery;
 import top.ticho.rainbow.application.dto.response.PortDTO;
 import top.ticho.rainbow.application.service.PortService;
+import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 端口信息
@@ -47,13 +52,11 @@ public class PortController {
 
     /**
      * 删除端口
-     *
-     * @param id 编号
      */
     @PreAuthorize("@perm.hasPerms('intranet:port:remove')")
     @DeleteMapping
-    public TiResult<Void> remove(@NotNull(message = "编号不能为空") Long id) {
-        portService.remove(id);
+    public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
+        portService.remove(command);
         return TiResult.ok();
     }
 
@@ -68,15 +71,31 @@ public class PortController {
     }
 
     /**
-     * 查询端口
-     *
-     * @param id 编号
-     * @return {@link TiResult }<{@link PortDTO }>
+     * 启用端口
      */
-    @PreAuthorize("@perm.hasPerms('intranet:port:find')")
-    @GetMapping
-    public TiResult<PortDTO> find(@NotNull(message = "编号不能为空") Long id) {
-        return TiResult.ok(portService.find(id));
+    @PreAuthorize("@perm.hasPerms('intranet:port:enable')")
+    @PatchMapping("status/enable")
+    public TiResult<Void> enable(
+        @NotNull(message = "端口信息不能为空")
+        @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
+        @RequestBody List<VersionModifyCommand> datas
+    ) {
+        portService.enable(datas);
+        return TiResult.ok();
+    }
+
+    /**
+     * 禁用端口
+     */
+    @PreAuthorize("@perm.hasPerms('intranet:port:disable')")
+    @PatchMapping("status/disable")
+    public TiResult<Void> disable(
+        @NotNull(message = "端口信息不能为空")
+        @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
+        @RequestBody List<VersionModifyCommand> datas
+    ) {
+        portService.disable(datas);
+        return TiResult.ok();
     }
 
 

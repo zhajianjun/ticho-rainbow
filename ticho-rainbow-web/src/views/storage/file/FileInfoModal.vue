@@ -44,7 +44,7 @@
         }
       });
 
-      const getTitle = computed(() => (!unref(isUpdate) ? '新增文件信息' : '编辑文件信息'));
+      const getTitle = computed(() => (!unref(isUpdate) ? '新增文件' : '编辑文件'));
 
       async function handleSubmit() {
         try {

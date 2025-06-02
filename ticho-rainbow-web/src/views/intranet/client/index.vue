@@ -68,12 +68,19 @@
   import { useModal } from '@/components/Modal';
   import ClientModel from './ClientModal.vue';
   import { getSearchColumns, getTableColumns } from './client.data';
-  import { clientPage, delClient, expExcel, modifyClientStatus } from '@/api/intranet/client';
+  import {
+    clientPage,
+    delClient,
+    disableClient,
+    enableClient,
+    expExcel,
+  } from '@/api/intranet/client';
   import { useMessage } from '@/hooks/web/useMessage';
-  import { ClientDTO, ClientQuery } from '@/api/intranet/model/clientModel';
+  import { ClientQuery } from '@/api/intranet/model/clientModel';
   import { usePermission } from '@/hooks/web/usePermission';
   import { getDictLabelByCodeAndValue } from '@/store/modules/dict';
   import { downloadByData } from '@/utils/file/download';
+  import { VersionModifyCommand } from '@/api/system/model/baseModel';
 
   export default defineComponent({
     name: 'ClientManagement',
@@ -140,7 +147,8 @@
       }
 
       function handleDelete(record: Recordable) {
-        delClient(record.id).then(() => {
+        const params = { ...record } as VersionModifyCommand;
+        delClient(params).then(() => {
           reload();
         });
       }
@@ -150,22 +158,36 @@
       }
 
       function handleSwitchChange(record: Recordable) {
-        record.pendingStatus = true;
-        const { createMessage } = useMessage();
-        let checked = record.status === 1;
-        if (checked) {
-          record.status = 0;
-        } else {
-          record.status = 1;
+        if (!record || typeof record.status !== 'number') {
+          console.warn('Invalid record provided to handleSwitchChange');
+          return;
         }
-        const params = { id: record.id, status: record.status } as ClientDTO;
-        const messagePrefix = !checked ? '启动' : '关闭';
-        modifyClientStatus(params)
+        const { createMessage } = useMessage();
+        const checked = record.status === 1;
+        let oprate: Promise<any>;
+        let messagePrefix: string;
+        record.pendingStatus = true;
+
+        try {
+          if (checked) {
+            messagePrefix = '禁用';
+            const param = { ...record } as VersionModifyCommand;
+            oprate = disableClient([param]);
+          } else {
+            messagePrefix = '启用';
+            const param = { ...record } as VersionModifyCommand;
+            oprate = enableClient([param]);
+          }
+        } catch (error) {
+          createMessage.error('操作失败：参数构造异常');
+          record.pendingStatus = false;
+          return;
+        }
+        oprate
           .then(() => {
+            // 仅在请求成功后更新状态
+            record.status = checked ? 0 : 1;
             createMessage.success(messagePrefix + `成功`);
-          })
-          .catch(() => {
-            createMessage.error(messagePrefix + `失败`);
           })
           .finally(() => {
             record.pendingStatus = false;

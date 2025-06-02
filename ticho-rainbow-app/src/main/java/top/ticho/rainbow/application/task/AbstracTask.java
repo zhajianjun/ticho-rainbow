@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
+import org.quartz.JobKey;
 import org.slf4j.MDC;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
@@ -81,22 +82,22 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
         String taskName = jobDataMap.getString(TaskTemplate.TASK_NAME);
         String taskParam = jobDataMap.getString(TaskTemplate.TASK_PARAM);
         String runTime = DateUtil.format(scheduledFireTime, DatePattern.NORM_DATETIME_FORMAT);
-        String jobName = jobDetail.getKey().getName();
+        JobKey jobKey = jobDetail.getKey();
         String jobClassName = jobDetail.getJobClass().getName();
         int isErr = 0;
         String errorMsg = null;
         try {
-            log.info("定时任务开始, 任务ID:{}, 任务名称:{}, 任务时间:{}, 任务类:{}, 任务参数:{}", jobName, taskName, runTime, jobClassName, taskParam);
+            log.info("定时任务开始, 任务:{}, 任务名称:{}, 任务时间:{}, 任务类:{}, 任务参数:{}", jobKey, taskName, runTime, jobClassName, taskParam);
             run(context);
         } catch (Exception e) {
-            log.error("定时任务异常, 任务ID:{}, 任务名称:{}, 任务时间:{}, 任务类:{}, 异常信息:{}", jobName, taskName, runTime, jobClassName, e.getMessage(), e);
+            log.error("定时任务异常, 任务:{}, 任务名称:{}, 任务时间:{}, 任务类:{}, 异常信息:{}", jobKey, taskName, runTime, jobClassName, e.getMessage(), e);
             isErr = 1;
             errorMsg = ExceptionUtil.stacktraceToString(e);
         } finally {
             long end = SystemClock.now();
             long consume = end - start;
-            log.info("定时任务结束, 任务ID:{}, 任务名称:{}, 耗时{}ms, 任务时间:{}, 任务类:{}", jobName, taskName, consume, runTime, jobClassName);
-            saveTaskLog(jobName, jobClassName, taskParam, scheduledFireTime, start, end, consume, isErr, errorMsg);
+            log.info("定时任务结束, 任务:{}, 任务名称:{}, 耗时{}ms, 任务时间:{}, 任务类:{}", jobKey, taskName, consume, runTime, jobClassName);
+            saveTaskLog(jobKey.getName(), jobClassName, taskParam, scheduledFireTime, start, end, consume, isErr, errorMsg);
             traceHandle(jobDataMap, start, end, consume);
         }
     }

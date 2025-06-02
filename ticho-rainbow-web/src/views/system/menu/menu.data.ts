@@ -132,6 +132,7 @@ export const formSchema: FormSchema[] = [
     componentProps: {
       min: 0,
       step: 10,
+      max: 65535,
       placeholder: '请输入排序',
     },
     required: true,

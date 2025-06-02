@@ -1,7 +1,9 @@
 package top.ticho.rainbow.application.service;
 
+import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,7 +11,7 @@ import top.ticho.rainbow.application.assembler.RoleAssembler;
 import top.ticho.rainbow.application.dto.command.RoleBindMenuCommand;
 import top.ticho.rainbow.application.dto.command.RoleModifyCommand;
 import top.ticho.rainbow.application.dto.command.RoleSaveCommand;
-import top.ticho.rainbow.application.dto.command.RoleStatusModifyCommand;
+import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.excel.RoleExcelExport;
 import top.ticho.rainbow.application.dto.query.RoleDtlQuery;
 import top.ticho.rainbow.application.dto.query.RoleQuery;
@@ -27,7 +29,6 @@ import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
 import top.ticho.rainbow.infrastructure.common.constant.SecurityConst;
 import top.ticho.starter.view.core.TiPageResult;
-import top.ticho.starter.view.enums.TiBizErrCode;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.valid.TiValidUtil;
 
@@ -40,6 +41,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -64,8 +66,8 @@ public class RoleService {
     public void save(RoleSaveCommand roleSaveCommand) {
         Role role = roleAssembler.toEntity(roleSaveCommand);
         Role dbDictType = roleRepository.getByCodeExcludeId(role.getCode(), null);
-        TiAssert.isNull(dbDictType, TiBizErrCode.FAIL, "保存失败，角色已存在");
-        TiAssert.isTrue(roleRepository.save(role), TiBizErrCode.FAIL, "保存失败");
+        TiAssert.isNull(dbDictType, "保存失败，角色已存在");
+        TiAssert.isTrue(roleRepository.save(role), "保存失败");
         List<Long> menuIds = roleSaveCommand.getMenuIds();
         RoleBindMenuCommand roleBindMenuCommand = new RoleBindMenuCommand();
         roleBindMenuCommand.setRoleId(role.getId());
@@ -74,26 +76,27 @@ public class RoleService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void remove(Long id) {
-        List<Long> roleIds = Collections.singletonList(id);
+    public void remove(VersionModifyCommand command) {
+        List<Long> roleIds = Collections.singletonList(command.getId());
         boolean userRoleExists = userRoleRepository.existsByRoleIds(roleIds);
-        TiAssert.isTrue(!userRoleExists, TiBizErrCode.FAIL, "删除失败,请解绑所有的用户角色");
+        TiAssert.isTrue(!userRoleExists, "删除失败,请解绑所有的用户角色");
         boolean roleMenuExists = roleMenuRepository.existsByRoleIds(roleIds);
-        TiAssert.isTrue(!roleMenuExists, TiBizErrCode.FAIL, "删除失败,请解绑所有的角色菜单");
-        Role dbRole = roleRepository.find(id);
-        TiAssert.isNotNull(dbRole, TiBizErrCode.FAIL, "删除失败，角色不存在");
-        TiAssert.isNotNull(Objects.equals(SecurityConst.ADMIN, dbRole.getCode()), TiBizErrCode.FAIL, "管理员角色不可删除");
-        TiAssert.isTrue(roleRepository.remove(id), TiBizErrCode.FAIL, "删除失败");
+        TiAssert.isTrue(!roleMenuExists, "删除失败,请解绑所有的角色菜单");
+        Role role = roleRepository.find(command.getId());
+        TiAssert.isNotNull(role, "删除失败，角色不存在");
+        TiAssert.isTrue(!role.isEnable(), "删除失败，请先禁用该角色");
+        TiAssert.isNotNull(Objects.equals(SecurityConst.ADMIN, role.getCode()), "管理员角色不可删除");
+        TiAssert.isTrue(roleRepository.remove(command.getId()), "删除失败");
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void modify(RoleModifyCommand roleModifyCommand) {
         Role role = roleRepository.find(roleModifyCommand.getId());
-        TiAssert.isNotNull(role, TiBizErrCode.FAIL, "修改失败，角色不存在");
-        role.checkVersion(roleModifyCommand.getVersion(), "修改失败，角色已修改，请刷新后重试");
+        TiAssert.isNotNull(role, "修改失败，角色不存在");
+        role.checkVersion(roleModifyCommand.getVersion(), "数据已被修改，请刷新后重试");
         RoleModifyVO modifyVO = roleAssembler.toVo(roleModifyCommand);
         role.modify(modifyVO);
-        TiAssert.isTrue(roleRepository.modify(role), TiBizErrCode.FAIL, "修改失败，请刷新后重试");
+        TiAssert.isTrue(roleRepository.modify(role), "修改失败，请刷新后重试");
         List<Long> menuIds = roleModifyCommand.getMenuIds();
         RoleBindMenuCommand roleBindMenuCommand = new RoleBindMenuCommand();
         roleBindMenuCommand.setRoleId(role.getId());
@@ -101,17 +104,14 @@ public class RoleService {
         bindMenu(roleBindMenuCommand);
     }
 
-    public void modifyStatus(RoleStatusModifyCommand roleStatusModifyCommand) {
-        Role role = roleRepository.find(roleStatusModifyCommand.getId());
-        TiAssert.isNotNull(role, TiBizErrCode.FAIL, "修改失败，角色不存在");
-        role.checkVersion(roleStatusModifyCommand.getVersion(), "修改失败，角色已修改，请刷新后重试");
-        role.modifyStatus(roleStatusModifyCommand.getStatus());
-        roleRepository.modify(role);
+    public void enable(List<VersionModifyCommand> datas) {
+        boolean enable = modifyBatch(datas, Role::enable);
+        TiAssert.isTrue(enable, "启用失败，请刷新后重试");
     }
 
-    public RoleDTO find(Long id) {
-        Role role = roleRepository.find(id);
-        return roleAssembler.toDTO(role);
+    public void disable(List<VersionModifyCommand> datas) {
+        boolean disable = modifyBatch(datas, Role::disable);
+        TiAssert.isTrue(disable, "禁用失败，请刷新后重试");
     }
 
     public TiPageResult<RoleDTO> page(RoleQuery query) {
@@ -151,6 +151,20 @@ public class RoleService {
                 return roleExcelExport;
             })
             .collect(Collectors.toList());
+    }
+
+    private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<Role> modifyHandle) {
+        List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
+        List<Role> roles = roleRepository.list(ids);
+        Map<Long, Role> userMap = CollStreamUtil.toIdentityMap(roles, Role::getId);
+        for (VersionModifyCommand modify : modifys) {
+            Role role = userMap.get(modify.getId());
+            TiAssert.isNotNull(role, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
+            role.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 角色: {}", role.getName()));
+            // 修改逻辑
+            modifyHandle.accept(role);
+        }
+        return roleRepository.modifyBatch(roles);
     }
 
 }

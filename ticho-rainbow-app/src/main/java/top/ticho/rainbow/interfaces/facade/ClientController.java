@@ -13,14 +13,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.dto.command.ClientModifyCommand;
 import top.ticho.rainbow.application.dto.command.ClientSaveCommand;
+import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.query.ClientQuery;
 import top.ticho.rainbow.application.dto.response.ClientDTO;
 import top.ticho.rainbow.application.service.ClientService;
+import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.io.IOException;
 import java.util.List;
 
@@ -49,13 +52,11 @@ public class ClientController {
 
     /**
      * 删除客户端
-     *
-     * @param id 编号
      */
     @PreAuthorize("@perm.hasPerms('intranet:client:remove')")
     @DeleteMapping
-    public TiResult<Void> remove(@NotNull(message = "编号不能为空") Long id) {
-        clientService.remove(id);
+    public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
+        clientService.remove(command);
         return TiResult.ok();
     }
 
@@ -70,25 +71,31 @@ public class ClientController {
     }
 
     /**
-     * 锁定用户
-     *
-     * @param ids 编号, 多个用逗号隔开
+     * 启用客户端
      */
     @PreAuthorize("@perm.hasPerms('intranet:client:enable')")
     @PatchMapping("status/enable")
-    public TiResult<Void> enable(@NotNull(message = "用户名不能为空") @RequestBody List<String> ids) {
+    public TiResult<Void> enable(
+        @NotNull(message = "客户端信息不能为空")
+        @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
+        @RequestBody List<VersionModifyCommand> datas
+    ) {
+        clientService.enable(datas);
         return TiResult.ok();
     }
 
     /**
-     * 查询客户端
-     *
-     * @param id 编号
+     * 禁用客户端
      */
-    @PreAuthorize("@perm.hasPerms('intranet:client:find')")
-    @GetMapping
-    public TiResult<ClientDTO> find(@NotNull(message = "编号不能为空") Long id) {
-        return TiResult.ok(clientService.find(id));
+    @PreAuthorize("@perm.hasPerms('intranet:client:disable')")
+    @PatchMapping("status/disable")
+    public TiResult<Void> disable(
+        @NotNull(message = "客户端信息不能为空")
+        @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
+        @RequestBody List<VersionModifyCommand> datas
+    ) {
+        clientService.disable(datas);
+        return TiResult.ok();
     }
 
     /**

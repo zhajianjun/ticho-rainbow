@@ -39,12 +39,13 @@ public class DictLabelPO extends Model<DictLabelPO> {
     private String color;
     /** 排序 */
     private Integer sort;
-    /** 状态;1-启用,0-停用 */
+    /** 状态;1-启用,0-禁用 */
     private Integer status;
     /** 备注信息 */
     private String remark;
     /** 版本号 */
     @Version
+    @TableField(fill = FieldFill.INSERT)
     private Long version;
     /** 创建人 */
     @TableField(fill = FieldFill.INSERT)

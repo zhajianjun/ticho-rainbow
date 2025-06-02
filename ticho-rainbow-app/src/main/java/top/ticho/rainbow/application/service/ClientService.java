@@ -1,6 +1,8 @@
 package top.ticho.rainbow.application.service;
 
+import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,18 +11,20 @@ import top.ticho.intranet.server.entity.ClientInfo;
 import top.ticho.rainbow.application.assembler.ClientAssembler;
 import top.ticho.rainbow.application.dto.command.ClientModifyCommand;
 import top.ticho.rainbow.application.dto.command.ClientSaveCommand;
+import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.excel.ClientExcelExport;
 import top.ticho.rainbow.application.dto.query.ClientQuery;
 import top.ticho.rainbow.application.dto.response.ClientDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
+import top.ticho.rainbow.application.executor.IntranetExecutor;
 import top.ticho.rainbow.application.repository.ClientAppRepository;
-import top.ticho.rainbow.application.repository.PortAppRepository;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.domain.entity.Port;
 import top.ticho.rainbow.domain.entity.vo.ClientModifyVO;
 import top.ticho.rainbow.domain.repository.ClientRepository;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
+import top.ticho.rainbow.infrastructure.common.enums.YesOrNo;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.util.TiAssert;
 
@@ -34,12 +38,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
- * 客户端信息 服务接口
+ * 客户端信息服务
  *
  * @author zhajianjun
  * @date 2023-12-17 20:12
@@ -49,9 +52,9 @@ import java.util.stream.Collectors;
 public class ClientService {
     private final ClientRepository clientRepository;
     private final ClientAppRepository clientAppRepository;
-    private final PortAppRepository portAppRepository;
     private final ClientAssembler clientAssembler;
     private final ServerHandler serverHandler;
+    private final IntranetExecutor intranetExecutor;
     private final DictExecutor dictExecutor;
     private final HttpServletResponse response;
 
@@ -59,104 +62,58 @@ public class ClientService {
     public void save(ClientSaveCommand clientSaveCommand) {
         Client client = clientAssembler.toEntity(clientSaveCommand);
         TiAssert.isTrue(clientRepository.save(client), "保存失败");
-        createClient(client);
     }
 
-    public void createClient(Client client) {
-        boolean enabled = Objects.equals(client.getStatus(), 1) && LocalDateTime.now().isBefore(client.getExpireAt());
-        // 新增时是开启状态，则加入服务端
-        if (enabled) {
-            serverHandler.create(client.getAccessKey(), client.getName());
-        }
-    }
-
-    /**
-     * 删除客户端信息
-     *
-     * @param id 编号
-     */
     @Transactional(rollbackFor = Exception.class)
-    public void remove(Long id) {
-        Client dbClient = clientRepository.find(id);
-        TiAssert.isNotNull(dbClient, "删除失败，数据不存在");
-        TiAssert.isTrue(clientRepository.remove(id), "删除失败");
-        String accessKey = dbClient.getAccessKey();
-        clientRepository.removeByAccessKey(accessKey);
-        serverHandler.remove(accessKey);
+    public void remove(VersionModifyCommand command) {
+        Client client = clientRepository.find(command.getId());
+        TiAssert.isNotNull(client, "删除失败，数据不存在");
+        client.checkVersion(command.getVersion(), "数据已被修改，请刷新后重试");
+        TiAssert.isTrue(!client.isEnable(), "删除失败，请先禁用该客户端");
+        TiAssert.isTrue(clientRepository.remove(command.getId()), "删除失败");
     }
 
-    /**
-     * 修改客户端信息
-     */
     @Transactional(rollbackFor = Exception.class)
     public void modify(ClientModifyCommand clientModifyCommand) {
         Client client = clientRepository.find(clientModifyCommand.getId());
         TiAssert.isNotNull(client, "修改失败，数据不存在");
-        boolean statusChanged = client.equalStatus(clientModifyCommand.getStatus());
+        client.checkVersion(clientModifyCommand.getVersion(), "数据已被修改，请刷新后重试");
         ClientModifyVO vo = clientAssembler.toVO(clientModifyCommand);
         client.modify(vo);
         TiAssert.isTrue(clientRepository.modify(client), "修改失败，请刷新后重试");
-        if (statusChanged) {
-            modifyClientInfo(client);
-        }
     }
 
-    public void modifyClientInfo(Client client) {
-        boolean enabled = Objects.equals(client.getStatus(), 1) && LocalDateTime.now().isBefore(client.getExpireAt());
+    public void enable(List<VersionModifyCommand> datas) {
+        boolean enable = modifyBatch(datas, Client::enable, this::createAndBind);
+        TiAssert.isTrue(enable, "启用失败，请刷新后重试");
+    }
+
+    private void createAndBind(Client client) {
         String accessKey = client.getAccessKey();
-        if (enabled) {
-            Predicate<Port> filter = x -> Objects.equals(x.getStatus(), 1) && LocalDateTime.now().isBefore(x.getExpireAt());
-            Map<String, List<Port>> protMap = portAppRepository.listAndGroupByAccessKey(Collections.singletonList(accessKey), Function.identity(), filter);
-            List<Port> ports = protMap.getOrDefault(accessKey, Collections.emptyList());
-            serverHandler.create(client.getAccessKey(), client.getName());
-            ports.forEach(port -> serverHandler.bind(accessKey, port.getPort(), port.getEndpoint()));
-
-        } else {
-            serverHandler.remove(accessKey);
-        }
+        serverHandler.create(accessKey, client.getName());
+        List<String> accessKeys = Collections.singletonList(accessKey);
+        Map<String, List<Port>> protMap = intranetExecutor.getPortMap(accessKeys);
+        List<Port> ports = protMap.getOrDefault(accessKey, Collections.emptyList());
+        ports.forEach(port -> serverHandler.bind(accessKey, port.getPort(), port.getEndpoint()));
     }
 
-    /**
-     * 根据id查询客户端信息
-     *
-     * @param id 编号
-     * @return {@link ClientDTO}
-     */
-    public ClientDTO find(Long id) {
-        Client clientPO = clientRepository.find(id);
-        ClientDTO clientDTO = clientAssembler.toDTO(clientPO);
-        fillChannelStatus(clientDTO);
-        return clientDTO;
+    public void disable(List<VersionModifyCommand> datas) {
+        boolean disable = modifyBatch(datas, Client::disable, client -> serverHandler.remove(client.getAccessKey()));
+        TiAssert.isTrue(disable, "禁用失败，请刷新后重试");
     }
 
-    /**
-     * 分页查询客户端信息列表
-     *
-     * @param query 查询
-     * @return {@link TiPageResult}<{@link ClientDTO}>
-     */
     public TiPageResult<ClientDTO> page(ClientQuery query) {
         TiPageResult<ClientDTO> page = clientAppRepository.page(query);
         page.getRows().forEach(this::fillChannelStatus);
         return page;
     }
 
-    /**
-     * 查询客户端信息列表
-     *
-     * @return {@link List}<{@link ClientDTO}>
-     */
     public List<ClientDTO> all() {
         List<ClientDTO> clientDTOS = clientAppRepository.all();
         clientDTOS.forEach(this::fillChannelStatus);
         return clientDTOS;
     }
 
-    /**
-     * 导出客户端信息
-     *
-     * @param query 查询条件
-     */
     public void exportExcel(ClientQuery query) throws IOException {
         String sheetName = "客户端信息";
         String fileName = "客户端信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
@@ -190,8 +147,26 @@ public class ClientService {
             return;
         }
         ClientInfo clientInfo = clientInfoOpt.get();
-        Integer channelStatus = Objects.nonNull(clientInfo.getChannel()) ? 1 : 0;
-        clientDTO.setChannelStatus(channelStatus);
+        clientDTO.setChannelStatus(YesOrNo.getCode(Objects.nonNull(clientInfo.getChannel())));
     }
+
+    private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<Client> modifyHandle, Consumer<Client> modifyToDbAfterHandle) {
+        List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
+        List<Client> clients = clientRepository.list(ids);
+        Map<Long, Client> userMap = CollStreamUtil.toIdentityMap(clients, Client::getId);
+        for (VersionModifyCommand modify : modifys) {
+            Client client = userMap.get(modify.getId());
+            TiAssert.isNotNull(client, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
+            client.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 客户端: {}", client.getName()));
+            // 修改逻辑
+            modifyHandle.accept(client);
+        }
+        boolean modifyBatch = clientRepository.modifyBatch(clients);
+        if (modifyBatch) {
+            clients.forEach(modifyToDbAfterHandle);
+        }
+        return modifyBatch;
+    }
+
 }
 

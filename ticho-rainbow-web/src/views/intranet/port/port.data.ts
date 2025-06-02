@@ -6,6 +6,7 @@ import { isNull } from '@/utils/is';
 import { formatToDateTime } from '@/utils/dateUtil';
 import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
 import { isUndefined } from 'lodash-es';
+import dayjs from 'dayjs';
 
 const commonStatus = 'commonStatus';
 const protocolType = 'protocolType';
@@ -197,6 +198,15 @@ export function getModalFormColumns(): FormSchema[] {
       colProps: {
         span: 24,
       },
+      dynamicDisabled: ({ values }) => {
+        return values?.status === 1;
+      },
+    },
+    {
+      field: `status`,
+      component: 'Input',
+      label: `状态`,
+      ifShow: false,
     },
     {
       field: `port`,
@@ -211,6 +221,9 @@ export function getModalFormColumns(): FormSchema[] {
       colProps: {
         span: 24,
       },
+      dynamicDisabled: ({ values }) => {
+        return values?.status === 1;
+      },
     },
     {
       field: `endpoint`,
@@ -221,6 +234,9 @@ export function getModalFormColumns(): FormSchema[] {
       },
       colProps: {
         span: 24,
+      },
+      dynamicDisabled: ({ values }) => {
+        return values?.status === 1;
       },
       helpMessage: '客户端地址格式为[ip:port]，端口范围[1-65535]',
       dynamicRules: () => {
@@ -269,7 +285,6 @@ export function getModalFormColumns(): FormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入域名',
-        defaultValue: null,
       },
       colProps: {
         span: 24,
@@ -298,15 +313,6 @@ export function getModalFormColumns(): FormSchema[] {
       },
     },
     {
-      field: `status`,
-      label: `状态`,
-      component: 'RadioButtonGroup',
-      defaultValue: 1,
-      componentProps: {
-        options: getDictByCode(commonStatus),
-      },
-    },
-    {
       field: `expireAt`,
       label: `过期时间`,
       component: 'DatePicker',
@@ -314,7 +320,17 @@ export function getModalFormColumns(): FormSchema[] {
         placeholder: '请输入过期时间',
         showTime: true,
         valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        disabledDate: (current) => {
+          return current && current <= dayjs().subtract(1, 'days').endOf('day');
+        },
       },
+      rules: [
+        {
+          trigger: 'change',
+          required: true,
+          message: '请输入过期时间',
+        },
+      ],
       colProps: {
         span: 24,
       },
@@ -327,6 +343,7 @@ export function getModalFormColumns(): FormSchema[] {
       componentProps: {
         min: 0,
         step: 10,
+        max: 65535,
         placeholder: '请输入排序',
       },
       colProps: {

@@ -1,31 +1,43 @@
 import { defHttp } from '@/utils/http/axios';
-import { TaskDTO, TaskQuery } from './model/taskModel';
+import {
+  TaskDTO,
+  TaskModifyCommand,
+  TaskQuery,
+  TaskRunOnceCommand,
+  TaskSaveCommand,
+} from './model/taskModel';
 import { RetryRequest } from '#/axios';
+import { VersionModifyCommand } from '@/api/system/model/baseModel';
 
 enum Api {
   Task = '/task',
   TaskPage = '/task/page',
   AllTasks = '/task/all',
-  RunOnceTask = '/task/run-once',
-  PauseTask = '/task/pause',
-  ResumeTask = '/task/resume',
+  TaskRunOnce = '/task/run-once',
+  TaskEnable = '/task/status/enable',
+  TaskDisable = '/task/status/disable',
   Export = '/task/excel/export',
 }
 
-export function saveTask(params: TaskDTO) {
-  return defHttp.post<any>({ url: Api.Task, params }, { errorMessageMode: 'message' });
-}
-
-export function delTask(id: string) {
-  const params = { id: id };
-  return defHttp.delete<any>(
-    { url: `${Api.Task}`, params },
-    { errorMessageMode: 'message', joinParamsToUrl: true },
+export function saveTask(params: TaskSaveCommand) {
+  return defHttp.post<any>(
+    { url: Api.Task, params },
+    { successMessageMode: 'message', errorMessageMode: 'message' },
   );
 }
 
-export function modifyTask(params: TaskDTO) {
-  return defHttp.put<any>({ url: Api.Task, params }, { errorMessageMode: 'message' });
+export function delTask(params: VersionModifyCommand) {
+  return defHttp.delete<any>(
+    { url: `${Api.Task}`, params },
+    { successMessageMode: 'message', errorMessageMode: 'message' },
+  );
+}
+
+export function modifyTask(params: TaskModifyCommand) {
+  return defHttp.put<any>(
+    { url: Api.Task, params },
+    { successMessageMode: 'message', errorMessageMode: 'message' },
+  );
 }
 
 export function taskPage(params?: TaskQuery) {
@@ -36,21 +48,25 @@ export function allTasks(params?: TaskQuery) {
   return defHttp.get<TaskDTO[]>({ url: Api.AllTasks, params }, { errorMessageMode: 'none' });
 }
 
-export function runOnceTask(params) {
-  return defHttp.get<any>(
-    { url: Api.RunOnceTask, params },
+export function runOnceTask(params: TaskRunOnceCommand) {
+  return defHttp.post<any>(
+    { url: Api.TaskRunOnce, params },
     { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
 
-export function pauseTask(id: string) {
-  const params = { id: id };
-  return defHttp.get<any>({ url: Api.PauseTask, params }, { errorMessageMode: 'message', successMessageMode: 'message' });
+export function enableTask(params: VersionModifyCommand[]) {
+  return defHttp.patch<any>(
+    { url: Api.TaskEnable, params },
+    { errorMessageMode: 'message', successMessageMode: 'message' },
+  );
 }
 
-export function resumeTask(id: string) {
-  const params = { id: id };
-  return defHttp.get<any>({ url: Api.ResumeTask, params }, { errorMessageMode: 'message', successMessageMode: 'message' });
+export function disableTask(params: VersionModifyCommand[]) {
+  return defHttp.patch<any>(
+    { url: Api.TaskDisable, params },
+    { errorMessageMode: 'message', successMessageMode: 'message' },
+  );
 }
 
 export function expExcel(params?: TaskQuery) {

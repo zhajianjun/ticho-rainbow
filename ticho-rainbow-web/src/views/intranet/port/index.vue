@@ -29,7 +29,7 @@
             :un-checked-children="getDictLabelByCodeAndValue('commonStatus', 0)"
             :checked="record.status === 1"
             :loading="record.pendingStatus"
-            @change="handleStatusSwitchChange(record)"
+            @change="handleSwitchChange(record)"
           />
         </template>
         <template v-if="column.key === 'forever'">
@@ -80,13 +80,22 @@
   import { useModal } from '@/components/Modal';
   import PortModal from './PortModal.vue';
   import { getSearchColumns, getTableColumns } from './port.data';
-  import { delPort, expExcel, modifyPort, portPage } from '@/api/intranet/port';
+  import {
+    delPort,
+    disablePort,
+    enablePort,
+    expExcel,
+    modifyPort,
+    portPage,
+  } from '@/api/intranet/port';
   import { Switch } from 'ant-design-vue';
   import { useMessage } from '@/hooks/web/useMessage';
   import { PortDTO, PortQuery } from '@/api/intranet/model/portModel';
   import { usePermission } from '@/hooks/web/usePermission';
   import { getDictLabelByCodeAndValue } from '@/store/modules/dict';
   import { downloadByData } from '@/utils/file/download';
+  import { VersionModifyCommand } from '@/api/system/model/baseModel';
+  import { formatToDateTime } from '@/utils/dateUtil';
 
   export default defineComponent({
     name: 'Port',
@@ -104,10 +113,10 @@
         formConfig: {
           labelWidth: 120,
           schemas: getSearchColumns(),
-          showActionButtonGroup: true,
-          showSubmitButton: true,
-          showResetButton: true,
-          autoSubmitOnEnter: true,
+          showActionButtonGroup: showSelect,
+          showSubmitButton: showSelect,
+          showResetButton: showSelect,
+          autoSubmitOnEnter: showSelect,
           submitButtonOptions: {
             preIcon: 'ant-design:search-outlined',
           },
@@ -160,7 +169,8 @@
       }
 
       function handleDelete(record: Recordable) {
-        delPort(record.id).then(() => {
+        const params = { ...record } as VersionModifyCommand;
+        delPort(params).then(() => {
           reload();
         });
       }
@@ -169,23 +179,47 @@
         reload();
       }
 
-      function handleStatusSwitchChange(record: Recordable) {
-        record.pendingStatus = true;
-        const { createMessage } = useMessage();
-        let checked = record.status === 1;
-        if (checked) {
-          record.status = 0;
-        } else {
-          record.status = 1;
+      function handleSwitchChange(record: Recordable) {
+        if (!record || typeof record.status !== 'number') {
+          console.warn('Invalid record provided to handleSwitchChange');
+          return;
         }
-        const params: PortDTO = { ...record } as PortDTO;
-        const messagePrefix = !checked ? '启动' : '关闭';
-        modifyPort(params)
+        const { createMessage } = useMessage();
+        const checked = record.status === 1;
+        let oprate: Promise<any>;
+        let messagePrefix: string;
+        record.pendingStatus = true;
+
+        try {
+          if (checked) {
+            messagePrefix = '禁用';
+            const param = { ...record } as VersionModifyCommand;
+            oprate = disablePort([param]);
+          } else {
+            messagePrefix = '启用';
+            if (record.expireAt === null || record.expireAt === '') {
+              createMessage.error(`端口：[` + record.port + `]过期日期不能为空`);
+              record.pendingStatus = false;
+              return;
+            }
+            if (formatToDateTime(new Date()) >= formatToDateTime(record.expireAt)) {
+              createMessage.error(`端口：[` + record.port + `]已过期`);
+              record.pendingStatus = false;
+              return;
+            }
+            const param = { ...record } as VersionModifyCommand;
+            oprate = enablePort([param]);
+          }
+        } catch (error) {
+          createMessage.error('操作失败：参数构造异常');
+          record.pendingStatus = false;
+          return;
+        }
+        oprate
           .then(() => {
+            // 仅在请求成功后更新状态
+            record.status = checked ? 0 : 1;
             createMessage.success(messagePrefix + `成功`);
-          })
-          .catch(() => {
-            createMessage.error(messagePrefix + `失败`);
           })
           .finally(() => {
             record.pendingStatus = false;
@@ -243,6 +277,7 @@
             exportLoding.value = false;
           });
       }
+
       return {
         registerTable,
         registerModal,
@@ -251,7 +286,7 @@
         handleEdit,
         handleDelete,
         handleSuccess,
-        handleStatusSwitchChange,
+        handleSwitchChange,
         handleForeverSwitchChange,
         exportLoding,
         handleExport,

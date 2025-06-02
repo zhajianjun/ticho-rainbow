@@ -1,12 +1,12 @@
 import { defHttp } from '@/utils/http/axios';
 import {
-  UserQuery,
   UserDTO,
-  UseSaveCommand,
   UserModifyCommand,
   UserModifyPasswordCommand,
-  UseVersionModifyCommand,
+  UserQuery,
+  UseSaveCommand,
 } from './model/userModel';
+import { VersionModifyCommand } from './model/baseModel';
 import { ContentTypeEnum } from '@/enums/httpEnum';
 import { RetryRequest } from '#/axios';
 
@@ -28,46 +28,64 @@ export function userPage(params?: UserQuery) {
 }
 
 export function saveUser(params: UseSaveCommand) {
-  return defHttp.post<any>({ url: Api.UserInfo, params }, { errorMessageMode: 'message' });
+  return defHttp.post<any>(
+    { url: Api.UserInfo, params },
+    {
+      errorMessageMode: 'message',
+      successMessageMode: 'message',
+    },
+  );
 }
 
-export function lockUser(params: UseVersionModifyCommand[]) {
+export function lockUser(params: VersionModifyCommand[]) {
   return defHttp.patch<any>(
     { url: Api.LockUser, params },
     { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
 
-export function unlockUser(params: UseVersionModifyCommand[]) {
+export function unlockUser(params: VersionModifyCommand[]) {
   return defHttp.patch<any>(
     { url: Api.UnLockUser, params },
     { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
 
-export function logOutUser(params: UseVersionModifyCommand[]) {
+export function logOutUser(params: VersionModifyCommand[]) {
   return defHttp.patch<any>(
     { url: Api.LogOutUser, params },
     { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
 
-export function removeUser(params: UseVersionModifyCommand) {
+export function removeUser(params: VersionModifyCommand) {
   return defHttp.delete<any>(
     { url: Api.UserInfo, params },
-    { errorMessageMode: 'message', successMessageMode: 'message', joinParamsToUrl: true },
+    { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
 
 export function modifyUser(params: UserModifyCommand) {
-  return defHttp.put<void>({ url: Api.UserInfo, params }, { errorMessageMode: 'message' });
+  return defHttp.put<void>(
+    { url: Api.UserInfo, params },
+    {
+      errorMessageMode: 'message',
+      successMessageMode: 'message',
+    },
+  );
 }
 
 export function modifyUserPassword(params: UserModifyPasswordCommand) {
-  return defHttp.patch<void>({ url: Api.ModifyPassword, params }, { errorMessageMode: 'message' });
+  return defHttp.patch<void>(
+    { url: Api.ModifyPassword, params },
+    {
+      errorMessageMode: 'message',
+      successMessageMode: 'message',
+    },
+  );
 }
 
-export function resetUserPassword(params: UseVersionModifyCommand[]) {
+export function resetUserPassword(params: VersionModifyCommand[]) {
   return defHttp.patch<void>(
     { url: Api.ResetUserPassword, params },
     { errorMessageMode: 'message', joinParamsToUrl: true },

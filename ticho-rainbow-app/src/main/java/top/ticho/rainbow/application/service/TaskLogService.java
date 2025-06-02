@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.assembler.TaskLogAssembler;
 import top.ticho.rainbow.application.dto.excel.TaskLogExcelExport;
 import top.ticho.rainbow.application.dto.query.TaskLogQuery;
-import top.ticho.rainbow.application.dto.response.TaskDTO;
 import top.ticho.rainbow.application.dto.response.TaskLogDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
-import top.ticho.rainbow.application.repository.TaskAppRepository;
 import top.ticho.rainbow.application.repository.TaskLogAppRepository;
+import top.ticho.rainbow.domain.entity.Task;
 import top.ticho.rainbow.domain.entity.TaskLog;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
+import top.ticho.rainbow.domain.repository.TaskRepository;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
 import top.ticho.starter.view.core.TiPageResult;
@@ -41,7 +41,7 @@ public class TaskLogService {
     private final TaskLogAssembler taskLogAssembler;
     private final DictExecutor dictExecutor;
     private final HttpServletResponse response;
-    private final TaskAppRepository taskAppRepository;
+    private final TaskRepository taskRepository;
 
     public TaskLogDTO find(Long id) {
         TaskLog taskLog = taskLogRepository.find(id);
@@ -79,11 +79,11 @@ public class TaskLogService {
     }
 
     private Map<Long, String> getTaskNameMap(List<Long> taskIds) {
-        List<TaskDTO> tasks = taskAppRepository.all();
+        List<Task> tasks = taskRepository.all();
         return tasks
             .stream()
             .filter(x -> taskIds.contains(x.getId()))
-            .collect(Collectors.toMap(TaskDTO::getId, TaskDTO::getName));
+            .collect(Collectors.toMap(Task::getId, Task::getName));
     }
 
 }

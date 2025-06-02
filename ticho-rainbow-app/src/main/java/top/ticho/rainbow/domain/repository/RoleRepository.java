@@ -1,6 +1,5 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.domain.entity.DictLabel;
 import top.ticho.rainbow.domain.entity.Role;
 
 import java.util.List;
@@ -13,56 +12,30 @@ import java.util.List;
  */
 public interface RoleRepository {
 
-    /**
-     * 保存角色
-     *
-     * @param role 角色
-     * @return boolean
-     */
     boolean save(Role role);
 
-    /**
-     * 删除角色
-     *
-     * @param id 身份证
-     * @return boolean
-     */
     boolean remove(Long id);
 
-    /**
-     * 修改角色
-     *
-     * @param role 角色
-     */
     boolean modify(Role role);
 
-    /**
-     * 根据编号查询角色
-     *
-     * @param id 编号
-     * @return {@link Role }
-     */
+    boolean modifyBatch(List<Role> roles);
+
     Role find(Long id);
+
+    List<Role> list(List<Long> ids);
 
     /**
      * 所有角色缓存查询
-     *
-     * @return {@link List}<{@link Role}>
      */
     List<Role> cacheList();
 
     /**
      * 根据角色code查询Role列表
-     *
-     * @param codes 角色代码
-     * @return {@link List}<{@link Role}>
      */
     List<Role> listByCodes(List<String> codes);
 
     /**
      * 获取游客角色
-     *
-     * @return {@link Role}
      */
     Role getGuestRole();
 
@@ -72,11 +45,8 @@ public interface RoleRepository {
      *
      * @param code      角色编码
      * @param excludeId 排除的主键编号
-     * @return {@link DictLabel}
      */
     Role getByCodeExcludeId(String code, Long excludeId);
-
-    List<Role> listByIds(List<Long> ids);
 
 }
 

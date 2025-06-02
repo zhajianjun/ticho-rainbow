@@ -56,8 +56,18 @@ public class PortRepositoryImpl extends TiRepositoryImpl<PortMapper, PortPO> imp
     }
 
     @Override
+    public boolean modifyBatch(List<Port> ports) {
+        return super.updateBatchById(portConverter.toPo(ports));
+    }
+
+    @Override
     public Port find(Long id) {
         return portConverter.toEntity(super.getById(id));
+    }
+
+    @Override
+    public List<Port> list(List<Long> ids) {
+        return portConverter.toEntity(super.listByIds(ids));
     }
 
     @Override
@@ -119,7 +129,7 @@ public class PortRepositoryImpl extends TiRepositoryImpl<PortMapper, PortPO> imp
         wrapper.in(PortPO::getAccessKey, accessKeys);
         wrapper.orderByAsc(PortPO::getSort);
         wrapper.orderByAsc(PortPO::getPort);
-        return portConverter.toEntitys(list(wrapper));
+        return portConverter.toEntity(list(wrapper));
     }
 
     @Override

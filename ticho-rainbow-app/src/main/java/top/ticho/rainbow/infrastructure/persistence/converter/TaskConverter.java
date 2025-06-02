@@ -5,6 +5,8 @@ import top.ticho.rainbow.application.dto.response.TaskDTO;
 import top.ticho.rainbow.domain.entity.Task;
 import top.ticho.rainbow.infrastructure.persistence.po.TaskPO;
 
+import java.util.List;
+
 /**
  * 客户端信息 转换器
  *
@@ -14,9 +16,13 @@ import top.ticho.rainbow.infrastructure.persistence.po.TaskPO;
 @Mapper(componentModel = "spring")
 public interface TaskConverter {
 
-    Task toEntity(TaskPO taskPO);
+    Task toEntity(TaskPO po);
+
+    List<Task> toEntity(List<TaskPO> pos);
 
     TaskPO toPo(Task task);
+
+    List<TaskPO> toPo(List<Task> tasks);
 
     TaskDTO toDTO(TaskPO taskPO);
 

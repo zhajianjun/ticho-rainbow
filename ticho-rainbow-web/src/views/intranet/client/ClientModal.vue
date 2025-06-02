@@ -16,7 +16,6 @@
   import { getModalFormColumns } from './client.data';
   import { modifyClient, saveClient } from '@/api/intranet/client';
   import { ClientModifyCommand, ClientSaveCommand } from '@/api/intranet/model/clientModel';
-  import { useMessage } from '@/hooks/web/useMessage';
 
   export default defineComponent({
     name: 'ClientModal',
@@ -65,8 +64,6 @@
             const values = (await validate()) as ClientSaveCommand;
             await saveClient(values);
           }
-          const { createMessage } = useMessage();
-          createMessage.success('操作成功');
           closeModal();
           // 触发父组件方法
           emit('success');

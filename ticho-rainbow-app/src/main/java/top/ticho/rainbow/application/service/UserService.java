@@ -13,8 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import top.ticho.rainbow.application.assembler.UserAssembler;
 import top.ticho.rainbow.application.dto.command.UseModifyCommand;
 import top.ticho.rainbow.application.dto.command.UseSaveCommand;
-import top.ticho.rainbow.application.dto.command.UseVersionModifyCommand;
 import top.ticho.rainbow.application.dto.command.UserModifyPasswordCommand;
+import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.excel.UserExcelExport;
 import top.ticho.rainbow.application.dto.excel.UserExcelImport;
 import top.ticho.rainbow.application.dto.excel.UserExcelImportModel;
@@ -82,11 +82,11 @@ public class UserService {
         userRoleRepository.removeAndSave(user.getId(), useSaveCommand.getRoleIds());
     }
 
-    public void remove(Long id, Long version) {
-        User user = userRepository.find(id);
+    public void remove(VersionModifyCommand command) {
+        User user = userRepository.find(command.getId());
         TiAssert.isNotNull(user, "删除失败, 用户不存在");
-        user.checkVersion(version, "数据已被修改，请刷新后重试");
-        TiAssert.isTrue(Objects.equals(UserStatus.LOG_OUT.code(), user.getStatus()), "");
+        user.checkVersion(command.getVersion(), "数据已被修改，请刷新后重试");
+        TiAssert.isTrue(Objects.equals(UserStatus.LOG_OUT.code(), user.getStatus()), "删除失败，请先注销用户");
         TiAssert.isTrue(userRepository.remove(user), "修改失败，请刷新后重试");
     }
 
@@ -103,18 +103,18 @@ public class UserService {
         userRoleRepository.removeAndSave(useModifyCommand.getId(), useModifyCommand.getRoleIds());
     }
 
-    public void lock(List<UseVersionModifyCommand> modifys) {
-        boolean lock = modifyBatch(modifys, User::lock);
+    public void lock(List<VersionModifyCommand> datas) {
+        boolean lock = modifyBatch(datas, User::lock);
         TiAssert.isTrue(lock, "锁定失败，请刷新后重试");
     }
 
-    public void unLock(List<UseVersionModifyCommand> modifys) {
-        boolean unLock = modifyBatch(modifys, User::unLock);
+    public void unLock(List<VersionModifyCommand> datas) {
+        boolean unLock = modifyBatch(datas, User::unLock);
         TiAssert.isTrue(unLock, "解锁失败，请刷新后重试");
     }
 
-    public void logOut(List<UseVersionModifyCommand> modifys) {
-        boolean logOut = modifyBatch(modifys, User::logOut);
+    public void logOut(List<VersionModifyCommand> datas) {
+        boolean logOut = modifyBatch(datas, User::logOut);
         TiAssert.isTrue(logOut, "注销失败，请刷新后重试");
     }
 
@@ -125,7 +125,7 @@ public class UserService {
         userExecutor.modifyPassword(userModifyPasswordCommand.getPassword(), userModifyPasswordCommand.getNewPassword(), user);
     }
 
-    public void resetPassword(List<UseVersionModifyCommand> modifys) {
+    public void resetPassword(List<VersionModifyCommand> modifys) {
         boolean modifyPassword = modifyBatch(modifys, user -> {
             String encodedPasswordNew = userExecutor.encodePassword(CommConst.DEFAULT_PASSWORD);
             user.modifyPassword(encodedPasswordNew);
@@ -139,11 +139,11 @@ public class UserService {
         return page;
     }
 
-    private boolean modifyBatch(List<UseVersionModifyCommand> modifys, Consumer<User> modifyHandle) {
-        List<Long> ids = CollStreamUtil.toList(modifys, UseVersionModifyCommand::getId);
+    private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<User> modifyHandle) {
+        List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
         List<User> users = userRepository.list(ids);
         Map<Long, User> userMap = CollStreamUtil.toIdentityMap(users, User::getId);
-        for (UseVersionModifyCommand modify : modifys) {
+        for (VersionModifyCommand modify : modifys) {
             User user = userMap.get(modify.getId());
             TiAssert.isNotNull(user, StrUtil.format("操作失败, 用户不存在, id: {}", modify.getId()));
             user.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 用户: {}", user.getUsername()));

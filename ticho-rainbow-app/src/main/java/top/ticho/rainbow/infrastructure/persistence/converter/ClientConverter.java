@@ -7,6 +7,7 @@ import top.ticho.rainbow.application.dto.response.ClientDTO;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.infrastructure.persistence.po.ClientPO;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -25,7 +26,9 @@ public interface ClientConverter {
     @Mapping(target = "createBy", ignore = true)
     ClientPO toPo(Client client);
 
-    List<Client> toEntitys(List<ClientPO> list);
+    List<ClientPO> toPo(Collection<Client> client);
+
+    List<Client> toEntity(List<ClientPO> list);
 
     Client toEntity(ClientPO clientPO);
 

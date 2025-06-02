@@ -46,14 +46,14 @@
           ]"
           :dropDownActions="[
             {
-              label: '启动',
-              onClick: handleResume.bind(null, record),
+              label: '启用',
+              onClick: handleEnable.bind(null, record),
               disabled: record.status == 1,
               auth: 'TaskResume',
             },
             {
-              label: '暂停',
-              onClick: handlePause.bind(null, record),
+              label: '禁用',
+              onClick: handleDisable.bind(null, record),
               disabled: record.status !== 1,
               auth: 'TaskPause',
             },
@@ -63,6 +63,7 @@
                 title: '是否确认删除?',
                 confirm: handleDelete.bind(null, record),
               },
+              disabled: record.status == 1,
               auth: 'TaskDel',
             },
           ]"
@@ -75,17 +76,18 @@
 </template>
 <script lang="ts">
   import { defineComponent, ref } from 'vue';
-  import { BasicTable, useTable, TableAction } from '@/components/Table';
+  import { BasicTable, TableAction, useTable } from '@/components/Table';
   import { useModal } from '@/components/Modal';
   import TaskModal from './TaskModal.vue';
   import TaskRunOnce from './TaskRunOnce.vue';
-  import { getTableColumns, getSearchColumns } from './task.data';
-  import { taskPage, delTask, pauseTask, resumeTask, expExcel } from '@/api/system/task';
+  import { getSearchColumns, getTableColumns } from './task.data';
+  import { delTask, disableTask, enableTask, expExcel, taskPage } from '@/api/system/task';
   import { usePermission } from '@/hooks/web/usePermission';
   import { useGo } from '@/hooks/web/usePage';
   import { useMessage } from '@/hooks/web/useMessage';
   import { downloadByData } from '@/utils/file/download';
   import { TaskQuery } from '@/api/system/model/taskModel';
+  import { VersionModifyCommand } from '@/api/system/model/baseModel';
 
   export default defineComponent({
     name: 'Task',
@@ -154,19 +156,22 @@
       }
 
       function handleDelete(record: Recordable) {
-        delTask(record.id).then(() => {
+        const params = { ...record } as VersionModifyCommand;
+        delTask(params).then(() => {
           reload();
         });
       }
 
-      function handlePause(record: Recordable) {
-        pauseTask(record.id).then(() => {
+      function handleEnable(record: Recordable) {
+        const param = { ...record } as VersionModifyCommand;
+        enableTask([param]).then(() => {
           reload();
         });
       }
 
-      function handleResume(record: Recordable) {
-        resumeTask(record.id).then(() => {
+      function handleDisable(record: Recordable) {
+        const param = { ...record } as VersionModifyCommand;
+        disableTask([param]).then(() => {
           reload();
         });
       }
@@ -218,8 +223,8 @@
         handleCreate,
         openTaskModal,
         handleDelete,
-        handlePause,
-        handleResume,
+        handleEnable,
+        handleDisable,
         handleSuccess,
         hasPermission,
         cronValue,

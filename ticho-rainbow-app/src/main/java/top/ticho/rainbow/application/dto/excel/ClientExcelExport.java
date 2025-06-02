@@ -35,7 +35,7 @@ public class ClientExcelExport {
     @ExcelProperty(value = "过期时间")
     @DateTimeFormat(value = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime expireAt;
-    /** 状态;1-启用,0-停用 */
+    /** 状态;1-启用,0-禁用 */
     @ColumnWidth(20)
     @ExcelProperty(value = "客户端状态")
     private String statusName;

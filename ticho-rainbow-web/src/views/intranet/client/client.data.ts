@@ -129,26 +129,10 @@ export function getModalFormColumns(): FormSchema[] {
       show: false,
     },
     {
-      field: `accessKey`,
-      label: `客户端秘钥`,
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入客户端秘钥',
-      },
-      colProps: {
-        span: 24,
-      },
-      rules: [
-        {
-          required: true,
-          message: '请输入客户端秘钥',
-        },
-      ],
-    },
-    {
       field: `name`,
       label: `客户端名称`,
       component: 'Input',
+      required: true,
       componentProps: {
         placeholder: '请输入客户端名称',
       },
@@ -157,18 +141,10 @@ export function getModalFormColumns(): FormSchema[] {
       },
     },
     {
-      field: `status`,
-      label: `状态`,
-      component: 'RadioButtonGroup',
-      defaultValue: 1,
-      componentProps: {
-        options: getDictByCode(commonStatus),
-      },
-    },
-    {
       field: `expireAt`,
       label: `过期时间`,
       component: 'DatePicker',
+      required: true,
       componentProps: {
         placeholder: '请输入过期时间',
         showTime: true,
@@ -189,8 +165,10 @@ export function getModalFormColumns(): FormSchema[] {
       componentProps: {
         min: 0,
         step: 10,
+        max: 65535,
         placeholder: '请输入排序',
       },
+      required: true,
       colProps: {
         span: 24,
       },

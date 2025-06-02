@@ -22,6 +22,7 @@ public class MateMetaObjectHandler implements MetaObjectHandler {
         this.setFieldValByName("createBy", TiUserUtil.getCurrentUsername(), metaObject);
         this.setFieldValByName("createTime", LocalDateTime.now(), metaObject);
         this.setFieldValByName("isDelete", 0, metaObject);
+        this.setFieldValByName("version", 0L, metaObject);
     }
 
     @Override

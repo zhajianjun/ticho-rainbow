@@ -1,8 +1,10 @@
 package top.ticho.rainbow.domain.entity;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.Builder;
 import lombok.Getter;
 import top.ticho.rainbow.infrastructure.common.enums.FileInfoStatus;
+import top.ticho.starter.view.util.TiAssert;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -15,7 +17,7 @@ import java.util.Objects;
  */
 @Getter
 @Builder
-public class FileInfo {
+public class FileInfo implements Entity {
 
     /** 主键编号 */
     private Long id;
@@ -41,7 +43,7 @@ public class FileInfo {
     private String chunkMetadata;
     /** md5 */
     private String md5;
-    /** 状态;1-正常,2-停用,3-分片上传,99-作废 */
+    /** 状态;1-启用,2-停用,3-分片上传,99-作废 */
     private Integer status;
     /** 备注信息 */
     private String remark;
@@ -58,11 +60,38 @@ public class FileInfo {
 
     public void compose(long size) {
         this.size = size;
-        this.status = FileInfoStatus.NORMAL.code();
+        this.status = FileInfoStatus.ENABLE.code();
     }
 
-    public boolean isNormal() {
-        return Objects.equals(FileInfoStatus.NORMAL.code(), this.status);
+    public boolean isEnable() {
+        return Objects.equals(FileInfoStatus.ENABLE.code(), this.status);
     }
+
+    public boolean isCancel() {
+        return Objects.equals(this.status, FileInfoStatus.CANCEL.code());
+    }
+
+    public boolean isChunk() {
+        return Objects.equals(this.status, FileInfoStatus.CHUNK.code());
+    }
+
+    public void enable() {
+        FileInfoStatus disable = FileInfoStatus.DISABLE;
+        TiAssert.isTrue(Objects.equals(this.status, disable.code()), StrUtil.format("只有[{}]状态才能执行启用操作，文件：{}", disable.message(), fileName));
+        this.status = FileInfoStatus.ENABLE.code();
+    }
+
+    public void disable() {
+        FileInfoStatus enable = FileInfoStatus.ENABLE;
+        TiAssert.isTrue(Objects.equals(this.status, enable.code()), StrUtil.format("只有[{}]状态才能执行禁用操作，文件：{}", enable.message(), fileName));
+        this.status = FileInfoStatus.DISABLE.code();
+    }
+
+    public void cancel() {
+        FileInfoStatus cancel = FileInfoStatus.CANCEL;
+        TiAssert.isTrue(!Objects.equals(this.status, cancel.code()), StrUtil.format("文件：[{}]已作废", cancel.message(), fileName));
+        this.status = cancel.code();
+    }
+
 
 }

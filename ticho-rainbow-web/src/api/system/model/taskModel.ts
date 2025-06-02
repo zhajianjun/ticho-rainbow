@@ -51,3 +51,26 @@ export interface TaskQuery {
   /** 创建时间 */
   createTime: string;
 }
+
+export interface TaskSaveCommand {
+  name: string;
+  content: string;
+  param: string;
+  cronExpression: string;
+  remark: string;
+}
+
+export interface TaskModifyCommand {
+  id: number;
+  name: string;
+  content: string;
+  param: string;
+  cronExpression: string;
+  remark: string;
+  version: number;
+}
+
+export interface TaskRunOnceCommand {
+  id: number;
+  param: string;
+}

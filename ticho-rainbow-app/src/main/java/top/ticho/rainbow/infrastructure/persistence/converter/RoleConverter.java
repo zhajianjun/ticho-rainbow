@@ -22,4 +22,6 @@ public interface RoleConverter {
 
     RolePO toPo(Role role);
 
+    List<RolePO> toPo(List<Role> roles);
+
 }

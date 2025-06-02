@@ -9,6 +9,7 @@ import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.domain.entity.Port;
 import top.ticho.rainbow.domain.repository.ClientRepository;
 import top.ticho.rainbow.domain.repository.PortRepository;
+import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 public class IntranetExecutor {
     private final ServerHandler serverHandler;
     private final ClientRepository clientRepository;
-    private final PortRepository portAppRepository;
+    private final PortRepository portRepository;
     private final PortAssembler portAssembler;
 
     public void enable() {
@@ -40,10 +41,18 @@ public class IntranetExecutor {
         serverHandler.disable();
     }
 
+    public <T> Map<String, List<T>> getPortMap(List<String> accessKeys, Function<Port, T> function) {
+        return portRepository.listAndGroupByAccessKey(accessKeys, function, filter());
+    }
+
+    public Map<String, List<Port>> getPortMap(List<String> accessKeys) {
+        return portRepository.listAndGroupByAccessKey(accessKeys, Function.identity(), filter());
+    }
+
     public void flush() {
         List<Client> dtos = clientRepository.listEffect();
         List<String> accessKeys = dtos.stream().map(Client::getAccessKey).collect(Collectors.toList());
-        Map<String, List<PortInfo>> protMap = portAppRepository.listAndGroupByAccessKey(accessKeys, portAssembler::toInfo, filter());
+        Map<String, List<PortInfo>> protMap = getPortMap(accessKeys, portAssembler::toInfo);
         dtos.forEach(client -> {
             List<PortInfo> ports = protMap.getOrDefault(client.getAccessKey(), Collections.emptyList());
             Map<Integer, PortInfo> collect = ports.stream().collect(Collectors.toMap(PortInfo::getPort, Function.identity(), (v1, v2) -> v1, LinkedHashMap::new));
@@ -57,7 +66,7 @@ public class IntranetExecutor {
     public void init() {
         List<Client> dtos = clientRepository.listEffect();
         List<String> accessKeys = dtos.stream().map(Client::getAccessKey).collect(Collectors.toList());
-        Map<String, List<Port>> protMap = portAppRepository.listAndGroupByAccessKey(accessKeys, Function.identity(), filter());
+        Map<String, List<Port>> protMap = getPortMap(accessKeys);
         dtos.forEach(client -> {
             serverHandler.create(client.getAccessKey(), client.getName());
             List<Port> ports = protMap.getOrDefault(client.getAccessKey(), Collections.emptyList());
@@ -65,8 +74,8 @@ public class IntranetExecutor {
         });
     }
 
-    private Predicate<Port> filter() {
-        return port -> Objects.equals(port.getStatus(), 1) && LocalDateTime.now().isBefore(port.getExpireAt());
+    public Predicate<Port> filter() {
+        return port -> Objects.equals(port.getStatus(), CommonStatus.ENABLE.code()) && LocalDateTime.now().isBefore(port.getExpireAt());
     }
 
 }

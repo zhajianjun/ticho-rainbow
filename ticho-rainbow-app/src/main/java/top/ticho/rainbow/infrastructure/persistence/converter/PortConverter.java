@@ -16,11 +16,13 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface PortConverter {
 
-    List<Port> toEntitys(List<PortPO> portPOS);
+    List<Port> toEntity(List<PortPO> portPOS);
 
     Port toEntity(PortPO portPO);
 
     PortPO toPo(Port port);
+
+    List<PortPO> toPo(List<Port> port);
 
     PortDTO toDTO(PortPO portPO);
 

@@ -15,6 +15,7 @@
   import { runOnceTask } from '@/api/system/task';
   import { BasicForm, useForm } from '@/components/Form';
   import { getRunOnceModalFormColumns } from '@/views/system/task/task.data';
+  import { TaskRunOnceCommand } from '@/api/system/model/taskModel';
 
   export default defineComponent({
     name: 'TaskModal',
@@ -43,7 +44,8 @@
         try {
           const values = await validate();
           setModalProps({ confirmLoading: true });
-          await runOnceTask(values);
+          const params = values as TaskRunOnceCommand;
+          await runOnceTask(params);
           closeModal();
         } finally {
           setModalProps({ confirmLoading: false });

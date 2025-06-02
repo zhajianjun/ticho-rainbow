@@ -31,12 +31,13 @@ public class RolePO extends Model<RolePO> {
     private String code;
     /** 角色名称 */
     private String name;
-    /** 状态;1-启用,0-停用 */
+    /** 状态;1-启用,0-禁用 */
     private Integer status;
     /** 备注信息 */
     private String remark;
     /** 版本号 */
     @Version
+    @TableField(fill = FieldFill.INSERT)
     private Long version;
     /** 创建人 */
     @TableField(fill = FieldFill.INSERT)

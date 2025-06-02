@@ -33,12 +33,13 @@ public class DictPO extends Model<DictPO> {
     private String name;
     /** 是否系统字典;1-是,0-否 */
     private Integer isSys;
-    /** 状态;1-启用,0-停用 */
+    /** 状态;1-启用,0-禁用 */
     private Integer status;
     /** 备注信息 */
     private String remark;
     /** 版本号 */
     @Version
+    @TableField(fill = FieldFill.INSERT)
     private Long version;
     /** 创建人 */
     @TableField(fill = FieldFill.INSERT)

@@ -7,14 +7,17 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.dto.command.FileChunkUploadCommand;
 import top.ticho.rainbow.application.dto.command.FileUploadCommand;
+import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.query.FileInfoQuery;
 import top.ticho.rainbow.application.dto.response.ChunkCacheDTO;
 import top.ticho.rainbow.application.dto.response.FileInfoDTO;
 import top.ticho.rainbow.application.service.FileInfoService;
+import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.security.annotation.IgnoreJwtCheck;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
@@ -22,7 +25,9 @@ import top.ticho.starter.web.annotation.TiView;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.io.IOException;
+import java.util.List;
 
 
 /**
@@ -69,49 +74,53 @@ public class FileInfoController {
 
     /**
      * 删除文件
-     *
-     * @param id 文件id
      */
     @PreAuthorize("@perm.hasPerms('storage:file:remove')")
     @DeleteMapping
-    public TiResult<Void> remove(@NotNull(message = "编号不能为空") Long id) {
-        fileInfoService.remove(id);
+    public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
+        fileInfoService.remove(command);
         return TiResult.ok();
     }
 
     /**
      * 启用文件
-     *
-     * @param id 文件id
      */
     @PreAuthorize("@perm.hasPerms('storage:file:enable')")
     @PatchMapping("status/enable")
-    public TiResult<Void> enable(@NotNull(message = "编号不能为空") Long id) {
-        fileInfoService.enable(id);
+    public TiResult<Void> enable(
+        @NotNull(message = "文件信息不能为空")
+        @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
+        @RequestBody List<VersionModifyCommand> datas
+    ) {
+        fileInfoService.enable(datas);
         return TiResult.ok();
     }
 
     /**
      * 停用文件
-     *
-     * @param id 文件id
      */
     @PreAuthorize("@perm.hasPerms('storage:file:disable')")
     @PatchMapping("status/disable")
-    public TiResult<Void> disable(@NotNull(message = "编号不能为空") Long id) {
-        fileInfoService.disable(id);
+    public TiResult<Void> disable(
+        @NotNull(message = "文件信息不能为空")
+        @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
+        @RequestBody List<VersionModifyCommand> datas
+    ) {
+        fileInfoService.disable(datas);
         return TiResult.ok();
     }
 
     /**
      * 作废文件
-     *
-     * @param id 文件id
      */
     @PreAuthorize("@perm.hasPerms('storage:file:cancel')")
     @PatchMapping("status/cancel")
-    public TiResult<Void> cancel(@NotNull(message = "编号不能为空") Long id) {
-        fileInfoService.cancel(id);
+    public TiResult<Void> cancel(
+        @NotNull(message = "文件信息不能为空")
+        @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
+        @RequestBody List<VersionModifyCommand> datas
+    ) {
+        fileInfoService.cancel(datas);
         return TiResult.ok();
     }
 

@@ -38,22 +38,32 @@ public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, ClientP
 
     @Override
     public boolean save(Client client) {
-        return save(clientConverter.toPo(client));
+        return super.save(clientConverter.toPo(client));
     }
 
     @Override
     public boolean remove(Long id) {
-        return removeById(id);
+        return super.removeById(id);
     }
 
     @Override
     public boolean modify(Client client) {
-        return updateById(clientConverter.toPo(client));
+        return super.updateById(clientConverter.toPo(client));
+    }
+
+    @Override
+    public boolean modifyBatch(List<Client> clients) {
+        return super.updateBatchById(clientConverter.toPo(clients));
     }
 
     @Override
     public Client find(Long id) {
         return clientConverter.toEntity(super.getById(id));
+    }
+
+    @Override
+    public List<Client> list(List<Long> ids) {
+        return clientConverter.toEntity(super.listByIds(ids));
     }
 
     public List<ClientPO> list(ClientQuery query) {
@@ -101,7 +111,7 @@ public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, ClientP
         }
         LambdaQueryWrapper<ClientPO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(ClientPO::getAccessKey, accessKeys);
-        return clientConverter.toEntitys(list(wrapper));
+        return clientConverter.toEntity(list(wrapper));
     }
 
     @Override
@@ -109,17 +119,7 @@ public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, ClientP
         LambdaQueryWrapper<ClientPO> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(ClientPO::getStatus, CommonStatus.ENABLE.code());
         wrapper.ge(ClientPO::getExpireAt, LocalDateTime.now());
-        return clientConverter.toEntitys(list(wrapper));
-    }
-
-    @Override
-    public void removeByAccessKey(String accessKey) {
-        if (StrUtil.isBlank(accessKey)) {
-            return;
-        }
-        LambdaQueryWrapper<ClientPO> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(ClientPO::getAccessKey, accessKey);
-        remove(wrapper);
+        return clientConverter.toEntity(list(wrapper));
     }
 
 }

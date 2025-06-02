@@ -58,7 +58,7 @@ public class FileInfoExcelExport {
     @ColumnWidth(20)
     @ExcelProperty(value = "分片id")
     private String chunkId;
-    /** 状态;1-正常,2-停用,3-分片上传,99-作废 */
+    /** 状态;1-启用,2-停用,3-分片上传,99-作废 */
     @ColumnWidth(20)
     @ExcelProperty(value = "文件状态")
     private String statusName;

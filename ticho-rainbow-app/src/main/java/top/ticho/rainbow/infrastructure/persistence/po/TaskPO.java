@@ -37,10 +37,11 @@ public class TaskPO extends Model<TaskPO> {
     private String cronExpression;
     /** 备注信息 */
     private String remark;
-    /** 任务状态;1-启用,0-停用 */
+    /** 任务状态;1-启用,0-禁用 */
     private Integer status;
     /** 版本号 */
     @Version
+    @TableField(fill = FieldFill.INSERT)
     private Long version;
     /** 创建人 */
     @TableField(fill = FieldFill.INSERT)

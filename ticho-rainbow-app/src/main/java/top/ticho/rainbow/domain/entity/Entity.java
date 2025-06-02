@@ -24,7 +24,7 @@ public interface Entity {
         }
     }
 
-    private boolean isCurrentVersion(Long version) {
+    default boolean isCurrentVersion(Long version) {
         return Objects.equals(getVersion(), version);
     }
 

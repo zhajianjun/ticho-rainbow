@@ -64,25 +64,25 @@ public class DictService {
     public void save(DictSaveCommand dictSaveCommand) {
         Dict dict = dictAssembler.toEntity(dictSaveCommand);
         Dict dbDict = dictRepository.getByCodeExcludeId(dictSaveCommand.getCode(), null);
-        TiAssert.isNull(dbDict, TiBizErrCode.FAIL, "保存失败，字典已存在");
-        TiAssert.isTrue(dictRepository.save(dict), TiBizErrCode.FAIL, "保存失败");
+        TiAssert.isNull(dbDict, "保存失败，字典已存在");
+        TiAssert.isTrue(dictRepository.save(dict), "保存失败");
     }
 
     public void remove(Long id) {
         Dict dbDict = dictRepository.find(id);
-        TiAssert.isNotNull(dbDict, TiBizErrCode.FAIL, "删除失败，字典不存在");
+        TiAssert.isNotNull(dbDict, "删除失败，字典不存在");
         TiAssert.isTrue(!Objects.equals(dbDict.getIsSys(), 1), TiBizErrCode.PARAM_ERROR, "系统字典无法删除");
         boolean existsDict = dictLabelRepository.existsByCode(dbDict.getCode());
         TiAssert.isTrue(!existsDict, TiBizErrCode.PARAM_ERROR, "删除失败，请先删除所有字典标签");
-        TiAssert.isTrue(dictRepository.remove(id), TiBizErrCode.FAIL, "删除失败");
+        TiAssert.isTrue(dictRepository.remove(id), "删除失败");
     }
 
     public void modify(DictModifyCommand dictModifyCommand) {
         Dict dict = dictRepository.find(dictModifyCommand.getId());
-        TiAssert.isNotNull(dict, TiBizErrCode.FAIL, "修改失败，字典不存在");
+        TiAssert.isNotNull(dict, "修改失败，字典不存在");
         DictModifyVO dictModifyVO = dictAssembler.toVO(dictModifyCommand);
         dict.modify(dictModifyVO);
-        TiAssert.isTrue(dictRepository.modify(dict), TiBizErrCode.FAIL, "修改失败，请刷新后重试");
+        TiAssert.isTrue(dictRepository.modify(dict), "修改失败，请刷新后重试");
     }
 
     public DictDTO find(Long id) {

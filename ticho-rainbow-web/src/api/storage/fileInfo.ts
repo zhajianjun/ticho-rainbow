@@ -4,6 +4,7 @@ import { RetryRequest, UploadFileParams } from '#/axios';
 import { AxiosProgressEvent } from 'axios';
 import { ChunkDTO, ChunkFileDTO, FileInfoReqDTO, UploadApiResult } from './model/uploadModel';
 import { ContentTypeEnum } from '@/enums/httpEnum';
+import { VersionModifyCommand } from '@/api/system/model/baseModel';
 
 enum Api {
   Upload = '/file/upload',
@@ -12,7 +13,7 @@ enum Api {
   ComposeChunk = '/file/composeChunk',
   EnableFileInfo = '/file/status/enable',
   DisableFileInfo = '/file/status/disable',
-  CancelFileInfo = '/file/cancel',
+  CancelFileInfo = '/file/status/cancel',
   FileInfo = '/file',
   FileInfoPage = '/file/page',
   Export = '/file/expExcel',
@@ -87,35 +88,31 @@ export function presigned(id: string, expire?: number | null, limit?: boolean | 
   );
 }
 
-export function enableFileInfo(id: string) {
-  const params = { id: id };
+export function enableFileInfo(params: VersionModifyCommand[]) {
   return defHttp.patch<any>(
     { url: Api.EnableFileInfo, params },
-    { errorMessageMode: 'message', successMessageMode: 'message', joinParamsToUrl: true },
+    { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
 
-export function disableFileInfo(id: string) {
-  const params = { id: id };
+export function disableFileInfo(params: VersionModifyCommand[]) {
   return defHttp.patch<any>(
     { url: Api.DisableFileInfo, params },
-    { errorMessageMode: 'message', successMessageMode: 'message', joinParamsToUrl: true },
+    { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
 
-export function cancelFileInfo(id: string) {
-  const params = { id: id };
+export function cancelFileInfo(params: VersionModifyCommand[]) {
   return defHttp.patch<any>(
     { url: Api.CancelFileInfo, params },
-    { errorMessageMode: 'message', successMessageMode: 'message', joinParamsToUrl: true },
+    { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
 
-export function delFileInfo(id: string) {
-  const params = { id: id };
+export function delFileInfo(params: VersionModifyCommand) {
   return defHttp.delete<any>(
     { url: Api.FileInfo, params },
-    { errorMessageMode: 'message', successMessageMode: 'message', joinParamsToUrl: true },
+    { errorMessageMode: 'message', successMessageMode: 'message' },
   );
 }
 
@@ -126,7 +123,7 @@ export function modifyFileInfo(params: FileInfoDTO) {
 export function fileInfoPage(params?: FileInfoQuery) {
   return defHttp.get<FileInfoDTO[]>(
     { url: Api.FileInfoPage, params },
-    { errorMessageMode: 'none' },
+    { errorMessageMode: 'message' },
   );
 }
 

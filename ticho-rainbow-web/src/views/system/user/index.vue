@@ -88,7 +88,7 @@
             },
             {
               icon: 'ant-design:security-scan-outlined',
-              auth: 'UserResetPwd',
+              auth: 'UserResetPassword',
               popConfirm: {
                 title: '是否重置密码?',
                 confirm: resetPassword.bind(null, record),
@@ -135,17 +135,17 @@
 </template>
 <script lang="ts">
   import { defineComponent, reactive, ref } from 'vue';
-  import { BasicTable, useTable, TableAction } from '@/components/Table';
+  import { BasicTable, TableAction, useTable } from '@/components/Table';
   import {
-    userPage,
-    resetUserPassword,
-    lockUser,
-    unlockUser,
-    logOutUser,
-    impTemplate,
-    impExcel,
     expExcel,
+    impExcel,
+    impTemplate,
+    lockUser,
+    logOutUser,
     removeUser,
+    resetUserPassword,
+    unlockUser,
+    userPage,
   } from '@/api/system/user';
   import { PageWrapper } from '@/components/Page';
   import { useModal } from '@/components/Modal';
@@ -154,10 +154,11 @@
   import ImpModal from '@/views/component/imp/ImpModal.vue';
   import { columns, searchFormSchema } from './user.data';
   import { usePermission } from '@/hooks/web/usePermission';
-  import { Tag, Space } from 'ant-design-vue';
+  import { Space, Tag } from 'ant-design-vue';
   import { useMessage } from '@/hooks/web/useMessage';
   import { downloadByData } from '@/utils/file/download';
-  import { UserQuery, UseVersionModifyCommand } from '@/api/system/model/userModel';
+  import { UserQuery } from '@/api/system/model/userModel';
+  import { VersionModifyCommand } from '@/api/system/model/baseModel';
 
   enum Action {
     lock,
@@ -281,7 +282,7 @@
             id: item.id,
             version: item.version,
           };
-        }) as UseVersionModifyCommand[];
+        }) as VersionModifyCommand[];
         if (!commands || commands.length === 0) {
           createMessage.warn(`至少选择一条数据`);
           return;

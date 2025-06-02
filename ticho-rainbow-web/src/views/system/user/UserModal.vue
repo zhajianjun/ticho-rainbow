@@ -16,7 +16,6 @@
   import { userFormSchema } from './user.data';
   import { modifyUser, saveUser } from '@/api/system/user';
   import { UserModifyCommand, UseSaveCommand } from '@/api/system/model/userModel';
-  import { useMessage } from '@/hooks/web/useMessage';
 
   export default defineComponent({
     name: 'UserModal',
@@ -63,7 +62,6 @@
       const getTitle = computed(() => (!unref(isUpdate) ? '新增账号' : '编辑账号'));
 
       async function handleSubmit() {
-        const { createMessage } = useMessage();
         try {
           const values = await validate();
           setModalProps({ confirmLoading: true });
@@ -75,7 +73,6 @@
             await saveUser(modifys);
           }
           closeModal();
-          createMessage.success('操作成功');
           emit('success', { isUpdate: unref(isUpdate), values: { ...values, id: rowId.value } });
         } finally {
           setModalProps({ confirmLoading: false });

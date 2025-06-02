@@ -16,7 +16,6 @@
   import { getModalFormColumns } from './port.data';
   import { modifyPort, savePort } from '@/api/intranet/port';
   import { PortDTO } from '@/api/intranet/model/portModel';
-  import { useMessage } from '@/hooks/web/useMessage';
 
   export default defineComponent({
     name: 'PortModal',
@@ -57,8 +56,6 @@
             values.id = null;
             await savePort(values);
           }
-          const { createMessage } = useMessage();
-          createMessage.success('操作成功');
           closeModal();
           // 触发父组件方法
           emit('success');

@@ -24,7 +24,7 @@ public class RoleQuery extends TiPageQuery {
     private String code;
     /** 角色名称 */
     private String name;
-    /** 状态;1-启用,0-停用 */
+    /** 状态;1-启用,0-禁用 */
     private Integer status;
     /** 备注信息 */
     private String remark;

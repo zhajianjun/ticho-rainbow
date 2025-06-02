@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.dto.command.MenuModifyCommand;
 import top.ticho.rainbow.application.dto.command.MenuSaveCommand;
-import top.ticho.rainbow.application.dto.response.MenuDTO;
 import top.ticho.rainbow.application.dto.response.MenuDtlDTO;
 import top.ticho.rainbow.application.dto.response.RouteDTO;
 import top.ticho.rainbow.application.service.MenuService;
@@ -63,17 +62,6 @@ public class MenuController {
     public TiResult<Void> modify(@Validated @RequestBody MenuModifyCommand menuModifyCommand) {
         menuService.modify(menuModifyCommand);
         return TiResult.ok();
-    }
-
-    /**
-     * 查询菜单
-     *
-     * @param id 编号
-     */
-    @PreAuthorize("@perm.hasPerms('system:menu:find')")
-    @GetMapping
-    public TiResult<MenuDTO> find(@NotNull(message = "编号不能为空") Long id) {
-        return TiResult.ok(menuService.find(id));
     }
 
     /**

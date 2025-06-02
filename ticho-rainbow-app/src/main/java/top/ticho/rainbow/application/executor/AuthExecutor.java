@@ -114,7 +114,7 @@ public class AuthExecutor {
         }
         // 1.根据角色id列表查询角色信息、菜单信息、角色菜单信息、角色权限标识信息、菜单权限标识信息
         // 根据角色id列表 查询角色信息
-        List<Role> roles = roleRepository.listByIds(roleIds);
+        List<Role> roles = roleRepository.list(roleIds);
         return getRoleMenuDtl(roles, showAll, treeHandle);
     }
 

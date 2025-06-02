@@ -9,8 +9,8 @@ ticho:
     driver-class-name: com.mysql.cj.jdbc.Driver
     log:
       enable: true
-      print-sql: true
-      print-simple: false
+      print-sql: false
+      print-simple: true
       show-params: true
   security:
     ant-patterns:

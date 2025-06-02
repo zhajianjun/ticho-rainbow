@@ -27,13 +27,13 @@
   </BasicDrawer>
 </template>
 <script lang="ts">
-  import { defineComponent, ref, computed, unref } from 'vue';
+  import { computed, defineComponent, ref, unref } from 'vue';
   import { BasicForm, useForm } from '@/components/Form/index';
   import { formSchema } from './role.data';
   import { BasicDrawer, useDrawerInner } from '@/components/Drawer';
   import { BasicTree, TreeItem } from '@/components/Tree';
 
-  import { listRoleMenu, modifyRole, saveRole } from '@/api/system/role';
+  import { listRoleMenu, saveRole } from '@/api/system/role';
   import { RoleDtlQuery, RoleModifyCommand, RoleSaveCommand } from '@/api/system/model/roleModel';
 
   export default defineComponent({

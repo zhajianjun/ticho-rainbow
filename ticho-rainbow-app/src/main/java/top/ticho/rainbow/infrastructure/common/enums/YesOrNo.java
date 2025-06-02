@@ -2,10 +2,6 @@ package top.ticho.rainbow.infrastructure.common.enums;
 
 import lombok.AllArgsConstructor;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 /**
  * @author zhajianjun
  * @date 2025-03-02 19:54
@@ -19,20 +15,28 @@ public enum YesOrNo {
     ;
 
     private final int code;
-    private final String msg;
+    private final String message;
 
     public int code() {
         return code;
     }
 
     public String message() {
-        return msg;
+        return message;
     }
 
-    private static final Map<Integer, String> map;
+    public static YesOrNo get(boolean flag) {
+        if (flag) {
+            return YES;
+        }
+        return NO;
+    }
 
-    static {
-        map = Arrays.stream(values()).collect(Collectors.toMap(YesOrNo::code, YesOrNo::message));
+    public static int getCode(boolean flag) {
+        if (flag) {
+            return YES.code();
+        }
+        return NO.code();
     }
 
 }

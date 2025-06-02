@@ -6,9 +6,12 @@ import {
   ClientSaveCommand,
 } from './model/clientModel';
 import { RetryRequest } from '#/axios';
+import { VersionModifyCommand } from '@/api/system/model/baseModel';
 
 enum Api {
   Client = '/client',
+  ClientEnable = '/client/status/enable',
+  ClientDisable = '/client/status/disable',
   ClientPage = '/client/page',
   ClientAll = '/client/all',
   Export = '/client/excel/export',
@@ -18,19 +21,23 @@ export function saveClient(params: ClientSaveCommand) {
   return defHttp.post<void>({ url: Api.Client, params }, { errorMessageMode: 'message' });
 }
 
-export function delClient(params: string) {
-  return defHttp.delete<void>(
-    { url: Api.Client + '?id=', params },
-    { errorMessageMode: 'message' },
-  );
+export function delClient(params: VersionModifyCommand) {
+  return defHttp.delete<void>({ url: Api.Client, params }, { errorMessageMode: 'message' });
 }
 
 export function modifyClient(params: ClientModifyCommand) {
-  return defHttp.put<void>({ url: Api.Client, params }, { errorMessageMode: 'message' });
+  return defHttp.put<void>(
+    { url: Api.Client, params },
+    { successMessageMode: 'message', errorMessageMode: 'message' },
+  );
 }
 
-export function modifyClientStatus(params: ClientDTO) {
-  return defHttp.put<void>({ url: Api.Client, params }, { errorMessageMode: 'none' });
+export function enableClient(params: VersionModifyCommand[]) {
+  return defHttp.patch<void>({ url: Api.ClientEnable, params }, { errorMessageMode: 'message' });
+}
+
+export function disableClient(params: VersionModifyCommand[]) {
+  return defHttp.patch<void>({ url: Api.ClientDisable, params }, { errorMessageMode: 'message' });
 }
 
 export function clientPage(params?: ClientQuery) {

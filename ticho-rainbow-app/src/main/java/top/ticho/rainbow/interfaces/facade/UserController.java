@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import top.ticho.rainbow.application.dto.command.UseModifyCommand;
 import top.ticho.rainbow.application.dto.command.UseSaveCommand;
-import top.ticho.rainbow.application.dto.command.UseVersionModifyCommand;
 import top.ticho.rainbow.application.dto.command.UserModifyPasswordCommand;
+import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.query.UserQuery;
 import top.ticho.rainbow.application.dto.response.UserDTO;
 import top.ticho.rainbow.application.service.UserService;
@@ -57,8 +57,8 @@ public class UserController {
      */
     @PreAuthorize("@perm.hasPerms('system:user:remove')")
     @DeleteMapping
-    public TiResult<Void> remove(@NotNull(message = "编号不能为空") Long id, @NotNull(message = "版本号不能为空") Long version) {
-        userService.remove(id, version);
+    public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
+        userService.remove(command);
         return TiResult.ok();
     }
 
@@ -80,9 +80,9 @@ public class UserController {
     public TiResult<Void> lock(
         @NotNull(message = "用户信息不能为空")
         @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
-        @RequestBody List<UseVersionModifyCommand> modifys
+        @RequestBody List<VersionModifyCommand> datas
     ) {
-        userService.lock(modifys);
+        userService.lock(datas);
         return TiResult.ok();
     }
 
@@ -94,9 +94,9 @@ public class UserController {
     public TiResult<Void> unLock(
         @NotNull(message = "用户信息不能为空")
         @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
-        @RequestBody List<UseVersionModifyCommand> modifys
+        @RequestBody List<VersionModifyCommand> datas
     ) {
-        userService.unLock(modifys);
+        userService.unLock(datas);
         return TiResult.ok();
     }
 
@@ -109,9 +109,9 @@ public class UserController {
     public TiResult<Void> logOut(
         @NotNull(message = "用户信息不能为空")
         @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
-        @RequestBody List<UseVersionModifyCommand> modifys
+        @RequestBody List<VersionModifyCommand> datas
     ) {
-        userService.logOut(modifys);
+        userService.logOut(datas);
         return TiResult.ok();
     }
 
@@ -134,9 +134,9 @@ public class UserController {
     public TiResult<Void> resetPassword(
         @NotNull(message = "用户信息不能为空")
         @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
-        @RequestBody List<UseVersionModifyCommand> modifys
+        @RequestBody List<VersionModifyCommand> datas
     ) {
-        userService.resetPassword(modifys);
+        userService.resetPassword(datas);
         return TiResult.ok();
     }
 

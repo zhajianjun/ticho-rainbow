@@ -35,7 +35,7 @@ public class PortPO extends Model<PortPO> {
     private String endpoint;
     /** 域名 */
     private String domain;
-    /** 状态;1-启用,0-停用 */
+    /** 状态;1-启用,0-禁用 */
     private Integer status;
     /** 过期时间 */
     private LocalDateTime expireAt;
@@ -47,6 +47,7 @@ public class PortPO extends Model<PortPO> {
     private String remark;
     /** 版本号 */
     @Version
+    @TableField(fill = FieldFill.INSERT)
     private Long version;
     /** 创建人 */
     @TableField(fill = FieldFill.INSERT)

@@ -38,7 +38,7 @@ public class TaskExcelExport {
     @ColumnWidth(20)
     @ExcelProperty(value = "cron执行表达式")
     private String cronExpression;
-    /** 任务状态;1-启用,0-停用 */
+    /** 任务状态;1-启用,0-禁用 */
     @ColumnWidth(20)
     @ExcelProperty(value = "任务状态")
     private String statusName;

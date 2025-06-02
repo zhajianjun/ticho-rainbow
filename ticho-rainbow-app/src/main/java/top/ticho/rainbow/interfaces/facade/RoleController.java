@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.dto.command.RoleModifyCommand;
 import top.ticho.rainbow.application.dto.command.RoleSaveCommand;
-import top.ticho.rainbow.application.dto.command.RoleStatusModifyCommand;
+import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.query.RoleDtlQuery;
 import top.ticho.rainbow.application.dto.query.RoleQuery;
 import top.ticho.rainbow.application.dto.response.RoleDTO;
 import top.ticho.rainbow.application.dto.response.RoleMenuDtlDTO;
 import top.ticho.rainbow.application.service.RoleService;
+import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.security.annotation.IgnoreJwtCheck;
 import top.ticho.starter.security.annotation.IgnoreType;
 import top.ticho.starter.view.core.TiPageResult;
@@ -26,6 +27,7 @@ import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.io.IOException;
 import java.util.List;
 
@@ -53,13 +55,11 @@ public class RoleController {
 
     /**
      * 删除角色
-     *
-     * @param id 编号
      */
     @PreAuthorize("@perm.hasPerms('system:role:remove')")
     @DeleteMapping
-    public TiResult<Void> remove(@NotNull(message = "编号不能为空") Long id) {
-        roleService.remove(id);
+    public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
+        roleService.remove(command);
         return TiResult.ok();
     }
 
@@ -74,24 +74,31 @@ public class RoleController {
     }
 
     /**
-     * 修改角色状态
+     * 启用角色
      */
-    @PreAuthorize("@perm.hasPerms('system:role:modify-status')")
-    @PatchMapping("status")
-    public TiResult<Void> modifyStatus(@RequestBody RoleStatusModifyCommand statusModifyCommand) {
-        roleService.modifyStatus(statusModifyCommand);
+    @PreAuthorize("@perm.hasPerms('system:role:enable')")
+    @PatchMapping("status/enable")
+    public TiResult<Void> enable(
+        @NotNull(message = "角色信息不能为空")
+        @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
+        @RequestBody List<VersionModifyCommand> datas
+    ) {
+        roleService.enable(datas);
         return TiResult.ok();
     }
 
     /**
-     * 查询角色
-     *
-     * @param id 编号
+     * 禁用角色
      */
-    @PreAuthorize("@perm.hasPerms('system:role:find')")
-    @GetMapping
-    public TiResult<RoleDTO> find(@NotNull(message = "编号不能为空") Long id) {
-        return TiResult.ok(roleService.find(id));
+    @PreAuthorize("@perm.hasPerms('system:role:disable')")
+    @PatchMapping("status/disable")
+    public TiResult<Void> disable(
+        @NotNull(message = "角色信息不能为空")
+        @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
+        @RequestBody List<VersionModifyCommand> datas
+    ) {
+        roleService.disable(datas);
+        return TiResult.ok();
     }
 
     /**

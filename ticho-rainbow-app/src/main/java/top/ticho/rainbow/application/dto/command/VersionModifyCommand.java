@@ -5,20 +5,17 @@ import lombok.Data;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * 角色状态修改
+ * 版本修改
  *
  * @author zhajianjun
- * @date 2025-03-08 14:44
+ * @date 2024-01-08 20:30
  */
 @Data
-public class RoleStatusModifyCommand {
+public class VersionModifyCommand {
 
     /** 编号 */
     @NotNull(message = "编号不能为空")
     private Long id;
-    /** 状态;1-启用,0-禁用 */
-    @NotNull(message = "角色状态不能为空")
-    private Integer status;
     /** 版本号 */
     @NotNull(message = "版本号不能为空")
     private Long version;

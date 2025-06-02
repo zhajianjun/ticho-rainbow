@@ -38,11 +38,6 @@ export interface UserModifyCommand {
   roleIds: number[];
 }
 
-export interface UseVersionModifyCommand {
-  id: number;
-  version: number;
-}
-
 export interface UserModifyPasswordCommand {
   /** 用户id */
   id: number;

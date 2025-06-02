@@ -12,6 +12,7 @@ import top.ticho.rainbow.application.dto.response.RouteDTO;
 import top.ticho.rainbow.application.dto.response.RouteMetaDTO;
 import top.ticho.rainbow.domain.entity.Menu;
 import top.ticho.rainbow.domain.entity.vo.MenuModifyVO;
+import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.starter.web.util.TiIdUtil;
 
 import java.util.Objects;
@@ -22,10 +23,11 @@ import java.util.Objects;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-@Mapper(componentModel = "spring", imports = {StrUtil.class, CollUtil.class, Objects.class, TiIdUtil.class})
+@Mapper(componentModel = "spring", imports = {StrUtil.class, CollUtil.class, Objects.class, TiIdUtil.class, CommonStatus.class})
 public interface MenuAssembler {
 
     @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
+    @Mapping(target = "status", expression = "java(CommonStatus.DISABLE.code())")
     @Mapping(target = "perms", expression = "java(CollUtil.join(menuSaveCommand.getPerms(), \",\"))")
     Menu toEntity(MenuSaveCommand menuSaveCommand);
 

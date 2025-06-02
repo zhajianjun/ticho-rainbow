@@ -3,7 +3,7 @@ package top.ticho.rainbow.infrastructure.common.component;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ClassUtil;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.CronExpression;
 import org.quartz.CronScheduleBuilder;
@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
@@ -38,7 +39,7 @@ import java.util.stream.Collectors;
  * @author zhajianjun
  * @date 2024-03-23 15:58
  */
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 @Component
 public class TaskTemplate {
@@ -46,7 +47,20 @@ public class TaskTemplate {
     public static final String TASK_NAME = "TASK_NAME";
     public static final String TASK_MDC_INFO = "TASK_MDC_INFO";
 
-    private Scheduler scheduler;
+    private final Scheduler scheduler;
+    private final AtomicBoolean started = new AtomicBoolean(false);
+
+    public void start() {
+        try {
+            if (!scheduler.isShutdown() && !started.get()) {
+                scheduler.start();
+                started.set(true);
+            }
+        } catch (SchedulerException e) {
+            started.set(false);
+            log.error("启动定时任务失败", e);
+        }
+    }
 
     /**
      * 新增定时任务
@@ -94,13 +108,13 @@ public class TaskTemplate {
         jobDataMap.putAll(paramMap);
         CronTrigger cronTrigger = TriggerBuilder.newTrigger()
             .withIdentity(triggerName, triggerGroup)
+            // 延迟5s启动
+            .startAt(DateUtil.offsetSecond(new Date(), 5))
             .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
             .build();
         try {
             scheduler.scheduleJob(jobDetail, cronTrigger);
-            if (!scheduler.isShutdown()) {
-                scheduler.start();
-            }
+            log.info("新增定时任务成功， 任务：{}", jobDetail.getKey());
             return true;
         } catch (SchedulerException e) {
             log.error("新增定时任务失败: {}", e.getMessage(), e);
@@ -161,6 +175,7 @@ public class TaskTemplate {
             jobDataMap.put(TASK_MDC_INFO, mdcMap);
             jobDataMap.put(TASK_PARAM, schedulerParam);
             scheduler.triggerJob(jobKey, jobDataMap);
+            log.info("运行一次定时任务成功， 任务：{}", jobKey);
             return true;
         } catch (SchedulerException e) {
             log.error("运行一次定时任务失败", e);
@@ -184,6 +199,7 @@ public class TaskTemplate {
             .build();
         try {
             scheduler.rescheduleJob(triggerKey, cronTrigger);
+            log.info("重启定时任务成功，任务：{}", triggerKey);
             return true;
         } catch (SchedulerException e) {
             log.error("重启定时任务失败: {}", e.getMessage(), e);
@@ -199,10 +215,12 @@ public class TaskTemplate {
      */
     public boolean pauseJob(String jobName, String jobGroup) {
         try {
-            scheduler.pauseJob(JobKey.jobKey(jobName, jobGroup));
+            JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
+            scheduler.pauseJob(jobKey);
+            log.info("禁用定时任务成功，任务：{}", jobKey);
             return true;
         } catch (SchedulerException e) {
-            log.error("重启定时任务失败: {}", e.getMessage(), e);
+            log.error("禁用定时任务失败: {}", e.getMessage(), e);
             return false;
         }
     }
@@ -215,10 +233,12 @@ public class TaskTemplate {
      */
     public boolean resumeJob(String jobName, String jobGroup) {
         try {
-            scheduler.resumeJob(JobKey.jobKey(jobName, jobGroup));
+            JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
+            scheduler.resumeJob(jobKey);
+            log.info("启用定时任务成功，任务：{}", jobKey);
             return true;
         } catch (SchedulerException e) {
-            log.error("恢复定时任务失败: {}", e.getMessage(), e);
+            log.error("启用定时任务失败: {}", e.getMessage(), e);
             return false;
         }
     }
@@ -232,10 +252,15 @@ public class TaskTemplate {
      */
     public boolean deleteJob(String jobName, String jobGroup) {
         try {
-            scheduler.pauseTrigger(TriggerKey.triggerKey(jobName, jobGroup));
-            scheduler.unscheduleJob(TriggerKey.triggerKey(jobName, jobGroup));
-            scheduler.deleteJob(JobKey.jobKey(jobName, jobGroup));
-            return true;
+            TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroup);
+            JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
+            scheduler.pauseTrigger(triggerKey);
+            scheduler.unscheduleJob(triggerKey);
+            boolean deleteJob = scheduler.deleteJob(jobKey);
+            if (deleteJob) {
+                log.info("删除定时任务成功，任务：{}", jobKey);
+            }
+            return deleteJob;
         } catch (SchedulerException e) {
             log.error("删除定时任务失败: {}", e.getMessage(), e);
             return false;
@@ -255,8 +280,12 @@ public class TaskTemplate {
         try {
             scheduler.pauseTrigger(TriggerKey.triggerKey(jobName, jobGroup));
             scheduler.unscheduleJob(TriggerKey.triggerKey(triggerName, triggerGroup));
-            scheduler.deleteJob(JobKey.jobKey(jobName, jobGroup));
-            return true;
+            JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
+            boolean deleteJob = scheduler.deleteJob(jobKey);
+            if (deleteJob) {
+                log.info("删除定时任务成功，任务：{}", jobKey);
+            }
+            return deleteJob;
         } catch (SchedulerException e) {
             log.error("删除定时任务失败: {}", e.getMessage(), e);
             return false;
