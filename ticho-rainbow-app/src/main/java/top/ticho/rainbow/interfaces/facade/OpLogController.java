@@ -22,6 +22,7 @@ import java.io.IOException;
  * @author zhajianjun
  * @date 2024-03-24 17:55
  */
+@Validated
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("op-log")

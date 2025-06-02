@@ -1,6 +1,7 @@
 package top.ticho.rainbow.interfaces.facade;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ import jakarta.validation.constraints.NotBlank;
  * @author zhajianjun
  * @date 2024-05-21 15:10
  */
+@Validated
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("sse")

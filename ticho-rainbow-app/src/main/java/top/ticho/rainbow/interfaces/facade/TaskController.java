@@ -35,6 +35,7 @@ import java.util.List;
  * @author zhajianjun
  * @date 2024-03-23 23:38
  */
+@Validated
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("task")

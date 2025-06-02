@@ -2,6 +2,7 @@ package top.ticho.rainbow.interfaces.facade;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import top.ticho.starter.view.core.TiResult;
  * @author zhajianjun
  * @date 2023-12-17 20:12
  */
+@Validated
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("flow-monitor")

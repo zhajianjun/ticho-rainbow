@@ -3,6 +3,7 @@ package top.ticho.rainbow.interfaces.facade;
 import lombok.RequiredArgsConstructor;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,7 @@ import jakarta.validation.constraints.NotBlank;
  * @author zhajianjun
  * @date 2024-02-06 11:20
  */
+@Validated
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("tool")

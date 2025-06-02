@@ -37,6 +37,7 @@ import java.io.IOException;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
+@Validated
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("oauth")
