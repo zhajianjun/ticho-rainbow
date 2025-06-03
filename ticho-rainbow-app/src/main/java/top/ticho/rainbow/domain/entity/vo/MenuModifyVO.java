@@ -16,7 +16,7 @@ package top.ticho.rainbow.domain.entity.vo;
  * @param closable          菜单是否可关闭;1-是,0-否
  * @param icon              图标
  * @param sort              排序
- * @param status            状态;1-启用,0-停用
+ * @param status            状态;1-启用,0-禁用
  * @param remark            备注信息
  * @author zhajianjun
  * @date 2024-01-08 20:30
