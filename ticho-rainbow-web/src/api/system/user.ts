@@ -93,7 +93,7 @@ export function resetUserPassword(params: VersionModifyCommand[]) {
 }
 
 export function impTemplate() {
-  return defHttp.post<any>(
+  return defHttp.get<any>(
     { url: Api.ImpTemplate, responseType: 'blob' },
     {
       errorMessageMode: 'message',
