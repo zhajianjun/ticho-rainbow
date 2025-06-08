@@ -17,6 +17,7 @@ import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.query.PortQuery;
 import top.ticho.rainbow.application.dto.response.PortDTO;
 import top.ticho.rainbow.application.service.PortService;
+import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.view.core.TiPageResult;
@@ -44,6 +45,7 @@ public class PortController {
     /**
      * 保存端口
      */
+    @ApiLog("保存端口")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_PORT_SAVE + "')")
     @PostMapping
     public TiResult<Void> save(@Validated @RequestBody PortSaveCommand portSaveCommand) {
@@ -54,6 +56,7 @@ public class PortController {
     /**
      * 删除端口
      */
+    @ApiLog("删除端口")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_PORT_REMOVE + "')")
     @DeleteMapping
     public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
@@ -64,6 +67,7 @@ public class PortController {
     /**
      * 修改端口
      */
+    @ApiLog("修改端口")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_PORT_MODIFY + "')")
     @PutMapping
     public TiResult<Void> modify(@Validated @RequestBody PortModifyfCommand portModifyfCommand) {
@@ -74,6 +78,7 @@ public class PortController {
     /**
      * 启用端口
      */
+    @ApiLog("启用端口")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_PORT_ENABLE + "')")
     @PatchMapping("status/enable")
     public TiResult<Void> enable(
@@ -88,6 +93,7 @@ public class PortController {
     /**
      * 禁用端口
      */
+    @ApiLog("禁用端口")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_PORT_DISABLE + "')")
     @PatchMapping("status/disable")
     public TiResult<Void> disable(
@@ -112,6 +118,7 @@ public class PortController {
     /**
      * 导出端口信息
      */
+    @ApiLog("导出端口信息")
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_PORT_EXPORT + "')")
     @GetMapping("excel/export")

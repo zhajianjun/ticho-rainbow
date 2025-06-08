@@ -18,6 +18,7 @@ import top.ticho.rainbow.application.dto.query.DictQuery;
 import top.ticho.rainbow.application.dto.response.DictCacheDTO;
 import top.ticho.rainbow.application.dto.response.DictDTO;
 import top.ticho.rainbow.application.service.DictService;
+import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.view.core.TiPageResult;
@@ -45,6 +46,7 @@ public class DictController {
     /**
      * 保存字典
      */
+    @ApiLog("保存字典")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_DICT_SAVE + "')")
     @PostMapping
     public TiResult<Void> save(@Validated @RequestBody DictSaveCommand dictSaveCommand) {
@@ -55,6 +57,7 @@ public class DictController {
     /**
      * 删除字典
      */
+    @ApiLog("删除字典")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_DICT_REMOVE + "')")
     @DeleteMapping
     public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
@@ -65,6 +68,7 @@ public class DictController {
     /**
      * 修改字典
      */
+    @ApiLog("修改字典")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_DICT_MODIFY + "')")
     @PutMapping
     public TiResult<Void> modify(@Validated @RequestBody DictModifyCommand dictModifyCommand) {
@@ -75,6 +79,7 @@ public class DictController {
     /**
      * 启用字典
      */
+    @ApiLog("启用字典")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_DICT_ENABLE + "')")
     @PatchMapping("status/enable")
     public TiResult<Void> enable(
@@ -89,6 +94,7 @@ public class DictController {
     /**
      * 禁用字典
      */
+    @ApiLog("禁用字典")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_DICT_DISABLE + "')")
     @PatchMapping("status/disable")
     public TiResult<Void> disable(
@@ -121,6 +127,7 @@ public class DictController {
     /**
      * 刷新所有有效字典
      */
+    @ApiLog("刷新所有有效字典")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_DICT_FLUSH + "')")
     @GetMapping("flush")
     public TiResult<List<DictCacheDTO>> flush() {
@@ -130,6 +137,7 @@ public class DictController {
     /**
      * 导出字典
      */
+    @ApiLog("导出字典")
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_DICT_EXPORT + "')")
     @GetMapping("excel/export")

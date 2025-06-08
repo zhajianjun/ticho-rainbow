@@ -22,6 +22,7 @@ import top.ticho.rainbow.application.dto.response.LoginUserDTO;
 import top.ticho.rainbow.application.dto.response.LoginUserDetailDTO;
 import top.ticho.rainbow.application.service.LoginUserService;
 import top.ticho.rainbow.application.service.login.DefaultLoginService;
+import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.starter.security.annotation.IgnoreJwtCheck;
 import top.ticho.starter.security.dto.TiToken;
@@ -131,9 +132,8 @@ public class OauthController {
 
     /**
      * 上传登录用户头像
-     *
-     * @param file 文件
      */
+    @ApiLog("上传登录用户头像")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.OAUTH_USER_AVATAR_UPLOAD + "')")
     @PostMapping("user/avatar/upload")
     public TiResult<String> uploadAvatar(@NotNull(message = "请上传头像") MultipartFile file) {
@@ -141,8 +141,9 @@ public class OauthController {
     }
 
     /**
-     * 修改用户
+     * 修改登录用户
      */
+    @ApiLog("修改登录用户")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.OAUTH_USER_MODIFY + "')")
     @PutMapping("user")
     public TiResult<Void> modify(@Validated @RequestBody LoginUserModifyCommand loginUserModifyCommand) {
@@ -151,8 +152,9 @@ public class OauthController {
     }
 
     /**
-     * 修改用户密码
+     * 修改登录用户密码
      */
+    @ApiLog("修改登录用户密码")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.OAUTH_USER_PASSWORD_MODIFY + "')")
     @PatchMapping("user/password")
     public TiResult<Void> modifyPassword(@Validated @RequestBody LoginUserModifyPasswordCommand loginUserModifyPasswordCommand) {

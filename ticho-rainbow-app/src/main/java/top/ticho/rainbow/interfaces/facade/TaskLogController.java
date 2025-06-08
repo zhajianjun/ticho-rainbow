@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.dto.query.TaskLogQuery;
 import top.ticho.rainbow.application.dto.response.TaskLogDTO;
 import top.ticho.rainbow.application.service.TaskLogService;
+import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
@@ -43,6 +44,7 @@ public class TaskLogController {
     /**
      * 导出计划任务日志
      */
+    @ApiLog("导出计划任务日志")
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_LOG_EXPORT + "')")
     @GetMapping("excel/export")

@@ -17,6 +17,7 @@ import top.ticho.rainbow.application.dto.query.FileInfoQuery;
 import top.ticho.rainbow.application.dto.response.ChunkCacheDTO;
 import top.ticho.rainbow.application.dto.response.FileInfoDTO;
 import top.ticho.rainbow.application.service.FileInfoService;
+import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.security.annotation.IgnoreJwtCheck;
@@ -47,6 +48,7 @@ public class FileInfoController {
     /**
      * 上传文件
      */
+    @ApiLog("上传文件")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_UPLOAD + "')")
     @PostMapping("upload")
     public TiResult<FileInfoDTO> upload(@Validated FileUploadCommand fileUploadCommand) {
@@ -67,6 +69,7 @@ public class FileInfoController {
      *
      * @param chunkId 分片id
      */
+    @ApiLog("合并分片文件")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_COMPOSE_CHUNK + "')")
     @PostMapping("chunk/compose")
     public TiResult<FileInfoDTO> composeChunk(@NotBlank(message = "分片id不能为空") String chunkId) {
@@ -76,6 +79,7 @@ public class FileInfoController {
     /**
      * 删除文件
      */
+    @ApiLog("删除文件")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_REMOVE + "')")
     @DeleteMapping
     public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
@@ -86,6 +90,7 @@ public class FileInfoController {
     /**
      * 启用文件
      */
+    @ApiLog("启用文件")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_ENABLE + "')")
     @PatchMapping("status/enable")
     public TiResult<Void> enable(
@@ -100,6 +105,7 @@ public class FileInfoController {
     /**
      * 停用文件
      */
+    @ApiLog("停用文件")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_DISABLE + "')")
     @PatchMapping("status/disable")
     public TiResult<Void> disable(
@@ -114,6 +120,7 @@ public class FileInfoController {
     /**
      * 作废文件
      */
+    @ApiLog("作废文件")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_CANCEL + "')")
     @PatchMapping("status/cancel")
     public TiResult<Void> cancel(
@@ -128,6 +135,7 @@ public class FileInfoController {
     /**
      * 查询文件(分页)
      */
+    @ApiLog("查询文件(分页)")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_PAGE + "')")
     @GetMapping("page")
     public TiResult<TiPageResult<FileInfoDTO>> page(@Validated FileInfoQuery query) {
@@ -139,6 +147,7 @@ public class FileInfoController {
      *
      * @param sign 签名
      */
+    @ApiLog("下载文件")
     @TiView(ignore = true)
     @IgnoreJwtCheck
     @GetMapping("download")
@@ -153,6 +162,7 @@ public class FileInfoController {
      * @param expire 过期时间， <=7天，默认30分钟，单位：秒
      * @param limit  是否限制 true 链接只能使用一次，false 过期时间内不限制
      */
+    @ApiLog("获取下载链接")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_PRESIGNED + "')")
     @GetMapping("presigned")
     public TiResult<String> presigned(Long id, Long expire, Boolean limit) {
@@ -162,6 +172,7 @@ public class FileInfoController {
     /**
      * 导出文件信息
      */
+    @ApiLog("导出文件信息")
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_EXPORT + "')")
     @GetMapping("excel/export")

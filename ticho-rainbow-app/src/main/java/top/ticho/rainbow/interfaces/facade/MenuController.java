@@ -17,6 +17,7 @@ import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.response.MenuDTO;
 import top.ticho.rainbow.application.dto.response.RouteDTO;
 import top.ticho.rainbow.application.service.MenuService;
+import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.view.core.TiResult;
@@ -41,6 +42,7 @@ public class MenuController {
     /**
      * 保存菜单
      */
+    @ApiLog("保存菜单")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_MENU_SAVE + "')")
     @PostMapping
     public TiResult<Void> save(@Validated @RequestBody MenuSaveCommand menuSaveCommand) {
@@ -51,6 +53,7 @@ public class MenuController {
     /**
      * 删除菜单
      */
+    @ApiLog("删除菜单")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_MENU_REMOVE + "')")
     @DeleteMapping
     public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
@@ -61,6 +64,7 @@ public class MenuController {
     /**
      * 修改菜单
      */
+    @ApiLog("修改菜单")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_MENU_MODIFY + "')")
     @PutMapping
     public TiResult<Void> modify(@Validated @RequestBody MenuModifyCommand menuModifyCommand) {
@@ -71,6 +75,7 @@ public class MenuController {
     /**
      * 启用菜单
      */
+    @ApiLog("启用菜单")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_MENU_ENABLE + "')")
     @PatchMapping("status/enable")
     public TiResult<Void> enable(
@@ -85,6 +90,7 @@ public class MenuController {
     /**
      * 禁用菜单
      */
+    @ApiLog("禁用菜单")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_MENU_DISABLE + "')")
     @PatchMapping("status/disable")
     public TiResult<Void> disable(

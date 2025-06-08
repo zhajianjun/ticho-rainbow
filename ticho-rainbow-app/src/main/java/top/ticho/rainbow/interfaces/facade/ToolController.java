@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.starter.view.core.TiResult;
 
@@ -31,6 +32,7 @@ public class ToolController {
      *
      * @param message 加密信息
      */
+    @ApiLog("加密")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TOOL_ENCRYPT + "')")
     @PostMapping("encrypt")
     public TiResult<String> encrypt(@NotBlank(message = "参数不能为空") String message) {
@@ -42,6 +44,7 @@ public class ToolController {
      *
      * @param message 解密信息
      */
+    @ApiLog("解密")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TOOL_DECRYPT + "')")
     @PostMapping("decrypt")
     public TiResult<String> decrypt(@NotBlank(message = "参数不能为空") String message) {

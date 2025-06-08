@@ -19,6 +19,7 @@ import top.ticho.rainbow.application.dto.query.RoleQuery;
 import top.ticho.rainbow.application.dto.response.RoleDTO;
 import top.ticho.rainbow.application.dto.response.RoleMenuDTO;
 import top.ticho.rainbow.application.service.RoleService;
+import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.security.annotation.IgnoreJwtCheck;
@@ -48,6 +49,7 @@ public class RoleController {
     /**
      * 保存角色
      */
+    @ApiLog("保存角色")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_ROLE_SAVE + "')")
     @PostMapping
     public TiResult<Void> save(@Validated @RequestBody RoleSaveCommand roleSaveCommand) {
@@ -58,6 +60,7 @@ public class RoleController {
     /**
      * 删除角色
      */
+    @ApiLog("删除角色")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_ROLE_REMOVE + "')")
     @DeleteMapping
     public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
@@ -69,6 +72,7 @@ public class RoleController {
     /**
      * 修改角色
      */
+    @ApiLog("修改角色")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_ROLE_MODIFY + "')")
     @PutMapping
     public TiResult<Void> modify(@Validated @RequestBody RoleModifyCommand roleModifyCommand) {
@@ -79,6 +83,7 @@ public class RoleController {
     /**
      * 启用角色
      */
+    @ApiLog("启用角色")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_ROLE_ENABLE + "')")
     @PatchMapping("status/enable")
     public TiResult<Void> enable(
@@ -93,6 +98,7 @@ public class RoleController {
     /**
      * 禁用角色
      */
+    @ApiLog("禁用角色")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_ROLE_DISABLE + "')")
     @PatchMapping("status/disable")
     public TiResult<Void> disable(
@@ -136,6 +142,7 @@ public class RoleController {
     /**
      * 导出角色
      */
+    @ApiLog("导出角色信息")
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_ROLE_EXPORT + "')")
     @GetMapping("excel/export")

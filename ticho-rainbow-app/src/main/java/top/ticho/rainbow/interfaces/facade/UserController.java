@@ -20,6 +20,7 @@ import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.query.UserQuery;
 import top.ticho.rainbow.application.dto.response.UserDTO;
 import top.ticho.rainbow.application.service.UserService;
+import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.view.core.TiPageResult;
@@ -47,6 +48,7 @@ public class UserController {
     /**
      * 保存用户
      */
+    @ApiLog("保存用户")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_SAVE + "')")
     @PostMapping
     public TiResult<Void> save(@Validated @RequestBody UseSaveCommand useSaveCommand) {
@@ -57,6 +59,7 @@ public class UserController {
     /**
      * 删除用户
      */
+    @ApiLog("删除用户")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_REMOVE + "')")
     @DeleteMapping
     public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
@@ -67,6 +70,7 @@ public class UserController {
     /**
      * 修改用户
      */
+    @ApiLog("修改用户")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_MODIFY + "')")
     @PutMapping
     public TiResult<Void> modify(@Validated @RequestBody UseModifyCommand useModifyCommand) {
@@ -77,6 +81,7 @@ public class UserController {
     /**
      * 锁定用户
      */
+    @ApiLog("锁定用户")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_LOCK + "')")
     @PatchMapping("status/lock")
     public TiResult<Void> lock(
@@ -92,6 +97,7 @@ public class UserController {
     /**
      * 解锁用户
      */
+    @ApiLog("解锁用户")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_UNLOCK + "')")
     @PatchMapping("status/un-lock")
     public TiResult<Void> unLock(
@@ -107,6 +113,7 @@ public class UserController {
     /**
      * 注销用户
      */
+    @ApiLog("注销用户")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_LOG_OUT + "')")
     @PatchMapping("status/log-out")
     public TiResult<Void> logOut(
@@ -121,6 +128,7 @@ public class UserController {
     /**
      * 修改用户密码
      */
+    @ApiLog("修改用户密码")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_PASSWORD_MODIFY + "')")
     @PatchMapping("password")
     public TiResult<Void> modifyPassword(@Validated @RequestBody UserModifyPasswordCommand userModifyPasswordCommand) {
@@ -132,6 +140,7 @@ public class UserController {
     /**
      * 重置用户密码
      */
+    @ApiLog("重置用户密码")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_PASSWORD_RESET + "')")
     @PatchMapping("password/reset")
     public TiResult<Void> resetPassword(
@@ -153,8 +162,9 @@ public class UserController {
     }
 
     /**
-     * 下载导入模板
+     * 下载用户导入模板
      */
+    @ApiLog("下载用户导入模板")
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_IMPORT_TEMPLATE_DOWNLOAD + "')")
     @GetMapping("excel-template/download")
@@ -164,9 +174,8 @@ public class UserController {
 
     /**
      * 导入用户
-     *
-     * @param file 文件
      */
+    @ApiLog("导入用户")
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_IMPORT + "')")
     @PostMapping("excel/import")
@@ -177,6 +186,7 @@ public class UserController {
     /**
      * 导出用户
      */
+    @ApiLog("导出用户")
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_EXPORT + "')")
     @GetMapping("excel/export")

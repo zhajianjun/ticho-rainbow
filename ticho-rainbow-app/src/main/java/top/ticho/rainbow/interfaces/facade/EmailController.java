@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.domain.repository.EmailRepository;
+import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.starter.mail.component.TiMailContent;
 import top.ticho.starter.view.core.TiResult;
@@ -31,6 +32,7 @@ public class EmailController {
      * @param mailContent 邮件内容
      * @return {@link TiResult }<{@link Void }>
      */
+    @ApiLog("邮件发送测试")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_EMAIL_SEND_TEST + "')")
     @PostMapping("test/send")
     public TiResult<Void> sendTest(TiMailContent mailContent) {

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.dto.response.FlowMonitorStatsDTO;
 import top.ticho.rainbow.application.service.FlowMonitorService;
+import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.starter.view.core.TiResult;
 
@@ -28,6 +29,7 @@ public class FlowMonitorController {
     /**
      * 查询流量
      */
+    @ApiLog("查询流量信息")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_FLOW_MONITOR_INFO + "')")
     @GetMapping("info")
     public TiResult<FlowMonitorStatsDTO> info() {

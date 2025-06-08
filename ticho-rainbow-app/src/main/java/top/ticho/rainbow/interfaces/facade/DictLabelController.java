@@ -16,6 +16,7 @@ import top.ticho.rainbow.application.dto.command.DictLabelSaveCommand;
 import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.response.DictLabelDTO;
 import top.ticho.rainbow.application.service.DictLabelService;
+import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.view.core.TiResult;
@@ -41,6 +42,7 @@ public class DictLabelController {
     /**
      * 保存字典标签
      */
+    @ApiLog("保存字典标签")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_DICT_LABEL_SAVE + "')")
     @PostMapping
     public TiResult<Void> save(@Validated @RequestBody DictLabelSaveCommand dictLabelSaveCommand) {
@@ -51,6 +53,7 @@ public class DictLabelController {
     /**
      * 删除字典标签
      */
+    @ApiLog("删除字典标签")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_DICT_LABEL_REMOVE + "')")
     @DeleteMapping
     public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
@@ -61,6 +64,7 @@ public class DictLabelController {
     /**
      * 修改字典标签
      */
+    @ApiLog("修改字典标签")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_DICT_LABEL_MODIFY + "')")
     @PutMapping
     public TiResult<Void> modify(@Validated @RequestBody DictLabelModifyCommand dictLabelModifyCommand) {
@@ -71,6 +75,7 @@ public class DictLabelController {
     /**
      * 启用字典标签
      */
+    @ApiLog("启用字典标签")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_DICT_LABEL_ENABLE + "')")
     @PatchMapping("status/enable")
     public TiResult<Void> enable(
@@ -85,6 +90,7 @@ public class DictLabelController {
     /**
      * 禁用字典标签
      */
+    @ApiLog("禁用字典标签")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_DICT_LABEL_DISABLE + "')")
     @PatchMapping("status/disable")
     public TiResult<Void> disable(

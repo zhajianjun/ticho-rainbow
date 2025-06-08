@@ -18,6 +18,7 @@ import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.query.TaskQuery;
 import top.ticho.rainbow.application.dto.response.TaskDTO;
 import top.ticho.rainbow.application.service.TaskService;
+import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.view.core.TiPageResult;
@@ -46,6 +47,7 @@ public class TaskController {
     /**
      * 保存计划任务
      */
+    @ApiLog("保存计划任务")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_SAVE + "')")
     @PostMapping
     public TiResult<Void> save(@Validated @RequestBody TaskSaveCommand taskSaveCommand) {
@@ -56,6 +58,7 @@ public class TaskController {
     /**
      * 删除计划任务
      */
+    @ApiLog("删除计划任务")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_REMOVE + "')")
     @DeleteMapping
     public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
@@ -66,6 +69,7 @@ public class TaskController {
     /**
      * 修改计划任务
      */
+    @ApiLog("修改计划任务")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_MODIFY + "')")
     @PutMapping
     public TiResult<Void> modify(@Validated @RequestBody TaskModifyCommand taskModifyCommand) {
@@ -76,6 +80,7 @@ public class TaskController {
     /**
      * 启用计划任务
      */
+    @ApiLog("启用计划任务")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_ENABLE + "')")
     @PatchMapping("status/enable")
     public TiResult<Void> enable(
@@ -90,6 +95,7 @@ public class TaskController {
     /**
      * 禁用计划任务
      */
+    @ApiLog("禁用计划任务")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_DISABLE + "')")
     @PatchMapping("status/disable")
     public TiResult<Void> disable(
@@ -104,6 +110,7 @@ public class TaskController {
     /**
      * 执行一次计划任务
      */
+    @ApiLog("执行一次计划任务")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_RUN_ONCE + "')")
     @PostMapping("run-once")
     public TiResult<Void> runOnce(@Validated @RequestBody TaskRunOnceCommand taskRunOnceCommand) {
@@ -144,6 +151,7 @@ public class TaskController {
     /**
      * 导出计划任务
      */
+    @ApiLog("导出计划任务")
     @TiView(ignore = true)
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_EXPORT + "')")
     @GetMapping("excel/export")
