@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import top.ticho.rainbow.application.dto.SecurityUser;
-import top.ticho.rainbow.application.dto.request.LoginDTO;
+import top.ticho.rainbow.infrastructure.common.dto.SecurityUser;
+import top.ticho.rainbow.interfaces.dto.command.LoginCommand;
 import top.ticho.rainbow.application.executor.UserExecutor;
 import top.ticho.rainbow.domain.entity.Role;
 import top.ticho.rainbow.domain.entity.User;
@@ -15,7 +15,6 @@ import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.common.enums.UserStatus;
 import top.ticho.starter.security.dto.TiToken;
 import top.ticho.starter.security.service.impl.AbstractLoginService;
-import top.ticho.starter.view.core.TiSecurityUser;
 import top.ticho.starter.view.enums.TiHttpErrCode;
 import top.ticho.starter.view.util.TiAssert;
 
@@ -63,12 +62,9 @@ public class DefaultLoginService extends AbstractLoginService {
         return securityUser;
     }
 
-    public TiToken token(LoginDTO userLogin) {
-        userExecutor.imgCodeValid(userLogin.getImgKey(), userLogin.getImgCode());
-        String account = userLogin.getUsername();
-        String credentials = userLogin.getPassword();
-        TiSecurityUser baseSecurityUser = this.checkPassword(account, credentials);
-        return toToken(baseSecurityUser);
+    public TiToken token(LoginCommand loginCommand) {
+        userExecutor.imgCodeValid(loginCommand.getImgKey(), loginCommand.getImgCode());
+        return super.token(loginCommand);
     }
 
 }

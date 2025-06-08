@@ -64,6 +64,7 @@
   import {
     ImgCodeDTO,
     ImgCodeEmailDTO,
+    LoginCommand,
     LoginDTO,
     UserSignUpDTO,
   } from '@/api/system/model/loginModel';
@@ -127,9 +128,17 @@
         return res;
       });
       // 2.登录
-      const userLoginDTO = res as UserLoginDTO;
-      userLoginDTO.password = formData.password;
-      const userInfo = await userStore.login(userLoginDTO, true);
+      const loginCommand = res as LoginCommand;
+      loginCommand.password = formData.password;
+      const userInfo = await userStore.login(
+        {
+          username: res.username,
+          password: formData.password,
+          imgCode: res.imgCode,
+          imgKey: res.imgKey,
+        },
+        true,
+      );
       if (userInfo) {
         notification.success({
           message: t('sys.login.loginSuccessTitle'),
@@ -147,6 +156,7 @@
       loading.value = false;
     }
   }
+
   // 验证码子组件组件点击触发事件
   const countdownInput = ref();
   const countdownInputOnClick = () => {

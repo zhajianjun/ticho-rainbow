@@ -2,9 +2,9 @@ package top.ticho.rainbow.application.assembler;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import top.ticho.rainbow.application.dto.command.DictModifyCommand;
-import top.ticho.rainbow.application.dto.command.DictSaveCommand;
-import top.ticho.rainbow.application.dto.response.DictCacheDTO;
+import top.ticho.rainbow.interfaces.dto.command.DictModifyCommand;
+import top.ticho.rainbow.interfaces.dto.command.DictSaveCommand;
+import top.ticho.rainbow.interfaces.dto.response.DictCacheDTO;
 import top.ticho.rainbow.domain.entity.Dict;
 import top.ticho.rainbow.domain.entity.vo.DictModifyVO;
 import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;

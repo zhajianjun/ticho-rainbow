@@ -2,7 +2,7 @@ package top.ticho.rainbow.infrastructure.common.component;
 
 import cn.hutool.core.convert.Convert;
 import org.springframework.stereotype.Component;
-import top.ticho.rainbow.application.dto.SecurityUser;
+import top.ticho.rainbow.infrastructure.common.dto.SecurityUser;
 import top.ticho.starter.security.constant.TiSecurityConst;
 import top.ticho.starter.security.filter.AbstractAuthTokenFilter;
 

@@ -44,9 +44,15 @@ export interface TiToken {
 /**
  * 登录请求参数
  */
-export interface LoginDTO {
+export interface LoginCommand {
   username: string;
   password: string;
+  imgKey: string;
+  imgCode: string;
+}
+
+export interface LoginDTO {
+  username: string;
   imgKey: string;
   imgCode: string;
 }

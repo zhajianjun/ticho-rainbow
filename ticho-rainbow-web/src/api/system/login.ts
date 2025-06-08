@@ -11,6 +11,7 @@ import {
   ResetPassworEmailSendCommand,
   LoginUserDetailDTO,
   LoginUserDTO,
+  LoginCommand,
 } from '@/api/system/model/loginModel';
 
 import { ErrorMessageMode, RetryRequest } from '#/axios';
@@ -65,7 +66,7 @@ export function signUp(params: UserSignUpCommand, mode: ErrorMessageMode = 'none
   return defHttp.post<LoginDTO>({ url: Api.SignUp, params }, { errorMessageMode: mode });
 }
 
-export function loginApi(params: LoginDTO, mode: ErrorMessageMode = 'modal') {
+export function loginApi(params: LoginCommand, mode: ErrorMessageMode = 'modal') {
   return defHttp.post<TiToken>(
     {
       url: Api.Login,

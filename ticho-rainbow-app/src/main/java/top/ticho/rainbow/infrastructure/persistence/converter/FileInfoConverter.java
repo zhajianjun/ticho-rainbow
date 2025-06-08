@@ -1,7 +1,7 @@
 package top.ticho.rainbow.infrastructure.persistence.converter;
 
 import org.mapstruct.Mapper;
-import top.ticho.rainbow.application.dto.response.FileInfoDTO;
+import top.ticho.rainbow.interfaces.dto.response.FileInfoDTO;
 import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.infrastructure.persistence.po.FileInfoPO;
 

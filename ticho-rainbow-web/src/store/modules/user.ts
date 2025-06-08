@@ -14,7 +14,7 @@ import { PAGE_NOT_FOUND_ROUTE } from '@/router/routes/basic';
 import { h } from 'vue';
 import { RoleDTO } from '@/api/system/model/roleModel';
 import { useDictStore } from '@/store/modules/dict';
-import { LoginDTO, LoginUserDetailDTO, LoginUserDTO } from '@/api/system/model/loginModel';
+import { LoginCommand, LoginUserDetailDTO, LoginUserDTO } from '@/api/system/model/loginModel';
 import headerImg from '@/assets/images/header.jpg';
 
 interface UserState {
@@ -93,7 +93,7 @@ export const useUserStore = defineStore({
      * @description: login
      */
     async login(
-      params: LoginDTO,
+      params: LoginCommand,
       goHome: boolean = false,
       mode: ErrorMessageMode = 'none',
     ): Promise<LoginUserDTO | null> {

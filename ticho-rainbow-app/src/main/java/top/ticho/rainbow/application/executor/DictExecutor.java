@@ -4,8 +4,8 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import top.ticho.rainbow.application.dto.response.DictCacheDTO;
-import top.ticho.rainbow.application.dto.response.DictLabelDTO;
+import top.ticho.rainbow.interfaces.dto.response.DictCacheDTO;
+import top.ticho.rainbow.interfaces.dto.response.DictLabelDTO;
 import top.ticho.rainbow.application.service.DictService;
 
 import java.util.Arrays;

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import top.ticho.rainbow.application.dto.response.PermissionDTO;
+import top.ticho.rainbow.interfaces.dto.response.PermissionDTO;
 import top.ticho.starter.web.util.TiSpringUtil;
 
 import java.util.ArrayList;

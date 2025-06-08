@@ -2,10 +2,10 @@ package top.ticho.rainbow.application.assembler;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import top.ticho.rainbow.application.dto.command.ClientModifyCommand;
-import top.ticho.rainbow.application.dto.command.ClientSaveCommand;
+import top.ticho.rainbow.interfaces.dto.command.ClientModifyCommand;
+import top.ticho.rainbow.interfaces.dto.command.ClientSaveCommand;
 import top.ticho.rainbow.application.dto.excel.ClientExcelExport;
-import top.ticho.rainbow.application.dto.response.ClientDTO;
+import top.ticho.rainbow.interfaces.dto.response.ClientDTO;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.domain.entity.vo.ClientModifyVO;
 import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;

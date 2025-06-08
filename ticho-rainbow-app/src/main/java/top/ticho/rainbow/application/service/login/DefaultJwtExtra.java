@@ -3,7 +3,7 @@ package top.ticho.rainbow.application.service.login;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import top.ticho.rainbow.application.dto.SecurityUser;
+import top.ticho.rainbow.infrastructure.common.dto.SecurityUser;
 import top.ticho.starter.security.core.jwt.JwtExtra;
 
 import java.util.HashMap;

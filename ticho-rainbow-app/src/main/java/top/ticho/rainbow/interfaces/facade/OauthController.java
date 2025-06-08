@@ -11,15 +11,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import top.ticho.rainbow.application.dto.command.LoginUserModifyCommand;
-import top.ticho.rainbow.application.dto.command.LoginUserModifyPasswordCommand;
-import top.ticho.rainbow.application.dto.command.ResetPassworEmailSendCommand;
-import top.ticho.rainbow.application.dto.command.ResetPasswordCommand;
-import top.ticho.rainbow.application.dto.command.UserSignUpCommand;
-import top.ticho.rainbow.application.dto.command.UserSignUpEmailSendCommand;
-import top.ticho.rainbow.application.dto.request.LoginDTO;
-import top.ticho.rainbow.application.dto.response.LoginUserDTO;
-import top.ticho.rainbow.application.dto.response.LoginUserDetailDTO;
+import top.ticho.rainbow.interfaces.dto.command.LoginUserModifyCommand;
+import top.ticho.rainbow.interfaces.dto.command.LoginUserModifyPasswordCommand;
+import top.ticho.rainbow.interfaces.dto.command.ResetPassworEmailSendCommand;
+import top.ticho.rainbow.interfaces.dto.command.ResetPasswordCommand;
+import top.ticho.rainbow.interfaces.dto.command.UserSignUpCommand;
+import top.ticho.rainbow.interfaces.dto.command.UserSignUpEmailSendCommand;
+import top.ticho.rainbow.interfaces.dto.command.LoginCommand;
+import top.ticho.rainbow.interfaces.dto.response.LoginDTO;
+import top.ticho.rainbow.interfaces.dto.response.LoginUserDTO;
+import top.ticho.rainbow.interfaces.dto.response.LoginUserDetailDTO;
 import top.ticho.rainbow.application.service.LoginUserService;
 import top.ticho.rainbow.application.service.login.DefaultLoginService;
 import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
@@ -99,8 +100,8 @@ public class OauthController {
      */
     @IgnoreJwtCheck
     @PostMapping("token")
-    public TiResult<TiToken> token(@Validated LoginDTO loginDTO) {
-        return TiResult.ok(defaultLoginService.token(loginDTO));
+    public TiResult<TiToken> token(@Validated LoginCommand loginCommand) {
+        return TiResult.ok(defaultLoginService.token(loginCommand));
     }
 
     /**
