@@ -15,7 +15,7 @@ import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.common.enums.UserStatus;
 import top.ticho.starter.security.dto.TiToken;
 import top.ticho.starter.security.service.impl.AbstractLoginService;
-import top.ticho.starter.view.enums.TiHttpErrCode;
+import top.ticho.starter.view.enums.TiHttpErrorCode;
 import top.ticho.starter.view.util.TiAssert;
 
 import java.util.List;
@@ -42,11 +42,11 @@ public class DefaultLoginService extends AbstractLoginService {
         }
         // 用户信息校验
         User user = userRepository.findCacheByUsername(account);
-        TiAssert.isNotNull(user, TiHttpErrCode.NOT_LOGIN, "用户或者密码不正确");
+        TiAssert.isNotNull(user, TiHttpErrorCode.NOT_LOGIN, "用户或者密码不正确");
         Integer status = user.getStatus();
         String message = UserStatus.getByCode(status);
         boolean normal = Objects.equals(status, UserStatus.NORMAL.code());
-        TiAssert.isTrue(normal, TiHttpErrCode.NOT_LOGIN, String.format("用户%s", message));
+        TiAssert.isTrue(normal, TiHttpErrorCode.NOT_LOGIN, String.format("用户%s", message));
         return getSecurityUser(user);
     }
 

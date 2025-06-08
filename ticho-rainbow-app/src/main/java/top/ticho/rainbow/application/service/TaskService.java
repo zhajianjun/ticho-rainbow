@@ -25,7 +25,7 @@ import top.ticho.rainbow.infrastructure.common.component.TaskTemplate;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
 import top.ticho.starter.view.core.TiPageResult;
-import top.ticho.starter.view.enums.TiBizErrCode;
+import top.ticho.starter.view.enums.TiBizErrorCode;
 import top.ticho.starter.view.util.TiAssert;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -89,7 +89,7 @@ public class TaskService implements InitializingBean {
             .filter(x -> Objects.equals(x.getClass().getName(), content))
             .findFirst();
         if (abstracTaskOpt.isEmpty()) {
-            TiAssert.cast(TiBizErrCode.PARAM_ERROR, "执行类不存在");
+            TiAssert.cast(TiBizErrorCode.PARAM_ERROR, "执行类不存在");
         }
         AbstracTask<?> abstracTask = abstracTaskOpt.get();
 

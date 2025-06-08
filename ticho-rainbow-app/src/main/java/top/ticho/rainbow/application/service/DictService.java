@@ -32,7 +32,7 @@ import top.ticho.rainbow.infrastructure.common.constant.DictConst;
 import top.ticho.rainbow.infrastructure.common.enums.YesOrNo;
 import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.view.core.TiPageResult;
-import top.ticho.starter.view.enums.TiBizErrCode;
+import top.ticho.starter.view.enums.TiBizErrorCode;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.TiSpringUtil;
 
@@ -78,9 +78,9 @@ public class DictService {
         Dict dict = dictRepository.find(command.getId());
         TiAssert.isNotNull(dict, "删除失败，字典不存在");
         dict.checkVersion(command.getVersion(), "数据已被修改，请刷新后重试");
-        TiAssert.isTrue(!Objects.equals(dict.getIsSys(), YesOrNo.YES.code()), TiBizErrCode.PARAM_ERROR, "系统字典无法删除");
+        TiAssert.isTrue(!Objects.equals(dict.getIsSys(), YesOrNo.YES.code()), TiBizErrorCode.PARAM_ERROR, "系统字典无法删除");
         boolean existsDict = dictLabelRepository.existsByCode(dict.getCode());
-        TiAssert.isTrue(!existsDict, TiBizErrCode.PARAM_ERROR, "删除失败，请先删除所有字典标签");
+        TiAssert.isTrue(!existsDict, TiBizErrorCode.PARAM_ERROR, "删除失败，请先删除所有字典标签");
         TiAssert.isTrue(dictRepository.remove(command.getId()), "删除失败，请刷新后重试");
     }
 

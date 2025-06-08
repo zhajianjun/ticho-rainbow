@@ -32,15 +32,15 @@ import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
-import top.ticho.rainbow.infrastructure.common.enums.FileErrCode;
+import top.ticho.rainbow.infrastructure.common.enums.FileErrorCode;
 import top.ticho.rainbow.infrastructure.common.enums.FileInfoStatus;
 import top.ticho.rainbow.infrastructure.common.prop.FileProperty;
 import top.ticho.rainbow.infrastructure.common.util.CommonUtil;
 import top.ticho.rainbow.infrastructure.config.CacheConfig;
 import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.view.core.TiPageResult;
-import top.ticho.starter.view.enums.TiBizErrCode;
-import top.ticho.starter.view.enums.TiHttpErrCode;
+import top.ticho.starter.view.enums.TiBizErrorCode;
+import top.ticho.starter.view.enums.TiHttpErrorCode;
 import top.ticho.starter.view.exception.TiBizException;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.TiIdUtil;
@@ -104,7 +104,7 @@ public class FileInfoService {
 
     public void remove(VersionModifyCommand command) {
         FileInfo fileInfo = fileInfoRepository.find(command.getId());
-        TiAssert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST, "删除失败, 文件信息不存在");
+        TiAssert.isNotNull(fileInfo, FileErrorCode.FILE_NOT_EXIST, "删除失败, 文件信息不存在");
         fileInfo.checkVersion(command.getVersion(), "数据已被修改，请刷新后重试");
         TiAssert.isTrue(fileInfo.isCancel() || fileInfo.isChunk(), "删除失败, 分片或者作废状态文件才能删除");
         String path;
@@ -122,7 +122,7 @@ public class FileInfoService {
 
     public void download(String sign) {
         FileCacheDTO fileCacheDTO = tiCacheTemplate.get(CacheConst.FILE_URL_CACHE, sign, FileCacheDTO.class);
-        TiAssert.isNotNull(fileCacheDTO, FileErrCode.FILE_NOT_EXIST);
+        TiAssert.isNotNull(fileCacheDTO, FileErrorCode.FILE_NOT_EXIST);
         FileInfo fileInfo = fileCacheDTO.getFileInfo();
         if (Boolean.TRUE.equals(fileCacheDTO.getLimit())) {
             fileCacheDTO.setLimited(true);
@@ -132,11 +132,11 @@ public class FileInfoService {
     }
 
     private void download(FileInfo fileInfo) {
-        TiAssert.isNotNull(fileInfo, FileErrCode.FILE_NOT_EXIST);
-        TiAssert.isTrue(fileInfo.isEnable(), FileErrCode.FILE_STATUS_ERROR);
+        TiAssert.isNotNull(fileInfo, FileErrorCode.FILE_NOT_EXIST);
+        TiAssert.isTrue(fileInfo.isEnable(), FileErrorCode.FILE_STATUS_ERROR);
         String absolutePath = fileInfoExecutor.getAbsolutePath(fileInfo.getType(), fileInfo.getPath());
         File file = new File(absolutePath);
-        TiAssert.isTrue(FileUtil.exist(file), FileErrCode.FILE_NOT_EXIST);
+        TiAssert.isTrue(FileUtil.exist(file), FileErrorCode.FILE_NOT_EXIST);
         try {
             response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
             response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLUtil.encodeAll(fileInfo.getOriginalFileName()));
@@ -148,7 +148,7 @@ public class FileInfoService {
             IoUtil.copy(Files.newInputStream(file.toPath()), response.getOutputStream(), 1024);
         } catch (Exception e) {
             log.error("文件下载失败，{}", e.getMessage(), e);
-            throw new TiBizException(FileErrCode.DOWNLOAD_ERROR);
+            throw new TiBizException(FileErrorCode.DOWNLOAD_ERROR);
         }
     }
 
@@ -160,7 +160,7 @@ public class FileInfoService {
         MultipartFile chunkfile = fileChunkUploadCommand.getChunkfile();
         DataSize maxFileSize = fileProperty.getMaxPartSize();
         Integer index = fileChunkUploadCommand.getIndex();
-        TiAssert.isTrue(chunkfile.getSize() <= maxFileSize.toBytes(), FileErrCode.FILE_SIZE_TO_LARGER, "分片文件大小不能超出" + maxFileSize.toMegabytes() + "MB");
+        TiAssert.isTrue(chunkfile.getSize() <= maxFileSize.toBytes(), FileErrorCode.FILE_SIZE_TO_LARGER, "分片文件大小不能超出" + maxFileSize.toMegabytes() + "MB");
         // 相对路径处理
         String relativePath = Optional.ofNullable(fileChunkUploadCommand.getRelativePath())
             .filter(StrUtil::isNotBlank)
@@ -183,7 +183,7 @@ public class FileInfoService {
                 FileUtil.writeBytes(chunkfile.getBytes(), chunkFile);
             }
         } catch (IOException e) {
-            throw new TiBizException(TiHttpErrCode.FAIL, "文件上传失败");
+            throw new TiBizException(TiHttpErrorCode.FAIL, "文件上传失败");
         }
         log.info("{}分片文件{}，分片id={}，index={}上传成功", fileChunkUploadCommand.getFileName(), chunkfile.getOriginalFilename(), fileChunkUploadCommand.getChunkId(), index);
         indexs.add(index);
@@ -222,7 +222,7 @@ public class FileInfoService {
                 TiAssert.isNull(dbFileInfo, "上传失败, 文件已存在");
                 DataSize maxBigFileSize = fileProperty.getMaxBigFileSize();
                 boolean match = fileChunkUploadCommand.getFileSize() <= maxBigFileSize.toBytes();
-                TiAssert.isTrue(match, TiBizErrCode.PARAM_ERROR, "文件大小不能超出" + maxBigFileSize.toMegabytes() + "MB");
+                TiAssert.isTrue(match, TiBizErrorCode.PARAM_ERROR, "文件大小不能超出" + maxBigFileSize.toMegabytes() + "MB");
                 // 分片文件信息转换缓存信息
                 chunkCacheDTO = chunkFileConvertCache(fileChunkUploadCommand);
                 // 保存数据库
@@ -232,8 +232,8 @@ public class FileInfoService {
                 return chunkCacheDTO;
             }
             TiAssert.isNotNull(dbFileInfo, "续传失败, 分片文件信息不存在");
-            TiAssert.isTrue(Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CHUNK.code()), TiBizErrCode.PARAM_ERROR, "分片文件状态才可进行续传");
-            TiAssert.isTrue(Objects.equals(dbFileInfo.getMd5(), fileChunkUploadCommand.getMd5()), TiBizErrCode.PARAM_ERROR, "分片文件md5不一致");
+            TiAssert.isTrue(Objects.equals(dbFileInfo.getStatus(), FileInfoStatus.CHUNK.code()), TiBizErrorCode.PARAM_ERROR, "分片文件状态才可进行续传");
+            TiAssert.isTrue(Objects.equals(dbFileInfo.getMd5(), fileChunkUploadCommand.getMd5()), TiBizErrorCode.PARAM_ERROR, "分片文件md5不一致");
             // 数据库存在则转换分片信息
             chunkCacheDTO = fileInfoConvertCache(dbFileInfo);
             // 保存缓存
@@ -245,7 +245,7 @@ public class FileInfoService {
     private void saveChunkCache(ChunkCacheDTO chunkCacheDTO) {
         // 上传队列大小限制
         long size = tiCacheTemplate.size(CacheConst.UPLOAD_CHUNK);
-        TiAssert.isTrue(size + 1 <= CacheConfig.CacheEnum.UPLOAD_CHUNK.getMaxSize(), TiBizErrCode.PARAM_ERROR, "分片文件上传数量超过限制");
+        TiAssert.isTrue(size + 1 <= CacheConfig.CacheEnum.UPLOAD_CHUNK.getMaxSize(), TiBizErrorCode.PARAM_ERROR, "分片文件上传数量超过限制");
         tiCacheTemplate.put(CacheConst.UPLOAD_CHUNK, chunkCacheDTO.getChunkId(), chunkCacheDTO);
     }
 
@@ -372,7 +372,7 @@ public class FileInfoService {
             fileInfo.compose(fileSize);
             fileInfoRepository.modify(fileInfo);
         } catch (IOException e) {
-            throw new TiBizException(TiHttpErrCode.FAIL, "文件合并失败");
+            throw new TiBizException(TiHttpErrorCode.FAIL, "文件合并失败");
         } finally {
             // 清除缓存
             tiCacheTemplate.evict(CacheConst.UPLOAD_CHUNK, chunkId);

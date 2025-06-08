@@ -62,7 +62,7 @@ public class Client implements Entity {
         TiAssert.isTrue(Objects.equals(this.status, disable.code()),
             StrUtil.format("只有[{}]状态才能执行启用操作，客户端：{}", disable.message(), name));
         boolean isExired = Objects.nonNull(expireAt) && expireAt.isBefore(LocalDateTime.now());
-        TiAssert.isTrue(!isExired, StrUtil.format("客户端：{}已过期", name));
+        TiAssert.isTrue(!isExired, StrUtil.format("客户端[{}]已过期", name));
         this.status = CommonStatus.ENABLE.code();
     }
 

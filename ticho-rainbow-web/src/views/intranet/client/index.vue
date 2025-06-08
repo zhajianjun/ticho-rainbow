@@ -81,6 +81,7 @@
   import { getDictLabelByCodeAndValue } from '@/store/modules/dict';
   import { downloadByData } from '@/utils/file/download';
   import { VersionModifyCommand } from '@/api/system/model/baseModel';
+  import { formatToDateTime } from '@/utils/dateUtil';
 
   export default defineComponent({
     name: 'ClientManagement',
@@ -173,7 +174,21 @@
             id: record.id,
             version: record.version,
           } as VersionModifyCommand;
-          oprate = checked ? disableClient([param]) : enableClient([param]);
+          if (checked) {
+            oprate = disableClient([param]);
+          } else {
+            if (record.expireAt === null || record.expireAt === '') {
+              createMessage.error(`客户端[` + record.name + `]过期日期不能为空`);
+              record.pendingStatus = false;
+              return;
+            }
+            if (formatToDateTime(new Date()) >= formatToDateTime(record.expireAt)) {
+              createMessage.error(`客户端[` + record.name + `]已过期`);
+              record.pendingStatus = false;
+              return;
+            }
+            oprate = enableClient([param]);
+          }
         } catch (error) {
           record.pendingStatus = false;
           return;

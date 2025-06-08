@@ -199,12 +199,12 @@
             oprate = disablePort([param]);
           } else {
             if (record.expireAt === null || record.expireAt === '') {
-              createMessage.error(`端口：[` + record.port + `]过期日期不能为空`);
+              createMessage.error(`端口[` + record.port + `]过期日期不能为空`);
               record.pendingStatus = false;
               return;
             }
             if (formatToDateTime(new Date()) >= formatToDateTime(record.expireAt)) {
-              createMessage.error(`端口：[` + record.port + `]已过期`);
+              createMessage.error(`端口[` + record.port + `]已过期`);
               record.pendingStatus = false;
               return;
             }

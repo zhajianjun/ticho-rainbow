@@ -81,7 +81,7 @@ public class Port implements Entity {
         TiAssert.isTrue(Objects.equals(this.status, disable.code()),
             StrUtil.format("只有[{}]状态才能执行启用操作，端口：[{}]", disable.message(), port));
         boolean isExired = Objects.nonNull(expireAt) && expireAt.isBefore(LocalDateTime.now());
-        TiAssert.isTrue(!isExired, StrUtil.format("端口：[{}]已过期", port));
+        TiAssert.isTrue(!isExired, StrUtil.format("端口[{}]已过期", port));
         this.status = CommonStatus.ENABLE.code();
     }
 

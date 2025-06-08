@@ -15,13 +15,13 @@ import top.ticho.rainbow.interfaces.dto.response.FileInfoDTO;
 import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
-import top.ticho.rainbow.infrastructure.common.enums.FileErrCode;
+import top.ticho.rainbow.infrastructure.common.enums.FileErrorCode;
 import top.ticho.rainbow.infrastructure.common.enums.FileInfoStatus;
 import top.ticho.rainbow.infrastructure.common.prop.FileProperty;
 import top.ticho.rainbow.infrastructure.common.util.CommonUtil;
 import top.ticho.starter.cache.component.TiCacheTemplate;
-import top.ticho.starter.view.enums.TiBizErrCode;
-import top.ticho.starter.view.enums.TiHttpErrCode;
+import top.ticho.starter.view.enums.TiBizErrorCode;
+import top.ticho.starter.view.enums.TiHttpErrorCode;
 import top.ticho.starter.view.exception.TiBizException;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.TiIdUtil;
@@ -53,7 +53,7 @@ public class FileInfoExecutor {
         // 原始文件名，logo.svg
         String originalFileName = file.getOriginalFilename();
         DataSize fileSize = fileProperty.getMaxFileSize();
-        TiAssert.isTrue(file.getSize() <= fileSize.toBytes(), FileErrCode.FILE_SIZE_TO_LARGER, "文件大小不能超出" + fileSize.toMegabytes() + "MB");
+        TiAssert.isTrue(file.getSize() <= fileSize.toBytes(), FileErrorCode.FILE_SIZE_TO_LARGER, "文件大小不能超出" + fileSize.toMegabytes() + "MB");
         // 主文件名 logo.svg -> logo
         String mainName = FileNameUtil.mainName(originalFileName);
         // 后缀名 svg
@@ -84,7 +84,7 @@ public class FileInfoExecutor {
         try {
             FileUtil.writeBytes(file.getBytes(), absolutePath);
         } catch (IOException e) {
-            throw new TiBizException(TiHttpErrCode.FAIL, "文件上传失败");
+            throw new TiBizException(TiHttpErrorCode.FAIL, "文件上传失败");
         }
         fileInfoRepository.save(fileInfo);
         return fileInfoAssembler.toDTO(fileInfo);
@@ -93,7 +93,7 @@ public class FileInfoExecutor {
     public String presigned(Long id, Long expire, Boolean limit) {
         long seconds = TimeUnit.DAYS.toSeconds(7);
         if (expire != null) {
-            TiAssert.isTrue(expire <= seconds, TiBizErrCode.PARAM_ERROR, "过期时间最长为7天");
+            TiAssert.isTrue(expire <= seconds, TiBizErrorCode.PARAM_ERROR, "过期时间最长为7天");
         } else {
             expire = seconds;
         }

@@ -25,7 +25,7 @@ import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.rainbow.infrastructure.common.enums.MenuType;
 import top.ticho.rainbow.infrastructure.common.enums.YesOrNo;
 import top.ticho.rainbow.infrastructure.common.util.UserUtil;
-import top.ticho.starter.view.enums.TiBizErrCode;
+import top.ticho.starter.view.enums.TiBizErrorCode;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.TiTreeUtil;
 
@@ -169,7 +169,7 @@ public class MenuService {
         String parentTypeName = MenuType.DIR.message();
         if (!isRoot) {
             parentMenu = menuRepository.find(parentId);
-            TiAssert.isNotNull(parentMenu, TiBizErrCode.PARAM_ERROR, "父节点不存在");
+            TiAssert.isNotNull(parentMenu, TiBizErrorCode.PARAM_ERROR, "父节点不存在");
             parentType = parentMenu.getType();
             parentTypeName = MenuType.getByCode(parentMenu.getType());
         }
@@ -213,7 +213,7 @@ public class MenuService {
             // 按钮名称不能重复
             TiAssert.isNull(repeatCompMenu, "按钮名称重复");
         } else {
-            TiAssert.cast(TiBizErrCode.PARAM_ERROR, "未知菜单类型");
+            TiAssert.cast(TiBizErrorCode.PARAM_ERROR, "未知菜单类型");
         }
         fillMenu(menu, parentMenu);
     }

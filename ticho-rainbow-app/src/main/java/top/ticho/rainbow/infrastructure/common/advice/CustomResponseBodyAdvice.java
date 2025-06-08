@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import top.ticho.starter.log.interceptor.TiWebLogInterceptor;
 import top.ticho.starter.view.core.TiResult;
-import top.ticho.starter.view.enums.TiBizErrCode;
-import top.ticho.starter.view.enums.TiHttpErrCode;
+import top.ticho.starter.view.enums.TiBizErrorCode;
+import top.ticho.starter.view.enums.TiHttpErrorCode;
 import top.ticho.starter.view.log.TiHttpLog;
 import top.ticho.starter.web.advice.TiResponseBodyAdvice;
 
@@ -59,7 +59,7 @@ public class CustomResponseBodyAdvice {
     @ExceptionHandler(AccessDeniedException.class)
     public TiResult<String> accessDeniedExceptionHandler(AccessDeniedException ex) {
         prefix(ex);
-        TiResult<String> result = TiResult.of(TiHttpErrCode.ACCESS_DENIED);
+        TiResult<String> result = TiResult.of(TiHttpErrorCode.ACCESS_DENIED);
         response.setStatus(result.getCode());
         log.error("catch error\t{}", ex.getMessage(), ex);
         return result;
@@ -80,7 +80,7 @@ public class CustomResponseBodyAdvice {
             .toList();
         log.warn("catch BindException error\t{}", joiner);
         response.setStatus(HttpStatus.OK.value());
-        return TiResult.fail(TiBizErrCode.PARAM_ERROR, errors.get(0).getDefaultMessage());
+        return TiResult.fail(TiBizErrorCode.PARAM_ERROR, errors.get(0).getDefaultMessage());
     }
 
     /**
@@ -97,7 +97,7 @@ public class CustomResponseBodyAdvice {
             .toList();
         log.warn("catch ConstraintViolationException error\t{}", joiner);
         response.setStatus(HttpStatus.OK.value());
-        return TiResult.fail(TiBizErrCode.PARAM_ERROR, errors.get(0).getMessage());
+        return TiResult.fail(TiBizErrorCode.PARAM_ERROR, errors.get(0).getMessage());
     }
 
     /**
@@ -106,8 +106,8 @@ public class CustomResponseBodyAdvice {
     @ExceptionHandler(DataAccessException.class)
     public TiResult<String> dataAccessExceptionHandler(DataAccessException ex) {
         prefix(ex);
-        TiResult<String> result = TiResult.of(TiHttpErrCode.FAIL);
-        result.setMsg("数据库异常");
+        TiResult<String> result = TiResult.of(TiHttpErrorCode.FAIL);
+        result.setMessage("数据库异常");
         response.setStatus(result.getCode());
         log.error("catch error\t{}", ex.getMessage(), ex);
         return result;
@@ -116,7 +116,7 @@ public class CustomResponseBodyAdvice {
     @ExceptionHandler(NoResourceFoundException.class)
     public TiResult<String> noResourceFoundExceptionHandler(NoResourceFoundException ex) {
         prefix(ex);
-        TiResult<String> result = TiResult.of(TiHttpErrCode.NOT_FOUND);
+        TiResult<String> result = TiResult.of(TiHttpErrorCode.NOT_FOUND);
         response.setStatus(result.getCode());
         log.error("catch error\t{}", ex.getMessage(), ex);
         return result;

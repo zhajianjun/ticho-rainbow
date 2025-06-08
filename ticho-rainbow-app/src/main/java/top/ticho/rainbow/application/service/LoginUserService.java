@@ -43,7 +43,7 @@ import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.mail.component.TiMailContent;
 import top.ticho.starter.mail.component.TiMailInines;
 import top.ticho.starter.view.core.TiResult;
-import top.ticho.starter.view.enums.TiBizErrCode;
+import top.ticho.starter.view.enums.TiBizErrorCode;
 import top.ticho.starter.view.exception.TiBizException;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.file.TiMultipartFile;
@@ -97,10 +97,10 @@ public class LoginUserService {
         } catch (Exception e) {
             log.error("获取验证码失败，error {}", e.getMessage(), e);
             String message = e.getMessage();
-            int code = TiBizErrCode.FAIL.getCode();
-            if (e instanceof TiBizException TiBizException) {
-                code = TiBizException.getCode();
-                message = TiBizException.getMsg();
+            int code = TiBizErrorCode.FAIL.getCode();
+            if (e instanceof TiBizException tiBizException) {
+                code = tiBizException.getCode();
+                message = tiBizException.getMessage();
             }
             TiResult<String> result = TiResult.of(code, message, null);
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
