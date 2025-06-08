@@ -14,7 +14,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface RoleConverter {
 
-    List<Role> toEntitys(List<RolePO> list);
+    List<Role> toEntity(List<RolePO> list);
 
     RoleDTO toDTO(RolePO rolePO);
 

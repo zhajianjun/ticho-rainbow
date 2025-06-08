@@ -1,5 +1,6 @@
 package top.ticho.rainbow.application.service;
 
+import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,8 @@ import top.ticho.rainbow.application.assembler.MenuAssembler;
 import top.ticho.rainbow.application.dto.SecurityUser;
 import top.ticho.rainbow.application.dto.command.MenuModifyCommand;
 import top.ticho.rainbow.application.dto.command.MenuSaveCommand;
-import top.ticho.rainbow.application.dto.response.MenuDtlDTO;
+import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
+import top.ticho.rainbow.application.dto.response.MenuDTO;
 import top.ticho.rainbow.application.dto.response.RouteDTO;
 import top.ticho.rainbow.application.dto.response.RouteMetaDTO;
 import top.ticho.rainbow.application.executor.AuthExecutor;
@@ -31,6 +33,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -60,6 +63,7 @@ public class MenuService {
     public void modify(MenuModifyCommand menuModifyCommand) {
         Menu menu = menuRepository.find(menuModifyCommand.getId());
         TiAssert.isNotNull(menu, "菜单不存在");
+        menu.checkVersion(menuModifyCommand.getVersion(), "数据已被修改，请刷新后重试");
         checkData(menu);
         MenuModifyVO menuModifyVO = menuAssembler.toModifyVO(menuModifyCommand);
         menu.modify(menuModifyVO);
@@ -67,23 +71,36 @@ public class MenuService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void remove(Long id) {
-        // 子节点为空才能删除
-        List<Long> menuIds = Collections.singletonList(id);
+    public void remove(VersionModifyCommand command) {
+        Menu menu = menuRepository.find(command.getId());
+        TiAssert.isNotNull(menu, "删除失败，数据不存在");
+        menu.checkVersion(command.getVersion(), "数据已被修改，请刷新后重试");
+        TiAssert.isTrue(!menu.isEnable(), "删除失败，请先禁用该菜单");
+        List<Long> menuIds = Collections.singletonList(command.getId());
         boolean existsByMenuIds = roleMenuRepository.existsByMenuIds(menuIds);
         TiAssert.isTrue(!existsByMenuIds, "删除失败,请解绑所有的角色菜单");
-        TiAssert.isTrue(menuRepository.remove(id), "删除失败");
+        TiAssert.isTrue(menuRepository.remove(command.getId()), "删除失败，请刷新后重试");
     }
 
-    public List<MenuDtlDTO> list() {
+    public void enable(List<VersionModifyCommand> datas) {
+        boolean enable = modifyBatch(datas, Menu::enable);
+        TiAssert.isTrue(enable, "启用菜单失败，请刷新后重试");
+    }
+
+    public void disable(List<VersionModifyCommand> datas) {
+        boolean disable = modifyBatch(datas, Menu::disable);
+        TiAssert.isTrue(disable, "禁用菜单失败，请刷新后重试");
+    }
+
+    public List<MenuDTO> list() {
         List<Menu> menus = menuRepository.cacheList();
-        List<MenuDtlDTO> menuFuncDtls = authExecutor.getMenuDtls(menus, null, null);
-        Consumer<MenuDtlDTO> consumer = (root) -> {
-            List<MenuDtlDTO> children = root.getChildren();
+        List<MenuDTO> menuFuncDtls = authExecutor.toDTO(menus, null, null);
+        Consumer<MenuDTO> consumer = (root) -> {
+            List<MenuDTO> children = root.getChildren();
             children = CollUtil.isEmpty(children) ? null : children;
             root.setChildren(children);
         };
-        MenuDtlDTO root = new MenuDtlDTO();
+        MenuDTO root = new MenuDTO();
         root.setId(0L);
         TiTreeUtil.tree(menuFuncDtls, root, (x, y) -> true, (x, y) -> {
         }, consumer);
@@ -236,6 +253,20 @@ public class MenuService {
 
     public List<String> getPerms(String roleCodes) {
         return authExecutor.getPerms(Arrays.stream(roleCodes.split(",")).collect(Collectors.toList()));
+    }
+
+    private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<Menu> modifyHandle) {
+        List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
+        List<Menu> menus = menuRepository.list(ids);
+        Map<Long, Menu> menuMap = CollStreamUtil.toIdentityMap(menus, Menu::getId);
+        for (VersionModifyCommand modify : modifys) {
+            Menu menu = menuMap.get(modify.getId());
+            TiAssert.isNotNull(menu, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
+            menu.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 菜单: {}", menu.getName()));
+            // 修改逻辑
+            modifyHandle.accept(menu);
+        }
+        return menuRepository.modifyBatch(menus);
     }
 
 }

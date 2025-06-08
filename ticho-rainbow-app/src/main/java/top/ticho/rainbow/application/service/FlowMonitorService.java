@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
 import top.ticho.intranet.common.util.IntranetUtil;
-import top.ticho.intranet.server.core.ServerHandler;
 import top.ticho.intranet.server.entity.AppDataCollector;
 import top.ticho.intranet.server.entity.AppDataSummary;
 import top.ticho.intranet.server.entity.ClientInfo;
@@ -14,6 +13,7 @@ import top.ticho.rainbow.application.dto.response.ClientDTO;
 import top.ticho.rainbow.application.dto.response.FlowMonitorDTO;
 import top.ticho.rainbow.application.dto.response.FlowMonitorStatsDTO;
 import top.ticho.rainbow.application.dto.response.PortDTO;
+import top.ticho.rainbow.application.executor.IntranetExecutor;
 import top.ticho.rainbow.application.repository.ClientAppRepository;
 import top.ticho.rainbow.application.repository.PortAppRepository;
 
@@ -37,10 +37,10 @@ import java.util.stream.Collectors;
 public class FlowMonitorService {
     private final ClientAppRepository clientAppRepository;
     private final PortAppRepository portRepository;
-    private final ServerHandler serverHandler;
+    private final IntranetExecutor intranetExecutor;
 
     public FlowMonitorStatsDTO info() {
-        List<ClientInfo> clientInfos = serverHandler.findAll();
+        List<ClientInfo> clientInfos = intranetExecutor.findAll();
         Map<String, ClientInfo> clientMap = CollStreamUtil.toMap(clientInfos, ClientInfo::getAccessKey, Function.identity());
         // 客户端数
         List<ClientDTO> clientDTOS = clientAppRepository.all();

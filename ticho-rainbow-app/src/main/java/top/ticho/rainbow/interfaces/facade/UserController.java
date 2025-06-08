@@ -20,6 +20,7 @@ import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.query.UserQuery;
 import top.ticho.rainbow.application.dto.response.UserDTO;
 import top.ticho.rainbow.application.service.UserService;
+import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
@@ -46,7 +47,7 @@ public class UserController {
     /**
      * 保存用户
      */
-    @PreAuthorize("@perm.hasPerms('system:user:save')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_SAVE + "')")
     @PostMapping
     public TiResult<Void> save(@Validated @RequestBody UseSaveCommand useSaveCommand) {
         userService.save(useSaveCommand);
@@ -56,7 +57,7 @@ public class UserController {
     /**
      * 删除用户
      */
-    @PreAuthorize("@perm.hasPerms('system:user:remove')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_REMOVE + "')")
     @DeleteMapping
     public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
         userService.remove(command);
@@ -66,7 +67,7 @@ public class UserController {
     /**
      * 修改用户
      */
-    @PreAuthorize("@perm.hasPerms('system:user:modify')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_MODIFY + "')")
     @PutMapping
     public TiResult<Void> modify(@Validated @RequestBody UseModifyCommand useModifyCommand) {
         userService.modify(useModifyCommand);
@@ -76,9 +77,10 @@ public class UserController {
     /**
      * 锁定用户
      */
-    @PreAuthorize("@perm.hasPerms('system:user:lock')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_LOCK + "')")
     @PatchMapping("status/lock")
     public TiResult<Void> lock(
+        @NotNull(message = "用户信息不能为空")
         @NotNull(message = "用户信息不能为空")
         @Size(max = CommConst.MAX_OPERATION_COUNT, message = "一次性最多操{max}条数据")
         @RequestBody List<VersionModifyCommand> datas
@@ -90,7 +92,7 @@ public class UserController {
     /**
      * 解锁用户
      */
-    @PreAuthorize("@perm.hasPerms('system:user:unLock')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_UNLOCK + "')")
     @PatchMapping("status/un-lock")
     public TiResult<Void> unLock(
         @NotNull(message = "用户信息不能为空")
@@ -105,7 +107,7 @@ public class UserController {
     /**
      * 注销用户
      */
-    @PreAuthorize("@perm.hasPerms('system:user:log-out')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_LOG_OUT + "')")
     @PatchMapping("status/log-out")
     public TiResult<Void> logOut(
         @NotNull(message = "用户信息不能为空")
@@ -119,7 +121,7 @@ public class UserController {
     /**
      * 修改用户密码
      */
-    @PreAuthorize("@perm.hasPerms('system:user:password:modify')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_PASSWORD_MODIFY + "')")
     @PatchMapping("password")
     public TiResult<Void> modifyPassword(@Validated @RequestBody UserModifyPasswordCommand userModifyPasswordCommand) {
         userService.modifyPassword(userModifyPasswordCommand);
@@ -130,7 +132,7 @@ public class UserController {
     /**
      * 重置用户密码
      */
-    @PreAuthorize("@perm.hasPerms('system:user:password:reset')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_PASSWORD_RESET + "')")
     @PatchMapping("password/reset")
     public TiResult<Void> resetPassword(
         @NotNull(message = "用户信息不能为空")
@@ -144,7 +146,7 @@ public class UserController {
     /**
      * 查询用户(分页)
      */
-    @PreAuthorize("@perm.hasPerms('system:user:page')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_PAGE + "')")
     @GetMapping("page")
     public TiResult<TiPageResult<UserDTO>> page(@Validated UserQuery query) {
         return TiResult.ok(userService.page(query));
@@ -154,7 +156,7 @@ public class UserController {
      * 下载导入模板
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:user:import-template:download')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_IMPORT_TEMPLATE_DOWNLOAD + "')")
     @GetMapping("excel-template/download")
     public void excelTemplateDownload() throws IOException {
         userService.excelTemplateDownload();
@@ -166,7 +168,7 @@ public class UserController {
      * @param file 文件
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:user:import')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_IMPORT + "')")
     @PostMapping("excel/import")
     public void importExcel(@RequestPart("file") MultipartFile file) throws IOException {
         userService.importExcel(file);
@@ -176,7 +178,7 @@ public class UserController {
      * 导出用户
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:user:export')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_USER_EXPORT + "')")
     @GetMapping("excel/export")
     public void exportExcel(@Validated UserQuery query) throws IOException {
         userService.exportExcel(query);

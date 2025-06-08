@@ -426,9 +426,9 @@ public class FileInfoService {
     private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<FileInfo> modifyHandle) {
         List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
         List<FileInfo> fileInfos = fileInfoRepository.list(ids);
-        Map<Long, FileInfo> userMap = CollStreamUtil.toIdentityMap(fileInfos, FileInfo::getId);
+        Map<Long, FileInfo> fileInfoMap = CollStreamUtil.toIdentityMap(fileInfos, FileInfo::getId);
         for (VersionModifyCommand modify : modifys) {
-            FileInfo fileInfo = userMap.get(modify.getId());
+            FileInfo fileInfo = fileInfoMap.get(modify.getId());
             TiAssert.isNotNull(fileInfo, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
             fileInfo.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 文件: {}", fileInfo.getFileName()));
             // 修改逻辑

@@ -21,14 +21,14 @@ import top.ticho.rainbow.domain.entity.TaskLog;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.rainbow.infrastructure.common.component.TaskTemplate;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
-import top.ticho.rainbow.infrastructure.common.util.UserUtil;
+import top.ticho.rainbow.infrastructure.common.util.TraceUtil;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.tool.json.util.TiJsonUtil;
 import top.ticho.trace.common.bean.TraceInfo;
 import top.ticho.trace.common.constant.LogConst;
-import top.ticho.trace.common.prop.TraceProperty;
+import top.ticho.trace.common.prop.TiTraceProperty;
 import top.ticho.trace.core.handle.TracePushContext;
-import top.ticho.trace.core.util.TraceUtil;
+import top.ticho.trace.core.util.TiTraceUtil;
 import top.ticho.trace.spring.event.TraceEvent;
 import top.ticho.trace.spring.util.IpUtil;
 
@@ -47,7 +47,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public abstract class AbstracTask<T> extends QuartzJobBean {
     private final Environment environment;
-    private final TraceProperty traceProperty;
+    private final TiTraceProperty tiTraceProperty;
     private final TaskLogRepository taskLogRepository;
 
     public abstract void run(JobExecutionContext context);
@@ -78,11 +78,11 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
         JobDataMap jobDataMap = context.getMergedJobDataMap();
         Date scheduledFireTime = context.getScheduledFireTime();
         JobDetail jobDetail = context.getJobDetail();
-        mdcHandle(jobDataMap);
+        JobKey jobKey = jobDetail.getKey();
+        mdcHandle(jobDataMap, jobKey.toString());
         String taskName = jobDataMap.getString(TaskTemplate.TASK_NAME);
         String taskParam = jobDataMap.getString(TaskTemplate.TASK_PARAM);
         String runTime = DateUtil.format(scheduledFireTime, DatePattern.NORM_DATETIME_FORMAT);
-        JobKey jobKey = jobDetail.getKey();
         String jobClassName = jobDetail.getJobClass().getName();
         int isErr = 0;
         String errorMsg = null;
@@ -131,7 +131,7 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
      */
     private void traceHandle(JobDataMap mergedJobDataMap, long start, long end, long consume) {
         if (!mergedJobDataMap.containsKey(TaskTemplate.TASK_MDC_INFO)) {
-            TraceUtil.complete();
+            TiTraceUtil.complete();
             return;
         }
         TraceInfo traceInfo = TraceInfo.builder()
@@ -151,17 +151,17 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
             .end(end)
             .consume(consume)
             .build();
-        TracePushContext.asyncPushTrace(traceProperty, traceInfo);
+        TracePushContext.asyncPushTrace(tiTraceProperty, traceInfo);
         ApplicationContext applicationContext = SpringUtil.getApplicationContext();
         applicationContext.publishEvent(new TraceEvent(applicationContext, traceInfo));
-        TraceUtil.complete();
+        TiTraceUtil.complete();
     }
 
     /**
      * mdc处理
      */
     @SuppressWarnings("unchecked")
-    private void mdcHandle(JobDataMap mergedJobDataMap) {
+    private void mdcHandle(JobDataMap mergedJobDataMap, String jobKey) {
         Map<String, String> mdcMap;
         if (mergedJobDataMap.containsKey(TaskTemplate.TASK_MDC_INFO)) {
             Object mdcInfo = mergedJobDataMap.get(TaskTemplate.TASK_MDC_INFO);
@@ -173,15 +173,14 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
         if (hasTraceInfo) {
             // mdc参数中本来就有username
             MDC.setContextMap(mdcMap);
-            UserUtil.userTrace(null);
             return;
         }
         String appName = environment.getProperty("spring.application.name");
         String ip = IpUtil.localIp();
         mdcMap.put(LogConst.APP_NAME_KEY, appName);
         mdcMap.put(LogConst.IP_KEY, ip);
-        TraceUtil.prepare(mdcMap);
-        UserUtil.userTrace("自动定时任务");
+        TiTraceUtil.prepare(mdcMap);
+        TraceUtil.trace(jobKey, "自动定时任务");
     }
 
 

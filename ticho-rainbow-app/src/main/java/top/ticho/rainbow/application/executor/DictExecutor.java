@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import top.ticho.rainbow.application.dto.response.DictDTO;
+import top.ticho.rainbow.application.dto.response.DictCacheDTO;
 import top.ticho.rainbow.application.dto.response.DictLabelDTO;
 import top.ticho.rainbow.application.service.DictService;
 
@@ -53,7 +53,7 @@ public class DictExecutor {
         if (StrUtil.isBlank(code)) {
             return Collections.emptyMap();
         }
-        List<DictDTO> list = dictService.list();
+        List<DictCacheDTO> list = dictService.list();
         return convertMap(list, x -> Objects.equals(x.getCode(), code), x -> keyConvert.apply(x.getValue()), DictLabelDTO::getLabel);
     }
 
@@ -82,7 +82,7 @@ public class DictExecutor {
         if (CollUtil.isEmpty(codes)) {
             return Collections.emptyMap();
         }
-        List<DictDTO> list = dictService.list();
+        List<DictCacheDTO> list = dictService.list();
         return convertMap(list, x -> codes.contains(x.getCode()), x -> x.getCode() + x.getValue(), DictLabelDTO::getLabel);
     }
 
@@ -113,7 +113,7 @@ public class DictExecutor {
         if (StrUtil.isBlank(code)) {
             return Collections.emptyMap();
         }
-        List<DictDTO> list = dictService.list();
+        List<DictCacheDTO> list = dictService.list();
         return convertMap(list, x -> Objects.equals(x.getCode(), code), DictLabelDTO::getLabel, x -> valueConvert.apply(x.getValue()));
     }
 
@@ -154,11 +154,11 @@ public class DictExecutor {
         if (CollUtil.isEmpty(codes)) {
             return Collections.emptyMap();
         }
-        List<DictDTO> list = dictService.list();
+        List<DictCacheDTO> list = dictService.list();
         return convertMap(list, x -> codes.contains(x.getCode()), x -> x.getCode() + x.getLabel(), x -> valueConvert.apply(x.getValue()));
     }
 
-    private <T, K> Map<T, K> convertMap(List<DictDTO> list, Predicate<DictDTO> filter, Function<DictLabelDTO, T> keyFunc, Function<DictLabelDTO, K> valueFunc) {
+    private <T, K> Map<T, K> convertMap(List<DictCacheDTO> list, Predicate<DictCacheDTO> filter, Function<DictLabelDTO, T> keyFunc, Function<DictLabelDTO, K> valueFunc) {
         return list
             .stream()
             .filter(filter)

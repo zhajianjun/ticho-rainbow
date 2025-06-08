@@ -15,7 +15,7 @@
   import { BasicForm, useForm } from '@/components/Form/index';
   import { getModalFormColumns } from './dict.data';
   import { modifyDict, saveDict } from '@/api/system/dict';
-  import { DictDTO } from '@/api/system/model/dictModel';
+  import { DictModifyCommand, DictSaveCommand } from '@/api/system/model/dictModel';
 
   export default defineComponent({
     name: 'DictModal',
@@ -52,15 +52,16 @@
 
       async function handleSubmit() {
         try {
-          const values = (await validate()) as DictDTO;
+          const values = await validate();
           setModalProps({ confirmLoading: true });
           if (unref(isUpdate)) {
-            await modifyDict(values);
+            const saves = values as DictModifyCommand;
+            await modifyDict(saves);
           } else {
-            await saveDict(values);
+            const modifys = values as DictSaveCommand;
+            await saveDict(modifys);
           }
           closeModal();
-          // 触发父组件方法
           emit('success');
         } finally {
           setModalProps({ confirmLoading: false });

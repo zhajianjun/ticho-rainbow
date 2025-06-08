@@ -2,6 +2,7 @@ package top.ticho.rainbow.application.service;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.method.HandlerMethod;
@@ -12,7 +13,6 @@ import top.ticho.starter.web.util.TiSpringUtil;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +24,11 @@ import java.util.stream.Collectors;
  * @author zhajianjun
  * @date 2025-04-06 13:40
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PermissionQueryService {
-    private final Map<String, String> MAP = new HashMap<>();
+    private final Map<String, String> MAP = new LinkedHashMap<>();
 
     public List<PermissionDTO> tree() {
         Map<String, String> permsMap = getMap();
@@ -46,7 +47,7 @@ public class PermissionQueryService {
                 List<PermissionDTO> children = perm.getChildren();
                 Optional<PermissionDTO> childOpt = children.stream().filter(x -> Objects.equals(x.getCode(), key)).findFirst();
                 PermissionDTO child;
-                if (!childOpt.isPresent()) {
+                if (childOpt.isEmpty()) {
                     child = new PermissionDTO();
                     child.setName(key);
                     child.setCode(key);
@@ -72,6 +73,7 @@ public class PermissionQueryService {
             .filter(Objects::nonNull)
             .filter(item -> StrUtil.isNotBlank(item.getCode()))
             .filter(item -> StrUtil.isNotBlank(item.getName()))
+            .sorted(Comparator.comparing(PermissionDTO::getCode, Comparator.nullsLast(Comparator.naturalOrder())))
             .collect(Collectors.toMap(PermissionDTO::getCode, PermissionDTO::getName, (v1, v2) -> v1, LinkedHashMap::new));
         MAP.putAll(map);
     }

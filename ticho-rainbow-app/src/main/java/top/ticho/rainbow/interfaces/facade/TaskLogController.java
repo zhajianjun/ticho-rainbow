@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.dto.query.TaskLogQuery;
 import top.ticho.rainbow.application.dto.response.TaskLogDTO;
 import top.ticho.rainbow.application.service.TaskLogService;
+import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
 import top.ticho.starter.web.annotation.TiView;
 
-import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 
 
@@ -30,21 +30,11 @@ import java.io.IOException;
 public class TaskLogController {
     private final TaskLogService taskLogService;
 
-    /**
-     * 查询计划任务日志
-     *
-     * @param id 编号
-     */
-    @PreAuthorize("@perm.hasPerms('system:task-log:find')")
-    @GetMapping
-    public TiResult<TaskLogDTO> find(@NotNull(message = "编号不能为空") Long id) {
-        return TiResult.ok(taskLogService.find(id));
-    }
 
     /**
      * 查询计划任务日志(分页)
      */
-    @PreAuthorize("@perm.hasPerms('system:task-log:page')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_LOG_PAGE + "')")
     @GetMapping("page")
     public TiResult<TiPageResult<TaskLogDTO>> page(@Validated TaskLogQuery query) {
         return TiResult.ok(taskLogService.page(query));
@@ -54,7 +44,7 @@ public class TaskLogController {
      * 导出计划任务日志
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:task-log:export')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_LOG_EXPORT + "')")
     @GetMapping("excel/export")
     public void exportExcel(@Validated TaskLogQuery query) throws IOException {
         taskLogService.exportExcel(query);

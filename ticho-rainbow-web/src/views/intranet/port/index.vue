@@ -187,16 +187,17 @@
         const { createMessage } = useMessage();
         const checked = record.status === 1;
         let oprate: Promise<any>;
-        let messagePrefix: string;
+        const messagePrefix = getDictLabelByCodeAndValue('commonStatus', checked ? 0 : 1);
         record.pendingStatus = true;
 
         try {
+          const param = {
+            id: record.id,
+            version: record.version,
+          } as VersionModifyCommand;
           if (checked) {
-            messagePrefix = '禁用';
-            const param = { ...record } as VersionModifyCommand;
             oprate = disablePort([param]);
           } else {
-            messagePrefix = '启用';
             if (record.expireAt === null || record.expireAt === '') {
               createMessage.error(`端口：[` + record.port + `]过期日期不能为空`);
               record.pendingStatus = false;
@@ -207,11 +208,9 @@
               record.pendingStatus = false;
               return;
             }
-            const param = { ...record } as VersionModifyCommand;
             oprate = enablePort([param]);
           }
         } catch (error) {
-          createMessage.error('操作失败：参数构造异常');
           record.pendingStatus = false;
           return;
         }
@@ -220,10 +219,10 @@
             // 仅在请求成功后更新状态
             record.status = checked ? 0 : 1;
             createMessage.success(messagePrefix + `成功`);
+            reload();
           })
           .finally(() => {
             record.pendingStatus = false;
-            reload();
           });
       }
 

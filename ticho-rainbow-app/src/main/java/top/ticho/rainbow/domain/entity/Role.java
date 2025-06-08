@@ -45,6 +45,7 @@ public class Role implements Entity {
     public void modify(RoleModifyVO modifyVO) {
         this.name = modifyVO.name();
         this.remark = modifyVO.remark();
+        this.version = modifyVO.version();
     }
 
     public boolean isEnable() {

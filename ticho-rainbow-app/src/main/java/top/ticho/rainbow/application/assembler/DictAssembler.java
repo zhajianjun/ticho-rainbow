@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import top.ticho.rainbow.application.dto.command.DictModifyCommand;
 import top.ticho.rainbow.application.dto.command.DictSaveCommand;
-import top.ticho.rainbow.application.dto.response.DictDTO;
+import top.ticho.rainbow.application.dto.response.DictCacheDTO;
 import top.ticho.rainbow.domain.entity.Dict;
 import top.ticho.rainbow.domain.entity.vo.DictModifyVO;
 import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
@@ -28,14 +28,14 @@ public interface DictAssembler {
     @Mapping(target = "createTime", ignore = true)
     // 系统字典默认为启用状态
     @Mapping(target = "status", expression =
-        "java(Objects.equals(YesOrNo.YES.code(), cmd.getIsSys()) ?  CommonStatus.ENABLE.code() : cmd.getStatus())"
+        "java(Objects.equals(YesOrNo.YES.code(), cmd.getIsSys()) ?  CommonStatus.ENABLE.code() : CommonStatus.DISABLE.code())"
     )
     Dict toEntity(DictSaveCommand cmd);
 
     DictModifyVO toVO(DictModifyCommand dictModifyCommand);
 
     @Mapping(target = "details", ignore = true)
-    DictDTO toDTO(Dict entity);
+    DictCacheDTO toDTO(Dict entity);
 
 
 }

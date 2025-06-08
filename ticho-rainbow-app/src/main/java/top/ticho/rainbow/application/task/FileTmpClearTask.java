@@ -7,7 +7,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.rainbow.infrastructure.common.prop.FileProperty;
-import top.ticho.trace.common.prop.TraceProperty;
+import top.ticho.trace.common.prop.TiTraceProperty;
 
 import java.io.File;
 
@@ -23,8 +23,8 @@ public class FileTmpClearTask extends AbstracTask<String> {
 
     private final FileProperty fileProperty;
 
-    public FileTmpClearTask(Environment environment, TraceProperty traceProperty, TaskLogRepository taskLogRepository, FileProperty fileProperty) {
-        super(environment, traceProperty, taskLogRepository);
+    public FileTmpClearTask(Environment environment, TiTraceProperty tiTraceProperty, TaskLogRepository taskLogRepository, FileProperty fileProperty) {
+        super(environment, tiTraceProperty, taskLogRepository);
         this.fileProperty = fileProperty;
     }
 

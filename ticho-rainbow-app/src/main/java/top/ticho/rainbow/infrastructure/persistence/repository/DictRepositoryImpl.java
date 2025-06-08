@@ -49,8 +49,18 @@ public class DictRepositoryImpl extends TiRepositoryImpl<DictMapper, DictPO> imp
     }
 
     @Override
+    public boolean modifyBatch(List<Dict> roles) {
+        return super.updateBatchById(dictConverter.toPO(roles));
+    }
+
+    @Override
     public Dict find(Long id) {
         return dictConverter.toEntity(super.getById(id));
+    }
+
+    @Override
+    public List<Dict> list(List<Long> ids) {
+        return dictConverter.toEntity(listByIds(ids));
     }
 
     @Override
@@ -58,7 +68,7 @@ public class DictRepositoryImpl extends TiRepositoryImpl<DictMapper, DictPO> imp
         LambdaQueryWrapper<DictPO> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(DictPO::getStatus, CommonStatus.ENABLE.code());
         wrapper.orderByDesc(DictPO::getId);
-        return dictConverter.toEntitys(list(wrapper));
+        return dictConverter.toEntity(list(wrapper));
     }
 
     @Override

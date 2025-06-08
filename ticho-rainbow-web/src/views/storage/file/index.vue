@@ -21,16 +21,25 @@
           导出
         </a-button>
       </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'status'">
+          <Switch
+            :checked-children="getDictLabelByCodeAndValue('commonStatus', 1)"
+            :un-checked-children="getDictLabelByCodeAndValue('commonStatus', 0)"
+            :checked="record.status === 1"
+            :loading="record.pendingStatus"
+            @change="handleSwitchChange(record)"
+          />
+        </template>
+      </template>
       <template #action="{ record }">
         <TableAction
           :actions="[
             {
-              // icon: 'ant-design:download-outlined',
+              icon: 'ant-design:download-outlined',
               onClick: handleDownload.bind(null, record),
-              label: '下载',
               tooltip: '下载',
               color: 'success',
-              type: 'primary',
               auth: 'FileDownload',
               disabled: record.status !== 1,
               ifShow: record.status !== 3,
@@ -39,38 +48,14 @@
               // icon: 'ant-design:upload-outlined',
               onClick: openUploadModalProxy.bind(null, record),
               color: 'success',
-              type: 'primary',
-              label: '续传',
               tooltip: '断点续传',
               auth: 'FileContinueUpload',
               ifShow: record.status === 3,
             },
             {
-              onClick: handleEnable.bind(null, record),
-              label: '启用',
-              type: 'primary',
-              color: 'success',
-              tooltip: '启用',
-              auth: 'FileEnable',
-              disabled: record.status !== 2,
-            },
-            {
-              onClick: handleDisable.bind(null, record),
-              label: '停用',
-              tooltip: '停用',
-              color: 'warning',
-              type: 'primary',
-              auth: 'FileDisable',
-              disabled: record.status !== 1,
-            },
-          ]"
-          :dropDownActions="[
-            {
-              icon: 'ant-design:delete-outlined',
+              icon: 'ant-design:stop-outlined',
               onClick: handleCancel.bind(null, record),
-              label: '作废',
               color: 'error',
-              type: 'primary',
               tooltip: '作废',
               auth: 'FileCancel',
               disabled: record.status === 99 || record.status === 3,
@@ -78,8 +63,6 @@
             {
               icon: 'ant-design:delete-filled',
               color: 'error',
-              type: 'primary',
-              label: '删除',
               popConfirm: {
                 title: '是否确认删除',
                 confirm: handleDelete.bind(null, record),
@@ -124,10 +107,19 @@
   import { FileItem } from '@/components/Upload/src/types/typing';
   import { FileInfoQuery } from '@/api/storage/model/fileInfoModel';
   import { VersionModifyCommand } from '@/api/system/model/baseModel';
+  import { getDictLabelByCodeAndValue } from '@/store/modules/dict';
+  import { Switch } from 'ant-design-vue';
 
   export default defineComponent({
     name: 'FileInfo',
-    components: { CustomUploadModal, CustomUpload, BasicTable, FileInfoModal, TableAction },
+    components: {
+      Switch,
+      CustomUploadModal,
+      CustomUpload,
+      BasicTable,
+      FileInfoModal,
+      TableAction,
+    },
     setup() {
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('FileSelect');
@@ -224,26 +216,43 @@
         });
       }
 
-      /** 启用 */
-      function handleEnable(record: Recordable) {
-        const param = { ...record } as VersionModifyCommand;
-        enableFileInfo([param]).then(() => {
-          reload();
-        });
-      }
-
-      /** 停用 */
-      function handleDisable(record: Recordable) {
-        const param = { ...record } as VersionModifyCommand;
-        disableFileInfo([param]).then(() => {
-          reload();
-        });
+      function handleSwitchChange(record: Recordable) {
+        if (!record || typeof record.status !== 'number') {
+          console.warn('Invalid record provided to handleSwitchChange');
+          return;
+        }
+        const { createMessage } = useMessage();
+        const checked = record.status === 1;
+        let oprate: Promise<any>;
+        const messagePrefix = getDictLabelByCodeAndValue('commonStatus', checked ? 0 : 1);
+        record.pendingStatus = true;
+        try {
+          const param = {
+            id: record.id,
+            version: record.version,
+          } as VersionModifyCommand;
+          oprate = checked ? disableFileInfo([param]) : enableFileInfo([param]);
+        } catch (error) {
+          record.pendingStatus = false;
+          return;
+        }
+        oprate
+          .then(() => {
+            // 仅在请求成功后更新状态
+            record.status = checked ? 0 : 1;
+            createMessage.success(messagePrefix + `成功`);
+            reload();
+          })
+          .finally(() => {
+            record.pendingStatus = false;
+          });
       }
 
       /** 作废 */
       function handleCancel(record: Recordable) {
         const param = { ...record } as VersionModifyCommand;
         cancelFileInfo([param]).then(() => {
+          createMessage.success('作废成功');
           reload();
         });
       }
@@ -280,8 +289,7 @@
         handleSave,
         handleEdit,
         handleDelete,
-        handleEnable,
-        handleDisable,
+        handleSwitchChange,
         handleCancel,
         handleSuccess,
         hasPermission,
@@ -292,5 +300,6 @@
         handleExport,
       };
     },
+    methods: { getDictLabelByCodeAndValue },
   });
 </script>

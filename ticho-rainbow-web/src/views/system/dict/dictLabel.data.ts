@@ -1,11 +1,7 @@
 import { BasicColumn, FormSchema } from '@/components/Table';
-import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
 import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
 import Icon from '@/components/Icon/Icon.vue';
-import { isNull } from 'xe-utils';
-
-const commonStatus = 'commonStatus';
 
 export function getTableColumns(): BasicColumn[] {
   return [
@@ -67,13 +63,6 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'status',
       resizable: true,
       width: 50,
-      customRender({ text }) {
-        const dict = getDictByCodeAndValue(commonStatus, text);
-        if (text === undefined || isNull(text) || isNull(dict)) {
-          return text;
-        }
-        return h(Tag, { color: dict.color }, () => dict.label);
-      },
     },
     {
       title: '备注信息',
@@ -116,9 +105,6 @@ export function getModalFormColumns(): FormSchema[] {
         span: 24,
       },
       required: true,
-      dynamicDisabled: ({ values }) => {
-        return !!values?.id;
-      },
     },
     {
       field: `label`,
@@ -174,19 +160,6 @@ export function getModalFormColumns(): FormSchema[] {
       colProps: {
         span: 24,
       },
-    },
-    {
-      field: `status`,
-      label: `状态`,
-      component: 'RadioButtonGroup',
-      defaultValue: 1,
-      componentProps: {
-        options: getDictByCode(commonStatus),
-      },
-      colProps: {
-        span: 24,
-      },
-      required: true,
     },
     {
       field: `remark`,

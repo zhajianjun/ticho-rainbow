@@ -46,8 +46,18 @@ public class DictLabelRepositoryImpl extends TiRepositoryImpl<DictLabelMapper, D
     }
 
     @Override
+    public boolean modifyBatch(List<DictLabel> dictLabels) {
+        return super.updateBatchById(dictLabelConverter.toPo(dictLabels));
+    }
+
+    @Override
     public DictLabel find(Long id) {
         return dictLabelConverter.toEntity(super.getById(id));
+    }
+
+    @Override
+    public List<DictLabel> list(List<Long> ids) {
+        return dictLabelConverter.toEntity(listByIds(ids));
     }
 
     public List<DictLabel> listEnable() {
@@ -55,7 +65,7 @@ public class DictLabelRepositoryImpl extends TiRepositoryImpl<DictLabelMapper, D
         wrapper.eq(DictLabelPO::getStatus, CommonStatus.ENABLE.code());
         wrapper.orderByAsc(DictLabelPO::getSort);
         wrapper.orderByDesc(DictLabelPO::getId);
-        return dictLabelConverter.toEntitys(list(wrapper));
+        return dictLabelConverter.toEntity(list(wrapper));
     }
 
     @Override
@@ -67,7 +77,7 @@ public class DictLabelRepositoryImpl extends TiRepositoryImpl<DictLabelMapper, D
         wrapper.eq(DictLabelPO::getCode, code);
         wrapper.orderByAsc(DictLabelPO::getSort);
         wrapper.orderByDesc(DictLabelPO::getId);
-        return dictLabelConverter.toEntitys(list(wrapper));
+        return dictLabelConverter.toEntity(list(wrapper));
     }
 
     @Override

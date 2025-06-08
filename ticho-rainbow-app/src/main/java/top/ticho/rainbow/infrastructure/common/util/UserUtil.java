@@ -1,20 +1,15 @@
 package top.ticho.rainbow.infrastructure.common.util;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.slf4j.MDC;
 import top.ticho.rainbow.application.dto.SecurityUser;
 import top.ticho.rainbow.domain.entity.UserHelper;
-import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.rainbow.infrastructure.common.constant.SecurityConst;
 import top.ticho.starter.security.util.TiUserUtil;
-import top.ticho.trace.core.util.BeetlUtil;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * @author zhajianjun
@@ -85,20 +80,6 @@ public class UserUtil {
         String username = userHelper.getUsername();
         String loginUsername = loginUser.getUsername();
         return Objects.equals(username, loginUsername);
-    }
-
-    public static void userTrace() {
-        userTrace(UserUtil.getCurrentUsername());
-    }
-
-    public static void userTrace(String username) {
-        if (Objects.isNull(username)) {
-            return;
-        }
-        MDC.put(CommConst.USERNAME_KEY, username);
-        String traceKey = Optional.ofNullable(MDC.get("trace")).orElse(StrUtil.EMPTY) + ".${username!}";
-        String trace = BeetlUtil.render(traceKey, MDC.getCopyOfContextMap());
-        MDC.put("trace", trace);
     }
 
 }

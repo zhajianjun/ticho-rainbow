@@ -10,8 +10,6 @@ import top.ticho.rainbow.application.dto.query.OpLogQuery;
 import top.ticho.rainbow.application.dto.response.OpLogDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
 import top.ticho.rainbow.application.repository.OpLogAppRepository;
-import top.ticho.rainbow.domain.entity.OpLog;
-import top.ticho.rainbow.domain.repository.OpLogRepository;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
 import top.ticho.starter.view.core.TiPageResult;
@@ -33,16 +31,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OpLogService {
-    private final OpLogRepository opLogRepository;
     private final OpLogAppRepository opLogAppRepository;
     private final OpLogAssembler opLogAssembler;
     private final DictExecutor dictExecutor;
     private final HttpServletResponse response;
-
-    public OpLogDTO find(Long id) {
-        OpLog opLog = opLogRepository.find(id);
-        return opLogAssembler.toDTO(opLog);
-    }
 
     public TiPageResult<OpLogDTO> page(OpLogQuery query) {
         return opLogAppRepository.page(query);

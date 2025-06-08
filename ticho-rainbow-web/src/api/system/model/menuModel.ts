@@ -5,7 +5,7 @@ export type Component<T = any> =
   | (() => Promise<typeof import('*.vue')>)
   | (() => Promise<T>);
 
-export interface MenuDtlDTO {
+export interface MenuDTO {
   /** 菜单id */
   id: string;
   /** 父级id */
@@ -45,7 +45,7 @@ export interface MenuDtlDTO {
   /** 是否选中;true-选中,false-未选中 */
   checkbox: number;
   /** 子级 */
-  children: MenuDtlDTO[];
+  children: MenuDTO[];
 }
 
-export type MenuDtlModule = MenuDtlDTO[];
+export type MenuModule = MenuDTO[];

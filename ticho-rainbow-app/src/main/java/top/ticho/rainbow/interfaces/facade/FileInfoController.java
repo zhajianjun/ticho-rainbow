@@ -17,6 +17,7 @@ import top.ticho.rainbow.application.dto.query.FileInfoQuery;
 import top.ticho.rainbow.application.dto.response.ChunkCacheDTO;
 import top.ticho.rainbow.application.dto.response.FileInfoDTO;
 import top.ticho.rainbow.application.service.FileInfoService;
+import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.security.annotation.IgnoreJwtCheck;
 import top.ticho.starter.view.core.TiPageResult;
@@ -46,7 +47,7 @@ public class FileInfoController {
     /**
      * 上传文件
      */
-    @PreAuthorize("@perm.hasPerms('storage:file:upload')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_UPLOAD + "')")
     @PostMapping("upload")
     public TiResult<FileInfoDTO> upload(@Validated FileUploadCommand fileUploadCommand) {
         return TiResult.ok(fileInfoService.upload(fileUploadCommand));
@@ -55,7 +56,7 @@ public class FileInfoController {
     /**
      * 上传分片文件
      */
-    @PreAuthorize("@file_perm.hasPerms('storage:file:upload-chunk')")
+    @PreAuthorize("@file_perm.hasPerms('" + ApiConst.STORAGE_FILE_UPLOAD_CHUNK + "')")
     @PostMapping("chunk/upload")
     public TiResult<ChunkCacheDTO> uploadChunk(@Validated FileChunkUploadCommand fileChunkUploadCommand) {
         return TiResult.ok(fileInfoService.uploadChunk(fileChunkUploadCommand));
@@ -66,7 +67,7 @@ public class FileInfoController {
      *
      * @param chunkId 分片id
      */
-    @PreAuthorize("@perm.hasPerms('storage:file:compose-chunk')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_COMPOSE_CHUNK + "')")
     @PostMapping("chunk/compose")
     public TiResult<FileInfoDTO> composeChunk(@NotBlank(message = "分片id不能为空") String chunkId) {
         return TiResult.ok(fileInfoService.composeChunk(chunkId));
@@ -75,7 +76,7 @@ public class FileInfoController {
     /**
      * 删除文件
      */
-    @PreAuthorize("@perm.hasPerms('storage:file:remove')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_REMOVE + "')")
     @DeleteMapping
     public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
         fileInfoService.remove(command);
@@ -85,7 +86,7 @@ public class FileInfoController {
     /**
      * 启用文件
      */
-    @PreAuthorize("@perm.hasPerms('storage:file:enable')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_ENABLE + "')")
     @PatchMapping("status/enable")
     public TiResult<Void> enable(
         @NotNull(message = "文件信息不能为空")
@@ -99,7 +100,7 @@ public class FileInfoController {
     /**
      * 停用文件
      */
-    @PreAuthorize("@perm.hasPerms('storage:file:disable')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_DISABLE + "')")
     @PatchMapping("status/disable")
     public TiResult<Void> disable(
         @NotNull(message = "文件信息不能为空")
@@ -113,7 +114,7 @@ public class FileInfoController {
     /**
      * 作废文件
      */
-    @PreAuthorize("@perm.hasPerms('storage:file:cancel')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_CANCEL + "')")
     @PatchMapping("status/cancel")
     public TiResult<Void> cancel(
         @NotNull(message = "文件信息不能为空")
@@ -127,7 +128,7 @@ public class FileInfoController {
     /**
      * 查询文件(分页)
      */
-    @PreAuthorize("@perm.hasPerms('storage:file:page')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_PAGE + "')")
     @GetMapping("page")
     public TiResult<TiPageResult<FileInfoDTO>> page(@Validated FileInfoQuery query) {
         return TiResult.ok(fileInfoService.page(query));
@@ -152,7 +153,7 @@ public class FileInfoController {
      * @param expire 过期时间， <=7天，默认30分钟，单位：秒
      * @param limit  是否限制 true 链接只能使用一次，false 过期时间内不限制
      */
-    @PreAuthorize("@perm.hasPerms('storage:file:presigned')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_PRESIGNED + "')")
     @GetMapping("presigned")
     public TiResult<String> presigned(Long id, Long expire, Boolean limit) {
         return TiResult.ok(fileInfoService.presigned(id, expire, limit));
@@ -162,7 +163,7 @@ public class FileInfoController {
      * 导出文件信息
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('storage:file:export')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.STORAGE_FILE_EXPORT + "')")
     @GetMapping("excel/export")
     public void exportExcel(@Validated FileInfoQuery query) throws IOException {
         fileInfoService.exportExcel(query);

@@ -26,7 +26,7 @@
   import { BasicForm, useForm } from '@/components/Form/index';
   import { getModalFormColumns } from './dictLabel.data';
   import { modifyDictLabel, saveDictLabel } from '@/api/system/dictLabel';
-  import { DictLabelDTO } from '@/api/system/model/dictLabelModel';
+  import { DictLabelModifyCommand, DictLabelSaveCommand } from '@/api/system/model/dictLabelModel';
 
   export default defineComponent({
     name: 'DictLabelModal',
@@ -34,7 +34,8 @@
     emits: ['success', 'register'],
     setup(_, { emit }) {
       const isUpdate = ref(true);
-      const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
+      const isSys = ref<boolean>(false);
+      const [registerForm, { setFieldsValue, resetFields, validate, updateSchema }] = useForm({
         labelWidth: 100,
         baseColProps: { span: 24 },
         schemas: getModalFormColumns(),
@@ -48,24 +49,42 @@
         await resetFields();
         setModalProps({ confirmLoading: false });
         isUpdate.value = !!data?.isUpdate;
-        await setFieldsValue({
-          ...data.record,
-        });
+        isSys.value = !!data?.isSys;
+        if (unref(isUpdate)) {
+          await updateSchema([
+            {
+              field: 'code',
+              componentProps: { disabled: true },
+            },
+            {
+              field: 'label',
+              componentProps: { disabled: unref(isSys) },
+            },
+            {
+              field: 'value',
+              componentProps: { disabled: unref(isSys) },
+            },
+          ]);
+          await setFieldsValue({
+            ...data.record,
+          });
+        }
       });
 
-      const getTitle = computed(() => (!unref(isUpdate) ? '新增字典' : '编辑字典'));
+      const getTitle = computed(() => (!unref(isUpdate) ? '新增字典标签' : '编辑字典标签'));
 
       async function handleSubmit() {
         try {
-          const values = (await validate()) as DictLabelDTO;
+          const values = await validate();
           setModalProps({ confirmLoading: true });
           if (unref(isUpdate)) {
-            await modifyDictLabel(values);
+            const saves = values as DictLabelModifyCommand;
+            await modifyDictLabel(saves);
           } else {
-            await saveDictLabel(values);
+            const modifys = values as DictLabelSaveCommand;
+            await saveDictLabel(modifys);
           }
           closeModal();
-          // 触发父组件方法
           emit('success');
         } finally {
           setModalProps({ confirmLoading: false });

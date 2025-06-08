@@ -46,13 +46,6 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'status',
       resizable: true,
       width: 60,
-      customRender({ text }) {
-        const dict = getDictByCodeAndValue(commonStatus, text);
-        if (text === undefined || isNull(text) || isNull(dict)) {
-          return text;
-        }
-        return h(Tag, { color: dict.color }, () => dict.label);
-      },
     },
     {
       title: '备注信息',
@@ -183,19 +176,6 @@ export function getModalFormColumns(): FormSchema[] {
       componentProps: {
         options: getDictByCode(yesOrNo),
         placeholder: '是否系统字典',
-      },
-      colProps: {
-        span: 24,
-      },
-      required: true,
-    },
-    {
-      field: `status`,
-      label: `状态`,
-      component: 'RadioButtonGroup',
-      defaultValue: 1,
-      componentProps: {
-        options: getDictByCode(commonStatus),
       },
       colProps: {
         span: 24,

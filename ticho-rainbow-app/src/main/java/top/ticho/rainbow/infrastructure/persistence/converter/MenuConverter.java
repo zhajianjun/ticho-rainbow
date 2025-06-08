@@ -15,9 +15,12 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface MenuConverter {
 
-    List<Menu> toEntitys(List<MenuPO> menuPOS);
+    List<Menu> toEntity(List<MenuPO> menuPOS);
 
     Menu toEntity(MenuPO one);
 
     MenuPO toPo(Menu menu);
+
+    List<MenuPO> toPo(List<Menu> menus);
+
 }

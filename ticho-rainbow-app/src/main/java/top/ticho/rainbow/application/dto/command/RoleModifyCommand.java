@@ -21,9 +21,6 @@ public class RoleModifyCommand {
     /** 角色名称 */
     @NotBlank(message = "角色名称不能为空")
     private String name;
-    /** 状态;1-启用,0-禁用 */
-    @NotNull(message = "角色状态不能为空")
-    private Integer status;
     /** 备注信息 */
     private String remark;
     /** 版本号 */

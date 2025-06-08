@@ -5,7 +5,6 @@ import Icon from '@/components/Icon/Icon.vue';
 import { getDictByCode, getDictByCodeAndValue } from '@/store/modules/dict';
 import { isNull } from 'xe-utils';
 
-const commonStatus = 'commonStatus';
 const yesOrNo = 'yesOrNo';
 const menuType = 'menuType';
 
@@ -63,19 +62,12 @@ export const columns: BasicColumn[] = [
   {
     title: '状态',
     dataIndex: 'status',
-    width: 80,
-    customRender({ text }) {
-      const dict = getDictByCodeAndValue(commonStatus, text);
-      if (text === undefined || isNull(text) || isNull(dict)) {
-        return text;
-      }
-      return h(Tag, { color: dict.color }, () => dict.label);
-    },
+    width: 100,
   },
   {
     title: '创建时间',
     dataIndex: 'createTime',
-    width: 180,
+    width: 160,
   },
 ];
 
@@ -176,15 +168,6 @@ export const formSchema: FormSchema[] = [
     label: '权限标识',
     ifShow: ({ values }) => isButton(values.type),
     slot: 'permsSlot',
-  },
-  {
-    field: 'status',
-    label: '状态',
-    component: 'RadioButtonGroup',
-    defaultValue: 1,
-    componentProps: {
-      options: getDictByCode(commonStatus),
-    },
   },
   {
     field: 'extFlag',

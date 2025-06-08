@@ -89,13 +89,6 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'status',
       resizable: true,
       width: 40,
-      customRender({ text }) {
-        const dict = getDictByCodeAndValue(fileStatus, text);
-        if (text === undefined || isNull(text) || isNull(dict)) {
-          return text;
-        }
-        return h(Tag, { color: dict.color }, () => dict.label);
-      },
     },
     {
       title: '备注信息',

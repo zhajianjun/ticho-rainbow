@@ -5,7 +5,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.service.SseHandle;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
-import top.ticho.trace.common.prop.TraceProperty;
+import top.ticho.trace.common.prop.TiTraceProperty;
 
 /**
  * sse心跳
@@ -18,8 +18,8 @@ public class SseHeatBeatTask extends AbstracTask<String> {
 
     private final SseHandle sseHandle;
 
-    public SseHeatBeatTask(Environment environment, TraceProperty traceProperty, TaskLogRepository taskLogRepository, SseHandle sseHandle) {
-        super(environment, traceProperty, taskLogRepository);
+    public SseHeatBeatTask(Environment environment, TiTraceProperty tiTraceProperty, TaskLogRepository taskLogRepository, SseHandle sseHandle) {
+        super(environment, tiTraceProperty, taskLogRepository);
         this.sseHandle = sseHandle;
     }
 

@@ -18,6 +18,7 @@ import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.query.TaskQuery;
 import top.ticho.rainbow.application.dto.response.TaskDTO;
 import top.ticho.rainbow.application.service.TaskService;
+import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
@@ -45,7 +46,7 @@ public class TaskController {
     /**
      * 保存计划任务
      */
-    @PreAuthorize("@perm.hasPerms('system:task:save')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_SAVE + "')")
     @PostMapping
     public TiResult<Void> save(@Validated @RequestBody TaskSaveCommand taskSaveCommand) {
         taskService.save(taskSaveCommand);
@@ -55,7 +56,7 @@ public class TaskController {
     /**
      * 删除计划任务
      */
-    @PreAuthorize("@perm.hasPerms('system:task:remove')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_REMOVE + "')")
     @DeleteMapping
     public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
         taskService.remove(command);
@@ -65,7 +66,7 @@ public class TaskController {
     /**
      * 修改计划任务
      */
-    @PreAuthorize("@perm.hasPerms('system:task:modify')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_MODIFY + "')")
     @PutMapping
     public TiResult<Void> modify(@Validated @RequestBody TaskModifyCommand taskModifyCommand) {
         taskService.modify(taskModifyCommand);
@@ -73,9 +74,9 @@ public class TaskController {
     }
 
     /**
-     * 暂停计划任务
+     * 启用计划任务
      */
-    @PreAuthorize("@perm.hasPerms('system:task:enable')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_ENABLE + "')")
     @PatchMapping("status/enable")
     public TiResult<Void> enable(
         @NotNull(message = "角色信息不能为空")
@@ -87,9 +88,9 @@ public class TaskController {
     }
 
     /**
-     * 恢复计划任务
+     * 禁用计划任务
      */
-    @PreAuthorize("@perm.hasPerms('system:task:disable')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_DISABLE + "')")
     @PatchMapping("status/disable")
     public TiResult<Void> disable(
         @NotNull(message = "角色信息不能为空")
@@ -103,7 +104,7 @@ public class TaskController {
     /**
      * 执行一次计划任务
      */
-    @PreAuthorize("@perm.hasPerms('system:task:run-once')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_RUN_ONCE + "')")
     @PostMapping("run-once")
     public TiResult<Void> runOnce(@Validated @RequestBody TaskRunOnceCommand taskRunOnceCommand) {
         taskService.runOnce(taskRunOnceCommand);
@@ -116,27 +117,16 @@ public class TaskController {
      * @param cronExpression cron表达式
      * @param num            查询数量
      */
-    @PreAuthorize("@perm.hasPerms('system:task:recent-cron-time')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_RECENT_CRON_TIME + "')")
     @GetMapping("recent-cron-time")
     public TiResult<List<String>> recentCronTime(String cronExpression, Integer num) {
         return TiResult.ok(taskService.recentCronTime(cronExpression, num));
     }
 
     /**
-     * 查询计划任务
-     *
-     * @param id 编号
-     */
-    @PreAuthorize("@perm.hasPerms('system:task:find')")
-    @GetMapping()
-    public TiResult<TaskDTO> find(@NotNull(message = "编号不能为空") Long id) {
-        return TiResult.ok(taskService.find(id));
-    }
-
-    /**
      * 查询计划任务(分页)
      */
-    @PreAuthorize("@perm.hasPerms('system:task:page')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_PAGE + "')")
     @GetMapping("page")
     public TiResult<TiPageResult<TaskDTO>> page(@Validated TaskQuery query) {
         return TiResult.ok(taskService.page(query));
@@ -145,7 +135,7 @@ public class TaskController {
     /**
      * 查询所有计划任务
      */
-    @PreAuthorize("@perm.hasPerms('system:task:all')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_ALL + "')")
     @GetMapping("all")
     public TiResult<List<TaskDTO>> all() {
         return TiResult.ok(taskService.all());
@@ -155,7 +145,7 @@ public class TaskController {
      * 导出计划任务
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:task:export')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_TASK_EXPORT + "')")
     @GetMapping("excel/export")
     public void exportExcel(@Validated TaskQuery query) throws IOException {
         taskService.exportExcel(query);

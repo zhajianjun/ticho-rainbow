@@ -81,6 +81,7 @@ public class User implements Entity, UserHelper {
         this.email = modifyVo.email();
         this.mobile = modifyVo.mobile();
         this.remark = modifyVo.remark();
+        this.version = modifyVo.version();
     }
 
     public void modifyPassword(String password) {

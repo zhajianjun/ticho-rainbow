@@ -19,7 +19,11 @@ public interface DictRepository {
 
     boolean modify(Dict dict);
 
+    boolean modifyBatch(List<Dict> roles);
+
     Dict find(Long id);
+
+    List<Dict> list(List<Long> ids);
 
     /**
      * 查询启用的字典列表

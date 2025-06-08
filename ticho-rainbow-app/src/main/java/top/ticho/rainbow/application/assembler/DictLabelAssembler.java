@@ -8,6 +8,7 @@ import top.ticho.rainbow.application.dto.excel.DictExcelExport;
 import top.ticho.rainbow.application.dto.response.DictLabelDTO;
 import top.ticho.rainbow.domain.entity.DictLabel;
 import top.ticho.rainbow.domain.entity.vo.DictLabelModifyVO;
+import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.starter.web.util.TiIdUtil;
 
 /**
@@ -16,10 +17,11 @@ import top.ticho.starter.web.util.TiIdUtil;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-@Mapper(componentModel = "spring", imports = {TiIdUtil.class})
+@Mapper(componentModel = "spring", imports = {TiIdUtil.class, CommonStatus.class})
 public interface DictLabelAssembler {
 
     @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
+    @Mapping(target = "status", expression = "java(CommonStatus.DISABLE.code())")
     @Mapping(target = "version", ignore = true)
     @Mapping(target = "createTime", ignore = true)
     @Mapping(target = "createBy", ignore = true)

@@ -2,7 +2,8 @@ import { defHttp } from '@/utils/http/axios';
 import {
   RoleDtlQuery,
   RoleDTO,
-  RoleMenuDtlDTO,
+  RoleMenuDTO,
+  RoleModifyCommand,
   RoleQuery,
   RoleSaveCommand,
 } from '@/api/system/model/roleModel';
@@ -34,6 +35,13 @@ export function saveRole(params: RoleSaveCommand) {
   );
 }
 
+export function modifyRole(params: RoleModifyCommand) {
+  return defHttp.put<any>(
+    { url: Api.Role, params },
+    { successMessageMode: 'message', errorMessageMode: 'message' },
+  );
+}
+
 export function delRole(params: VersionModifyCommand) {
   return defHttp.delete<any>(
     { url: Api.Role, params },
@@ -50,7 +58,7 @@ export function disableRole(params: VersionModifyCommand[]) {
 }
 
 export function listRoleMenu(params?: RoleDtlQuery) {
-  return defHttp.get<RoleMenuDtlDTO>(
+  return defHttp.get<RoleMenuDTO>(
     { url: Api.ListRoleMenu, params },
     { errorMessageMode: 'message' },
   );

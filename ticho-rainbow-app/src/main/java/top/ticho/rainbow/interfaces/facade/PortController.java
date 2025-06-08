@@ -17,6 +17,7 @@ import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.query.PortQuery;
 import top.ticho.rainbow.application.dto.response.PortDTO;
 import top.ticho.rainbow.application.service.PortService;
+import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
@@ -43,7 +44,7 @@ public class PortController {
     /**
      * 保存端口
      */
-    @PreAuthorize("@perm.hasPerms('intranet:port:save')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_PORT_SAVE + "')")
     @PostMapping
     public TiResult<Void> save(@Validated @RequestBody PortSaveCommand portSaveCommand) {
         portService.save(portSaveCommand);
@@ -53,7 +54,7 @@ public class PortController {
     /**
      * 删除端口
      */
-    @PreAuthorize("@perm.hasPerms('intranet:port:remove')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_PORT_REMOVE + "')")
     @DeleteMapping
     public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
         portService.remove(command);
@@ -63,7 +64,7 @@ public class PortController {
     /**
      * 修改端口
      */
-    @PreAuthorize("@perm.hasPerms('intranet:port:modify')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_PORT_MODIFY + "')")
     @PutMapping
     public TiResult<Void> modify(@Validated @RequestBody PortModifyfCommand portModifyfCommand) {
         portService.modify(portModifyfCommand);
@@ -73,7 +74,7 @@ public class PortController {
     /**
      * 启用端口
      */
-    @PreAuthorize("@perm.hasPerms('intranet:port:enable')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_PORT_ENABLE + "')")
     @PatchMapping("status/enable")
     public TiResult<Void> enable(
         @NotNull(message = "端口信息不能为空")
@@ -87,7 +88,7 @@ public class PortController {
     /**
      * 禁用端口
      */
-    @PreAuthorize("@perm.hasPerms('intranet:port:disable')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_PORT_DISABLE + "')")
     @PatchMapping("status/disable")
     public TiResult<Void> disable(
         @NotNull(message = "端口信息不能为空")
@@ -102,7 +103,7 @@ public class PortController {
     /**
      * 查询端口(分页)
      */
-    @PreAuthorize("@perm.hasPerms('intranet:port:page')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_PORT_PAGE + "')")
     @GetMapping("page")
     public TiResult<TiPageResult<PortDTO>> page(@Validated PortQuery query) {
         return TiResult.ok(portService.page(query));
@@ -112,7 +113,7 @@ public class PortController {
      * 导出端口信息
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('intranet:port:export')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_PORT_EXPORT + "')")
     @GetMapping("excel/export")
     public void exportExcel(@Validated PortQuery query) throws IOException {
         portService.exportExcel(query);

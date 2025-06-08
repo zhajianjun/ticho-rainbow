@@ -9,7 +9,7 @@ import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.starter.mail.component.TiMailContent;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.valid.TiValidUtil;
-import top.ticho.trace.common.prop.TraceProperty;
+import top.ticho.trace.common.prop.TiTraceProperty;
 
 /**
  * 邮件任务
@@ -22,8 +22,8 @@ public class EmailTask extends AbstracTask<MailContentDTO> {
 
     private final EmailRepository emailRepository;
 
-    public EmailTask(Environment environment, TraceProperty traceProperty, TaskLogRepository taskLogRepository, EmailRepository emailRepository) {
-        super(environment, traceProperty, taskLogRepository);
+    public EmailTask(Environment environment, TiTraceProperty tiTraceProperty, TaskLogRepository taskLogRepository, EmailRepository emailRepository) {
+        super(environment, tiTraceProperty, taskLogRepository);
         this.emailRepository = emailRepository;
     }
 

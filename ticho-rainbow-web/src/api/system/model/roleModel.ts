@@ -1,4 +1,4 @@
-import { MenuDtlDTO } from '@/api/system/model/menuModel';
+import { MenuDTO } from '@/api/system/model/menuModel';
 
 export interface RoleDTO {
   /** 主键编号 */
@@ -9,6 +9,8 @@ export interface RoleDTO {
   name: string;
   /** 备注信息 */
   remark: string;
+  /** 版本号 */
+  version: string;
 }
 
 export interface RoleQuery {
@@ -39,7 +41,7 @@ export interface RoleDtlQuery {
   treeHandle: boolean;
 }
 
-export interface RoleMenuDtlDTO {
+export interface RoleMenuDTO {
   /** 角色编号列表 */
   roleIds: string[];
   /** 角色编码列表 */
@@ -51,7 +53,7 @@ export interface RoleMenuDtlDTO {
   /** 菜单权限标识信息 */
   roles: RoleDTO[];
   /** 菜单信息 */
-  menus: MenuDtlDTO[];
+  menus: MenuDTO[];
 }
 
 export interface RoleSaveCommand {
@@ -70,10 +72,4 @@ export interface RoleModifyCommand {
   remark: string;
   version: number;
   menuIds: number[];
-}
-
-export interface RoleStatusModifyCommand {
-  id: number;
-  status: number;
-  version: number;
 }

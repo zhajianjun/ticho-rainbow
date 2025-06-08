@@ -17,8 +17,9 @@ import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.query.RoleDtlQuery;
 import top.ticho.rainbow.application.dto.query.RoleQuery;
 import top.ticho.rainbow.application.dto.response.RoleDTO;
-import top.ticho.rainbow.application.dto.response.RoleMenuDtlDTO;
+import top.ticho.rainbow.application.dto.response.RoleMenuDTO;
 import top.ticho.rainbow.application.service.RoleService;
+import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.security.annotation.IgnoreJwtCheck;
 import top.ticho.starter.security.annotation.IgnoreType;
@@ -47,7 +48,7 @@ public class RoleController {
     /**
      * 保存角色
      */
-    @PreAuthorize("@perm.hasPerms('system:role:save')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_ROLE_SAVE + "')")
     @PostMapping
     public TiResult<Void> save(@Validated @RequestBody RoleSaveCommand roleSaveCommand) {
         roleService.save(roleSaveCommand);
@@ -57,9 +58,10 @@ public class RoleController {
     /**
      * 删除角色
      */
-    @PreAuthorize("@perm.hasPerms('system:role:remove')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_ROLE_REMOVE + "')")
     @DeleteMapping
     public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
+        roleService.remove(command);
         roleService.remove(command);
         return TiResult.ok();
     }
@@ -67,7 +69,7 @@ public class RoleController {
     /**
      * 修改角色
      */
-    @PreAuthorize("@perm.hasPerms('system:role:modify')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_ROLE_MODIFY + "')")
     @PutMapping
     public TiResult<Void> modify(@Validated @RequestBody RoleModifyCommand roleModifyCommand) {
         roleService.modify(roleModifyCommand);
@@ -77,7 +79,7 @@ public class RoleController {
     /**
      * 启用角色
      */
-    @PreAuthorize("@perm.hasPerms('system:role:enable')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_ROLE_ENABLE + "')")
     @PatchMapping("status/enable")
     public TiResult<Void> enable(
         @NotNull(message = "角色信息不能为空")
@@ -91,7 +93,7 @@ public class RoleController {
     /**
      * 禁用角色
      */
-    @PreAuthorize("@perm.hasPerms('system:role:disable')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_ROLE_DISABLE + "')")
     @PatchMapping("status/disable")
     public TiResult<Void> disable(
         @NotNull(message = "角色信息不能为空")
@@ -105,7 +107,7 @@ public class RoleController {
     /**
      * 查询角色(分页)
      */
-    @PreAuthorize("@perm.hasPerms('system:role:page')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_ROLE_PAGE + "')")
     @GetMapping("page")
     public TiResult<TiPageResult<RoleDTO>> page(@Validated RoleQuery query) {
         return TiResult.ok(roleService.page(query));
@@ -115,7 +117,7 @@ public class RoleController {
     /**
      * 查询所有角色
      */
-    @PreAuthorize("@perm.hasPerms('system:role:all')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_ROLE_ALL + "')")
     @GetMapping("all")
     public TiResult<List<RoleDTO>> all() {
         return TiResult.ok(roleService.all());
@@ -125,9 +127,9 @@ public class RoleController {
      * 查询角色菜单
      */
     @IgnoreJwtCheck(IgnoreType.INNER)
-    @PreAuthorize("@perm.hasPerms('system:role:list-role-menu')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_ROLE_LIST_ROLE_MENU + "')")
     @GetMapping("menu/list")
-    public TiResult<RoleMenuDtlDTO> listRoleMenu(RoleDtlQuery roleDtlQuery) {
+    public TiResult<RoleMenuDTO> listRoleMenu(RoleDtlQuery roleDtlQuery) {
         return TiResult.ok(roleService.listRoleMenu(roleDtlQuery));
     }
 
@@ -135,7 +137,7 @@ public class RoleController {
      * 导出角色
      */
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('system:role:export')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_ROLE_EXPORT + "')")
     @GetMapping("excel/export")
     public void exportExcel(@Validated RoleQuery query) throws IOException {
         roleService.exportExcel(query);

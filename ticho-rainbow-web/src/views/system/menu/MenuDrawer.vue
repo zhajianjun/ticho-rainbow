@@ -31,7 +31,7 @@
 
   import { saveMenu, modifyMenu } from '@/api/system/menu';
   import { getPermissions } from '@/api/system/permssion';
-  import { MenuDtlModule } from '@/api/system/model/menuModel';
+  import { MenuModule } from '@/api/system/model/menuModel';
 
   export default defineComponent({
     name: 'MenuDrawer',
@@ -92,7 +92,7 @@
           });
         }
         // 过滤按钮类型的菜单
-        const treeData = filterData(props.treeData as MenuDtlModule);
+        const treeData = filterData(props.treeData as MenuModule);
         await updateSchema({
           field: 'parentId',
           componentProps: { treeData },
@@ -106,7 +106,7 @@
       /**
        * 过滤按钮type=3的数据
        */
-      function filterData(data: MenuDtlModule) {
+      function filterData(data: MenuModule) {
         return data.filter((item) => {
           if (item.type === 3) {
             return false;

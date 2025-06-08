@@ -38,6 +38,15 @@
               {{ record.code }}
             </Tag>
           </template>
+          <template v-if="column.key === 'status'">
+            <Switch
+              :checked-children="getDictLabelByCodeAndValue('commonStatus', 1)"
+              :un-checked-children="getDictLabelByCodeAndValue('commonStatus', 0)"
+              :checked="record.status === 1"
+              :loading="record.pendingStatus"
+              @change="handleSwitchDictChange(record)"
+            />
+          </template>
         </template>
         <template #action="{ record }">
           <TableAction
@@ -75,6 +84,17 @@
           >
             新增
           </a-button>
+        </template>
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'status'">
+            <Switch
+              :checked-children="getDictLabelByCodeAndValue('commonStatus', 1)"
+              :un-checked-children="getDictLabelByCodeAndValue('commonStatus', 0)"
+              :checked="record.status === 1"
+              :loading="record.pendingStatus"
+              @change="handleSwitchDictLabelChange(record)"
+            />
+          </template>
         </template>
         <template #action="{ record }">
           <TableAction
@@ -114,20 +134,27 @@
     getTableColumns as getDictTableColumns,
   } from './dict.data';
   import { getTableColumns as getDictLabelTableColumns } from './dictLabel.data';
-  import { delDict, dictPage, expExcel } from '@/api/system/dict';
-  import { delDictLabel, findDictLabel } from '@/api/system/dictLabel';
+  import { delDict, dictPage, expExcel, disableDict, enableDict } from '@/api/system/dict';
+  import {
+    delDictLabel,
+    disableDictLabel,
+    enableDictLabel,
+    findDictLabel,
+  } from '@/api/system/dictLabel';
   import { usePermission } from '@/hooks/web/usePermission';
-  import { Tag } from 'ant-design-vue';
-  import { flushDicts } from '@/store/modules/dict';
+  import { Switch, Tag } from 'ant-design-vue';
+  import { flushDicts, getDictLabelByCodeAndValue } from '@/store/modules/dict';
   import { downloadByData } from '@/utils/file/download';
   import { DictQuery } from '@/api/system/model/dictModel';
   import { useMessage } from '@/hooks/web/useMessage';
+  import { VersionModifyCommand } from '@/api/system/model/baseModel';
 
   export default defineComponent({
     name: 'DictType',
-    components: { Tag, BasicTable, DictModal, TableAction, DictLabelModal },
+    components: { Switch, Tag, BasicTable, DictModal, TableAction, DictLabelModal },
     setup() {
       const codeRef = ref<string | null>(null);
+      const isSysRef = ref<boolean>(false);
       const nameRef = ref<string>('');
       const { hasPermission } = usePermission();
       let showSelect = hasPermission('DictSelect');
@@ -184,12 +211,13 @@
         title: '字典列表',
         api: dictPage,
         afterFetch: (res) => {
-          if (res && res.length > 0) {
-            const firstRecord = res[0];
-            codeRef.value = firstRecord.code;
-            nameRef.value = firstRecord.name;
-            reloadDictLabel();
+          if (res && res.length > 0 && !unref(codeRef)) {
+            const record = res[0];
+            codeRef.value = record.code;
+            nameRef.value = record.name;
+            isSysRef.value = record.isSys === 1;
           }
+          reloadDictLabel();
           return res;
         },
         rowKey: 'id',
@@ -247,7 +275,8 @@
       }
 
       function handleDictDel(record: Recordable) {
-        delDict(record.id).then(() => {
+        const params = { ...record } as VersionModifyCommand;
+        delDict(params).then(() => {
           reloadDict();
         });
       }
@@ -255,6 +284,7 @@
       function handleDict(record: Recordable) {
         codeRef.value = record.code;
         nameRef.value = record.name;
+        isSysRef.value = record.isSys === 1;
         reloadDictLabel();
       }
 
@@ -265,7 +295,8 @@
         const record = { code: unref(codeRef), name: unref(nameRef) } as Recordable;
         openModal(true, {
           record,
-          isUpdate: false,
+          isUpdate: true,
+          isSys: false,
         });
       }
 
@@ -273,11 +304,13 @@
         openModal(true, {
           record,
           isUpdate: true,
+          isSys: unref(isSysRef),
         });
       }
 
       function handleDictLabelDel(record: Recordable) {
-        delDictLabel(record.id).then(() => {
+        const params = { ...record } as VersionModifyCommand;
+        delDictLabel(params).then(() => {
           reloadDictLabel();
         });
       }
@@ -321,12 +354,72 @@
 
       function handleFlush() {
         flushLoading.value = true;
-        flushDicts()
+        flushDicts().finally(() => {
+          flushLoading.value = false;
+        });
+      }
+
+      function handleSwitchDictChange(record: Recordable) {
+        if (!record || typeof record.status !== 'number') {
+          console.warn('Invalid record provided to handleSwitchChange');
+          return;
+        }
+        const { createMessage } = useMessage();
+        const checked = record.status === 1;
+        let oprate: Promise<any>;
+        const messagePrefix = getDictLabelByCodeAndValue('commonStatus', checked ? 0 : 1);
+        record.pendingStatus = true;
+        try {
+          const param = {
+            id: record.id,
+            version: record.version,
+          } as VersionModifyCommand;
+          oprate = checked ? disableDict([param]) : enableDict([param]);
+        } catch (error) {
+          record.pendingStatus = false;
+          return;
+        }
+        oprate
           .then(() => {
-            createMessage.info(`刷新成功`);
+            // 仅在请求成功后更新状态
+            record.status = checked ? 0 : 1;
+            createMessage.success(messagePrefix + `成功`);
           })
           .finally(() => {
-            flushLoading.value = false;
+            record.pendingStatus = false;
+            reloadDict();
+          });
+      }
+
+      function handleSwitchDictLabelChange(record: Recordable) {
+        if (!record || typeof record.status !== 'number') {
+          console.warn('Invalid record provided to handleSwitchChange');
+          return;
+        }
+        const { createMessage } = useMessage();
+        const checked = record.status === 1;
+        let oprate: Promise<any>;
+        const messagePrefix = getDictLabelByCodeAndValue('commonStatus', checked ? 0 : 1);
+        record.pendingStatus = true;
+        try {
+          const param = {
+            id: record.id,
+            version: record.version,
+          } as VersionModifyCommand;
+          oprate = checked ? disableDictLabel([param]) : enableDictLabel([param]);
+        } catch (error) {
+          record.pendingStatus = false;
+          return;
+        }
+        oprate
+          .then(() => {
+            // 仅在请求成功后更新状态
+            record.status = checked ? 0 : 1;
+            createMessage.success(messagePrefix + `成功`);
+          })
+          .finally(() => {
+            record.pendingStatus = false;
+            reloadDictLabel();
           });
       }
 
@@ -348,7 +441,10 @@
         handleFlush,
         handleExport,
         exportLoding,
+        handleSwitchDictChange,
+        handleSwitchDictLabelChange,
       };
     },
+    methods: { getDictLabelByCodeAndValue },
   });
 </script>

@@ -16,7 +16,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface DictLabelConverter {
 
-    List<DictLabel> toEntitys(List<DictLabelPO> list);
+    List<DictLabel> toEntity(List<DictLabelPO> list);
 
     DictLabel toEntity(DictLabelPO dictLabelPO);
 
@@ -24,5 +24,7 @@ public interface DictLabelConverter {
     @Mapping(target = "updateBy", ignore = true)
     @Mapping(target = "isDelete", ignore = true)
     DictLabelPO toPo(DictLabel dictLabel);
+
+    List<DictLabelPO> toPo(List<DictLabel> dictLabels);
 
 }

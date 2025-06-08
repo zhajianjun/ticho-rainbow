@@ -14,6 +14,15 @@
             </Tag>
           </Space>
         </template>
+        <template v-if="column.key === 'status'">
+          <Switch
+            :checked-children="getDictLabelByCodeAndValue('commonStatus', 1)"
+            :un-checked-children="getDictLabelByCodeAndValue('commonStatus', 0)"
+            :checked="record.status === 1"
+            :loading="record.pendingStatus"
+            @change="handleSwitchChange(record)"
+          />
+        </template>
       </template>
       <template #action="{ record }">
         <TableAction
@@ -52,17 +61,20 @@
 <script lang="ts">
   import { defineComponent, ref } from 'vue';
   import { BasicTable, TableAction, useTable } from '@/components/Table';
-  import { delMenu, getMenuList } from '@/api/system/menu';
+  import { delMenu, disableMenu, enableMenu, getMenuList } from '@/api/system/menu';
   import { useDrawer } from '@/components/Drawer';
   import MenuDrawer from './MenuDrawer.vue';
   import { columns } from './menu.data';
   import { cloneDeep } from 'lodash-es';
   import { usePermission } from '@/hooks/web/usePermission';
-  import { Space, Tag } from 'ant-design-vue';
+  import { Switch, Space, Tag } from 'ant-design-vue';
+  import { getDictLabelByCodeAndValue } from '@/store/modules/dict';
+  import { useMessage } from '@/hooks/web/useMessage';
+  import { VersionModifyCommand } from '@/api/system/model/baseModel';
 
   export default defineComponent({
     name: 'MenuManagement',
-    components: { Tag, Space, BasicTable, MenuDrawer, TableAction },
+    components: { Tag, Space, BasicTable, MenuDrawer, TableAction, Switch },
     setup() {
       const { hasPermission } = usePermission();
       const treeData = ref([]);
@@ -128,7 +140,8 @@
       }
 
       function handleDelete(record: Recordable) {
-        delMenu(record.id).then(() => {
+        const params = { ...record } as VersionModifyCommand;
+        delMenu(params).then(() => {
           reload();
         });
       }
@@ -139,6 +152,38 @@
 
       function onFetchSuccess() {
         // nextTick(expandAll);
+      }
+
+      function handleSwitchChange(record: Recordable) {
+        if (!record || typeof record.status !== 'number') {
+          console.warn('Invalid record provided to handleSwitchChange');
+          return;
+        }
+        const { createMessage } = useMessage();
+        const checked = record.status === 1;
+        let oprate: Promise<any>;
+        const messagePrefix = getDictLabelByCodeAndValue('commonStatus', checked ? 0 : 1);
+        record.pendingStatus = true;
+        try {
+          const param = {
+            id: record.id,
+            version: record.version,
+          } as VersionModifyCommand;
+          oprate = checked ? disableMenu([param]) : enableMenu([param]);
+        } catch (error) {
+          record.pendingStatus = false;
+          return;
+        }
+        oprate
+          .then(() => {
+            // 仅在请求成功后更新状态
+            record.status = checked ? 0 : 1;
+            createMessage.success(messagePrefix + `成功`);
+            reload();
+          })
+          .finally(() => {
+            record.pendingStatus = false;
+          });
       }
 
       return {
@@ -155,7 +200,9 @@
         showSelect,
         expandAll,
         collapseAll,
+        handleSwitchChange,
       };
     },
+    methods: { getDictLabelByCodeAndValue },
   });
 </script>

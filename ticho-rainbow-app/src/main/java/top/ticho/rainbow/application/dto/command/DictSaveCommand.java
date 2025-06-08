@@ -23,9 +23,6 @@ public class DictSaveCommand {
     /** 是否系统字典;1-是,0-否 */
     @NotNull(message = "是否系统字典不能为空")
     private Integer isSys;
-    /** 状态;1-启用,0-禁用 */
-    @NotNull(message = "字典状态不能为空")
-    private Integer status;
     /** 备注信息 */
     private String remark;
 }

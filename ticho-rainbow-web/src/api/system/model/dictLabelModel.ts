@@ -25,3 +25,25 @@ export interface DictLabel {
   /** 字典值 */
   value: string | number;
 }
+
+export interface DictLabelSaveCommand {
+  code: string;
+  label: string;
+  value: string;
+  icon: string;
+  color: string;
+  sort: number;
+  remark: string;
+}
+
+export interface DictLabelModifyCommand {
+  id: number;
+  code: string;
+  label: string;
+  value: string;
+  icon: string;
+  color: string;
+  sort: number;
+  remark: string;
+  version: number;
+}

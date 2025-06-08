@@ -6,7 +6,6 @@ import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.ticho.intranet.server.core.ServerHandler;
 import top.ticho.intranet.server.entity.ClientInfo;
 import top.ticho.rainbow.application.assembler.ClientAssembler;
 import top.ticho.rainbow.application.dto.command.ClientModifyCommand;
@@ -53,7 +52,6 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final ClientAppRepository clientAppRepository;
     private final ClientAssembler clientAssembler;
-    private final ServerHandler serverHandler;
     private final IntranetExecutor intranetExecutor;
     private final DictExecutor dictExecutor;
     private final HttpServletResponse response;
@@ -70,7 +68,7 @@ public class ClientService {
         TiAssert.isNotNull(client, "删除失败，数据不存在");
         client.checkVersion(command.getVersion(), "数据已被修改，请刷新后重试");
         TiAssert.isTrue(!client.isEnable(), "删除失败，请先禁用该客户端");
-        TiAssert.isTrue(clientRepository.remove(command.getId()), "删除失败");
+        TiAssert.isTrue(clientRepository.remove(command.getId()), "删除失败，请刷新后重试");
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -90,15 +88,15 @@ public class ClientService {
 
     private void createAndBind(Client client) {
         String accessKey = client.getAccessKey();
-        serverHandler.create(accessKey, client.getName());
+        intranetExecutor.create(accessKey, client.getName());
         List<String> accessKeys = Collections.singletonList(accessKey);
         Map<String, List<Port>> protMap = intranetExecutor.getPortMap(accessKeys);
         List<Port> ports = protMap.getOrDefault(accessKey, Collections.emptyList());
-        ports.forEach(port -> serverHandler.bind(accessKey, port.getPort(), port.getEndpoint()));
+        ports.forEach(port -> intranetExecutor.bind(accessKey, port.getPort(), port.getEndpoint()));
     }
 
     public void disable(List<VersionModifyCommand> datas) {
-        boolean disable = modifyBatch(datas, Client::disable, client -> serverHandler.remove(client.getAccessKey()));
+        boolean disable = modifyBatch(datas, Client::disable, client -> intranetExecutor.remove(client.getAccessKey()));
         TiAssert.isTrue(disable, "禁用失败，请刷新后重试");
     }
 
@@ -142,7 +140,7 @@ public class ClientService {
         if (Objects.isNull(clientDTO)) {
             return;
         }
-        Optional<ClientInfo> clientInfoOpt = serverHandler.findByAccessKey(clientDTO.getAccessKey());
+        Optional<ClientInfo> clientInfoOpt = intranetExecutor.findByAccessKey(clientDTO.getAccessKey());
         if (clientInfoOpt.isEmpty()) {
             return;
         }
@@ -153,9 +151,9 @@ public class ClientService {
     private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<Client> modifyHandle, Consumer<Client> modifyToDbAfterHandle) {
         List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
         List<Client> clients = clientRepository.list(ids);
-        Map<Long, Client> userMap = CollStreamUtil.toIdentityMap(clients, Client::getId);
+        Map<Long, Client> clientMap = CollStreamUtil.toIdentityMap(clients, Client::getId);
         for (VersionModifyCommand modify : modifys) {
-            Client client = userMap.get(modify.getId());
+            Client client = clientMap.get(modify.getId());
             TiAssert.isNotNull(client, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
             client.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 客户端: {}", client.getName()));
             // 修改逻辑

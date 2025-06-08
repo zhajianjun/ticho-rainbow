@@ -58,13 +58,6 @@ export function getTableColumns(): BasicColumn[] {
       dataIndex: 'status',
       resizable: true,
       width: 100,
-      customRender({ text }) {
-        const dict = getDictByCodeAndValue(commonStatus, text);
-        if (text === undefined || isNull(text) || isNull(dict)) {
-          return text;
-        }
-        return h(Tag, { color: dict.color }, () => dict.label);
-      },
     },
     {
       title: '创建人',

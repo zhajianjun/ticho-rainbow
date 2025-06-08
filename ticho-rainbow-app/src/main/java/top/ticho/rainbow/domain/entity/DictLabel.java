@@ -1,10 +1,14 @@
 package top.ticho.rainbow.domain.entity;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.Builder;
 import lombok.Getter;
 import top.ticho.rainbow.domain.entity.vo.DictLabelModifyVO;
+import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
+import top.ticho.starter.view.util.TiAssert;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * 字典标签
@@ -14,7 +18,7 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Builder
-public class DictLabel {
+public class DictLabel implements Entity {
 
     /** 主键编号 */
     private Long id;
@@ -42,20 +46,30 @@ public class DictLabel {
     private LocalDateTime createTime;
 
     public void modify(DictLabelModifyVO dictLabelModifyVO, boolean isSysDict) {
-        this.code = dictLabelModifyVO.code();
-        this.label = dictLabelModifyVO.label();
-        this.value = dictLabelModifyVO.value();
+        if (!isSysDict) {
+            this.code = dictLabelModifyVO.code();
+            this.label = dictLabelModifyVO.label();
+            this.value = dictLabelModifyVO.value();
+        }
         this.icon = dictLabelModifyVO.icon();
         this.color = dictLabelModifyVO.color();
         this.sort = dictLabelModifyVO.sort();
-        this.status = dictLabelModifyVO.status();
         this.remark = dictLabelModifyVO.remark();
-        if (isSysDict) {
-            this.code = null;
-            this.label = null;
-            this.value = null;
-            this.status = 1;
-        }
+        this.version = dictLabelModifyVO.version();
+    }
+
+    public void enable() {
+        CommonStatus disable = CommonStatus.DISABLE;
+        TiAssert.isTrue(Objects.equals(this.status, disable.code()),
+            StrUtil.format("只有[{}]状态才能执行启用操作，字典标签：{}", disable.message(), label));
+        this.status = CommonStatus.ENABLE.code();
+    }
+
+    public void disable() {
+        CommonStatus enable = CommonStatus.ENABLE;
+        TiAssert.isTrue(Objects.equals(this.status, enable.code()),
+            StrUtil.format("只有[{}]状态才能执行禁用操作，字典标签：{}", enable.message(), label));
+        this.status = CommonStatus.DISABLE.code();
     }
 
 }

@@ -16,11 +16,13 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface DictConverter {
 
-    List<Dict> toEntitys(List<DictPO> list);
+    List<Dict> toEntity(List<DictPO> list);
 
     Dict toEntity(DictPO dictPO);
 
     DictPO toPO(Dict dict);
+
+    List<DictPO> toPO(List<Dict> list);
 
     DictDTO toDTO(DictPO dictPO);
 

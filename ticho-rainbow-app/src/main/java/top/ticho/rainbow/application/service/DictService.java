@@ -1,8 +1,10 @@
 package top.ticho.rainbow.application.service;
 
+import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -11,8 +13,10 @@ import top.ticho.rainbow.application.assembler.DictAssembler;
 import top.ticho.rainbow.application.assembler.DictLabelAssembler;
 import top.ticho.rainbow.application.dto.command.DictModifyCommand;
 import top.ticho.rainbow.application.dto.command.DictSaveCommand;
+import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.excel.DictExcelExport;
 import top.ticho.rainbow.application.dto.query.DictQuery;
+import top.ticho.rainbow.application.dto.response.DictCacheDTO;
 import top.ticho.rainbow.application.dto.response.DictDTO;
 import top.ticho.rainbow.application.dto.response.DictLabelDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
@@ -25,6 +29,7 @@ import top.ticho.rainbow.domain.repository.DictRepository;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
+import top.ticho.rainbow.infrastructure.common.enums.YesOrNo;
 import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.enums.TiBizErrCode;
@@ -42,6 +47,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -68,26 +74,23 @@ public class DictService {
         TiAssert.isTrue(dictRepository.save(dict), "保存失败");
     }
 
-    public void remove(Long id) {
-        Dict dbDict = dictRepository.find(id);
-        TiAssert.isNotNull(dbDict, "删除失败，字典不存在");
-        TiAssert.isTrue(!Objects.equals(dbDict.getIsSys(), 1), TiBizErrCode.PARAM_ERROR, "系统字典无法删除");
-        boolean existsDict = dictLabelRepository.existsByCode(dbDict.getCode());
+    public void remove(VersionModifyCommand command) {
+        Dict dict = dictRepository.find(command.getId());
+        TiAssert.isNotNull(dict, "删除失败，字典不存在");
+        dict.checkVersion(command.getVersion(), "数据已被修改，请刷新后重试");
+        TiAssert.isTrue(!Objects.equals(dict.getIsSys(), YesOrNo.YES.code()), TiBizErrCode.PARAM_ERROR, "系统字典无法删除");
+        boolean existsDict = dictLabelRepository.existsByCode(dict.getCode());
         TiAssert.isTrue(!existsDict, TiBizErrCode.PARAM_ERROR, "删除失败，请先删除所有字典标签");
-        TiAssert.isTrue(dictRepository.remove(id), "删除失败");
+        TiAssert.isTrue(dictRepository.remove(command.getId()), "删除失败，请刷新后重试");
     }
 
     public void modify(DictModifyCommand dictModifyCommand) {
         Dict dict = dictRepository.find(dictModifyCommand.getId());
         TiAssert.isNotNull(dict, "修改失败，字典不存在");
+        dict.checkVersion(dictModifyCommand.getVersion(), "数据已被修改，请刷新后重试");
         DictModifyVO dictModifyVO = dictAssembler.toVO(dictModifyCommand);
         dict.modify(dictModifyVO);
         TiAssert.isTrue(dictRepository.modify(dict), "修改失败，请刷新后重试");
-    }
-
-    public DictDTO find(Long id) {
-        Dict dict = dictRepository.find(id);
-        return dictAssembler.toDTO(dict);
     }
 
     public TiPageResult<DictDTO> page(DictQuery query) {
@@ -95,7 +98,7 @@ public class DictService {
     }
 
     @Cacheable(value = CacheConst.COMMON, key = "'ticho-rainbow:dict:list'")
-    public List<DictDTO> list() {
+    public List<DictCacheDTO> list() {
         List<Dict> dicts = dictRepository.listEnable();
         if (CollUtil.isEmpty(dicts)) {
             return Collections.emptyList();
@@ -120,7 +123,7 @@ public class DictService {
             .collect(Collectors.toList());
     }
 
-    public List<DictDTO> flush() {
+    public List<DictCacheDTO> flush() {
         tiCacheTemplate.evict(CacheConst.COMMON, "ticho-rainbow:dict:list");
         return SpringUtil.getBean(this.getClass()).list();
     }
@@ -150,6 +153,30 @@ public class DictService {
             })
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
+    }
+
+    public void enable(List<VersionModifyCommand> datas) {
+        boolean enable = modifyBatch(datas, Dict::enable);
+        TiAssert.isTrue(enable, "启用失败，请刷新后重试");
+    }
+
+    public void disable(List<VersionModifyCommand> datas) {
+        boolean disable = modifyBatch(datas, Dict::disable);
+        TiAssert.isTrue(disable, "禁用失败，请刷新后重试");
+    }
+
+    private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<Dict> modifyHandle) {
+        List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
+        List<Dict> dicts = dictRepository.list(ids);
+        Map<Long, Dict> dictMap = CollStreamUtil.toIdentityMap(dicts, Dict::getId);
+        for (VersionModifyCommand modify : modifys) {
+            Dict dict = dictMap.get(modify.getId());
+            TiAssert.isNotNull(dict, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
+            dict.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 字典: {}", dict.getName()));
+            // 修改逻辑
+            modifyHandle.accept(dict);
+        }
+        return dictRepository.modifyBatch(dicts);
     }
 
 }

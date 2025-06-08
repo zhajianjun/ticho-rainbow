@@ -56,17 +56,11 @@ export function runOnceTask(params: TaskRunOnceCommand) {
 }
 
 export function enableTask(params: VersionModifyCommand[]) {
-  return defHttp.patch<any>(
-    { url: Api.TaskEnable, params },
-    { errorMessageMode: 'message', successMessageMode: 'message' },
-  );
+  return defHttp.patch<any>({ url: Api.TaskEnable, params }, { errorMessageMode: 'message' });
 }
 
 export function disableTask(params: VersionModifyCommand[]) {
-  return defHttp.patch<any>(
-    { url: Api.TaskDisable, params },
-    { errorMessageMode: 'message', successMessageMode: 'message' },
-  );
+  return defHttp.patch<any>({ url: Api.TaskDisable, params }, { errorMessageMode: 'message' });
 }
 
 export function expExcel(params?: TaskQuery) {

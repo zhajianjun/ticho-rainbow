@@ -9,8 +9,8 @@ import { VersionModifyCommand } from '@/api/system/model/baseModel';
 enum Api {
   Upload = '/file/upload',
   Presigned = '/file/presigned',
-  UploadChunk = '/file/uploadChunk',
-  ComposeChunk = '/file/composeChunk',
+  UploadChunk = '/file/chunk/upload',
+  ComposeChunk = '/file/chunk/compose',
   EnableFileInfo = '/file/status/enable',
   DisableFileInfo = '/file/status/disable',
   CancelFileInfo = '/file/status/cancel',
@@ -89,24 +89,15 @@ export function presigned(id: string, expire?: number | null, limit?: boolean | 
 }
 
 export function enableFileInfo(params: VersionModifyCommand[]) {
-  return defHttp.patch<any>(
-    { url: Api.EnableFileInfo, params },
-    { errorMessageMode: 'message', successMessageMode: 'message' },
-  );
+  return defHttp.patch<any>({ url: Api.EnableFileInfo, params }, { errorMessageMode: 'message' });
 }
 
 export function disableFileInfo(params: VersionModifyCommand[]) {
-  return defHttp.patch<any>(
-    { url: Api.DisableFileInfo, params },
-    { errorMessageMode: 'message', successMessageMode: 'message' },
-  );
+  return defHttp.patch<any>({ url: Api.DisableFileInfo, params }, { errorMessageMode: 'message' });
 }
 
 export function cancelFileInfo(params: VersionModifyCommand[]) {
-  return defHttp.patch<any>(
-    { url: Api.CancelFileInfo, params },
-    { errorMessageMode: 'message', successMessageMode: 'message' },
-  );
+  return defHttp.patch<any>({ url: Api.CancelFileInfo, params }, { errorMessageMode: 'message' });
 }
 
 export function delFileInfo(params: VersionModifyCommand) {

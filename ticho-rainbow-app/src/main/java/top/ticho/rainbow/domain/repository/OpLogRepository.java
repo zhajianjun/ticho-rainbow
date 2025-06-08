@@ -10,15 +10,8 @@ import top.ticho.rainbow.domain.entity.OpLog;
  */
 public interface OpLogRepository {
 
-
     void save(OpLog entity);
 
-    /**
-     * 根据编号查询日志信息
-     *
-     * @param id 编号
-     * @return {@link OpLog }
-     */
     OpLog find(Long id);
 
     void removeBefeoreDays(Integer days);

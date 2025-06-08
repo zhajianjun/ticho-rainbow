@@ -5,7 +5,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.executor.IntranetExecutor;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
-import top.ticho.trace.common.prop.TraceProperty;
+import top.ticho.trace.common.prop.TiTraceProperty;
 
 /**
  * 内网映射数据刷新定时任务
@@ -18,8 +18,8 @@ public class IntranetTask extends AbstracTask<String> {
 
     private final IntranetExecutor intranetExecutor;
 
-    public IntranetTask(Environment environment, TraceProperty traceProperty, TaskLogRepository taskLogRepository, IntranetExecutor intranetExecutor) {
-        super(environment, traceProperty, taskLogRepository);
+    public IntranetTask(Environment environment, TiTraceProperty tiTraceProperty, TaskLogRepository taskLogRepository, IntranetExecutor intranetExecutor) {
+        super(environment, tiTraceProperty, taskLogRepository);
         this.intranetExecutor = intranetExecutor;
     }
 

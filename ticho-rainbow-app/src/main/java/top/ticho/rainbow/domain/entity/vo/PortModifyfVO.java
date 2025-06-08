@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
  * @param type      协议类型
  * @param sort      排序
  * @param remark    备注信息
+ * @param version   版本号
  * @author zhajianjun
  * @date 2023-12-17 20:12
  */
@@ -24,7 +25,8 @@ public record PortModifyfVO(
     LocalDateTime expireAt,
     Integer type,
     Integer sort,
-    String remark
+    String remark,
+    String version
 ) {
 
 }

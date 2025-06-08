@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { DictLabel, DictLabelDTO } from '@/api/system/model/dictLabelModel';
 import { flush, all } from '@/api/system/dict';
-import { DictDTO } from '@/api/system/model/dictModel';
+import { DictCacheDTO } from '@/api/system/model/dictModel';
 import { Persistent } from '@/utils/cache/persistent';
 import { DICTS_KEY } from '@/enums/cacheEnum';
 
@@ -37,7 +37,7 @@ export const useDictStore = defineStore({
         if (!res || res.length <= 0) {
           return;
         }
-        const dicts = res as DictDTO[];
+        const dicts = res as DictCacheDTO[];
         const dictMap: Map<string, Map<string, DictLabelDTO>> = convert(dicts);
         this.setDicts(dictMap);
       });
@@ -45,7 +45,7 @@ export const useDictStore = defineStore({
   },
 });
 
-function convert(dicts: Nullable<DictDTO[]>) {
+function convert(dicts: Nullable<DictCacheDTO[]>) {
   if (!dicts || dicts.length <= 0) {
     return new Map<string, Map<string, DictLabelDTO>>();
   }

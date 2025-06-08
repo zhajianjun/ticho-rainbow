@@ -22,6 +22,17 @@
           导出
         </a-button>
       </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'status'">
+          <Switch
+            :checked-children="getDictLabelByCodeAndValue('commonStatus', 1)"
+            :un-checked-children="getDictLabelByCodeAndValue('commonStatus', 0)"
+            :checked="record.status === 1"
+            :loading="record.pendingStatus"
+            @change="handleSwitchChange(record)"
+          />
+        </template>
+      </template>
       <template #action="{ record }">
         <TableAction
           :actions="[
@@ -43,22 +54,10 @@
               onClick: goTaskLog.bind(null, record),
               auth: 'GoTaskLog',
             },
-          ]"
-          :dropDownActions="[
             {
-              label: '启用',
-              onClick: handleEnable.bind(null, record),
-              disabled: record.status == 1,
-              auth: 'TaskResume',
-            },
-            {
-              label: '禁用',
-              onClick: handleDisable.bind(null, record),
-              disabled: record.status !== 1,
-              auth: 'TaskPause',
-            },
-            {
-              label: '删除',
+              icon: 'ant-design:delete-outlined',
+              color: 'error',
+              tooltip: '删除任务',
               popConfirm: {
                 title: '是否确认删除?',
                 confirm: handleDelete.bind(null, record),
@@ -88,10 +87,12 @@
   import { downloadByData } from '@/utils/file/download';
   import { TaskQuery } from '@/api/system/model/taskModel';
   import { VersionModifyCommand } from '@/api/system/model/baseModel';
+  import { getDictLabelByCodeAndValue } from '@/store/modules/dict';
+  import { Space, Switch, Tag } from 'ant-design-vue';
 
   export default defineComponent({
     name: 'Task',
-    components: { BasicTable, TaskModal, TableAction, TaskRunOnce },
+    components: { Space, Tag, Switch, BasicTable, TaskModal, TableAction, TaskRunOnce },
     setup() {
       const cronValue = ref(null);
       const { hasPermission } = usePermission();
@@ -162,18 +163,36 @@
         });
       }
 
-      function handleEnable(record: Recordable) {
-        const param = { ...record } as VersionModifyCommand;
-        enableTask([param]).then(() => {
-          reload();
-        });
-      }
-
-      function handleDisable(record: Recordable) {
-        const param = { ...record } as VersionModifyCommand;
-        disableTask([param]).then(() => {
-          reload();
-        });
+      function handleSwitchChange(record: Recordable) {
+        if (!record || typeof record.status !== 'number') {
+          console.warn('Invalid record provided to handleSwitchChange');
+          return;
+        }
+        const { createMessage } = useMessage();
+        const checked = record.status === 1;
+        let oprate: Promise<any>;
+        const messagePrefix = getDictLabelByCodeAndValue('commonStatus', checked ? 0 : 1);
+        record.pendingStatus = true;
+        try {
+          const param = {
+            id: record.id,
+            version: record.version,
+          } as VersionModifyCommand;
+          oprate = checked ? disableTask([param]) : enableTask([param]);
+        } catch (error) {
+          record.pendingStatus = false;
+          return;
+        }
+        oprate
+          .then(() => {
+            // 仅在请求成功后更新状态
+            record.status = checked ? 0 : 1;
+            createMessage.success(messagePrefix + `成功`);
+            reload();
+          })
+          .finally(() => {
+            record.pendingStatus = false;
+          });
       }
 
       function handleSuccess() {
@@ -223,8 +242,7 @@
         handleCreate,
         openTaskModal,
         handleDelete,
-        handleEnable,
-        handleDisable,
+        handleSwitchChange,
         handleSuccess,
         hasPermission,
         cronValue,
@@ -235,5 +253,6 @@
         handleExport,
       };
     },
+    methods: { getDictLabelByCodeAndValue },
   });
 </script>

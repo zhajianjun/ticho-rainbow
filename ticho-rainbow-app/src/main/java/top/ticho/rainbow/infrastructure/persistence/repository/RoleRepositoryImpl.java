@@ -42,7 +42,7 @@ public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, RolePO> imp
     @Override
     @Cacheable(value = CacheConst.COMMON, key = "'ticho-rainbow:role:list'", sync = true)
     public List<Role> cacheList() {
-        return roleConverter.toEntitys(super.list());
+        return roleConverter.toEntity(super.list());
     }
 
     @Override

@@ -5,7 +5,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.domain.repository.OpLogRepository;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
-import top.ticho.trace.common.prop.TraceProperty;
+import top.ticho.trace.common.prop.TiTraceProperty;
 
 /**
  * 日志清除
@@ -19,8 +19,8 @@ public class LogClearTask extends AbstracTask<Integer> {
     private final OpLogRepository opLogRepository;
     private final TaskLogRepository taskLogRepository;
 
-    public LogClearTask(Environment environment, TraceProperty traceProperty, OpLogRepository opLogRepository, TaskLogRepository taskLogRepository) {
-        super(environment, traceProperty, taskLogRepository);
+    public LogClearTask(Environment environment, TiTraceProperty tiTraceProperty, OpLogRepository opLogRepository, TaskLogRepository taskLogRepository) {
+        super(environment, tiTraceProperty, taskLogRepository);
         this.opLogRepository = opLogRepository;
         this.taskLogRepository = taskLogRepository;
     }

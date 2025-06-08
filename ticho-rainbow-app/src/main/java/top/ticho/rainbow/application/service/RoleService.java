@@ -16,7 +16,7 @@ import top.ticho.rainbow.application.dto.excel.RoleExcelExport;
 import top.ticho.rainbow.application.dto.query.RoleDtlQuery;
 import top.ticho.rainbow.application.dto.query.RoleQuery;
 import top.ticho.rainbow.application.dto.response.RoleDTO;
-import top.ticho.rainbow.application.dto.response.RoleMenuDtlDTO;
+import top.ticho.rainbow.application.dto.response.RoleMenuDTO;
 import top.ticho.rainbow.application.executor.AuthExecutor;
 import top.ticho.rainbow.application.executor.DictExecutor;
 import top.ticho.rainbow.application.repository.RoleAppRepository;
@@ -84,9 +84,10 @@ public class RoleService {
         TiAssert.isTrue(!roleMenuExists, "删除失败,请解绑所有的角色菜单");
         Role role = roleRepository.find(command.getId());
         TiAssert.isNotNull(role, "删除失败，角色不存在");
+        role.checkVersion(command.getVersion(), "数据已被修改，请刷新后重试");
         TiAssert.isTrue(!role.isEnable(), "删除失败，请先禁用该角色");
         TiAssert.isNotNull(Objects.equals(SecurityConst.ADMIN, role.getCode()), "管理员角色不可删除");
-        TiAssert.isTrue(roleRepository.remove(command.getId()), "删除失败");
+        TiAssert.isTrue(roleRepository.remove(command.getId()), "删除失败，请刷新后重试");
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -129,7 +130,7 @@ public class RoleService {
         roleMenuRepository.removeAndSave(bindMenuCommand.getRoleId(), bindMenuCommand.getMenuIds());
     }
 
-    public RoleMenuDtlDTO listRoleMenu(RoleDtlQuery roleDtlQuery) {
+    public RoleMenuDTO listRoleMenu(RoleDtlQuery roleDtlQuery) {
         return authExecutor.mergeRoleByIds(roleDtlQuery.getRoleIds(), roleDtlQuery.getShowAll(), roleDtlQuery.getTreeHandle());
     }
 
@@ -156,9 +157,9 @@ public class RoleService {
     private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<Role> modifyHandle) {
         List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
         List<Role> roles = roleRepository.list(ids);
-        Map<Long, Role> userMap = CollStreamUtil.toIdentityMap(roles, Role::getId);
+        Map<Long, Role> roleMap = CollStreamUtil.toIdentityMap(roles, Role::getId);
         for (VersionModifyCommand modify : modifys) {
-            Role role = userMap.get(modify.getId());
+            Role role = roleMap.get(modify.getId());
             TiAssert.isNotNull(role, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
             role.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 角色: {}", role.getName()));
             // 修改逻辑

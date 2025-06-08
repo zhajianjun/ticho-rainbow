@@ -9,7 +9,7 @@ ticho:
     driver-class-name: com.mysql.cj.jdbc.Driver
     log:
       enable: true
-      print-sql: false
+      print-sql: true
       print-simple: true
       show-params: true
   security:
@@ -31,7 +31,7 @@ ticho:
       maxBindPorts:
   log:
     enable: true
-    print: true
+    print: false
   mail:
     enable: true
     # 配置 SMTP 服务器地址
@@ -67,11 +67,6 @@ ticho:
       max-file-size: 20MB
       max-part-size: 10MB
       max-big-file-size: 1GB
-    opLog:
-      ignorePatterns:
-        - /op-log/page
-        - /file/chunk/upload
-        - /oauth/img-code
 
 
 spring:

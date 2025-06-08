@@ -49,9 +49,6 @@ public class MenuSaveCommand {
     /** 排序 */
     @NotNull(message = "排序不能为空")
     private Integer sort;
-    /** 状态;1-启用,0-禁用 */
-    @NotNull(message = "状态不能为空")
-    private Integer status;
     /** 备注信息 */
     private String remark;
 

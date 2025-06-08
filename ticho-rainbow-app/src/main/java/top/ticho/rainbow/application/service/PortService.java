@@ -6,7 +6,6 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.ticho.intranet.server.core.ServerHandler;
 import top.ticho.intranet.server.entity.ClientInfo;
 import top.ticho.rainbow.application.assembler.PortAssembler;
 import top.ticho.rainbow.application.dto.command.PortModifyfCommand;
@@ -16,6 +15,7 @@ import top.ticho.rainbow.application.dto.excel.PortExcelExport;
 import top.ticho.rainbow.application.dto.query.PortQuery;
 import top.ticho.rainbow.application.dto.response.PortDTO;
 import top.ticho.rainbow.application.executor.DictExecutor;
+import top.ticho.rainbow.application.executor.IntranetExecutor;
 import top.ticho.rainbow.application.repository.PortAppRepository;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.domain.entity.Port;
@@ -49,12 +49,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class PortService {
-
     private final PortRepository portRepository;
     private final PortAppRepository portAppRepository;
     private final PortAssembler portAssembler;
     private final ClientRepository clientRepository;
-    private final ServerHandler serverHandler;
+    private final IntranetExecutor intranetExecutor;
     private final DictExecutor dictExecutor;
     private final HttpServletResponse response;
 
@@ -84,8 +83,8 @@ public class PortService {
 
     public void enable(List<VersionModifyCommand> datas) {
         boolean enable = modifyBatch(datas, Port::enable, port -> {
-            if (!serverHandler.exists(port.getPort())) {
-                serverHandler.bind(port.getAccessKey(), port.getPort(), port.getEndpoint());
+            if (!intranetExecutor.exists(port.getPort())) {
+                intranetExecutor.bind(port.getAccessKey(), port.getPort(), port.getEndpoint());
             }
         });
         TiAssert.isTrue(enable, "启用失败，请刷新后重试");
@@ -93,8 +92,8 @@ public class PortService {
 
     public void disable(List<VersionModifyCommand> datas) {
         boolean disable = modifyBatch(datas, Port::disable, port -> {
-            if (serverHandler.exists(port.getPort())) {
-                serverHandler.unbind(port.getAccessKey(), port.getPort());
+            if (intranetExecutor.exists(port.getPort())) {
+                intranetExecutor.unbind(port.getAccessKey(), port.getPort());
             }
         });
         TiAssert.isTrue(disable, "禁用失败，请刷新后重试");
@@ -158,13 +157,13 @@ public class PortService {
         if (Objects.isNull(portDTO)) {
             return;
         }
-        Optional<ClientInfo> clientInfoOpt = serverHandler.findByAccessKey(portDTO.getAccessKey());
+        Optional<ClientInfo> clientInfoOpt = intranetExecutor.findByAccessKey(portDTO.getAccessKey());
         if (clientInfoOpt.isEmpty()) {
             return;
         }
         ClientInfo clientInfo = clientInfoOpt.get();
         Integer clientChannelStatus = Objects.nonNull(clientInfo.getChannel()) ? 1 : 0;
-        Integer channelStatus = serverHandler.exists(portDTO.getPort()) ? 1 : 0;
+        Integer channelStatus = intranetExecutor.exists(portDTO.getPort()) ? 1 : 0;
         portDTO.setClientChannelStatus(clientChannelStatus);
         portDTO.setAppChannelStatus(channelStatus);
     }
@@ -172,9 +171,9 @@ public class PortService {
     private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<Port> modifyHandle, Consumer<Port> modifyToDbAfterHandle) {
         List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
         List<Port> ports = portRepository.list(ids);
-        Map<Long, Port> userMap = CollStreamUtil.toIdentityMap(ports, Port::getId);
+        Map<Long, Port> portMap = CollStreamUtil.toIdentityMap(ports, Port::getId);
         for (VersionModifyCommand modify : modifys) {
-            Port port = userMap.get(modify.getId());
+            Port port = portMap.get(modify.getId());
             TiAssert.isNotNull(port, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
             port.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 端口: {}", port.getPort()));
             // 修改逻辑

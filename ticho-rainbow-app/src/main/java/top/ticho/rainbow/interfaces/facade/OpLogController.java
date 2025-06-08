@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.dto.query.OpLogQuery;
 import top.ticho.rainbow.application.dto.response.OpLogDTO;
 import top.ticho.rainbow.application.service.OpLogService;
+import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
 
-import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 
 
@@ -30,20 +30,9 @@ public class OpLogController {
     private final OpLogService opLogService;
 
     /**
-     * 查询操作日志
-     *
-     * @param id 编号
-     */
-    @PreAuthorize("@perm.hasPerms('system:op-log:find')")
-    @GetMapping
-    public TiResult<OpLogDTO> find(@NotNull(message = "编号不能为空") Long id) {
-        return TiResult.ok(opLogService.find(id));
-    }
-
-    /**
      * 查询操作日志(分页)
      */
-    @PreAuthorize("@perm.hasPerms('system:op-log:page')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_OP_LOG_PAGE + "')")
     @GetMapping("page")
     public TiResult<TiPageResult<OpLogDTO>> page(@Validated OpLogQuery query) {
         return TiResult.ok(opLogService.page(query));
@@ -55,7 +44,7 @@ public class OpLogController {
      * @param query 查询
      * @throws IOException io异常
      */
-    @PreAuthorize("@perm.hasPerms('system:op-log:export')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_OP_LOG_EXPORT + "')")
     @GetMapping("excel/export")
     public void exportExcel(@Validated OpLogQuery query) throws IOException {
         opLogService.exportExcel(query);

@@ -1,19 +1,25 @@
 package top.ticho.rainbow.application.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import top.ticho.starter.web.util.TiTreeNode;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 菜单信息DTO
+ * 菜单详情信息
+ * 菜单功能号详情信息
  *
  * @author zhajianjun
- * @date 2024-01-08 20:30
+ * @date 2023-12-17 08:30
  */
 @Data
-public class MenuDTO {
+@EqualsAndHashCode(callSuper = true)
+public class MenuDTO extends TiTreeNode<MenuDTO> {
 
-    /** 主键编号 */
+    /** 菜单id */
     private Long id;
     /** 父级id */
     private Long parentId;
@@ -39,8 +45,6 @@ public class MenuDTO {
     private Integer keepAlive;
     /** 菜单和目录是否可见;1-是,0-否 */
     private Integer invisible;
-    /** 当前激活的菜单 */
-    private String currentActiveMenu;
     /** 菜单是否可关闭;1-是,0-否 */
     private Integer closable;
     /** 图标 */
@@ -53,5 +57,10 @@ public class MenuDTO {
     private String remark;
     /** 版本号 */
     private Long version;
+    /** 创建时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime createTime;
+    /** 是否选中 */
+    private Boolean checkbox;
 
 }

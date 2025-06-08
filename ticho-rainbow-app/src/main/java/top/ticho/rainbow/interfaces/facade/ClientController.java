@@ -17,6 +17,8 @@ import top.ticho.rainbow.application.dto.command.VersionModifyCommand;
 import top.ticho.rainbow.application.dto.query.ClientQuery;
 import top.ticho.rainbow.application.dto.response.ClientDTO;
 import top.ticho.rainbow.application.service.ClientService;
+import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
+import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
@@ -43,7 +45,8 @@ public class ClientController {
     /**
      * 保存客户端
      */
-    @PreAuthorize("@perm.hasPerms('intranet:client:save')")
+    @ApiLog("保存客户端")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_CLIENT_SAVE + "')")
     @PostMapping
     public TiResult<Void> save(@Validated @RequestBody ClientSaveCommand clientSaveCommand) {
         clientService.save(clientSaveCommand);
@@ -53,7 +56,8 @@ public class ClientController {
     /**
      * 删除客户端
      */
-    @PreAuthorize("@perm.hasPerms('intranet:client:remove')")
+    @ApiLog("删除客户端")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_CLIENT_REMOVE + "')")
     @DeleteMapping
     public TiResult<Void> remove(@Validated @RequestBody VersionModifyCommand command) {
         clientService.remove(command);
@@ -63,7 +67,8 @@ public class ClientController {
     /**
      * 修改客户端
      */
-    @PreAuthorize("@perm.hasPerms('intranet:client:modify')")
+    @ApiLog("修改客户端")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_CLIENT_MODIFY + "')")
     @PutMapping
     public TiResult<Void> modify(@Validated @RequestBody ClientModifyCommand clientModifyCommand) {
         clientService.modify(clientModifyCommand);
@@ -73,7 +78,8 @@ public class ClientController {
     /**
      * 启用客户端
      */
-    @PreAuthorize("@perm.hasPerms('intranet:client:enable')")
+    @ApiLog("启用客户端")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_CLIENT_ENABLE + "')")
     @PatchMapping("status/enable")
     public TiResult<Void> enable(
         @NotNull(message = "客户端信息不能为空")
@@ -87,7 +93,8 @@ public class ClientController {
     /**
      * 禁用客户端
      */
-    @PreAuthorize("@perm.hasPerms('intranet:client:disable')")
+    @ApiLog("禁用客户端")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_CLIENT_DISABLE + "')")
     @PatchMapping("status/disable")
     public TiResult<Void> disable(
         @NotNull(message = "客户端信息不能为空")
@@ -101,7 +108,7 @@ public class ClientController {
     /**
      * 查询客户端(分页)
      */
-    @PreAuthorize("@perm.hasPerms('intranet:client:page')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_CLIENT_PAGE + "')")
     @GetMapping("page")
     public TiResult<TiPageResult<ClientDTO>> page(@Validated ClientQuery query) {
         return TiResult.ok(clientService.page(query));
@@ -110,7 +117,7 @@ public class ClientController {
     /**
      * 查询所有客户端
      */
-    @PreAuthorize("@perm.hasPerms('intranet:client:all')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_CLIENT_ALL + "')")
     @GetMapping("all")
     public TiResult<List<ClientDTO>> all() {
         return TiResult.ok(clientService.all());
@@ -123,8 +130,9 @@ public class ClientController {
      * @param query 查询
      * @throws IOException io异常
      */
+    @ApiLog("导出客户端信息")
     @TiView(ignore = true)
-    @PreAuthorize("@perm.hasPerms('intranet:client:export')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.INTRANET_CLIENT_EXPORT + "')")
     @GetMapping("excel/export")
     public void exportExcel(@Validated ClientQuery query) throws IOException {
         clientService.exportExcel(query);

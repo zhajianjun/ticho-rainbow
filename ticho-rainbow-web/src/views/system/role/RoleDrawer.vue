@@ -33,7 +33,7 @@
   import { BasicDrawer, useDrawerInner } from '@/components/Drawer';
   import { BasicTree, TreeItem } from '@/components/Tree';
 
-  import { listRoleMenu, saveRole } from '@/api/system/role';
+  import { listRoleMenu, saveRole, modifyRole } from '@/api/system/role';
   import { RoleDtlQuery, RoleModifyCommand, RoleSaveCommand } from '@/api/system/model/roleModel';
 
   export default defineComponent({
@@ -68,7 +68,7 @@
         checkedKeys.value = menuIds;
 
         if (unref(isUpdate)) {
-          setFieldsValue({
+          await setFieldsValue({
             ...data.record,
           });
         }

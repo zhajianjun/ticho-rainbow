@@ -6,6 +6,7 @@ import lombok.Data;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 字典DTO
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
  * @date 2024-01-14 13:43
  */
 @Data
-public class DictDTO {
+public class DictCacheDTO {
 
     /** 主键编号 */
     @NotNull(message = "编号不能为空")
@@ -36,5 +37,7 @@ public class DictDTO {
     /** 创建时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
+    /** 字典标签详情 */
+    private List<DictLabelDTO> details;
 
 }

@@ -7,7 +7,6 @@ package top.ticho.rainbow.domain.entity.vo;
  * @param icon    图标
  * @param color   颜色
  * @param sort    排序
- * @param status  状态;1-启用,0-禁用
  * @param remark  备注信息
  * @param version 版本号
  * @author zhajianjun
@@ -20,7 +19,6 @@ public record DictLabelModifyVO(
     String icon,
     String color,
     Integer sort,
-    Integer status,
     String remark,
     Long version
 ) {

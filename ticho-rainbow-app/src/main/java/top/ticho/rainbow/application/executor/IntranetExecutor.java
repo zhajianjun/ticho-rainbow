@@ -3,6 +3,7 @@ package top.ticho.rainbow.application.executor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import top.ticho.intranet.server.core.ServerHandler;
+import top.ticho.intranet.server.entity.ClientInfo;
 import top.ticho.intranet.server.entity.PortInfo;
 import top.ticho.rainbow.application.assembler.PortAssembler;
 import top.ticho.rainbow.domain.entity.Client;
@@ -17,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -47,6 +49,34 @@ public class IntranetExecutor {
 
     public Map<String, List<Port>> getPortMap(List<String> accessKeys) {
         return portRepository.listAndGroupByAccessKey(accessKeys, Function.identity(), filter());
+    }
+
+    public Optional<ClientInfo> findByAccessKey(String accessKey) {
+        return serverHandler.findByAccessKey(accessKey);
+    }
+
+    public List<ClientInfo> findAll() {
+        return serverHandler.findAll();
+    }
+
+    public void create(String accessKey, String name) {
+        serverHandler.create(accessKey, name);
+    }
+
+    public void remove(String accessKey) {
+        serverHandler.remove(accessKey);
+    }
+
+    public boolean bind(String accessKey, Integer port, String endpoint) {
+        return serverHandler.bind(accessKey, port, endpoint);
+    }
+
+    public void unbind(String accessKey, Integer port) {
+        serverHandler.unbind(accessKey, port);
+    }
+
+    public boolean exists(Integer portNum) {
+        return serverHandler.exists(portNum);
     }
 
     public void flush() {

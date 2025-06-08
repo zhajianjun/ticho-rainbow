@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.dto.response.PermissionDTO;
 import top.ticho.rainbow.application.service.PermissionQueryService;
+import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.starter.view.core.TiResult;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class PermissionController {
      *
      * @return {@link TiResult }<{@link List }<{@link PermissionDTO }>>
      */
-    @PreAuthorize("@perm.hasPerms('system:permission:tree')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_PERMISSION_TREE + "')")
     @GetMapping("tree")
     public TiResult<List<PermissionDTO>> tree() {
         return TiResult.ok(permissionQueryService.tree());

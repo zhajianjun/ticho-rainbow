@@ -22,6 +22,7 @@ import top.ticho.rainbow.application.dto.response.LoginUserDTO;
 import top.ticho.rainbow.application.dto.response.LoginUserDetailDTO;
 import top.ticho.rainbow.application.service.LoginUserService;
 import top.ticho.rainbow.application.service.login.DefaultLoginService;
+import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.starter.security.annotation.IgnoreJwtCheck;
 import top.ticho.starter.security.dto.TiToken;
 import top.ticho.starter.view.core.TiResult;
@@ -113,7 +114,7 @@ public class OauthController {
     /**
      * 查询登录用户信息
      */
-    @PreAuthorize("@perm.hasPerms('oauth:user:find')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.OAUTH_USER_FIND + "')")
     @GetMapping("user")
     public TiResult<LoginUserDTO> find() {
         return TiResult.ok(loginUserService.find());
@@ -122,7 +123,7 @@ public class OauthController {
     /**
      * 查询登录用户详细信息
      */
-    @PreAuthorize("@perm.hasPerms('oauth:user:find')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.OAUTH_USER_DETAIL_FIND + "')")
     @GetMapping("user/detail")
     public TiResult<LoginUserDetailDTO> findDetail() {
         return TiResult.ok(loginUserService.findDetail());
@@ -133,7 +134,7 @@ public class OauthController {
      *
      * @param file 文件
      */
-    @PreAuthorize("@perm.hasPerms('oauth:user:avatar:upload')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.OAUTH_USER_AVATAR_UPLOAD + "')")
     @PostMapping("user/avatar/upload")
     public TiResult<String> uploadAvatar(@NotNull(message = "请上传头像") MultipartFile file) {
         return TiResult.ok(loginUserService.uploadAvatar(file));
@@ -142,7 +143,7 @@ public class OauthController {
     /**
      * 修改用户
      */
-    @PreAuthorize("@perm.hasPerms('oauth:user:modify')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.OAUTH_USER_MODIFY + "')")
     @PutMapping("user")
     public TiResult<Void> modify(@Validated @RequestBody LoginUserModifyCommand loginUserModifyCommand) {
         loginUserService.modify(loginUserModifyCommand);
@@ -152,7 +153,7 @@ public class OauthController {
     /**
      * 修改用户密码
      */
-    @PreAuthorize("@perm.hasPerms('oauth:user:password:modify')")
+    @PreAuthorize("@perm.hasPerms('" + ApiConst.OAUTH_USER_PASSWORD_MODIFY + "')")
     @PatchMapping("user/password")
     public TiResult<Void> modifyPassword(@Validated @RequestBody LoginUserModifyPasswordCommand loginUserModifyPasswordCommand) {
         loginUserService.modifyPassword(loginUserModifyPasswordCommand);

@@ -12,37 +12,17 @@ import java.util.List;
  */
 public interface DictLabelRepository {
 
-    /**
-     * 保存字典标签
-     *
-     * @param dictLabel 字典标签
-     * @return boolean
-     */
     boolean save(DictLabel dictLabel);
 
-    /**
-     * 删除字典标签
-     *
-     * @param id 编号
-     * @return boolean
-     */
     boolean remove(Long id);
 
-    /**
-     * 修改字典标签
-     *
-     * @param dictLabel 字典标签信息
-     * @return boolean
-     */
     boolean modify(DictLabel dictLabel);
 
-    /**
-     * 根据编号查询字典标签信息
-     *
-     * @param id 编号
-     * @return {@link DictLabel }
-     */
+    boolean modifyBatch(List<DictLabel> dictLabels);
+
     DictLabel find(Long id);
+
+    List<DictLabel> list(List<Long> ids);
 
     /**
      * 查询启用的字典标签信息列表

@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.assembler.MenuAssembler;
 import top.ticho.rainbow.application.assembler.RoleAssembler;
-import top.ticho.rainbow.application.dto.response.MenuDtlDTO;
+import top.ticho.rainbow.application.dto.response.MenuDTO;
 import top.ticho.rainbow.application.dto.response.RoleDTO;
-import top.ticho.rainbow.application.dto.response.RoleMenuDtlDTO;
+import top.ticho.rainbow.application.dto.response.RoleMenuDTO;
 import top.ticho.rainbow.domain.entity.Menu;
 import top.ticho.rainbow.domain.entity.Role;
 import top.ticho.rainbow.domain.repository.MenuRepository;
@@ -106,9 +106,9 @@ public class AuthExecutor {
      * @param roleIds    角色id列表
      * @param showAll    显示所有信息，匹配到的信息，设置匹配字段checkbox=true
      * @param treeHandle 是否进行树化
-     * @return {@link RoleMenuDtlDTO}
+     * @return {@link RoleMenuDTO}
      */
-    public RoleMenuDtlDTO mergeRoleByIds(List<Long> roleIds, boolean showAll, boolean treeHandle) {
+    public RoleMenuDTO mergeRoleByIds(List<Long> roleIds, boolean showAll, boolean treeHandle) {
         if (CollUtil.isEmpty(roleIds)) {
             return getRoleMenuDtl(Collections.emptyList(), showAll, treeHandle);
         }
@@ -118,10 +118,10 @@ public class AuthExecutor {
         return getRoleMenuDtl(roles, showAll, treeHandle);
     }
 
-    private RoleMenuDtlDTO getRoleMenuDtl(List<Role> roles, boolean showAll, boolean treeHandle) {
-        RoleMenuDtlDTO roleMenuDtlDTO = new RoleMenuDtlDTO();
+    private RoleMenuDTO getRoleMenuDtl(List<Role> roles, boolean showAll, boolean treeHandle) {
+        RoleMenuDTO roleMenuDTO = new RoleMenuDTO();
         List<Long> roleIds = roles.stream().map(Role::getId).collect(Collectors.toList());
-        roleMenuDtlDTO.setRoleIds(roleIds);
+        roleMenuDTO.setRoleIds(roleIds);
         // 合并的角色后所有的菜单
         List<Long> menuIds = roleIds
             .stream()
@@ -140,14 +140,14 @@ public class AuthExecutor {
             roleCodes.add(role.getCode());
             roleDtos.add(roleDTO);
         }
-        roleMenuDtlDTO.setRoleIds(roleIds);
-        roleMenuDtlDTO.setRoleCodes(roleCodes);
-        roleMenuDtlDTO.setRoles(roleDtos);
+        roleMenuDTO.setRoleIds(roleIds);
+        roleMenuDTO.setRoleCodes(roleCodes);
+        roleMenuDTO.setRoles(roleDtos);
         List<String> perms = new ArrayList<>();
         // 菜单信息过滤规则
-        Predicate<MenuDtlDTO> menuFilter = x -> menuIds.contains(x.getId());
+        Predicate<MenuDTO> menuFilter = x -> menuIds.contains(x.getId());
         // 菜单信息操作
-        Consumer<MenuDtlDTO> menuPeek = x -> {
+        Consumer<MenuDTO> menuPeek = x -> {
             x.setCheckbox(true);
             perms.addAll(x.getPerms());
         };
@@ -160,19 +160,19 @@ public class AuthExecutor {
             };
         }
         // 根据菜单信息，填充权限标识信息
-        List<MenuDtlDTO> menuFuncDtls = getMenuDtls(menus, menuFilter, menuPeek);
-        roleMenuDtlDTO.setMenus(menuFuncDtls);
+        List<MenuDTO> menuFuncDtls = toDTO(menus, menuFilter, menuPeek);
+        roleMenuDTO.setMenus(menuFuncDtls);
         if (!treeHandle) {
-            return roleMenuDtlDTO;
+            return roleMenuDTO;
         }
         // 菜单信息规整为树结构
-        MenuDtlDTO root = new MenuDtlDTO();
+        MenuDTO root = new MenuDTO();
         root.setId(0L);
         TiTreeUtil.tree(menuFuncDtls, root);
-        roleMenuDtlDTO.setMenus(root.getChildren());
-        roleMenuDtlDTO.setMenuIds(menuIds);
-        roleMenuDtlDTO.setPerms(perms);
-        return roleMenuDtlDTO;
+        roleMenuDTO.setMenus(root.getChildren());
+        roleMenuDTO.setMenuIds(menuIds);
+        roleMenuDTO.setPerms(perms);
+        return roleMenuDTO;
     }
 
 
@@ -182,9 +182,9 @@ public class AuthExecutor {
      * @param menus  菜单
      * @param filter 过滤规则
      * @param peek   执行规则
-     * @return {@link List}<{@link MenuDtlDTO}>
+     * @return {@link List}<{@link MenuDTO}>
      */
-    public List<MenuDtlDTO> getMenuDtls(List<Menu> menus, Predicate<MenuDtlDTO> filter, Consumer<MenuDtlDTO> peek) {
+    public List<MenuDTO> toDTO(List<Menu> menus, Predicate<MenuDTO> filter, Consumer<MenuDTO> peek) {
         if (filter == null) {
             filter = x -> true;
         }
@@ -194,12 +194,11 @@ public class AuthExecutor {
         }
         return menus
             .stream()
-            .map(menuAssembler::toDtlDTO)
+            .map(menuAssembler::toDTO)
             .filter(filter)
             .peek(peek)
-            .sorted(Comparator.comparing(MenuDtlDTO::getParentId).thenComparing(Comparator.nullsLast(Comparator.comparing(MenuDtlDTO::getSort))))
+            .sorted(Comparator.comparing(MenuDTO::getParentId).thenComparing(Comparator.nullsLast(Comparator.comparing(MenuDTO::getSort))))
             .collect(Collectors.toList());
     }
-
 
 }

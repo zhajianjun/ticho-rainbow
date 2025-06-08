@@ -181,21 +181,15 @@
         const { createMessage } = useMessage();
         const checked = record.status === 1;
         let oprate: Promise<any>;
-        let messagePrefix: string;
+        const messagePrefix = getDictLabelByCodeAndValue('commonStatus', checked ? 0 : 1);
         record.pendingStatus = true;
-
         try {
-          if (checked) {
-            messagePrefix = '禁用';
-            const param = { ...record } as VersionModifyCommand;
-            oprate = disableRole([param]);
-          } else {
-            messagePrefix = '启用';
-            const param = { ...record } as VersionModifyCommand;
-            oprate = enableRole([param]);
-          }
+          const param = {
+            id: record.id,
+            version: record.version,
+          } as VersionModifyCommand;
+          oprate = checked ? disableRole([param]) : enableRole([param]);
         } catch (error) {
-          createMessage.error('操作失败：参数构造异常');
           record.pendingStatus = false;
           return;
         }
@@ -204,10 +198,10 @@
             // 仅在请求成功后更新状态
             record.status = checked ? 0 : 1;
             createMessage.success(messagePrefix + `成功`);
+            reload();
           })
           .finally(() => {
             record.pendingStatus = false;
-            reload();
           });
       }
 

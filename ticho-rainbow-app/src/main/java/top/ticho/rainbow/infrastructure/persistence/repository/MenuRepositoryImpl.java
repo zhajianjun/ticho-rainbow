@@ -51,14 +51,25 @@ public class MenuRepositoryImpl extends TiRepositoryImpl<MenuMapper, MenuPO> imp
     }
 
     @Override
+    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:menu:list'")
+    public boolean modifyBatch(List<Menu> menus) {
+        return super.updateBatchById(menuConverter.toPo(menus));
+    }
+
+    @Override
     public Menu find(Long id) {
         return menuConverter.toEntity(super.getById(id));
     }
 
     @Override
+    public List<Menu> list(List<Long> ids) {
+        return menuConverter.toEntity(super.listByIds(ids));
+    }
+
+    @Override
     @Cacheable(value = CacheConst.COMMON, key = "'ticho-rainbow:menu:list'", sync = true)
     public List<Menu> cacheList() {
-        return menuConverter.toEntitys(super.list());
+        return menuConverter.toEntity(super.list());
     }
 
     @Override

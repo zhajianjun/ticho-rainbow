@@ -104,7 +104,7 @@ public class TaskService implements InitializingBean {
         TiAssert.isNotNull(task, "删除失败，任务不存在");
         task.checkVersion(command.getVersion(), "数据已被修改，请刷新后重试");
         TiAssert.isTrue(!task.isEnable(), "删除失败，请先禁用该任务");
-        TiAssert.isTrue(taskRepository.remove(command.getId()), "删除失败");
+        TiAssert.isTrue(taskRepository.remove(command.getId()), "删除失败，请刷新后重试");
         boolean deleteJob = taskTemplate.deleteJob(command.getId().toString(), DEFAULT_JOB_GROUP);
         TiAssert.isTrue(deleteJob, "删除任务失败");
     }
@@ -114,6 +114,8 @@ public class TaskService implements InitializingBean {
         Long id = taskModifyCommand.getId();
         check(taskModifyCommand.getCronExpression(), taskModifyCommand.getContent(), taskModifyCommand.getParam());
         Task task = taskRepository.find(id);
+        TiAssert.isNotNull(task, "修改失败，任务不存在");
+        task.checkVersion(taskModifyCommand.getVersion(), "数据已被修改，请刷新后重试");
         TaskModifyVo taskModifyVo = taskAssembler.toVo(taskModifyCommand);
         task.modify(taskModifyVo);
         TiAssert.isTrue(taskRepository.modify(task), "修改失败，请刷新后重试");
@@ -144,12 +146,6 @@ public class TaskService implements InitializingBean {
         TiAssert.isTrue(num > 0, "查询数量必须大于0");
         TiAssert.isTrue(TaskTemplate.isValid(cronExpression), "cron表达式不合法");
         return TaskTemplate.getRecentCronTime(cronExpression, num);
-    }
-
-
-    public TaskDTO find(Long id) {
-        Task task = taskRepository.find(id);
-        return taskAssembler.toDTO(task);
     }
 
     public TiPageResult<TaskDTO> page(TaskQuery query) {
@@ -185,9 +181,9 @@ public class TaskService implements InitializingBean {
     private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<Task> modifyHandle) {
         List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
         List<Task> tasks = taskRepository.list(ids);
-        Map<Long, Task> userMap = CollStreamUtil.toIdentityMap(tasks, Task::getId);
+        Map<Long, Task> taskMap = CollStreamUtil.toIdentityMap(tasks, Task::getId);
         for (VersionModifyCommand modify : modifys) {
-            Task task = userMap.get(modify.getId());
+            Task task = taskMap.get(modify.getId());
             TiAssert.isNotNull(task, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
             task.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 任务: {}", task.getName()));
             // 修改逻辑

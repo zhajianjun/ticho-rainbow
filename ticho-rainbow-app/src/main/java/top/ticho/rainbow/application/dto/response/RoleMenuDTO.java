@@ -11,7 +11,7 @@ import java.util.List;
  * @date 2023-12-17 08:30
  */
 @Data
-public class RoleMenuDtlDTO {
+public class RoleMenuDTO {
 
     /** 角色id列表 */
     private List<Long> roleIds;
@@ -24,6 +24,6 @@ public class RoleMenuDtlDTO {
     /** 角色信息 */
     private List<RoleDTO> roles;
     /** 菜单信息 */
-    private List<MenuDtlDTO> menus;
+    private List<MenuDTO> menus;
 
 }
