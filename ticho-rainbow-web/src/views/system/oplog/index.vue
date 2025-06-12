@@ -35,7 +35,7 @@
   import { defineComponent, ref } from 'vue';
   import { BasicTable, TableAction, useTable } from '@/components/Table';
   import { getSearchColumns, getTableColumns } from './opLog.data';
-  import { opLogPage, expExcel } from '@/api/system/opLog';
+  import { expExcel, opLogPage } from '@/api/system/opLog';
   import { usePermission } from '@/hooks/web/usePermission';
   import LogDetailModal from './LogDetailModal.vue';
   import { useModal } from '@/components/Modal';
@@ -129,6 +129,7 @@
             exportLoding.value = false;
           });
       }
+
       return {
         registerTable,
         handleDetail,

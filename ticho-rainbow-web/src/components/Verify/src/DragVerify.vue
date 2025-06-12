@@ -1,6 +1,6 @@
 <script lang="tsx">
   import type { Ref } from 'vue';
-  import { defineComponent, ref, computed, unref, reactive, watch, watchEffect } from 'vue';
+  import { computed, defineComponent, reactive, ref, unref, watch, watchEffect } from 'vue';
   import { useTimeoutFn } from '@vben/hooks';
   import { useEventListener } from '@/hooks/event/useEventListener';
   import { basicProps } from './props';

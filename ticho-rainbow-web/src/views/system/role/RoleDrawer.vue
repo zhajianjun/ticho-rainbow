@@ -33,7 +33,7 @@
   import { BasicDrawer, useDrawerInner } from '@/components/Drawer';
   import { BasicTree, TreeItem } from '@/components/Tree';
 
-  import { listRoleMenu, saveRole, modifyRole } from '@/api/system/role';
+  import { listRoleMenu, modifyRole, saveRole } from '@/api/system/role';
   import { RoleDtlQuery, RoleModifyCommand, RoleSaveCommand } from '@/api/system/model/roleModel';
 
   export default defineComponent({

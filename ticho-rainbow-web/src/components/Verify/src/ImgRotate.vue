@@ -1,6 +1,6 @@
 <script lang="tsx">
-  import type { MoveData, DragVerifyActionType } from './typing';
-  import { defineComponent, computed, unref, reactive, watch, ref } from 'vue';
+  import type { DragVerifyActionType, MoveData } from './typing';
+  import { computed, defineComponent, reactive, ref, unref, watch } from 'vue';
   import { useTimeoutFn } from '@vben/hooks';
   import BasicDragVerify from './DragVerify.vue';
   import { hackCss } from '@/utils/domUtils';
@@ -56,6 +56,7 @@
         }
         return 1;
       });
+
       function handleStart() {
         state.startTime = new Date().getTime();
       }
@@ -95,6 +96,7 @@
         }
         state.showTip = true;
       }
+
       function checkPass() {
         state.isPassing = true;
         state.endTime = new Date().getTime();

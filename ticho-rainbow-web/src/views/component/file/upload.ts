@@ -28,6 +28,7 @@ export async function getFileMd5(file: File, chunkCount: number, chunkSize: numb
     fileReader.onerror = (e) => {
       reject(e);
     };
+
     function loadNext() {
       const start = currentChunk * chunkSize;
       let end = start + chunkSize;
@@ -36,6 +37,7 @@ export async function getFileMd5(file: File, chunkCount: number, chunkSize: numb
       }
       fileReader.readAsArrayBuffer(blobSlice.call(file, start, end));
     }
+
     loadNext();
   });
 }

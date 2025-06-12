@@ -67,7 +67,7 @@
   import { columns } from './menu.data';
   import { cloneDeep } from 'lodash-es';
   import { usePermission } from '@/hooks/web/usePermission';
-  import { Switch, Space, Tag } from 'ant-design-vue';
+  import { Space, Switch, Tag } from 'ant-design-vue';
   import { getDictLabelByCodeAndValue } from '@/store/modules/dict';
   import { useMessage } from '@/hooks/web/useMessage';
   import { VersionModifyCommand } from '@/api/system/model/baseModel';

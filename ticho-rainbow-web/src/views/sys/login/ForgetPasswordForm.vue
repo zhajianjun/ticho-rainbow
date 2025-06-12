@@ -53,19 +53,18 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { reactive, ref, unref, computed } from 'vue';
+  import { computed, reactive, ref, unref } from 'vue';
   import LoginFormTitle from './LoginFormTitle.vue';
-  import { Form, Input, Button } from 'ant-design-vue';
+  import { Button, Form, Input } from 'ant-design-vue';
   import { StrengthMeter } from '@/components/StrengthMeter';
   import { CountdownInput } from '@/components/CountDown';
   import { useI18n } from '@/hooks/web/useI18n';
-  import { useLoginState, useFormRules, useFormValid, LoginStateEnum } from './useLogin';
+  import { LoginStateEnum, useFormRules, useFormValid, useLoginState } from './useLogin';
   import { resetPassword, resetPasswordEmailSend } from '@/api/system/login';
   import {
     ImgCodeDTO,
     ImgCodeEmailDTO,
     LoginCommand,
-    LoginDTO,
     UserSignUpDTO,
   } from '@/api/system/model/loginModel';
   import { useMessage } from '@/hooks/web/useMessage';

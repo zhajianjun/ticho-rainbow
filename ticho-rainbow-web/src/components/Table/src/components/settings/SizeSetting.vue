@@ -24,8 +24,8 @@
 </template>
 <script lang="ts" setup>
   import type { SizeType } from '../../types/table';
-  import { ref, onMounted } from 'vue';
-  import { Tooltip, Dropdown, Menu, type MenuProps } from 'ant-design-vue';
+  import { onMounted, ref } from 'vue';
+  import { Dropdown, Menu, type MenuProps, Tooltip } from 'ant-design-vue';
   import { ColumnHeightOutlined } from '@ant-design/icons-vue';
   import { useI18n } from '@/hooks/web/useI18n';
   import { useTableContext } from '../../hooks/useTableContext';

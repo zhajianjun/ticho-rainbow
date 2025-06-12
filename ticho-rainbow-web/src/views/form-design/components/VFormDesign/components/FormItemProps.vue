@@ -26,8 +26,9 @@
               :is="item.component"
               v-model:value="formConfig.currentItem.itemProps[item.name]"
             />
-          </FormItem> </div
-        ><div v-for="item of advanceFormItemColProps" :key="item.name">
+          </FormItem>
+        </div>
+        <div v-for="item of advanceFormItemColProps" :key="item.name">
           <FormItem :label="item.label" v-if="showProps(item.exclude)">
             <component
               v-if="item.component"
@@ -67,13 +68,13 @@
 <script lang="ts" setup name="FormItemProps">
   import { computed, watch } from 'vue';
   import {
+    advanceFormItemColProps,
+    advanceFormItemProps,
     baseFormItemControlAttrs,
     baseFormItemProps,
-    advanceFormItemProps,
-    advanceFormItemColProps,
   } from '../../VFormDesign/config/formItemPropsConfig';
 
-  import { Empty, Input, Form, FormItem, Switch, Checkbox, Col } from 'ant-design-vue';
+  import { Checkbox, Col, Empty, Form, FormItem, Input, Switch } from 'ant-design-vue';
   import RuleProps from './RuleProps.vue';
   import { useFormDesignState } from '../../../hooks/useFormDesignState';
   import { isArray } from 'lodash-es';

@@ -30,8 +30,8 @@
 <script lang="ts">
   import { computed, defineComponent, PropType, provide, ref, unref } from 'vue';
   import FormRender from './components/FormRender.vue';
-  import { IFormConfig, AForm } from '../../typings/v-form-component';
-  import { Form, Row, Col } from 'ant-design-vue';
+  import { AForm, IFormConfig } from '../../typings/v-form-component';
+  import { Col, Form, Row } from 'ant-design-vue';
   import { useFormInstanceMethods } from '../../hooks/useFormInstanceMethods';
   import { IProps, IVFormMethods, useVFormMethods } from '../../hooks/useVFormMethods';
   import { useVModel } from '@vueuse/core';

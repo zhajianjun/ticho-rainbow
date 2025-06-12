@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { DictLabel, DictLabelDTO } from '@/api/system/model/dictLabelModel';
-import { flush, all } from '@/api/system/dict';
+import { all, flush } from '@/api/system/dict';
 import { DictCacheDTO } from '@/api/system/model/dictModel';
 import { Persistent } from '@/utils/cache/persistent';
 import { DICTS_KEY } from '@/enums/cacheEnum';

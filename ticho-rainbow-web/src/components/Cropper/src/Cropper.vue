@@ -12,7 +12,7 @@
 </template>
 <script lang="ts" setup>
   import type { CSSProperties } from 'vue';
-  import { onMounted, ref, unref, computed, onUnmounted } from 'vue';
+  import { computed, onMounted, onUnmounted, ref, unref } from 'vue';
   import Cropper from 'cropperjs';
   import 'cropperjs/dist/cropper.css';
   import { useDesign } from '@/hooks/web/useDesign';

@@ -42,7 +42,7 @@
 <script lang="ts" setup>
   import type { ColEx } from '../types';
   import { computed, PropType } from 'vue';
-  import { Form, Col } from 'ant-design-vue';
+  import { Col, Form } from 'ant-design-vue';
   import { Button, ButtonProps } from '@/components/Button';
   import { BasicArrow } from '@/components/Basic';
   import { useFormContext } from '../hooks/useFormContext';

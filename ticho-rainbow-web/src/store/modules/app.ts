@@ -1,17 +1,17 @@
 import type {
-  ProjectConfig,
   HeaderSetting,
   MenuSetting,
-  TransitionSetting,
   MultiTabsSetting,
+  ProjectConfig,
+  TransitionSetting,
 } from '#/config';
-import type { BeforeMiniState, ApiAddress } from '#/store';
+import type { ApiAddress, BeforeMiniState } from '#/store';
 
 import { defineStore } from 'pinia';
 import { store } from '@/store';
 
 import { ThemeEnum } from '@/enums/appEnum';
-import { APP_DARK_MODE_KEY, PROJ_CFG_KEY, API_ADDRESS } from '@/enums/cacheEnum';
+import { API_ADDRESS, APP_DARK_MODE_KEY, PROJ_CFG_KEY } from '@/enums/cacheEnum';
 import { Persistent } from '@/utils/cache/persistent';
 import { darkMode } from '@/settings/designSetting';
 import { resetRouter } from '@/router';
@@ -26,6 +26,7 @@ interface AppState {
   // When the window shrinks, remember some states, and restore these states when the window is restored
   beforeMiniInfo: BeforeMiniState;
 }
+
 let timeId: TimeoutHandle;
 export const useAppStore = defineStore({
   id: 'app',

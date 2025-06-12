@@ -1,6 +1,6 @@
 import type { PaginationProps } from '../types/pagination';
 import type { BasicTableProps } from '../types/table';
-import { computed, unref, ref, ComputedRef, watch, h } from 'vue';
+import { computed, ComputedRef, h, ref, unref, watch } from 'vue';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons-vue';
 import { isBoolean } from '@/utils/is';
 import { PAGE_SIZE, PAGE_SIZE_OPTIONS } from '../const';

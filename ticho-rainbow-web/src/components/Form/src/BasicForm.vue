@@ -41,9 +41,8 @@
   import type { FormActionType, FormProps, FormSchemaInner as FormSchema } from './types/form';
   import type { AdvanceState } from './types/hooks';
   import type { Ref } from 'vue';
-
-  import { reactive, ref, computed, unref, onMounted, watch, nextTick, useAttrs } from 'vue';
-  import { Form, Row, type FormProps as AntFormProps } from 'ant-design-vue';
+  import { computed, nextTick, onMounted, reactive, ref, unref, useAttrs, watch } from 'vue';
+  import { Form, type FormProps as AntFormProps, Row } from 'ant-design-vue';
   import FormItem from './components/FormItem.vue';
   import FormAction from './components/FormAction.vue';
 
@@ -167,12 +166,7 @@
       }
 
       // handle schema.valueFormat
-      if (
-        isHandleDefaultValue &&
-        defaultValue &&
-        component &&
-        isFunction(valueFormat)
-      ) {
+      if (isHandleDefaultValue && defaultValue && component && isFunction(valueFormat)) {
         schema.defaultValue = valueFormat({
           value: defaultValue,
           schema,

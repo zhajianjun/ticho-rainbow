@@ -4,7 +4,10 @@
   "extends": "./base.json",
   "compilerOptions": {
     "jsx": "preserve",
-    "lib": ["ESNext", "DOM"],
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
     "noImplicitAny": false
   }
 }

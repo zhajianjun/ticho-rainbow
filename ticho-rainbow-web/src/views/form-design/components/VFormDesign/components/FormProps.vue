@@ -64,13 +64,17 @@
         </FormItem>
       </div>
       <FormItem label="表单属性">
-        <Col
-          ><Checkbox v-model:checked="formConfig.colon" v-if="formConfig.layout == 'horizontal'"
-            >label后面显示冒号</Checkbox
-          ></Col
-        >
-        <Col><Checkbox v-model:checked="formConfig.disabled">禁用</Checkbox></Col>
-        <Col><Checkbox v-model:checked="formConfig.hideRequiredMark">隐藏必选标记</Checkbox></Col>
+        <Col>
+          <Checkbox v-model:checked="formConfig.colon" v-if="formConfig.layout == 'horizontal'"
+            >label后面显示冒号
+          </Checkbox>
+        </Col>
+        <Col>
+          <Checkbox v-model:checked="formConfig.disabled">禁用</Checkbox>
+        </Col>
+        <Col>
+          <Checkbox v-model:checked="formConfig.hideRequiredMark">隐藏必选标记</Checkbox>
+        </Col>
       </FormItem>
     </Form>
   </div>
@@ -79,15 +83,15 @@
   import { computed } from 'vue';
   import { useFormDesignState } from '../../../hooks/useFormDesignState';
   import {
-    InputNumber,
-    Slider,
     Checkbox,
     Col,
-    RadioChangeEvent,
     Form,
     FormItem,
+    InputNumber,
     RadioButton,
+    RadioChangeEvent,
     RadioGroup,
+    Slider,
   } from 'ant-design-vue';
 
   const { formConfig } = useFormDesignState();

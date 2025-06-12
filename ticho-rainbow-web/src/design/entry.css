@@ -1,6 +1,7 @@
 * > .enter-x:nth-child(1) {
   transform: translateX(50px);
 }
+
 * > .-enter-x:nth-child(1) {
   transform: translateX(-50px);
 }
@@ -13,9 +14,11 @@
   animation-fill-mode: forwards;
   animation-delay: 0.1s;
 }
+
 * > .enter-x:nth-child(2) {
   transform: translateX(50px);
 }
+
 * > .-enter-x:nth-child(2) {
   transform: translateX(-50px);
 }
@@ -28,9 +31,11 @@
   animation-fill-mode: forwards;
   animation-delay: 0.2s;
 }
+
 * > .enter-x:nth-child(3) {
   transform: translateX(50px);
 }
+
 * > .-enter-x:nth-child(3) {
   transform: translateX(-50px);
 }
@@ -47,6 +52,7 @@
 * > .enter-x:nth-child(4) {
   transform: translateX(50px);
 }
+
 * > .-enter-x:nth-child(4) {
   transform: translateX(-50px);
 }
@@ -63,6 +69,7 @@
 * > .enter-x:nth-child(5) {
   transform: translateX(50px);
 }
+
 * > .-enter-x:nth-child(5) {
   transform: translateX(-50px);
 }
@@ -79,6 +86,7 @@
 * > .enter-y:nth-child(1) {
   transform: translateX(50px);
 }
+
 * > .-enter-y:nth-child(1) {
   transform: translateX(-50px);
 }
@@ -91,9 +99,11 @@
   animation-fill-mode: forwards;
   animation-delay: 0.1s;
 }
+
 * > .enter-y:nth-child(2) {
   transform: translateX(50px);
 }
+
 * > .-enter-y:nth-child(2) {
   transform: translateX(-50px);
 }
@@ -106,9 +116,11 @@
   animation-fill-mode: forwards;
   animation-delay: 0.2s;
 }
+
 * > .enter-y:nth-child(3) {
   transform: translateX(50px);
 }
+
 * > .-enter-y:nth-child(3) {
   transform: translateX(-50px);
 }
@@ -125,6 +137,7 @@
 * > .enter-y:nth-child(4) {
   transform: translateX(50px);
 }
+
 * > .-enter-y:nth-child(4) {
   transform: translateX(-50px);
 }
@@ -141,6 +154,7 @@
 * > .enter-y:nth-child(5) {
   transform: translateX(50px);
 }
+
 * > .-enter-y:nth-child(5) {
   transform: translateX(-50px);
 }
@@ -160,6 +174,7 @@
     transform: translateX(0);
   }
 }
+
 @keyframes enter-y-animation {
   to {
     opacity: 1;

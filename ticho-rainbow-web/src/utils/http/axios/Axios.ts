@@ -1,13 +1,13 @@
 import type {
-  AxiosRequestConfig,
-  AxiosInstance,
-  AxiosResponse,
   AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
+import axios from 'axios';
 import type { RequestOptions, Result, UploadFileParams } from '#/axios';
 import type { CreateAxiosOptions } from './axiosTransform';
-import axios from 'axios';
 import qs from 'qs';
 import { AxiosCanceler } from './axiosCancel';
 import { isFunction, isString } from '@/utils/is';

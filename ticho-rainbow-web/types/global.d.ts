@@ -1,10 +1,10 @@
 import type {
-  ComponentRenderProxy,
-  VNode,
-  VNodeChild,
   ComponentPublicInstance,
+  ComponentRenderProxy,
   FunctionalComponent,
   PropType as VuePropType,
+  VNode,
+  VNodeChild,
 } from 'vue';
 
 declare global {
@@ -59,6 +59,7 @@ declare global {
   declare interface WheelEvent {
     path?: EventTarget[];
   }
+
   interface ImportMetaEnv extends ViteEnv {
     __: unknown;
   }
@@ -79,12 +80,15 @@ declare global {
     type Element = VNode;
     // tslint:disable no-empty-interface
     type ElementClass = ComponentRenderProxy;
+
     interface ElementAttributesProperty {
       $props: any;
     }
+
     interface IntrinsicElements {
       [elem: string]: any;
     }
+
     interface IntrinsicAttributes {
       [elem: string]: any;
     }

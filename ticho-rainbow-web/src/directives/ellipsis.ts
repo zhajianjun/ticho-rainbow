@@ -1,4 +1,4 @@
-import type { CSSProperties, DirectiveBinding, ObjectDirective, App } from 'vue';
+import type { App, CSSProperties, DirectiveBinding, ObjectDirective } from 'vue';
 
 interface IValue {
   width?: number;
@@ -36,7 +36,9 @@ const Ellipsis: ObjectDirective = {
     }
   },
 };
+
 export function setupEllipsisDirective(app: App) {
   app.directive('ellipsis', Ellipsis);
 }
+
 export default Ellipsis;

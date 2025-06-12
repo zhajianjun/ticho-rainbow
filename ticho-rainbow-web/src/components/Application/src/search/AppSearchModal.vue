@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, unref, ref, watch, nextTick } from 'vue';
+  import { computed, nextTick, ref, unref, watch } from 'vue';
   import { SearchOutlined } from '@ant-design/icons-vue';
   import AppSearchFooter from './AppSearchFooter.vue';
   import Icon from '@/components/Icon/Icon.vue';

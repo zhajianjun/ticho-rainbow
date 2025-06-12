@@ -3,7 +3,7 @@ import type { RouteRecordNormalized } from 'vue-router';
 
 import { useAppStoreWithOut } from '@/store/modules/app';
 import { usePermissionStore } from '@/store/modules/permission';
-import { transformMenuModule, getAllParentPath } from '@/router/helper/menuHelper';
+import { getAllParentPath, transformMenuModule } from '@/router/helper/menuHelper';
 import { filter } from '@/utils/helper/treeHelper';
 import { isHttpUrl } from '@/utils/is';
 import { router } from '@/router';

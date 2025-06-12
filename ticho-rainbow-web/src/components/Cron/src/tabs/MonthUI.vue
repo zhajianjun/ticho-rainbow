@@ -36,8 +36,8 @@
 
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import { InputNumber, Radio, RadioGroup, Checkbox, CheckboxGroup } from 'ant-design-vue';
-  import { useTabProps, useTabEmits, useTabSetup } from './useTabMixin';
+  import { Checkbox, CheckboxGroup, InputNumber, Radio, RadioGroup } from 'ant-design-vue';
+  import { useTabEmits, useTabProps, useTabSetup } from './useTabMixin';
 
   export default defineComponent({
     name: 'MonthUI',

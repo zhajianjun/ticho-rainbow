@@ -1,9 +1,9 @@
 <script lang="tsx">
-  import type { ContextMenuItem, ItemContentProps, Axis } from './typing';
-  import type { FunctionalComponent, CSSProperties, PropType } from 'vue';
-  import { defineComponent, nextTick, onMounted, computed, ref, unref, onUnmounted } from 'vue';
+  import type { Axis, ContextMenuItem, ItemContentProps } from './typing';
+  import type { CSSProperties, FunctionalComponent, PropType } from 'vue';
+  import { computed, defineComponent, nextTick, onMounted, onUnmounted, ref, unref } from 'vue';
   import Icon from '@/components/Icon/Icon.vue';
-  import { Menu, Divider } from 'ant-design-vue';
+  import { Divider, Menu } from 'ant-design-vue';
 
   const prefixCls = 'context-menu';
 
@@ -121,6 +121,7 @@
           );
         });
       }
+
       return () => {
         if (!unref(showRef)) {
           return null;
@@ -195,6 +196,7 @@
     &__item {
       margin: 0 !important;
     }
+
     .item-style();
 
     .ant-divider {

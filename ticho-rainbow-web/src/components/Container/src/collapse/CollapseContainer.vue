@@ -5,7 +5,7 @@
   import { useTimeoutFn } from '@vben/hooks';
   import { Skeleton } from 'ant-design-vue';
   import { isNil } from 'lodash-es';
-  import { defineComponent, ref, unref, type ExtractPropTypes, type PropType } from 'vue';
+  import { defineComponent, type ExtractPropTypes, type PropType, ref, unref } from 'vue';
   import CollapseHeader from './CollapseHeader.vue';
 
   const collapseContainerProps = {

@@ -91,15 +91,15 @@
   </Form>
 </template>
 <script lang="ts" setup>
-  import { reactive, ref, unref, computed, onMounted } from 'vue';
+  import { computed, onMounted, reactive, ref, unref } from 'vue';
 
-  import { Checkbox, Form, Input, Row, Col, Button, Divider } from 'ant-design-vue';
+  import { Button, Checkbox, Col, Divider, Form, Input, Row } from 'ant-design-vue';
   import {
-    GithubFilled,
-    WechatFilled,
     AlipayCircleFilled,
+    GithubFilled,
     GoogleCircleFilled,
     TwitterCircleFilled,
+    WechatFilled,
   } from '@ant-design/icons-vue';
   import LoginFormTitle from './LoginFormTitle.vue';
 
@@ -107,7 +107,7 @@
   import { useMessage } from '@/hooks/web/useMessage';
 
   import { useUserStore } from '@/store/modules/user';
-  import { LoginStateEnum, useLoginState, useFormRules, useFormValid } from './useLogin';
+  import { LoginStateEnum, useFormRules, useFormValid, useLoginState } from './useLogin';
   import { useDesign } from '@/hooks/web/useDesign';
   //import { onKeyStroke } from '@vueuse/core';
   import { getImgCode } from '@/api/system/login';
@@ -194,6 +194,7 @@
       padding-right: 0;
       border: none;
       background-color: transparent;
+
       img {
         margin: 0 0 0 0;
         padding: 0 0 0 0;

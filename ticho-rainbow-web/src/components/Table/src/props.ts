@@ -2,17 +2,17 @@ import type { PropType } from 'vue';
 import type { PaginationProps } from './types/pagination';
 import type {
   BasicColumn,
+  BasicTableProps,
   FetchSetting,
-  TableSetting,
+  SizeType,
   SorterResult,
   TableCustomRecord,
   TableRowSelection,
-  SizeType,
-  BasicTableProps,
+  TableSetting,
 } from './types/table';
 import type { FormProps } from '@/components/Form';
 
-import { DEFAULT_FILTER_FN, DEFAULT_SORT_FN, FETCH_SETTING, DEFAULT_SIZE } from './const';
+import { DEFAULT_FILTER_FN, DEFAULT_SIZE, DEFAULT_SORT_FN, FETCH_SETTING } from './const';
 import { propTypes } from '@/utils/propTypes';
 import type { Key } from 'ant-design-vue/lib/table/interface';
 

@@ -1,6 +1,6 @@
 import { ErrorTypeEnum } from '@/enums/exceptionEnum';
 import { MenuModeEnum, MenuTypeEnum } from '@/enums/menuEnum';
-import type { SizeType, ColumnOptionsType } from '@/components/Table/src/types/table';
+import type { ColumnOptionsType, SizeType } from '@/components/Table/src/types/table';
 
 // Lock screen information
 export interface LockInfo {

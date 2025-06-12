@@ -1,17 +1,17 @@
 import { defHttp } from '@/utils/http/axios';
 import { ContentTypeEnum } from '@/enums/httpEnum';
 import {
+  LoginCommand,
   LoginDTO,
-  LoginUserModifyCommand,
-  LoginUserModifyPasswordCommand,
-  UserSignUpCommand,
-  ResetPasswordCommand,
-  TiToken,
-  UserSignUpEmailSendCommand,
-  ResetPassworEmailSendCommand,
   LoginUserDetailDTO,
   LoginUserDTO,
-  LoginCommand,
+  LoginUserModifyCommand,
+  LoginUserModifyPasswordCommand,
+  ResetPasswordCommand,
+  ResetPassworEmailSendCommand,
+  TiToken,
+  UserSignUpCommand,
+  UserSignUpEmailSendCommand,
 } from '@/api/system/model/loginModel';
 
 import { ErrorMessageMode, RetryRequest } from '#/axios';

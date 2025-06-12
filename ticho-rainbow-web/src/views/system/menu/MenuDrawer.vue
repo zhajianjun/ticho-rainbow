@@ -22,14 +22,14 @@
   </BasicDrawer>
 </template>
 <script lang="ts">
-  import { defineComponent, ref, computed, unref } from 'vue';
+  import { computed, defineComponent, ref, unref } from 'vue';
   import { BasicForm, useForm } from '@/components/Form/index';
   import { formSchema } from './menu.data';
   import { BasicDrawer, useDrawerInner } from '@/components/Drawer';
   import { Cascader } from 'ant-design-vue';
   import { SHOW_CHILD } from 'ant-design-vue/es/vc-cascader';
 
-  import { saveMenu, modifyMenu } from '@/api/system/menu';
+  import { modifyMenu, saveMenu } from '@/api/system/menu';
   import { getPermissions } from '@/api/system/permssion';
   import { MenuModule } from '@/api/system/model/menuModel';
 

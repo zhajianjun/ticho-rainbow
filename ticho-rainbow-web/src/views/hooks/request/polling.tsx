@@ -1,5 +1,5 @@
 import { defineComponent } from 'vue';
-import { Card, Typography, Button, Space, message } from 'ant-design-vue';
+import { Button, Card, message, Space, Typography } from 'ant-design-vue';
 import { imitateApi } from './mock-api';
 import { useRequest } from '@vben/hooks';
 import { PageWrapper } from '@/components/Page';

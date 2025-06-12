@@ -67,6 +67,7 @@
 
       const { t } = useI18n();
       const imgCodeShow = ref('');
+
       async function flushImgCode() {
         getImgCode(imgKey).then((res) => {
           imgCodeShow.value = window.URL.createObjectURL(res);
@@ -79,6 +80,7 @@
           ...data.record,
         });
       });
+
       function handleOpen(v: boolean) {
         if (!v) {
           return;
@@ -97,6 +99,7 @@
           setModalProps({ confirmLoading: false });
         }
       }
+
       return {
         registerModal,
         registerForm,
@@ -117,6 +120,7 @@
       padding-right: 0;
       border: none;
       background-color: transparent;
+
       img {
         margin: 0 0 0 0;
         padding: 0 0 0 0;

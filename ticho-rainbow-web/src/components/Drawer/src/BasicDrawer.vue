@@ -32,8 +32,8 @@
 </template>
 <script lang="ts" setup>
   import type { DrawerInstance, DrawerProps } from './typing';
-  import { ref, computed, watch, unref, nextTick, getCurrentInstance } from 'vue';
   import type { CSSProperties, Ref } from 'vue';
+  import { computed, getCurrentInstance, nextTick, ref, unref, watch } from 'vue';
   import { Drawer } from 'ant-design-vue';
   import { useI18n } from '@/hooks/web/useI18n';
   import { isFunction, isNumber } from '@/utils/is';

@@ -1,13 +1,13 @@
-import { defineComponent, computed, unref } from 'vue';
+import { computed, defineComponent, unref } from 'vue';
 import { BasicDrawer } from '@/components/Drawer';
 import { Divider } from 'ant-design-vue';
 import {
-  TypePicker,
-  ThemeColorPicker,
+  InputNumberItem,
+  SelectItem,
   SettingFooter,
   SwitchItem,
-  SelectItem,
-  InputNumberItem,
+  ThemeColorPicker,
+  TypePicker,
 } from './components';
 
 import { AppDarkModeToggle } from '@/components/Application';
@@ -24,13 +24,13 @@ import { useI18n } from '@/hooks/web/useI18n';
 import { baseHandler } from './handler';
 
 import {
-  HandlerEnum,
   contentModeOptions,
-  topMenuAlignOptions,
   getMenuTriggerOptions,
-  routerTransitionOptions,
+  HandlerEnum,
   menuTypeListEnum,
   mixSidebarTriggerOptions,
+  routerTransitionOptions,
+  topMenuAlignOptions,
 } from './enum';
 
 // import {

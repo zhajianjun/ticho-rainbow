@@ -39,5 +39,6 @@ export function useFullScreen(context: UseFullScreenContext) {
     //   modalWrapSpinEl.style.height = `${unref(formerHeightRef)}px`;
     // }
   }
+
   return { getWrapClassName, handleFullScreen, fullScreenRef };
 }

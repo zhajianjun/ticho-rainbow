@@ -26,7 +26,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import type { TableSetting, ColumnChangeParam, TableActionType } from '../types/table';
+  import type { ColumnChangeParam, TableActionType, TableSetting } from '../types/table';
   import type { PropType } from 'vue';
   import { Divider } from 'ant-design-vue';
   import TableSettingComponent from './settings/index.vue';
@@ -66,6 +66,7 @@
 
   const emit = defineEmits(['columns-change']);
   const { prefixCls } = useDesign('basic-table-header');
+
   function handleColumnChange(data: ColumnChangeParam[]) {
     emit('columns-change', data);
   }

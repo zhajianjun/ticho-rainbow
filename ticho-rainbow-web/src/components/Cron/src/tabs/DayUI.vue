@@ -50,7 +50,7 @@
 
 <script lang="ts">
   import { computed, defineComponent, watch } from 'vue';
-  import { InputNumber, Radio, RadioGroup, Checkbox, CheckboxGroup } from 'ant-design-vue';
+  import { Checkbox, CheckboxGroup, InputNumber, Radio, RadioGroup } from 'ant-design-vue';
   import { TypeEnum, useTabEmits, useTabProps, useTabSetup } from './useTabMixin';
 
   export default defineComponent({

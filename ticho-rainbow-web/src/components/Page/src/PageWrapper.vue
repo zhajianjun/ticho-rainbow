@@ -39,12 +39,12 @@
   import { useDesign } from '@/hooks/web/useDesign';
   import { propTypes } from '@/utils/propTypes';
   import { PageHeader } from 'ant-design-vue';
-  import { omit, debounce } from 'lodash-es';
+  import { debounce, omit } from 'lodash-es';
   import { useElementSize } from '@vueuse/core';
   import {
+    computed,
     CSSProperties,
     PropType,
-    computed,
     provide,
     ref,
     unref,

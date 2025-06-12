@@ -1,12 +1,12 @@
 import type { ComputedRef, Ref } from 'vue';
-import type { FormProps, FormSchemaInner as FormSchema, FormActionType } from '../types/form';
+import { nextTick, toRaw, unref } from 'vue';
+import type { FormActionType, FormProps, FormSchemaInner as FormSchema } from '../types/form';
 import type { NamePath } from 'ant-design-vue/lib/form/interface';
-import { unref, toRaw, nextTick } from 'vue';
-import { isArray, isFunction, isObject, isString, isNil } from '@/utils/is';
+import { isArray, isFunction, isNil, isObject, isString } from '@/utils/is';
 import { deepMerge } from '@/utils';
 import { dateItemType, defaultValueComponents, isIncludeSimpleComponents } from '../helper';
 import { dateUtil } from '@/utils/dateUtil';
-import { cloneDeep, has, uniqBy, get, set } from 'lodash-es';
+import { cloneDeep, get, has, set, uniqBy } from 'lodash-es';
 import { error } from '@/utils/log';
 
 interface UseFormActionContext {
@@ -37,6 +37,7 @@ function tryConstructArray(field: string, values: Recordable = {}): any[] | unde
     }
   }
 }
+
 export function useFormEvents({
   emit,
   getProps,
@@ -70,12 +71,14 @@ export function useFormEvents({
     emit('reset', toRaw(formModel));
     submitOnReset && handleSubmit();
   }
+
   // 获取表单fields
   const getAllFields = () =>
     unref(getSchema)
       .map((item) => [...(item.fields || []), item.field])
       .flat(1)
       .filter(Boolean);
+
   /**
    * @description: Set form value
    */

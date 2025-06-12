@@ -31,6 +31,7 @@
       },
     });
   }
+
   watch(
     () => getDarkMode.value,
     (val) => {

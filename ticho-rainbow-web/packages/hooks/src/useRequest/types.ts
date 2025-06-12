@@ -98,6 +98,7 @@ export interface UseRequestPlugin<TData, TParams extends any[]> {
     fetchInstance: Fetch<TData, TParams>,
     options: UseRequestOptions<TData, TParams>,
   ): PluginReturn<TData, TParams>;
+
   onInit?: (options: UseRequestOptions<TData, TParams>) => Partial<FetchState<TData, TParams>>;
 }
 

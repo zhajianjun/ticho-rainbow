@@ -21,14 +21,14 @@
   import type { MenuState } from './types';
   import type { Menu as MenuType } from '@/router/types';
   import type { RouteLocationNormalizedLoaded } from 'vue-router';
-  import { computed, ref, unref, reactive, toRefs, watch, PropType, useAttrs } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { computed, PropType, reactive, ref, toRefs, unref, useAttrs, watch } from 'vue';
   import { useDesign } from '@/hooks/web/useDesign';
   import Menu from './components/Menu.vue';
   import SimpleSubMenu from './SimpleSubMenu.vue';
   import { listenerRouteChange } from '@/logics/mitt/routeChange';
   import { propTypes } from '@/utils/propTypes';
   import { REDIRECT_NAME } from '@/router/constant';
-  import { useRouter } from 'vue-router';
   import { isFunction, isHttpUrl } from '@/utils/is';
   import { openWindow } from '@/utils';
   import { useOpenKeys } from './useOpenKeys';

@@ -1,9 +1,9 @@
-import type { InsertNodeParams, KeyType, FieldNames, TreeItem } from '../types/tree';
-import type { Ref, ComputedRef } from 'vue';
+import type { FieldNames, InsertNodeParams, KeyType, TreeItem } from '../types/tree';
+import type { ComputedRef, Ref } from 'vue';
+import { unref } from 'vue';
 import type { TreeDataItem } from 'ant-design-vue/es/tree/Tree';
 
 import { cloneDeep } from 'lodash-es';
-import { unref } from 'vue';
 import { forEach } from '@/utils/helper/treeHelper';
 
 export function useTree(treeDataRef: Ref<TreeDataItem[]>, getFieldNames: ComputedRef<FieldNames>) {
@@ -129,6 +129,7 @@ export function useTree(treeDataRef: Ref<TreeDataItem[]>, getFieldNames: Compute
     });
     treeDataRef.value = treeData;
   }
+
   /**
    * 批量添加节点
    */
@@ -159,6 +160,7 @@ export function useTree(treeDataRef: Ref<TreeDataItem[]>, getFieldNames: Compute
       });
     }
   }
+
   // Delete node
   function deleteNodeByKey(key: string, list?: TreeDataItem[]) {
     if (!key) return;
@@ -197,6 +199,7 @@ export function useTree(treeDataRef: Ref<TreeDataItem[]>, getFieldNames: Compute
     });
     return selectedNode || null;
   }
+
   return {
     deleteNodeByKey,
     insertNodeByKey,

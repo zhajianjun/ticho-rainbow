@@ -41,7 +41,7 @@
   import { formItemsForEach, generateKey } from '../../../utils';
   import { CodeEditor, MODE } from '@/components/CodeEditor';
   import { useMessage } from '@/hooks/web/useMessage';
-  import { Upload, Modal } from 'ant-design-vue';
+  import { Modal, Upload } from 'ant-design-vue';
 
   export default defineComponent({
     name: 'ImportJsonModal',

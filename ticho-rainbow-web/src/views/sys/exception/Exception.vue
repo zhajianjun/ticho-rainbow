@@ -1,7 +1,7 @@
 <script lang="tsx">
   import type { PropType } from 'vue';
-  import { Result, Button } from 'ant-design-vue';
-  import { defineComponent, ref, computed, unref } from 'vue';
+  import { computed, defineComponent, ref, unref } from 'vue';
+  import { Button, Result } from 'ant-design-vue';
   import { ExceptionEnum } from '@/enums/exceptionEnum';
   import notDataSvg from '@/assets/svg/no-data.svg';
   import netWorkSvg from '@/assets/svg/net-error.svg';

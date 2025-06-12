@@ -21,8 +21,8 @@
 <script lang="ts" setup>
   import { type Recordable } from '@vben/types';
   import { PropType, ref, unref, watch } from 'vue';
-  import { Cascader } from 'ant-design-vue';
   import type { CascaderProps } from 'ant-design-vue';
+  import { Cascader } from 'ant-design-vue';
   import { propTypes } from '@/utils/propTypes';
   import { isFunction } from '@/utils/is';
   import { get, omit } from 'lodash-es';
@@ -36,6 +36,7 @@
     loading?: boolean;
     isLeaf?: boolean;
     children?: Option[];
+
     [key: string]: any;
   }
 

@@ -25,6 +25,7 @@ export interface BaseFileItem {
   url: string;
   name?: string;
 }
+
 export interface PreviewFileItem {
   url: string;
   name: string;

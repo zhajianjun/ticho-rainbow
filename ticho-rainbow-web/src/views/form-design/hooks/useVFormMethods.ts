@@ -1,5 +1,5 @@
-import { Ref, SetupContext, type EmitsOptions } from 'vue';
-import { IVFormComponent, IFormConfig, AForm } from '../typings/v-form-component';
+import { type EmitsOptions, Ref, SetupContext } from 'vue';
+import { AForm, IFormConfig, IVFormComponent } from '../typings/v-form-component';
 import { findFormItem, formItemsForEach } from '../utils';
 import { cloneDeep, isFunction } from 'lodash-es';
 import { IAnyObject } from '../typings/base-type';
@@ -36,6 +36,7 @@ type IGetData = () => Promise<IAnyObject>;
 type IDisable = (field?: string | boolean) => void;
 // 设置表单配置方法
 type ISetFormConfig = (key: string, value: any) => void;
+
 interface ILinkOn {
   [key: string]: Set<IVFormComponent>;
 }
@@ -52,6 +53,7 @@ export interface IVFormMethods extends Partial<IFormInstanceMethods> {
   getData: IGetData;
   disable: IDisable;
 }
+
 export function useVFormMethods<E extends EmitsOptions = EmitsOptions>(
   props: IProps,
   _context: SetupContext<E>,

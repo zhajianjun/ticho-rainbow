@@ -31,9 +31,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { ref, watch, unref, computed, useAttrs } from 'vue';
+  import { computed, ref, unref, useAttrs, watch } from 'vue';
   import { Recordable } from '@vben/types';
-  import { Tooltip, Space } from 'ant-design-vue';
+  import { Space, Tooltip } from 'ant-design-vue';
   import { useModal } from '@/components/Modal';
   import { uploadContainerProps } from '@/components/Upload/src/props';
   import { omit } from 'lodash-es';

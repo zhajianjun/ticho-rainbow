@@ -1,12 +1,12 @@
 <script lang="tsx">
-  import { type Recordable, type Nullable } from '@vben/types';
+  import { type Nullable, type Recordable } from '@vben/types';
   import type { PropType, Ref } from 'vue';
   import { computed, defineComponent, toRefs, unref } from 'vue';
   import {
-    isComponentFormSchema,
     type FormActionType,
     type FormProps,
     type FormSchemaInner as FormSchema,
+    isComponentFormSchema,
   } from '../types/form';
   import type { Rule as ValidationRule } from 'ant-design-vue/lib/form/interface';
   import type { TableActionType } from '@/components/Table';
@@ -165,6 +165,7 @@
         isShow = isShow && itemIsAdvanced;
         return { isShow, isIfShow };
       }
+
       function handleRules(): ValidationRule[] {
         const {
           rules: defRules = [],
@@ -214,6 +215,7 @@
           }
           return Promise.resolve();
         }
+
         const getRequired = isFunction(required) ? required(unref(getValues)) : required;
 
         /*
@@ -290,8 +292,8 @@
 
             const target = e ? e.target : null;
             let value = target ? (isCheck ? target.checked : target.value) : e;
-            if(isFunction(valueFormat)){
-              value = valueFormat({...unref(getValues),value});
+            if (isFunction(valueFormat)) {
+              value = valueFormat({ ...unref(getValues), value });
             }
             props.setFormModel(field, value, props.schema);
 

@@ -56,6 +56,7 @@ export function useContentHeight(
     function numberPx(px: string) {
       return Number(px.replace(/[^\d]/g, ''));
     }
+
     let subtractHeight = 0;
     const ZERO_PX = '0px';
     if (element) {
@@ -114,6 +115,7 @@ export function useContentHeight(
 
     // upwardSpace
     let upwardSpaceHeight = 0;
+
     function upward(element: Element | null, upwardLvlOrClass: number | string | null | undefined) {
       if (element && upwardLvlOrClass) {
         const parent = element.parentElement;
@@ -134,6 +136,7 @@ export function useContentHeight(
         }
       }
     }
+
     if (isRef(upwardSpace)) {
       upward(anchorEl, unref(upwardSpace));
     } else {

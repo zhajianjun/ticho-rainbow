@@ -23,6 +23,7 @@ function move(el: HTMLElement, amount: number) {
 const position = (el: HTMLElement) => {
   return el.scrollTop;
 };
+
 function useScrollTo({ el, to, duration = 500, callback }: UseScrollToOptions) {
   const isActiveRef = shallowRef(false);
   const start = position(el);

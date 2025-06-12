@@ -30,7 +30,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { computed, CSSProperties, unref, ref, watchEffect, watch, PropType } from 'vue';
+  import { computed, CSSProperties, PropType, ref, unref, watch, watchEffect } from 'vue';
   import CropperModal from './CropperModal.vue';
   import { useDesign } from '@/hooks/web/useDesign';
   import { useModal } from '@/components/Modal';

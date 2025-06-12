@@ -1,7 +1,7 @@
 import {
   GridMethods,
-  TableMethods,
   TableEditMethods,
+  TableMethods,
   TableValidatorMethods,
   VxeGridConstructor,
 } from 'vxe-table';

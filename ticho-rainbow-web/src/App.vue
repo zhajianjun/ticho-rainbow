@@ -14,7 +14,7 @@
 
   import { useDarkModeTheme } from '@/hooks/setting/useDarkModeTheme';
   import 'dayjs/locale/zh-cn';
-  import { computed, onMounted, nextTick } from 'vue';
+  import { computed, nextTick, onMounted } from 'vue';
   import { autoRefresh } from '@/utils/autoUpdate';
 
   // support Multi-language

@@ -1,6 +1,7 @@
 import type { Component, VNodeProps } from 'vue';
 
 type ColSpanType = number | string;
+
 export interface ColEx {
   style?: any;
   /**

@@ -371,6 +371,7 @@
           }
         }
       }
+
       .@{prefix-cls}-menu-list {
         &__content {
           box-shadow: 0 0 4px 0 rgb(0 0 0 / 10%);
@@ -387,6 +388,7 @@
         }
       }
     }
+
     @border-color: @sider-dark-lighten-bg-color;
 
     &.dark {
@@ -399,6 +401,7 @@
           border-right: 1px solid @border-color;
         }
       }
+
       .@{prefix-cls}-menu-list {
         background-color: @sider-dark-bg-color;
 
@@ -439,6 +442,7 @@
         &:hover {
           color: @white;
         }
+
         // &:hover,
         &--active {
           background-color: @sider-dark-darken-bg-color;

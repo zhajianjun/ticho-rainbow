@@ -3,7 +3,6 @@ import {
   Component,
   ComponentPublicInstance,
   defineAsyncComponent,
-  // FunctionalComponent, CSSProperties
 } from 'vue';
 import { Spin } from 'ant-design-vue';
 import { noop } from '@/utils';

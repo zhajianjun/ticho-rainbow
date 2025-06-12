@@ -24,14 +24,14 @@
             <use :xlink:href="`#${element.icon}`" />
           </svg> -->
           <Icon :icon="element.icon" />
-          {{ element.label }}</li
-        ></template
-      >
+          {{ element.label }}
+        </li>
+      </template>
     </draggable>
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent, reactive, PropType } from 'vue';
+  import { defineComponent, PropType, reactive } from 'vue';
   import { IVFormComponent } from '../../../typings/v-form-component';
   import draggable from 'vuedraggable';
   import Icon from '@/components/Icon/Icon.vue';

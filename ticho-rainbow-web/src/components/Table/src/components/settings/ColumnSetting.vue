@@ -99,11 +99,11 @@
   </Tooltip>
 </template>
 <script lang="ts" setup>
-  import type { BasicColumn, ColumnOptionsType, ColumnChangeParam } from '../../types/table';
-  import { ref, nextTick, unref, computed, useAttrs, watch, onMounted } from 'vue';
-  import { Tooltip, Popover, Checkbox, Divider } from 'ant-design-vue';
+  import type { BasicColumn, ColumnChangeParam, ColumnOptionsType } from '../../types/table';
+  import { computed, nextTick, onMounted, ref, unref, useAttrs, watch } from 'vue';
+  import { Checkbox, Divider, Popover, Tooltip } from 'ant-design-vue';
   import type { CheckboxChangeEvent } from 'ant-design-vue/lib/checkbox/interface';
-  import { SettingOutlined, DragOutlined } from '@ant-design/icons-vue';
+  import { DragOutlined, SettingOutlined } from '@ant-design/icons-vue';
   import Icon from '@/components/Icon/Icon.vue';
   import { ScrollContainer } from '@/components/Container';
   import { useI18n } from '@/hooks/web/useI18n';

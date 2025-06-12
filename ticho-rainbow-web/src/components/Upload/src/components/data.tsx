@@ -1,4 +1,4 @@
-import type { BasicColumn, ActionItem } from '@/components/Table';
+import type { ActionItem, BasicColumn } from '@/components/Table';
 import { FileBasicColumn, FileItem, PreviewFileItem, UploadResultStatus } from '../types/typing';
 import { isImgTypeByName } from '../helper';
 import { Progress, Tag } from 'ant-design-vue';
@@ -71,6 +71,7 @@ export function createTableColumns(): FileBasicColumn[] {
     },
   ];
 }
+
 export function createActionColumn(handleRemove: Function): FileBasicColumn {
   return {
     width: 120,
@@ -93,6 +94,7 @@ export function createActionColumn(handleRemove: Function): FileBasicColumn {
     },
   };
 }
+
 // 文件预览列表
 export function createPreviewColumns(): BasicColumn[] {
   return [

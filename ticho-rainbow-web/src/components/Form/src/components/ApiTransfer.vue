@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, watch, ref, unref, watchEffect, PropType } from 'vue';
+  import { computed, PropType, ref, unref, watch, watchEffect } from 'vue';
   import { Transfer } from 'ant-design-vue';
   import { isFunction } from '@/utils/is';
   import { get, omit } from 'lodash-es';
@@ -74,8 +74,8 @@
   });
   const getTargetKeys = computed<string[]>(() => {
     /* if (unref(_targetKeys).length > 0) {
-          return unref(_targetKeys);
-        } */
+        return unref(_targetKeys);
+      } */
     if (Array.isArray(props.value)) {
       return props.value;
     }
@@ -134,6 +134,7 @@
       console.warn(error);
     }
   }
+
   function emitChange() {
     emit('options-change', unref(getdataSource));
   }

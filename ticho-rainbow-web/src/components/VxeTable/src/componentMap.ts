@@ -3,19 +3,19 @@ import type { Component } from 'vue';
 import type { ComponentType } from './componentType';
 import { ApiSelect, ApiTreeSelect } from '@/components/Form';
 import {
-  Input,
-  Select,
-  Radio,
-  Checkbox,
   AutoComplete,
   Cascader,
+  Checkbox,
   DatePicker,
+  Empty,
+  Input,
   InputNumber,
+  Radio,
+  Rate,
+  Select,
   Switch,
   TimePicker,
   TreeSelect,
-  Rate,
-  Empty,
 } from 'ant-design-vue';
 import { Button } from '@/components/Button';
 

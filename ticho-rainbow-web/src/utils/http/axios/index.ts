@@ -216,9 +216,9 @@ const transform: AxiosTransform = {
     const retryRequest = new AxiosRetry();
     const { isOpenRetry } = config.requestOptions.retryRequest;
     config.method?.toUpperCase() === RequestEnum.GET &&
-      isOpenRetry &&
-      // @ts-ignore
-      retryRequest.retry(axiosInstance, error);
+    isOpenRetry &&
+    // @ts-ignore
+    retryRequest.retry(axiosInstance, error);
     return Promise.reject(error);
   },
 };

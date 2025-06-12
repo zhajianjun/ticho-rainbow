@@ -31,7 +31,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { PropType, computed, toRaw, unref } from 'vue';
+  import { computed, PropType, toRaw, unref } from 'vue';
   import { MoreOutlined } from '@ant-design/icons-vue';
   import { Divider, Tooltip, TooltipProps } from 'ant-design-vue';
   import Icon from '@/components/Icon/Icon.vue';
@@ -69,6 +69,7 @@
   }
 
   const { hasPermission } = usePermission();
+
   function isIfShow(action: ActionItem): boolean {
     const ifShow = action.ifShow;
 

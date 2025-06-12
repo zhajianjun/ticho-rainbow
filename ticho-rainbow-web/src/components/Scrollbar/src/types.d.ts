@@ -8,6 +8,7 @@ export interface BarMapItem {
   client: string;
   direction: string;
 }
+
 export interface BarMap {
   vertical: BarMapItem;
   horizontal: BarMapItem;

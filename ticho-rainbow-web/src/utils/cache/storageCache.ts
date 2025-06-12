@@ -8,6 +8,7 @@ export interface CreateStorageParams extends EncryptionParams {
   hasEncrypt: boolean;
   timeout?: Nullable<number>;
 }
+
 // TODO 移除此文件夹下全部代码
 export const createStorage = ({
   prefixKey = '',
@@ -36,6 +37,7 @@ export const createStorage = ({
     private prefixKey?: string;
     private encryption: Encryption;
     private hasEncrypt: boolean;
+
     /**
      *
      * @param {*} storage

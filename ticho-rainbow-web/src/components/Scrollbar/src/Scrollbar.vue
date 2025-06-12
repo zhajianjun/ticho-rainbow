@@ -18,14 +18,14 @@
 </template>
 <script lang="ts" setup>
   import {
-    ref,
-    onMounted,
-    onBeforeUnmount,
     nextTick,
+    onBeforeUnmount,
+    onMounted,
+    type PropType,
     provide,
+    ref,
     unref,
     watch,
-    type PropType,
   } from 'vue';
   import type { StyleValue } from '@/utils/types';
   import { addResizeListener, removeResizeListener } from '@/utils/event';

@@ -1,7 +1,7 @@
 import type { BasicColumn, BasicTableProps, CellFormat, GetColumnsParams } from '../types/table';
 import type { PaginationProps } from '../types/pagination';
 import type { ComputedRef } from 'vue';
-import { computed, Ref, ref, reactive, toRaw, unref, watch } from 'vue';
+import { computed, reactive, ref, Ref, toRaw, unref, watch } from 'vue';
 import { renderEditCell } from '../components/editable';
 import { usePermission } from '@/hooks/web/usePermission';
 import { useI18n } from '@/hooks/web/useI18n';
@@ -142,6 +142,7 @@ export function useColumns(
     }
     return isIfShow;
   }
+
   const { hasPermission } = usePermission();
 
   const getViewColumns = computed(() => {
@@ -199,6 +200,7 @@ export function useColumns(
       }
     });
   }
+
   /**
    * set columns
    * @param columnList key｜column
@@ -256,13 +258,16 @@ export function useColumns(
 
     return columns;
   }
+
   function getCacheColumns() {
     return cacheColumns;
   }
+
   function setCacheColumns(columns: BasicColumn[]) {
     if (!isArray(columns)) return;
     cacheColumns = columns.filter((item) => !item.flag);
   }
+
   /**
    * 拖拽列宽修改列的宽度
    */

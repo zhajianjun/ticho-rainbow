@@ -1,11 +1,10 @@
 import type { ComputedRef, Ref } from 'vue';
+import { nextTick, unref, watchEffect } from 'vue';
 import {
-  type FormSchemaInner as FormSchema,
   type FormActionType,
   type FormProps,
+  type FormSchemaInner as FormSchema,
 } from '../types/form';
-
-import { unref, nextTick, watchEffect } from 'vue';
 
 interface UseAutoFocusContext {
   getSchema: ComputedRef<FormSchema[]>;
@@ -13,6 +12,7 @@ interface UseAutoFocusContext {
   isInitedDefault: Ref<boolean>;
   formElRef: Ref<FormActionType>;
 }
+
 export async function useAutoFocus({
   getSchema,
   getProps,

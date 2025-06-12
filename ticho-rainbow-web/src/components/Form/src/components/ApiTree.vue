@@ -8,7 +8,7 @@
 
 <script lang="ts" setup>
   import { type Recordable } from '@vben/types';
-  import { type PropType, computed, watch, ref, onMounted, unref, useAttrs } from 'vue';
+  import { computed, onMounted, type PropType, ref, unref, useAttrs, watch } from 'vue';
   import { Tree, TreeProps } from 'ant-design-vue';
   import { isFunction } from '@/utils/is';
   import { get } from 'lodash-es';

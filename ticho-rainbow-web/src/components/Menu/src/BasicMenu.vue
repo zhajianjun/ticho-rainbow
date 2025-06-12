@@ -19,7 +19,7 @@
 </template>
 <script lang="ts" setup>
   import type { MenuState } from './types';
-  import { computed, unref, reactive, watch, toRefs, ref } from 'vue';
+  import { computed, reactive, ref, toRefs, unref, watch } from 'vue';
   import { Menu, MenuProps } from 'ant-design-vue';
   import BasicSubMenuItem from './components/BasicSubMenuItem.vue';
   import { MenuModeEnum, MenuTypeEnum } from '@/enums/menuEnum';

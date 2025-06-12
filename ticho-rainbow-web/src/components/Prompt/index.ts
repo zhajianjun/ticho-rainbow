@@ -1,5 +1,5 @@
-import { createVNode, VNode, defineComponent, h, render, reactive } from 'vue';
-import { PromptProps, genFormSchemas } from './state';
+import { createVNode, defineComponent, h, reactive, render, VNode } from 'vue';
+import { genFormSchemas, PromptProps } from './state';
 import Dialog from './dialog.vue';
 
 export function createPrompt(props: PromptProps) {

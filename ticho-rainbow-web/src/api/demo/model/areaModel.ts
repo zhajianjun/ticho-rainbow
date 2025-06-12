@@ -4,6 +4,7 @@ export interface AreaModel {
   parentCode: string;
   name: string;
   levelType: number;
+
   [key: string]: string | number;
 }
 

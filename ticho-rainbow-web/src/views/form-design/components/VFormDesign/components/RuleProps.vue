@@ -33,11 +33,11 @@
   </div>
 </template>
 <script lang="ts">
-  import { ref, defineComponent } from 'vue';
+  import { defineComponent, ref } from 'vue';
   import { remove } from '../../../utils';
   import { useFormDesignState } from '../../../hooks/useFormDesignState';
   import { isArray } from 'lodash-es';
-  import { Form, FormItem, AutoComplete, Input } from 'ant-design-vue';
+  import { AutoComplete, Form, FormItem, Input } from 'ant-design-vue';
   import Icon from '@/components/Icon/Icon.vue';
 
   export default defineComponent({

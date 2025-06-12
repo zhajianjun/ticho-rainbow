@@ -30,7 +30,7 @@
   import { defineComponent, inject, reactive, toRefs } from 'vue';
   import { UseRefHistoryReturn } from '@vueuse/core';
   import { IFormConfig } from '../../../typings/v-form-component';
-  import { Tooltip, Divider } from 'ant-design-vue';
+  import { Divider, Tooltip } from 'ant-design-vue';
   import Icon from '@/components/Icon/Icon.vue';
 
   interface IToolbarsConfig {

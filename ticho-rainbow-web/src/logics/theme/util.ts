@@ -1,4 +1,5 @@
 const docEle = document.documentElement;
+
 export function toggleClass(flag: boolean, clsName: string, target?: HTMLElement) {
   const targetEl = target || document.body;
   let { className } = targetEl;

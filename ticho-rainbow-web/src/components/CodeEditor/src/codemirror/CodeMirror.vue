@@ -8,21 +8,21 @@
 
 <script lang="ts" setup>
   import {
-    type PropType,
-    ref,
+    nextTick,
     onMounted,
     onUnmounted,
-    watchEffect,
-    watch,
+    type PropType,
+    ref,
     unref,
-    nextTick,
+    watch,
+    watchEffect,
   } from 'vue';
   import type { Nullable } from '@vben/types';
   import { useWindowSizeFn } from '@vben/hooks';
   import { useDebounceFn } from '@vueuse/core';
   import { useAppStore } from '@/store/modules/app';
-  import CodeMirror from 'codemirror';
   import type { EditorConfiguration } from 'codemirror';
+  import CodeMirror from 'codemirror';
   import { MODE, parserDynamicImport } from './../typing';
   // css
   import 'codemirror/lib/codemirror.css';
@@ -51,7 +51,10 @@
     value: { type: String, default: '' },
     readonly: { type: Boolean, default: false },
     bordered: { type: Boolean, default: false },
-    config: { type: Object as PropType<EditorConfiguration>, default: () => {} },
+    config: {
+      type: Object as PropType<EditorConfiguration>,
+      default: () => {},
+    },
   });
 
   const emit = defineEmits(['change']);

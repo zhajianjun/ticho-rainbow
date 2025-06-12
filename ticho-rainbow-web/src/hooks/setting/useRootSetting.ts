@@ -66,6 +66,7 @@ export function useRootSetting() {
   function setDarkMode(mode: ThemeEnum) {
     appStore.setDarkMode(mode);
   }
+
   return {
     setRootSetting,
 

@@ -1,4 +1,4 @@
-import type { VNode, CSSProperties } from 'vue';
+import type { CSSProperties, VNode } from 'vue';
 import type { CollapseContainerOptions } from '@/components/Container';
 import type { DescriptionsProps } from 'ant-design-vue/es/descriptions';
 

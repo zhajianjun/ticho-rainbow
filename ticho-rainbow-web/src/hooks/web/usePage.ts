@@ -1,9 +1,8 @@
 import type { RouteLocationRaw, Router } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 import { PageEnum } from '@/enums/pageEnum';
 import { unref } from 'vue';
-
-import { useRouter } from 'vue-router';
 import { REDIRECT_NAME } from '@/router/constant';
 import { isHttpUrl } from '@/utils/is';
 import { openWindow } from '@/utils';
@@ -76,6 +75,7 @@ export function useGo(_router?: Router) {
       push(opt).catch(handleError);
     }
   }
+
   return go;
 }
 
@@ -85,6 +85,7 @@ export function useGo(_router?: Router) {
 export const useRedo = (_router?: Router) => {
   const { replace, currentRoute } = _router || useRouter();
   const { query, params = {}, name, fullPath } = unref(currentRoute.value);
+
   function redo(): Promise<boolean> {
     return new Promise((resolve) => {
       if (name === REDIRECT_NAME) {
@@ -102,5 +103,6 @@ export const useRedo = (_router?: Router) => {
       replace({ name: REDIRECT_NAME, params, query }).then(() => resolve(true));
     });
   }
+
   return redo;
 };

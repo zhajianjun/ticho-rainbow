@@ -2,8 +2,8 @@ import type { VNodeChild } from 'vue';
 import type { PaginationProps } from './pagination';
 import type { FormProps } from '@/components/Form';
 import type {
-  TableRowSelection as ITableRowSelection,
   Key,
+  TableRowSelection as ITableRowSelection,
 } from 'ant-design-vue/lib/table/interface';
 
 import type { ColumnProps } from 'ant-design-vue/lib/table';
@@ -59,6 +59,7 @@ export interface ExpandedRowRenderRecord<T> extends TableCustomRecord<T> {
   indent?: number;
   expanded?: boolean;
 }
+
 export interface ColumnFilterItem {
   text?: string;
   value?: string;

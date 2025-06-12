@@ -10,7 +10,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { unref, computed, CSSProperties } from 'vue';
+  import { computed, CSSProperties, unref } from 'vue';
 
   import LayoutHeader from './index.vue';
   import MultipleTabs from '../tabs/index.vue';

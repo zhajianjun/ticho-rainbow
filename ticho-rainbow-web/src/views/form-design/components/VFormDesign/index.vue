@@ -92,10 +92,10 @@
 
   import 'codemirror/mode/javascript/javascript';
 
-  import { ref, provide, Ref } from 'vue';
+  import { provide, ref, Ref } from 'vue';
   import { Layout, LayoutContent, LayoutSider } from 'ant-design-vue';
 
-  import { IVFormComponent, IFormConfig, PropsTabKey } from '../../typings/v-form-component';
+  import { IFormConfig, IVFormComponent, PropsTabKey } from '../../typings/v-form-component';
   import { formItemsForEach, generateKey } from '../../utils';
   import { cloneDeep } from 'lodash-es';
   import { baseComponents, customComponents, layoutComponents } from '../../core/formItemConfig';

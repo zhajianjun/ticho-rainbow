@@ -1,15 +1,15 @@
 import {
-  defineComponent,
-  h,
   computed,
-  ref,
+  defineComponent,
   getCurrentInstance,
-  onUnmounted,
+  h,
   inject,
+  onUnmounted,
+  ref,
   Ref,
 } from 'vue';
-import { on, off } from '@/utils/domUtils';
-import { renderThumbStyle, BAR_MAP } from './util';
+import { off, on } from '@/utils/domUtils';
+import { BAR_MAP, renderThumbStyle } from './util';
 
 export default defineComponent({
   name: 'Bar',

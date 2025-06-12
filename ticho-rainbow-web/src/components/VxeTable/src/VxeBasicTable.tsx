@@ -1,16 +1,16 @@
-import { defineComponent, computed, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import { BasicTableProps } from './types';
 import { basicProps } from './props';
 import { ignorePropKeys } from './const';
 import { basicEmits } from './emits';
 import XEUtils from 'xe-utils';
 import type {
-  VxeGridInstance,
-  VxeGridEventProps,
   GridMethods,
-  TableMethods,
   TableEditMethods,
+  TableMethods,
   TableValidatorMethods,
+  VxeGridEventProps,
+  VxeGridInstance,
 } from 'vxe-table';
 import { Grid as VxeGrid } from 'vxe-table';
 

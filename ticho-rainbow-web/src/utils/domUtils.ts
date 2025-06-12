@@ -91,6 +91,7 @@ export function removeClass(el: Element, cls: string) {
     el.className = trim(curClass);
   }
 }
+
 /**
  * Get the left and top offset of the current element
  * left: the distance between the leftmost element and the left side of the document

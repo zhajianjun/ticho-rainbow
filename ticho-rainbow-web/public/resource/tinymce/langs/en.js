@@ -26,7 +26,7 @@ tinymce.addI18n('es', {
   'Increase indent': 'Incrementar sangr\u00eda',
   Close: 'Cerrar',
   Formats: 'Formatos',
-  "Your browser doesn't support direct access to the clipboard. Please use the Ctrl+X\/C\/V keyboard shortcuts instead.": 'Su navegador no es compatible con el acceso directo al portapapeles. Use las teclas Crtl+X\/C\/V de su teclado.',
+  'Your browser doesn\'t support direct access to the clipboard. Please use the Ctrl+X\/C\/V keyboard shortcuts instead.': 'Su navegador no es compatible con el acceso directo al portapapeles. Use las teclas Crtl+X\/C\/V de su teclado.',
   Headers: 'Encabezados',
   'Header 1': 'Encabezado 1',
   'Header 2': 'Encabezado 2',
@@ -415,5 +415,5 @@ tinymce.addI18n('es', {
   'Whole words': 'Palabras completas',
   Spellcheck: 'Corrector ortogr\u00e1fico',
   Caption: 'Subt\u00edtulo',
-  'Insert template': 'Insertar plantilla'
-})
+  'Insert template': 'Insertar plantilla',
+});

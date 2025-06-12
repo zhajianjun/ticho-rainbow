@@ -5,6 +5,7 @@ export interface CollapseContainerOptions {
   title?: string;
   helpMessage?: Array<any> | string;
 }
+
 export interface ScrollContainerOptions {
   enableScroll?: boolean;
   type?: ScrollType;

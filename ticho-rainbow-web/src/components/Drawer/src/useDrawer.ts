@@ -1,19 +1,19 @@
 import type {
-  UseDrawerReturnType,
   DrawerInstance,
-  ReturnMethods,
   DrawerProps,
+  ReturnMethods,
   UseDrawerInnerReturnType,
+  UseDrawerReturnType,
 } from './typing';
 import {
-  ref,
-  getCurrentInstance,
-  unref,
-  reactive,
-  watchEffect,
-  nextTick,
-  toRaw,
   computed,
+  getCurrentInstance,
+  nextTick,
+  reactive,
+  ref,
+  toRaw,
+  unref,
+  watchEffect,
 } from 'vue';
 import { isProdMode } from '@/utils/env';
 import { isFunction } from '@/utils/is';

@@ -1,20 +1,20 @@
 import type {
-  UseModalReturnType,
   ModalMethods,
   ModalProps,
   ReturnMethods,
   UseModalInnerReturnType,
+  UseModalReturnType,
 } from '../typing';
 import {
-  ref,
-  onUnmounted,
-  unref,
-  getCurrentInstance,
-  reactive,
-  watchEffect,
-  nextTick,
-  toRaw,
   computed,
+  getCurrentInstance,
+  nextTick,
+  onUnmounted,
+  reactive,
+  ref,
+  toRaw,
+  unref,
+  watchEffect,
 } from 'vue';
 import { isProdMode } from '@/utils/env';
 import { isFunction } from '@/utils/is';

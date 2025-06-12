@@ -34,9 +34,9 @@
 
 <script lang="ts" setup>
   import type { ErrorLogInfo } from '#/store';
-  import { watch, ref, nextTick } from 'vue';
+  import { nextTick, ref, watch } from 'vue';
   import DetailModal from './DetailModal.vue';
-  import { BasicTable, useTable, TableAction } from '@/components/Table';
+  import { BasicTable, TableAction, useTable } from '@/components/Table';
   import { useModal } from '@/components/Modal';
   import { useMessage } from '@/hooks/web/useMessage';
   import { useI18n } from '@/hooks/web/useI18n';
@@ -77,6 +77,7 @@
   if (import.meta.env.DEV) {
     createMessage.info(t('sys.errorLog.enableMessage'));
   }
+
   // 查看详情
   function handleDetail(row: ErrorLogInfo) {
     rowInfo.value = row;

@@ -15,6 +15,7 @@ export type PropsTabKey = 1 | 2 | 3;
 type ColSpanType = number | string;
 
 declare type Value = [number, number] | number;
+
 /**
  * 组件属性
  */

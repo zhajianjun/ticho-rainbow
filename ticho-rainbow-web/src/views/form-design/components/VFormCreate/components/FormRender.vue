@@ -38,9 +38,9 @@
 </template>
 <script lang="ts">
   import { defineComponent, PropType } from 'vue';
-  import { IVFormComponent, IFormConfig } from '../../../typings/v-form-component';
+  import { IFormConfig, IVFormComponent } from '../../../typings/v-form-component';
   import VFormItem from '../../VFormItem/index.vue';
-  import { Row, Col } from 'ant-design-vue';
+  import { Col, Row } from 'ant-design-vue';
 
   export default defineComponent({
     name: 'FormRender',

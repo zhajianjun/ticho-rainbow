@@ -1,5 +1,5 @@
 <script lang="tsx">
-  import { defineComponent, ref, unref, computed, reactive, watchEffect, PropType } from 'vue';
+  import { computed, defineComponent, PropType, reactive, ref, unref, watchEffect } from 'vue';
   import { CloseOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons-vue';
   import resumeSvg from '@/assets/svg/preview/resume.svg';
   import rotateSvg from '@/assets/svg/preview/p-rotate.svg';
@@ -12,6 +12,7 @@
     DONE,
     FAIL,
   }
+
   interface ImgState {
     currentUrl: string;
     imgScale: number;
@@ -24,6 +25,7 @@
     moveY: number;
     show: boolean;
   }
+
   const props = {
     show: {
       type: Boolean as PropType<boolean>,
@@ -63,6 +65,7 @@
         top: number;
         left: number;
       }
+
       const stateMap = new Map<string, stateInfo>();
       const imgState = reactive<ImgState>({
         currentUrl: '',
@@ -139,6 +142,7 @@
           scaleFunc(-getScaleStep.value);
         }
       }
+
       // 缩放函数
       function scaleFunc(num: number) {
         // 最小缩放

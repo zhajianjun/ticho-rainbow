@@ -46,10 +46,10 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { ref, watch, unref, computed, useAttrs } from 'vue';
+  import { computed, ref, unref, useAttrs, watch } from 'vue';
   import { Recordable } from '@vben/types';
   import Icon from '@/components/Icon/Icon.vue';
-  import { Tooltip, Space } from 'ant-design-vue';
+  import { Space, Tooltip } from 'ant-design-vue';
   import { useModal } from '@/components/Modal';
   import { uploadContainerProps } from './props';
   import { omit } from 'lodash-es';
@@ -59,6 +59,7 @@
   import UploadPreviewModal from './components/UploadPreviewModal.vue';
   import { BaseFileItem } from './types/typing';
   import { buildUUID } from '@/utils/uuid';
+
   defineOptions({ name: 'BasicUpload' });
 
   const props = defineProps(uploadContainerProps);
@@ -85,12 +86,14 @@
     const value = { ...attrs, ...props };
     return omit(value, 'onChange');
   });
-  function getValue(valueKey="url") {
+
+  function getValue(valueKey = 'url') {
     const list = (fileList.value || []).map((item: any) => {
       return item[valueKey];
     });
     return list;
   }
+
   function genFileListByUrls(urls: string[]) {
     const list = urls.map((e) => {
       return {
@@ -100,6 +103,7 @@
     });
     return list;
   }
+
   watch(
     () => props.value,
     (v = []) => {
@@ -110,7 +114,7 @@
         } else if (typeof v == 'string') {
           values.push(v);
         }
-        fileList.value = values.map((item,i) => {
+        fileList.value = values.map((item, i) => {
           if (item && isString(item)) {
             return {
               uid: buildUUID(),
@@ -130,7 +134,7 @@
   );
 
   // 上传modal保存操作
-  function handleChange(urls: string[],valueKey:string) {
+  function handleChange(urls: string[], valueKey: string) {
     fileList.value = [...unref(fileList), ...(genFileListByUrls(urls) || [])];
     const values = getValue(valueKey);
     emit('update:value', values);
@@ -138,7 +142,7 @@
   }
 
   // 预览modal保存操作
-  function handlePreviewChange(fileItems: string[],valueKey:string) {
+  function handlePreviewChange(fileItems: string[], valueKey: string) {
     fileList.value = [...(fileItems || [])];
     const values = getValue(valueKey);
     emit('update:value', values);

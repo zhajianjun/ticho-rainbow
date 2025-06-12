@@ -33,9 +33,9 @@
 </template>
 <script lang="ts">
   import { defineComponent, ref, unref } from 'vue';
-  import { BasicTable, useTable, TableAction } from '@/components/Table';
-  import { getTableColumns, getSearchColumns, task } from './taskLog.data';
-  import { taskLogPage, expExcel } from '@/api/system/taskLog';
+  import { BasicTable, TableAction, useTable } from '@/components/Table';
+  import { getSearchColumns, getTableColumns, task } from './taskLog.data';
+  import { expExcel, taskLogPage } from '@/api/system/taskLog';
   import { usePermission } from '@/hooks/web/usePermission';
   import TaskLogDetailModal from './TaskLogDetailModal.vue';
   import { useModal } from '@/components/Modal';

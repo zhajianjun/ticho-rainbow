@@ -1,5 +1,4 @@
 import type { PropType } from 'vue';
-
 import { defineComponent, Transition, TransitionGroup } from 'vue';
 import { getSlot } from '@/utils/helper/tsxHelper';
 
@@ -38,6 +37,7 @@ export function createSimpleTransition(name: string, origin = 'top center 0', mo
     },
   });
 }
+
 export function createJavascriptTransition(
   name: string,
   functions: Recordable,

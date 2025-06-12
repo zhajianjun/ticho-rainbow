@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { PropType, ref, computed, unref, getCurrentInstance, watch, useSlots } from 'vue';
+  import { computed, getCurrentInstance, PropType, ref, unref, useSlots, watch } from 'vue';
   import { useDesign } from '@/hooks/web/useDesign';
   import { propTypes } from '@/utils/propTypes';
   import { useMenuItem } from './useMenu';
@@ -81,6 +81,7 @@
       uidList: uidList,
     });
   }
+
   watch(
     () => activeName.value,
     (name: string | number) => {

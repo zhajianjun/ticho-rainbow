@@ -25,7 +25,7 @@
   import { defineComponent } from 'vue';
   import { baseItemColumnProps } from '../config/formItemPropsConfig';
 
-  import { Empty, Input, Form, FormItem, Switch, Checkbox, Select, Slider } from 'ant-design-vue';
+  import { Checkbox, Empty, Form, FormItem, Input, Select, Slider, Switch } from 'ant-design-vue';
   import RuleProps from './RuleProps.vue';
   import { useFormDesignState } from '../../../hooks/useFormDesignState';
   import { isArray } from 'lodash-es';

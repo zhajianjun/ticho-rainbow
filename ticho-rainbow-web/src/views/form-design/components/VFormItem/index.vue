@@ -21,11 +21,11 @@
       ></slot>
       <Divider
         v-else-if="schema.component == 'Divider' && schema.label && !formItemProps.hiddenLabel"
-        >{{ schema.label }}</Divider
-      >
+        >{{ schema.label }}
+      </Divider>
       <!-- 部分控件需要一个空div -->
-      <div
-        ><component
+      <div>
+        <component
           class="v-form-item-wrapper"
           :is="componentItem"
           v-bind="{ ...cmpProps, ...asyncProps }"
@@ -33,7 +33,8 @@
           :style="schema.width ? { width: schema.width } : {}"
           @change="handleChange"
           @click="handleClick(schema)"
-      /></div>
+        />
+      </div>
 
       <span v-if="['Button'].includes(schema.component)">{{ schema.label }}</span>
     </FormItem>
@@ -41,13 +42,13 @@
 </template>
 <script lang="ts">
   import { type Recordable } from '@vben/types';
-  import { defineComponent, reactive, toRefs, computed, PropType, unref } from 'vue';
+  import { computed, defineComponent, PropType, reactive, toRefs, unref } from 'vue';
   import { componentMap } from '../../core/formItemConfig';
-  import { IVFormComponent, IFormConfig } from '../../typings/v-form-component';
+  import { IFormConfig, IVFormComponent } from '../../typings/v-form-component';
   import { asyncComputed } from '@vueuse/core';
   import { handleAsyncOptions } from '../../utils';
   import { omit } from 'lodash-es';
-  import { Tooltip, FormItem, Divider, Col } from 'ant-design-vue';
+  import { Col, Divider, FormItem, Tooltip } from 'ant-design-vue';
   import Icon from '@/components/Icon/Icon.vue';
   import { useFormModelState } from '../../hooks/useFormDesignState';
 

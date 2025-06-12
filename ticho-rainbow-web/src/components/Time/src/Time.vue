@@ -5,7 +5,7 @@
   import { ref, watch } from 'vue';
   import { useI18n } from '@/hooks/web/useI18n';
   import { useIntervalFn } from '@vueuse/core';
-  import { formatToDateTime, formatToDate, dateUtil } from '@/utils/dateUtil';
+  import { dateUtil, formatToDate, formatToDateTime } from '@/utils/dateUtil';
   import { isNumber, isObject, isString } from '@/utils/is';
   import { propTypes } from '@/utils/propTypes';
 

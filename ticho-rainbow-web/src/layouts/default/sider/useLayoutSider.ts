@@ -1,6 +1,5 @@
 import type { Ref } from 'vue';
-
-import { computed, unref, onMounted, nextTick } from 'vue';
+import { computed, nextTick, onMounted, unref } from 'vue';
 
 import { TriggerEnum } from '@/enums/menuEnum';
 

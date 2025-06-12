@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { defineComponent, toRefs, ref, unref } from 'vue';
+  import { defineComponent, ref, toRefs, unref } from 'vue';
   import { createAppProviderContext } from './useAppContext';
   import { createBreakpointListen } from '@/hooks/event/useBreakpoint';
   import { prefixCls } from '@/settings/designSetting';
@@ -76,6 +76,7 @@
           }
         }
       }
+
       return () => slots.default?.();
     },
   });

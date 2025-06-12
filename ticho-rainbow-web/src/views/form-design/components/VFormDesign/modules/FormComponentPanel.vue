@@ -39,10 +39,10 @@
 <script lang="ts">
   import draggable from 'vuedraggable';
   import LayoutItem from '../components/LayoutItem.vue';
-  import { defineComponent, computed } from 'vue';
+  import { computed, defineComponent } from 'vue';
   import { cloneDeep } from 'lodash-es';
   import { useFormDesignState } from '../../../hooks/useFormDesignState';
-  import { Form, Empty } from 'ant-design-vue';
+  import { Empty, Form } from 'ant-design-vue';
 
   export default defineComponent({
     name: 'FormComponentPanel',

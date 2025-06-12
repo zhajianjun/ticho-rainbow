@@ -11,7 +11,7 @@
       >
         <template #header>
           <div class="flex justify-end space-x-2">
-            <slot name="header"> </slot>
+            <slot name="header"></slot>
             <Tooltip>
               <template #title>
                 <div class="w-50">每行显示数量</div>
@@ -22,11 +22,15 @@
                   @change="sliderChange"
                 />
               </template>
-              <a-button><TableOutlined /></a-button>
+              <a-button>
+                <TableOutlined />
+              </a-button>
             </Tooltip>
             <Tooltip @click="fetch">
               <template #title>刷新</template>
-              <a-button><RedoOutlined /></a-button>
+              <a-button>
+                <RedoOutlined />
+              </a-button>
             </Tooltip>
           </div>
         </template>
@@ -83,12 +87,12 @@
     RedoOutlined,
     TableOutlined,
   } from '@ant-design/icons-vue';
-  import { List, Card, Image, Typography, Tooltip, Slider, Avatar } from 'ant-design-vue';
+  import { Avatar, Card, Image, List, Slider, Tooltip, Typography } from 'ant-design-vue';
   import { Dropdown } from '@/components/Dropdown';
   import { BasicForm, useForm } from '@/components/Form';
   import { propTypes } from '@/utils/propTypes';
   import { isFunction } from '@/utils/is';
-  import { useSlider, grid } from './data';
+  import { grid, useSlider } from './data';
 
   const ListItem = List.Item;
   const CardMeta = Card.Meta;
@@ -122,11 +126,13 @@
     autoSubmitOnEnter: true,
     submitFunc: handleSubmit,
   });
+
   //表单提交
   async function handleSubmit() {
     const data = await validate();
     await fetch(data);
   }
+
   function sliderChange(n) {
     pageSize.value = n * 4;
     fetch();
@@ -146,6 +152,7 @@
       total.value = res.total;
     }
   }
+
   //分页相关
   const page = ref(1);
   const pageSize = ref(36);
@@ -166,6 +173,7 @@
     pageSize.value = pz;
     fetch();
   }
+
   function pageSizeChange(_current, size: number) {
     pageSize.value = size;
     fetch();

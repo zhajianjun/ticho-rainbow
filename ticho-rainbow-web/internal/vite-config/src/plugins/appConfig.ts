@@ -82,6 +82,7 @@ const getVariableName = (title: string) => {
     }
     return result.join('').toUpperCase();
   }
+
   return `__PRODUCTION__${strToHex(title) || '__APP'}__CONF__`.toUpperCase().replace(/\s/g, '');
 };
 

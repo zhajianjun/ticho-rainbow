@@ -4,8 +4,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { watch, PropType, ref, unref, onMounted } from 'vue';
-  import { toCanvas, QRCodeRenderersOptions, LogoType } from './qrcodePlus';
+  import { onMounted, PropType, ref, unref, watch } from 'vue';
+  import { LogoType, QRCodeRenderersOptions, toCanvas } from './qrcodePlus';
   import { toDataURL } from 'qrcode';
   import { downloadByUrl } from '@/utils/file/download';
   import { QrcodeDoneEventParams } from './typing';
@@ -46,6 +46,7 @@
   });
 
   const wrapRef = ref<HTMLCanvasElement | HTMLImageElement | null>(null);
+
   async function createQrcode() {
     try {
       const { tag, value, options = {}, width, logo } = props;
@@ -79,6 +80,7 @@
       emit('error', error);
     }
   }
+
   /**
    * file download
    */

@@ -2,9 +2,9 @@ import { ContentEnum, RouterTransitionEnum } from '@/enums/appEnum';
 import {
   MenuModeEnum,
   MenuTypeEnum,
+  MixSidebarTriggerEnum,
   TopMenuAlignEnum,
   TriggerEnum,
-  MixSidebarTriggerEnum,
 } from '@/enums/menuEnum';
 
 import { useI18n } from '@/hooks/web/useI18n';

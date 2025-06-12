@@ -1,11 +1,12 @@
 import { IAnyObject } from '../../../typings/base-type';
 import { baseComponents, customComponents } from '../../../core/formItemConfig';
-import { Input, Select, RadioGroup, Slider } from 'ant-design-vue';
+import { Input, RadioGroup, Select, Slider } from 'ant-design-vue';
 import { Component } from 'vue';
 
 export const globalConfigState: { span: number } = {
   span: 24,
 };
+
 export interface IBaseFormAttrs {
   name: string; // 字段名
   label: string; // 字段标签

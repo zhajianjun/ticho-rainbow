@@ -1,7 +1,7 @@
 import { defineComponent, ref, unref } from 'vue';
-import { Card, Typography, Button, Input, Space, message } from 'ant-design-vue';
+import { Button, Card, Input, message, Space, Typography } from 'ant-design-vue';
 import { getArticle } from './mock-api';
-import { useRequest, clearCache } from '@vben/hooks';
+import { clearCache, useRequest } from '@vben/hooks';
 import { PageWrapper } from '@/components/Page';
 
 const Article1 = defineComponent({

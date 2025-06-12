@@ -6,17 +6,17 @@
 
 <script lang="ts" setup>
   import type { PropType } from 'vue';
-  import type { SubMenuProvider } from './types';
   import {
-    ref,
     computed,
-    onMounted,
-    watchEffect,
-    watch,
-    nextTick,
     getCurrentInstance,
+    nextTick,
+    onMounted,
     provide,
+    ref,
+    watch,
+    watchEffect,
   } from 'vue';
+  import type { SubMenuProvider } from './types';
   import { useDesign } from '@/hooks/web/useDesign';
   import { propTypes } from '@/utils/propTypes';
   import { createSimpleRootMenuContext, type MenuEmitterEvents } from './useSimpleMenuContext';

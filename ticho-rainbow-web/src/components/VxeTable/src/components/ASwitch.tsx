@@ -1,12 +1,12 @@
 import { h } from 'vue';
 import XEUtils from 'xe-utils';
 import {
-  createEditRender,
-  createDefaultRender,
-  createProps,
-  createEvents,
   createDefaultFilterRender,
+  createDefaultRender,
+  createEditRender,
+  createEvents,
   createFormItemRender,
+  createProps,
   getComponent,
 } from './common';
 

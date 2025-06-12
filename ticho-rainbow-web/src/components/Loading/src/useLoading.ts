@@ -1,5 +1,5 @@
-import { unref } from 'vue';
 import type { Ref } from 'vue';
+import { unref } from 'vue';
 import { tryOnUnmounted } from '@vueuse/core';
 import { createLoading } from './createLoading';
 import type { LoadingProps } from './typing';

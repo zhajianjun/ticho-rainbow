@@ -12,7 +12,7 @@
 </template>
 <script lang="ts" setup>
   import { computed } from 'vue';
-  import { Tooltip, Badge } from 'ant-design-vue';
+  import { Badge, Tooltip } from 'ant-design-vue';
   import Icon from '@/components/Icon/Icon.vue';
   import { useI18n } from '@/hooks/web/useI18n';
   import { useErrorLogStore } from '@/store/modules/errorLog';

@@ -5,24 +5,23 @@ import { IconPicker } from '@/components/Icon';
  * Component list, register here to setting it in the form
  */
 import {
-  Input,
-  Button,
-  Select,
-  Radio,
-  Checkbox,
   AutoComplete,
+  Button,
+  Calendar,
   Cascader,
+  Checkbox,
   DatePicker,
+  Divider,
+  Input,
   InputNumber,
+  Radio,
+  Rate,
+  Select,
+  Slider,
   Switch,
   TimePicker,
-  // ColorPicker,
-  TreeSelect,
-  Slider,
-  Rate,
-  Divider,
-  Calendar,
   Transfer,
+  TreeSelect,
 } from 'ant-design-vue';
 
 //ant-desing本身的Form控件库

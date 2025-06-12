@@ -17,7 +17,7 @@
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent, reactive, toRefs, PropType } from 'vue';
+  import { defineComponent, PropType, reactive, toRefs } from 'vue';
   import { IVFormComponent } from '../../../typings/v-form-component';
   import FormNodeOperate from './FormNodeOperate.vue';
   import { useFormDesignState } from '../../../hooks/useFormDesignState';

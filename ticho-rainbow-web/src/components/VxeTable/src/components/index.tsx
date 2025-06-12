@@ -1,4 +1,4 @@
-import { VXETableCore, VxeGlobalInterceptorHandles } from 'vxe-table';
+import { VxeGlobalInterceptorHandles, VXETableCore } from 'vxe-table';
 import AAutoComplete from './AAutoComplete';
 import AInput from './AInput';
 import AInputNumber from './AInputNumber';

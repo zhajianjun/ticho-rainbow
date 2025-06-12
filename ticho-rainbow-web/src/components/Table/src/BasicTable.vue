@@ -41,16 +41,16 @@
 <script lang="ts" setup>
   import type {
     BasicTableProps,
-    TableActionType,
-    SizeType,
     ColumnChangeParam,
+    SizeType,
+    TableActionType,
   } from './types/table';
-  import { ref, computed, unref, toRaw, inject, watch, useAttrs, useSlots } from 'vue';
+  import { InnerHandlers, InnerMethods } from './types/table';
+  import { computed, inject, ref, toRaw, unref, useAttrs, useSlots, watch } from 'vue';
   import { Table } from 'ant-design-vue';
   import { BasicForm, useForm } from '@/components/Form';
   import { PageWrapperFixedHeightKey } from '@/enums/pageEnum';
   import HeaderCell from './components/HeaderCell.vue';
-  import { InnerHandlers, InnerMethods } from './types/table';
   import { usePagination } from './hooks/usePagination';
   import { useColumns } from './hooks/useColumns';
   import { useDataSource } from './hooks/useDataSource';
@@ -66,7 +66,7 @@
   import { useTableFooter } from './hooks/useTableFooter';
   import { useTableForm } from './hooks/useTableForm';
   import { useDesign } from '@/hooks/web/useDesign';
-  import { omit, debounce } from 'lodash-es';
+  import { debounce, omit } from 'lodash-es';
   import { useElementSize } from '@vueuse/core';
   import { basicProps } from './props';
   import { isFunction } from '@/utils/is';

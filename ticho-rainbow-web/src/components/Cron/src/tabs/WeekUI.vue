@@ -47,9 +47,9 @@
 </template>
 
 <script lang="ts">
-  import { computed, watch, defineComponent } from 'vue';
-  import { InputNumber, Radio, RadioGroup, Checkbox, CheckboxGroup, Select } from 'ant-design-vue';
-  import { useTabProps, useTabEmits, useTabSetup, TypeEnum } from './useTabMixin';
+  import { computed, defineComponent, watch } from 'vue';
+  import { Checkbox, CheckboxGroup, InputNumber, Radio, RadioGroup, Select } from 'ant-design-vue';
+  import { TypeEnum, useTabEmits, useTabProps, useTabSetup } from './useTabMixin';
 
   const WEEK_MAP_EN = {
     '1': 'SUN',

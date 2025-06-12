@@ -1,10 +1,10 @@
 import { VxeGlobalRendererHandles } from 'vxe-table';
 import XEUtils from 'xe-utils';
 import {
-  createEditRender,
   createCellRender,
-  createFormItemRender,
+  createEditRender,
   createExportMethod,
+  createFormItemRender,
 } from './common';
 
 function matchCascaderData(index: number, list: any[], values: any[], labels: any[]) {

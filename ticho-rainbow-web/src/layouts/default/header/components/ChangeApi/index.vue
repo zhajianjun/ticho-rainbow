@@ -10,8 +10,8 @@
       <template #api="{ model, field }">
         <RadioGroup v-model:value="model[field]">
           <Radio :style="radioStyle" :value="key" v-for="(val, key) in addresses" :key="key"
-            >{{ key }}: {{ val }}</Radio
-          >
+            >{{ key }}: {{ val }}
+          </Radio>
         </RadioGroup>
       </template>
     </BasicForm>

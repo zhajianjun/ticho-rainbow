@@ -57,7 +57,7 @@
 </template>
 <script lang="ts" setup>
   import { computed, PropType, ref, toRefs, unref } from 'vue';
-  import { Alert, Upload, Select } from 'ant-design-vue';
+  import { Alert, Select, Upload } from 'ant-design-vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   // hooks
   import { useUploadType } from '@/components/Upload/src/hooks/useUpload';
@@ -164,6 +164,7 @@
         : t('component.upload.startUpload');
   });
   let num = 0;
+
   // 上传前校验
   function beforeUpload(file: File) {
     const { size, name } = file;

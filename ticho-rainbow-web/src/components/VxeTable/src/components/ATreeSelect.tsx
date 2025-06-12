@@ -1,11 +1,11 @@
 import { VxeGlobalRendererHandles } from 'vxe-table';
 import XEUtils from 'xe-utils';
 import {
-  createEditRender,
   createCellRender,
-  isEmptyValue,
-  createFormItemRender,
+  createEditRender,
   createExportMethod,
+  createFormItemRender,
+  isEmptyValue,
 } from './common';
 
 function getTreeSelectCellValue(

@@ -77,25 +77,25 @@
 </template>
 <script lang="ts">
   import {
+    Checkbox,
+    Col,
     Empty,
-    Input,
     Form,
     FormItem,
-    Switch,
-    Checkbox,
-    Select,
+    Input,
     InputNumber,
     RadioGroup,
-    Col,
     Row,
+    Select,
+    Switch,
   } from 'ant-design-vue';
   import RadioButtonGroup from '@/components/Form/src/components/RadioButtonGroup.vue';
   import { computed, defineComponent, ref, watch } from 'vue';
   import { useFormDesignState } from '../../../hooks/useFormDesignState';
   import {
-    baseComponentControlAttrs,
     baseComponentAttrs,
     baseComponentCommonAttrs,
+    baseComponentControlAttrs,
     componentPropsFuncs,
   } from '../../VFormDesign/config/componentPropsConfig';
   import FormOptions from './FormOptions.vue';

@@ -7,7 +7,7 @@ import { useScrollTo } from '@vben/hooks';
 import { type AnyFunction } from '@vben/types';
 import { onKeyStroke, useDebounceFn } from '@vueuse/core';
 import { cloneDeep } from 'lodash-es';
-import { Ref, nextTick, onBeforeMount, ref, unref } from 'vue';
+import { nextTick, onBeforeMount, Ref, ref, unref } from 'vue';
 
 export interface SearchResult {
   name: string;

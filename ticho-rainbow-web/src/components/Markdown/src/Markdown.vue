@@ -5,14 +5,14 @@
   import './adapter.js';
   import type { Ref } from 'vue';
   import {
-    ref,
-    unref,
-    nextTick,
     computed,
-    watch,
+    nextTick,
     onBeforeUnmount,
     onDeactivated,
+    ref,
+    unref,
     useAttrs,
+    watch,
   } from 'vue';
   import Vditor from 'vditor';
   import 'vditor/dist/index.css';

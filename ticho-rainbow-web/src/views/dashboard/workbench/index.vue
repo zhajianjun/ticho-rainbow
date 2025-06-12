@@ -1,6 +1,8 @@
 <template>
   <PageWrapper>
-    <template #headerContent> <WorkbenchHeader /> </template>
+    <template #headerContent>
+      <WorkbenchHeader />
+    </template>
     <div class="lg:flex">
       <div class="lg:w-7/10 w-full !mr-4 enter-y">
         <ProjectCard :loading="loading" class="enter-y" />

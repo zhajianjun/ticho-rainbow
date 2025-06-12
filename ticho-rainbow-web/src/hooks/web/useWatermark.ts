@@ -60,6 +60,7 @@ function createBase64(str: string, waterMarkOptions: waterMarkOptionsType) {
   }
   return can.toDataURL('image/png');
 }
+
 const resetWatermarkStyle = (
   element: HTMLElement,
   watermarkText: string,
@@ -197,6 +198,7 @@ export function useWatermark(
       });
     }
   }
+
   return { setWatermark, clear, clearAll };
 }
 

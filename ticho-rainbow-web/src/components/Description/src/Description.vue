@@ -10,12 +10,12 @@
   import { get } from 'lodash-es';
   import {
     computed,
+    type CSSProperties,
     defineComponent,
+    type PropType,
     ref,
     toRefs,
     unref,
-    type CSSProperties,
-    type PropType,
   } from 'vue';
   import type { DescInstance, DescItem, DescriptionProps } from './typing';
 
@@ -135,7 +135,7 @@
               if (getField && !toRefs(_data).hasOwnProperty(field)) {
                 return isFunction(render) ? render('', _data) : '';
               }
-              return isFunction(render) ? render(getField, _data) : getField ?? '';
+              return isFunction(render) ? render(getField, _data) : (getField ?? '');
             };
 
             const width = contentMinWidth;

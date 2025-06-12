@@ -11,13 +11,13 @@
   </BasicModal>
 </template>
 <script lang="ts" setup>
-  import { watch, ref } from 'vue';
+  import { ref, watch } from 'vue';
   import FileList from './FileList.vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   import { handleFnKey, previewProps } from '../props';
   import { BaseFileItem, FileBasicColumn, PreviewFileItem } from '../types/typing';
   import { downloadByUrl } from '@/utils/file/download';
-  import { createPreviewColumns, createPreviewActionColumn } from './data';
+  import { createPreviewActionColumn, createPreviewColumns } from './data';
   import { useI18n } from '@/hooks/web/useI18n';
   import { isArray, isFunction } from '@/utils/is';
   import { BasicColumn } from '@/components/Table';
@@ -90,6 +90,7 @@
       emit('list-change', fileListRef.value, valueKey);
     }
   }
+
   // 添加
   function handleAdd(obj: Record<handleFnKey, any>) {
     let { record = {}, valueKey = 'url', uidKey = 'uid' } = obj;
@@ -102,6 +103,7 @@
     fileListRef.value = [...fileListRef.value, record];
     emit('list-change', fileListRef.value, valueKey);
   }
+
   // 下载
   function handleDownload(record: PreviewFileItem) {
     const { url = '' } = record;

@@ -84,6 +84,7 @@ export function useHeaderSetting() {
   function setHeaderSetting(headerSetting: Partial<HeaderSetting>) {
     appStore.setProjectConfig({ headerSetting });
   }
+
   return {
     setHeaderSetting,
 

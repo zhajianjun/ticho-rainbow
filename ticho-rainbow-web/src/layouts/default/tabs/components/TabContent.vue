@@ -16,9 +16,8 @@
 </template>
 <script lang="ts" setup>
   import type { PropType } from 'vue';
-  import type { RouteLocationNormalized } from 'vue-router';
-
   import { computed, unref } from 'vue';
+  import type { RouteLocationNormalized } from 'vue-router';
   import { Dropdown } from '@/components/Dropdown';
   import Icon from '@/components/Icon/Icon.vue';
 

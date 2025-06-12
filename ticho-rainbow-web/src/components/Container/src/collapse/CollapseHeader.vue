@@ -1,7 +1,7 @@
 <script lang="tsx">
   import { BasicArrow, BasicTitle } from '@/components/Basic';
   import { useDesign } from '@/hooks/web/useDesign';
-  import { PropType, computed, defineComponent, unref, type ExtractPropTypes } from 'vue';
+  import { computed, defineComponent, type ExtractPropTypes, PropType, unref } from 'vue';
 
   const collapseHeaderProps = {
     prefixCls: String,

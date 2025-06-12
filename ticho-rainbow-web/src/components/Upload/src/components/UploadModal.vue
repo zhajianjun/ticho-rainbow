@@ -49,8 +49,8 @@
   </BasicModal>
 </template>
 <script lang="ts" setup>
-  import { ref, toRefs, unref, computed, PropType } from 'vue';
-  import { Upload, Alert } from 'ant-design-vue';
+  import { computed, PropType, ref, toRefs, unref } from 'vue';
+  import { Alert, Upload } from 'ant-design-vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   // hooks
   import { useUploadType } from '../hooks/useUpload';
@@ -58,7 +58,7 @@
   //   types
   import { FileItem, UploadResultStatus } from '../types/typing';
   import { basicProps } from '../props';
-  import { createTableColumns, createActionColumn } from './data';
+  import { createActionColumn, createTableColumns } from './data';
   // utils
   import { checkImgType, getBase64WithFile } from '../helper';
   import { buildUUID } from '@/utils/uuid';

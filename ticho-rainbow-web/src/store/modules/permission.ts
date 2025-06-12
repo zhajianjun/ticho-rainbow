@@ -6,7 +6,7 @@ import { useI18n } from '@/hooks/web/useI18n';
 import { useUserStore } from './user';
 import { useAppStoreWithOut } from './app';
 import { toRaw } from 'vue';
-import { transformObjToRoute, flatMultiLevelRoutes } from '@/router/helper/routeHelper';
+import { flatMultiLevelRoutes, transformObjToRoute } from '@/router/helper/routeHelper';
 import { transformRouteToMenu } from '@/router/helper/menuHelper';
 
 import projectSetting from '@/settings/projectSetting';

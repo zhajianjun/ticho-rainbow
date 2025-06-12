@@ -134,7 +134,7 @@
     getTableColumns as getDictTableColumns,
   } from './dict.data';
   import { getTableColumns as getDictLabelTableColumns } from './dictLabel.data';
-  import { delDict, dictPage, expExcel, disableDict, enableDict } from '@/api/system/dict';
+  import { delDict, dictPage, disableDict, enableDict, expExcel } from '@/api/system/dict';
   import {
     delDictLabel,
     disableDictLabel,

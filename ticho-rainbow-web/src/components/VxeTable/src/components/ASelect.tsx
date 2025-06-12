@@ -5,10 +5,10 @@ import {
   cellText,
   createCellRender,
   createEvents,
-  createProps,
-  isEmptyValue,
   createExportMethod,
   createFormItemRender,
+  createProps,
+  isEmptyValue,
 } from './common';
 
 function renderOptions(options: any[], optionProps: VxeGlobalRendererHandles.RenderOptionProps) {

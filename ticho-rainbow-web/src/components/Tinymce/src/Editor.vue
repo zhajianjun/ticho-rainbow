@@ -56,13 +56,13 @@
   import {
     computed,
     nextTick,
+    onBeforeUnmount,
+    onDeactivated,
+    PropType,
     ref,
     unref,
-    watch,
-    onDeactivated,
-    onBeforeUnmount,
-    PropType,
     useAttrs,
+    watch,
   } from 'vue';
   import ImgUpload from './ImgUpload.vue';
   import { plugins as defaultPlugins, toolbar as defaultToolbar } from './tinymce';

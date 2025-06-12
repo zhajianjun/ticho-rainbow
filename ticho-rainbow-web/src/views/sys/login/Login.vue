@@ -184,7 +184,9 @@
         }
       }
     }
+
     /* 排除掉type=checkbox或者class=rainbowd的所有子类 */
+
     input:not([type='checkbox']):not(.rainbow) {
       min-width: 360px;
       /* stylelint-disable-next-line media-query-no-invalid */

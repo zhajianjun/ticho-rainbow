@@ -35,6 +35,7 @@ export interface RetryRequest {
   count: number;
   waitTime: number;
 }
+
 export interface Result<T = any> {
   code: number;
   type: 'success' | 'error' | 'warning';
@@ -53,5 +54,6 @@ export interface UploadFileParams {
   file: File;
   // file name
   filename?: string;
+
   [key: string]: any;
 }

@@ -1,10 +1,10 @@
-import type { BasicTableProps, TableRowSelection, BasicColumn } from '../types/table';
-import { Ref, ComputedRef, ref, computed, unref, nextTick, watch } from 'vue';
+import type { BasicColumn, BasicTableProps, TableRowSelection } from '../types/table';
+import { computed, ComputedRef, nextTick, Ref, ref, unref, watch } from 'vue';
 import { getViewportOffset } from '@/utils/domUtils';
 import { isBoolean } from '@/utils/is';
-import { useWindowSizeFn, onMountedOrActivated } from '@vben/hooks';
+import { onMountedOrActivated, useWindowSizeFn } from '@vben/hooks';
 import { useModalContext } from '@/components/Modal';
-import { useDebounceFn, promiseTimeout } from '@vueuse/core';
+import { promiseTimeout, useDebounceFn } from '@vueuse/core';
 
 import {
   footerHeight as layoutFooterHeight,
@@ -314,6 +314,7 @@ export function useTableScroll(
 
     bodyEl!.style.height = `${height}px`;
   }
+
   useWindowSizeFn(calcTableHeight, { wait: 280 });
   onMountedOrActivated(() => {
     calcTableHeight();

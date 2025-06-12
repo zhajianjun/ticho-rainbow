@@ -19,13 +19,13 @@
   </Radio.Group>
 </template>
 <script lang="ts" setup>
-  import { type PropType, ref, computed, unref, watch } from 'vue';
+  import { computed, type PropType, ref, unref, watch } from 'vue';
   import { Radio } from 'ant-design-vue';
   import { isFunction } from '@/utils/is';
   import { useRuleFormItem } from '@/hooks/component/useFormItem';
   import { useAttrs } from '@vben/hooks';
   import { propTypes } from '@/utils/propTypes';
-  import { get, omit, isEqual } from 'lodash-es';
+  import { get, isEqual, omit } from 'lodash-es';
 
   type OptionsItem = {
     label?: string;

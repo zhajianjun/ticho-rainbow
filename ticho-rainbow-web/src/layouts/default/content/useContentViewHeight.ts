@@ -1,4 +1,4 @@
-import { ref, computed, unref } from 'vue';
+import { computed, ref, unref } from 'vue';
 import { createPageContext } from '@/hooks/component/usePageContext';
 import { useWindowSizeFn } from '@vben/hooks';
 
@@ -9,9 +9,11 @@ export function useLayoutHeight() {
   function setHeaderHeight(val) {
     headerHeightRef.value = val;
   }
+
   function setFooterHeight(val) {
     footerHeightRef.value = val;
   }
+
   return { headerHeightRef, footerHeightRef, setHeaderHeight, setFooterHeight };
 }
 

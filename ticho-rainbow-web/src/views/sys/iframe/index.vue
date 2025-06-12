@@ -12,7 +12,7 @@
 </template>
 <script lang="ts" setup>
   import type { CSSProperties } from 'vue';
-  import { ref, unref, computed, onMounted, onUnmounted } from 'vue';
+  import { computed, onMounted, onUnmounted, ref, unref } from 'vue';
   import { Spin } from 'ant-design-vue';
   import { useWindowSizeFn } from '@vben/hooks';
   import { propTypes } from '@/utils/propTypes';
