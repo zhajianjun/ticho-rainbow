@@ -6,9 +6,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.rainbow.interfaces.dto.response.PermissionDTO;
 import top.ticho.rainbow.application.service.PermissionQueryService;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
+import top.ticho.rainbow.interfaces.dto.response.PermissionDTO;
 import top.ticho.starter.view.core.TiResult;
 
 import java.util.List;

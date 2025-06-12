@@ -1,9 +1,9 @@
 package top.ticho.rainbow.infrastructure.persistence.converter;
 
 import org.mapstruct.Mapper;
-import top.ticho.rainbow.interfaces.dto.response.RoleDTO;
 import top.ticho.rainbow.domain.entity.Role;
 import top.ticho.rainbow.infrastructure.persistence.po.RolePO;
+import top.ticho.rainbow.interfaces.dto.response.RoleDTO;
 
 import java.util.List;
 

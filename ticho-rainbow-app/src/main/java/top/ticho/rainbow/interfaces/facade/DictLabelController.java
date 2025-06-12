@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ticho.rainbow.interfaces.dto.command.DictLabelModifyCommand;
-import top.ticho.rainbow.interfaces.dto.command.DictLabelSaveCommand;
-import top.ticho.rainbow.interfaces.dto.command.VersionModifyCommand;
-import top.ticho.rainbow.interfaces.dto.response.DictLabelDTO;
 import top.ticho.rainbow.application.service.DictLabelService;
 import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
+import top.ticho.rainbow.interfaces.dto.command.DictLabelModifyCommand;
+import top.ticho.rainbow.interfaces.dto.command.DictLabelSaveCommand;
+import top.ticho.rainbow.interfaces.dto.command.VersionModifyCommand;
+import top.ticho.rainbow.interfaces.dto.response.DictLabelDTO;
 import top.ticho.starter.view.core.TiResult;
 
 import jakarta.validation.constraints.NotBlank;

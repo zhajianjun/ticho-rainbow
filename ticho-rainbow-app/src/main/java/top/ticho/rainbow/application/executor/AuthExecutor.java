@@ -5,15 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.assembler.MenuAssembler;
 import top.ticho.rainbow.application.assembler.RoleAssembler;
-import top.ticho.rainbow.interfaces.dto.response.MenuDTO;
-import top.ticho.rainbow.interfaces.dto.response.RoleDTO;
-import top.ticho.rainbow.interfaces.dto.response.RoleMenuDTO;
 import top.ticho.rainbow.domain.entity.Menu;
 import top.ticho.rainbow.domain.entity.Role;
 import top.ticho.rainbow.domain.repository.MenuRepository;
 import top.ticho.rainbow.domain.repository.RoleMenuRepository;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.infrastructure.common.enums.MenuType;
+import top.ticho.rainbow.interfaces.dto.response.MenuDTO;
+import top.ticho.rainbow.interfaces.dto.response.RoleDTO;
+import top.ticho.rainbow.interfaces.dto.response.RoleMenuDTO;
 import top.ticho.starter.web.util.TiTreeUtil;
 
 import java.util.ArrayList;

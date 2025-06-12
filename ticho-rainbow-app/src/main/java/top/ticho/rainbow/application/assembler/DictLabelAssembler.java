@@ -2,13 +2,13 @@ package top.ticho.rainbow.application.assembler;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import top.ticho.rainbow.interfaces.dto.command.DictLabelModifyCommand;
-import top.ticho.rainbow.interfaces.dto.command.DictLabelSaveCommand;
 import top.ticho.rainbow.application.dto.excel.DictExcelExport;
-import top.ticho.rainbow.interfaces.dto.response.DictLabelDTO;
 import top.ticho.rainbow.domain.entity.DictLabel;
 import top.ticho.rainbow.domain.entity.vo.DictLabelModifyVO;
 import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
+import top.ticho.rainbow.interfaces.dto.command.DictLabelModifyCommand;
+import top.ticho.rainbow.interfaces.dto.command.DictLabelSaveCommand;
+import top.ticho.rainbow.interfaces.dto.response.DictLabelDTO;
 import top.ticho.starter.web.util.TiIdUtil;
 
 /**

@@ -3,9 +3,9 @@ package top.ticho.rainbow.infrastructure.common.util;
 import cn.hutool.core.collection.CollUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import top.ticho.rainbow.infrastructure.common.dto.SecurityUser;
 import top.ticho.rainbow.domain.entity.UserHelper;
 import top.ticho.rainbow.infrastructure.common.constant.SecurityConst;
+import top.ticho.rainbow.infrastructure.common.dto.SecurityUser;
 import top.ticho.starter.security.util.TiUserUtil;
 
 import java.util.List;

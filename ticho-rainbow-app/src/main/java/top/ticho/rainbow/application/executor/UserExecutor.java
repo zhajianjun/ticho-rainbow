@@ -6,11 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.assembler.UserAssembler;
-import top.ticho.rainbow.interfaces.dto.response.UserDTO;
 import top.ticho.rainbow.domain.entity.User;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
+import top.ticho.rainbow.interfaces.dto.response.UserDTO;
 import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.view.util.TiAssert;
 

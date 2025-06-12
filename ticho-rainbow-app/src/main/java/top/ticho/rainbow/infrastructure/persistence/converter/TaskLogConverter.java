@@ -1,9 +1,9 @@
 package top.ticho.rainbow.infrastructure.persistence.converter;
 
 import org.mapstruct.Mapper;
-import top.ticho.rainbow.interfaces.dto.response.TaskLogDTO;
 import top.ticho.rainbow.domain.entity.TaskLog;
 import top.ticho.rainbow.infrastructure.persistence.po.TaskLogPO;
+import top.ticho.rainbow.interfaces.dto.response.TaskLogDTO;
 
 /**
  * 客户端信息 转换器
