@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.application.repository.RoleAppRepository;
 import top.ticho.rainbow.domain.entity.Role;
 import top.ticho.rainbow.domain.repository.RoleRepository;
@@ -17,8 +17,8 @@ import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.rainbow.infrastructure.persistence.converter.RoleConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.RoleMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.RolePO;
-import top.ticho.rainbow.interfaces.query.RoleQuery;
 import top.ticho.rainbow.interfaces.dto.RoleDTO;
+import top.ticho.rainbow.interfaces.query.RoleQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
@@ -34,8 +34,8 @@ import java.util.stream.Collectors;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-@Service
 @RequiredArgsConstructor
+@Repository
 public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, RolePO> implements RoleRepository, RoleAppRepository {
     private final RoleConverter roleConverter;
 
@@ -48,7 +48,7 @@ public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, RolePO> imp
     @Override
     @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:role:list'")
     public boolean save(Role role) {
-        RolePO rolePO = roleConverter.toPo(role);
+        RolePO rolePO = roleConverter.toPO(role);
         return super.save(rolePO);
     }
 
@@ -61,14 +61,14 @@ public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, RolePO> imp
     @Override
     @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:role:list'")
     public boolean modify(Role role) {
-        RolePO rolePO = roleConverter.toPo(role);
+        RolePO rolePO = roleConverter.toPO(role);
         return super.updateById(rolePO);
     }
 
     @Override
     @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:role:list'")
     public boolean modifyBatch(List<Role> roles) {
-        return super.updateBatchById(roleConverter.toPo(roles));
+        return super.updateBatchById(roleConverter.toPO(roles));
     }
 
     @Override

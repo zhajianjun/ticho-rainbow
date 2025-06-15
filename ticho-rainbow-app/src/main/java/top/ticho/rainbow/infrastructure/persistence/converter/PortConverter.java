@@ -20,9 +20,9 @@ public interface PortConverter {
 
     Port toEntity(PortPO portPO);
 
-    PortPO toPo(Port port);
+    PortPO toPO(Port port);
 
-    List<PortPO> toPo(List<Port> port);
+    List<PortPO> toPO(List<Port> port);
 
     PortDTO toDTO(PortPO portPO);
 

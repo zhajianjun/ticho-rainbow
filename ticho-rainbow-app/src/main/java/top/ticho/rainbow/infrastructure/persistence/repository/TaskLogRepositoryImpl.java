@@ -5,15 +5,15 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.application.repository.TaskLogAppRepository;
 import top.ticho.rainbow.domain.entity.TaskLog;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.rainbow.infrastructure.persistence.converter.TaskLogConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.TaskLogMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.TaskLogPO;
-import top.ticho.rainbow.interfaces.query.TaskLogQuery;
 import top.ticho.rainbow.interfaces.dto.TaskLogDTO;
+import top.ticho.rainbow.interfaces.query.TaskLogQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
@@ -27,14 +27,14 @@ import java.util.Objects;
  * @author zhajianjun
  * @date 2024-05-06 16:41
  */
-@Service
 @RequiredArgsConstructor
+@Repository
 public class TaskLogRepositoryImpl extends TiRepositoryImpl<TaskLogMapper, TaskLogPO> implements TaskLogRepository, TaskLogAppRepository {
     private final TaskLogConverter taskLogConverter;
 
     @Override
     public boolean save(TaskLog taskLog) {
-        TaskLogPO taskLogPo = taskLogConverter.toPo(taskLog);
+        TaskLogPO taskLogPo = taskLogConverter.toPO(taskLog);
         return save(taskLogPo);
     }
 

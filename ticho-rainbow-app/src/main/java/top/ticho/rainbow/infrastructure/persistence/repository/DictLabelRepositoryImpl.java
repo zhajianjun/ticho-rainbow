@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.domain.entity.DictLabel;
 import top.ticho.rainbow.domain.repository.DictLabelRepository;
 import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
@@ -23,14 +23,14 @@ import java.util.Objects;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-@Service
 @RequiredArgsConstructor
+@Repository
 public class DictLabelRepositoryImpl extends TiRepositoryImpl<DictLabelMapper, DictLabelPO> implements DictLabelRepository {
     private final DictLabelConverter dictLabelConverter;
 
     @Override
     public boolean save(DictLabel dictLabel) {
-        DictLabelPO po = dictLabelConverter.toPo(dictLabel);
+        DictLabelPO po = dictLabelConverter.toPO(dictLabel);
         return save(po);
     }
 
@@ -41,13 +41,13 @@ public class DictLabelRepositoryImpl extends TiRepositoryImpl<DictLabelMapper, D
 
     @Override
     public boolean modify(DictLabel dictLabel) {
-        DictLabelPO po = dictLabelConverter.toPo(dictLabel);
+        DictLabelPO po = dictLabelConverter.toPO(dictLabel);
         return updateById(po);
     }
 
     @Override
     public boolean modifyBatch(List<DictLabel> dictLabels) {
-        return super.updateBatchById(dictLabelConverter.toPo(dictLabels));
+        return super.updateBatchById(dictLabelConverter.toPO(dictLabels));
     }
 
     @Override

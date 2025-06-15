@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.domain.entity.Menu;
 import top.ticho.rainbow.domain.repository.MenuRepository;
 import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
@@ -25,15 +25,15 @@ import java.util.Objects;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-@Service
 @RequiredArgsConstructor
+@Repository
 public class MenuRepositoryImpl extends TiRepositoryImpl<MenuMapper, MenuPO> implements MenuRepository {
     private final MenuConverter menuConverter;
 
     @Override
     @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:menu:list'")
     public boolean save(Menu menu) {
-        MenuPO menuPO = menuConverter.toPo(menu);
+        MenuPO menuPO = menuConverter.toPO(menu);
         return super.save(menuPO);
     }
 
@@ -46,14 +46,14 @@ public class MenuRepositoryImpl extends TiRepositoryImpl<MenuMapper, MenuPO> imp
     @Override
     @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:menu:list'")
     public boolean modify(Menu menu) {
-        MenuPO menuPO = menuConverter.toPo(menu);
+        MenuPO menuPO = menuConverter.toPO(menu);
         return super.updateById(menuPO);
     }
 
     @Override
     @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:menu:list'")
     public boolean modifyBatch(List<Menu> menus) {
-        return super.updateBatchById(menuConverter.toPo(menus));
+        return super.updateBatchById(menuConverter.toPO(menus));
     }
 
     @Override

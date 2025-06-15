@@ -63,6 +63,29 @@ public class ApiConst {
     public final static String SYSTEM_DICT_LABEL_DISABLE = "system:dict-label:disable";
     public final static String SYSTEM_DICT_LABEL_ENABLE = "system:dict-label:enable";
 
+    public final static String SYSTEM_TASK_ALL = "system:task:all";
+    public final static String SYSTEM_TASK_DISABLE = "system:task:disable";
+    public final static String SYSTEM_TASK_ENABLE = "system:task:enable";
+    public final static String SYSTEM_TASK_EXPORT = "system:task:export";
+    public final static String SYSTEM_TASK_MODIFY = "system:task:modify";
+    public final static String SYSTEM_TASK_PAGE = "system:task:page";
+    public final static String SYSTEM_TASK_RECENT_CRON_TIME = "system:task:recent-cron-time";
+    public final static String SYSTEM_TASK_REMOVE = "system:task:remove";
+    public final static String SYSTEM_TASK_RUN_ONCE = "system:task:run-once";
+    public final static String SYSTEM_TASK_SAVE = "system:task:save";
+
+    public final static String SYSTEM_TASK_LOG_EXPORT = "system:task-log:export";
+    public final static String SYSTEM_TASK_LOG_PAGE = "system:task-log:page";
+
+    public final static String SYSTEM_TOOL_DECRYPT = "system:tool:decrypt";
+    public final static String SYSTEM_TOOL_ENCRYPT = "system:tool:encrypt";
+
+    public final static String SYSTEM_SETTING_SAVE = "system:setting:save";
+    public final static String SYSTEM_SETTING_REMOVE = "system:setting:remove";
+    public final static String SYSTEM_SETTING_MODIFY = "system:setting:modify";
+    public final static String SYSTEM_SETTING_PAGE = "system:setting:page";
+    public final static String SYSTEM_SETTING_EXPORT = "system:setting:export";
+
     public final static String STORAGE_FILE_CANCEL = "storage:file:cancel";
     public final static String STORAGE_FILE_COMPOSE_CHUNK = "storage:file:compose-chunk";
     public final static String STORAGE_FILE_DISABLE = "storage:file:disable";
@@ -97,22 +120,5 @@ public class ApiConst {
     public final static String INTRANET_PORT_SAVE = "intranet:port:save";
 
     public final static String INTRANET_FLOW_MONITOR_INFO = "intranet:flow-monitor:info";
-
-    public final static String SYSTEM_TASK_ALL = "system:task:all";
-    public final static String SYSTEM_TASK_DISABLE = "system:task:disable";
-    public final static String SYSTEM_TASK_ENABLE = "system:task:enable";
-    public final static String SYSTEM_TASK_EXPORT = "system:task:export";
-    public final static String SYSTEM_TASK_MODIFY = "system:task:modify";
-    public final static String SYSTEM_TASK_PAGE = "system:task:page";
-    public final static String SYSTEM_TASK_RECENT_CRON_TIME = "system:task:recent-cron-time";
-    public final static String SYSTEM_TASK_REMOVE = "system:task:remove";
-    public final static String SYSTEM_TASK_RUN_ONCE = "system:task:run-once";
-    public final static String SYSTEM_TASK_SAVE = "system:task:save";
-
-    public final static String SYSTEM_TASK_LOG_EXPORT = "system:task-log:export";
-    public final static String SYSTEM_TASK_LOG_PAGE = "system:task-log:page";
-
-    public final static String SYSTEM_TOOL_DECRYPT = "system:tool:decrypt";
-    public final static String SYSTEM_TOOL_ENCRYPT = "system:tool:encrypt";
 
 }

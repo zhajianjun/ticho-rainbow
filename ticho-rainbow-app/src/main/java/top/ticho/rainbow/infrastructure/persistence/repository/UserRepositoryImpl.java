@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import top.ticho.rainbow.application.repository.UserAppRepository;
 import top.ticho.rainbow.domain.entity.User;
@@ -16,8 +16,8 @@ import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.persistence.converter.UserConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.UserMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.UserPO;
-import top.ticho.rainbow.interfaces.query.UserQuery;
 import top.ticho.rainbow.interfaces.dto.UserDTO;
+import top.ticho.rainbow.interfaces.query.UserQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
@@ -34,21 +34,21 @@ import java.util.Objects;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-@Service
 @RequiredArgsConstructor
+@Repository
 public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> implements UserRepository, UserAppRepository {
     private final UserConverter userConverter;
 
     @Override
     public boolean save(User user) {
-        UserPO userPO = userConverter.toPo(user);
+        UserPO userPO = userConverter.toPO(user);
         return save(userPO);
     }
 
     @Override
     @Transactional
     public boolean saveBatch(List<User> users) {
-        List<UserPO> userPOs = userConverter.toPo(users);
+        List<UserPO> userPOs = userConverter.toPO(users);
         return super.saveBatch(userPOs);
     }
 
@@ -61,14 +61,14 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
     @Override
     @CacheEvict(value = CacheConst.USER_INFO, key = "#user.username")
     public boolean modify(User user) {
-        UserPO userPO = userConverter.toPo(user);
+        UserPO userPO = userConverter.toPO(user);
         return super.updateById(userPO);
     }
 
     @Override
     @Transactional
     public boolean modifyBatch(List<User> users) {
-        List<UserPO> userPOs = userConverter.toPo(users);
+        List<UserPO> userPOs = userConverter.toPO(users);
         return super.updateBatchById(userPOs);
     }
 

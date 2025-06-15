@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.application.repository.ClientAppRepository;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.domain.repository.ClientRepository;
@@ -13,8 +13,8 @@ import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.rainbow.infrastructure.persistence.converter.ClientConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.ClientMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.ClientPO;
-import top.ticho.rainbow.interfaces.query.ClientQuery;
 import top.ticho.rainbow.interfaces.dto.ClientDTO;
+import top.ticho.rainbow.interfaces.query.ClientQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
@@ -31,14 +31,14 @@ import java.util.stream.Collectors;
  * @author zhajianjun
  * @date 2023-12-17 20:12
  */
-@Service
 @RequiredArgsConstructor
+@Repository
 public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, ClientPO> implements ClientRepository, ClientAppRepository {
     private final ClientConverter clientConverter;
 
     @Override
     public boolean save(Client client) {
-        return super.save(clientConverter.toPo(client));
+        return super.save(clientConverter.toPO(client));
     }
 
     @Override
@@ -48,12 +48,12 @@ public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, ClientP
 
     @Override
     public boolean modify(Client client) {
-        return super.updateById(clientConverter.toPo(client));
+        return super.updateById(clientConverter.toPO(client));
     }
 
     @Override
     public boolean modifyBatch(List<Client> clients) {
-        return super.updateBatchById(clientConverter.toPo(clients));
+        return super.updateBatchById(clientConverter.toPO(clients));
     }
 
     @Override

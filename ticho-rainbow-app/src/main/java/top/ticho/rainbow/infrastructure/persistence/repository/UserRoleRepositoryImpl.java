@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import top.ticho.rainbow.domain.entity.UserRole;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-@Service
 @RequiredArgsConstructor
+@Repository
 public class UserRoleRepositoryImpl extends TiRepositoryImpl<UserRoleMapper, UserRolePO> implements UserRoleRepository {
 
     @Override

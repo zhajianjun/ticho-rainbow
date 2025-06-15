@@ -20,9 +20,9 @@ public interface FileInfoConverter {
 
     FileInfo toEntity(FileInfoPO fileInfoPO);
 
-    FileInfoPO toPo(FileInfo fileInfo);
+    FileInfoPO toPO(FileInfo fileInfo);
 
-    List<FileInfoPO> toPo(List<FileInfo> fileInfos);
+    List<FileInfoPO> toPO(List<FileInfo> fileInfos);
 
     FileInfoDTO toDTO(FileInfoPO fileInfoPO);
 

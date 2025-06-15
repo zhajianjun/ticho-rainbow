@@ -1,9 +1,6 @@
 package top.ticho.rainbow.domain.entity;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.Version;
 import lombok.Builder;
 import lombok.Getter;
 import top.ticho.rainbow.domain.entity.vo.PortModifyfVO;
@@ -44,8 +41,6 @@ public class Port implements Entity {
     /** 备注信息 */
     private String remark;
     /** 版本号 */
-    @Version
-    @TableField(fill = FieldFill.INSERT)
     private Long version;
     /** 创建人 */
     private String createBy;
@@ -78,8 +73,7 @@ public class Port implements Entity {
 
     public void enable() {
         CommonStatus disable = CommonStatus.DISABLE;
-        TiAssert.isTrue(Objects.equals(this.status, disable.code()),
-            StrUtil.format("只有[{}]状态才能执行启用操作，端口：[{}]", disable.message(), port));
+        TiAssert.isTrue(Objects.equals(this.status, disable.code()), StrUtil.format("只有[{}]状态才能执行启用操作，端口：[{}]", disable.message(), port));
         boolean isExired = Objects.nonNull(expireAt) && expireAt.isBefore(LocalDateTime.now());
         TiAssert.isTrue(!isExired, StrUtil.format("端口[{}]已过期", port));
         this.status = CommonStatus.ENABLE.code();
@@ -87,8 +81,7 @@ public class Port implements Entity {
 
     public void disable() {
         CommonStatus enable = CommonStatus.ENABLE;
-        TiAssert.isTrue(Objects.equals(this.status, enable.code()),
-            StrUtil.format("只有[{}]状态才能执行禁用操作，端口：[{}]", enable.message(), port));
+        TiAssert.isTrue(Objects.equals(this.status, enable.code()), StrUtil.format("只有[{}]状态才能执行禁用操作，端口：[{}]", enable.message(), port));
         this.status = CommonStatus.DISABLE.code();
     }
 

@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.application.repository.DictAppRepository;
 import top.ticho.rainbow.domain.entity.Dict;
 import top.ticho.rainbow.domain.repository.DictRepository;
@@ -13,8 +13,8 @@ import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.rainbow.infrastructure.persistence.converter.DictConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.DictMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.DictPO;
-import top.ticho.rainbow.interfaces.query.DictQuery;
 import top.ticho.rainbow.interfaces.dto.DictDTO;
+import top.ticho.rainbow.interfaces.query.DictQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
@@ -28,8 +28,8 @@ import java.util.Objects;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-@Service
 @RequiredArgsConstructor
+@Repository
 public class DictRepositoryImpl extends TiRepositoryImpl<DictMapper, DictPO> implements DictRepository, DictAppRepository {
     private final DictConverter dictConverter;
 

@@ -21,9 +21,9 @@ public interface UserConverter {
 
     User toEntity(UserPO userPO);
 
-    UserPO toPo(User user);
+    UserPO toPO(User user);
 
-    List<UserPO> toPo(Collection<User> users);
+    List<UserPO> toPO(Collection<User> users);
 
     UserDTO toDTO(UserPO userPO);
 

@@ -5,15 +5,15 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.application.repository.PortAppRepository;
 import top.ticho.rainbow.domain.entity.Port;
 import top.ticho.rainbow.domain.repository.PortRepository;
 import top.ticho.rainbow.infrastructure.persistence.converter.PortConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.PortMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.PortPO;
-import top.ticho.rainbow.interfaces.query.PortQuery;
 import top.ticho.rainbow.interfaces.dto.PortDTO;
+import top.ticho.rainbow.interfaces.query.PortQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
@@ -33,14 +33,14 @@ import java.util.stream.Collectors;
  * @author zhajianjun
  * @date 2023-12-17 20:12
  */
-@Service
 @RequiredArgsConstructor
+@Repository
 public class PortRepositoryImpl extends TiRepositoryImpl<PortMapper, PortPO> implements PortRepository, PortAppRepository {
     private final PortConverter portConverter;
 
     @Override
     public boolean save(Port port) {
-        PortPO portPO = portConverter.toPo(port);
+        PortPO portPO = portConverter.toPO(port);
         return save(portPO);
     }
 
@@ -51,13 +51,13 @@ public class PortRepositoryImpl extends TiRepositoryImpl<PortMapper, PortPO> imp
 
     @Override
     public boolean modify(Port port) {
-        PortPO portPO = portConverter.toPo(port);
+        PortPO portPO = portConverter.toPO(port);
         return updateById(portPO);
     }
 
     @Override
     public boolean modifyBatch(List<Port> ports) {
-        return super.updateBatchById(portConverter.toPo(ports));
+        return super.updateBatchById(portConverter.toPO(ports));
     }
 
     @Override

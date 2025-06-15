@@ -16,7 +16,7 @@ public interface OpLogConverter {
 
     OpLog toEntity(OpLogPO opLogPO);
 
-    OpLogPO toPo(OpLog entity);
+    OpLogPO toPO(OpLog entity);
 
     OpLogDTO toDTO(OpLogPO opLogPO);
 

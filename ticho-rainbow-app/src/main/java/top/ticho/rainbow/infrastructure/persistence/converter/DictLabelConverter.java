@@ -23,8 +23,8 @@ public interface DictLabelConverter {
     @Mapping(target = "updateTime", ignore = true)
     @Mapping(target = "updateBy", ignore = true)
     @Mapping(target = "isDelete", ignore = true)
-    DictLabelPO toPo(DictLabel dictLabel);
+    DictLabelPO toPO(DictLabel dictLabel);
 
-    List<DictLabelPO> toPo(List<DictLabel> dictLabels);
+    List<DictLabelPO> toPO(List<DictLabel> dictLabels);
 
 }

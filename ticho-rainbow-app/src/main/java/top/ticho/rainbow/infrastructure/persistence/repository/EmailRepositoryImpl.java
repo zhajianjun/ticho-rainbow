@@ -3,7 +3,7 @@ package top.ticho.rainbow.infrastructure.persistence.repository;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.domain.repository.EmailRepository;
 import top.ticho.starter.mail.component.TiMailContent;
 import top.ticho.starter.mail.component.TiMailTemplate;
@@ -17,8 +17,8 @@ import java.util.Objects;
  * @author zhajianjun
  * @date 2024-02-06 14:32
  */
-@Service
 @RequiredArgsConstructor
+@Repository
 public class EmailRepositoryImpl implements EmailRepository {
     @Override
     public boolean sendMail(TiMailContent mailContent) {

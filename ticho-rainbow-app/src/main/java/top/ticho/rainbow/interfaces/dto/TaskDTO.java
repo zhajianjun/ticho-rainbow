@@ -28,7 +28,7 @@ public class TaskDTO {
     private String remark;
     /** 任务状态;1-启用,0-禁用 */
     private Integer status;
-    /** 乐观锁;控制版本更改 */
+    /** 版本号 */
     private Long version;
     /** 创建人 */
     private String createBy;

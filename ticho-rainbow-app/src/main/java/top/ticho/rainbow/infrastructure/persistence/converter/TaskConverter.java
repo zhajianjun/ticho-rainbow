@@ -20,9 +20,9 @@ public interface TaskConverter {
 
     List<Task> toEntity(List<TaskPO> pos);
 
-    TaskPO toPo(Task task);
+    TaskPO toPO(Task task);
 
-    List<TaskPO> toPo(List<Task> tasks);
+    List<TaskPO> toPO(List<Task> tasks);
 
     TaskDTO toDTO(TaskPO taskPO);
 

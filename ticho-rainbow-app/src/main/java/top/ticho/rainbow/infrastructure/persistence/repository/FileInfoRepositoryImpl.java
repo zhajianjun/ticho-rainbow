@@ -7,15 +7,15 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.application.repository.FileInfoAppRepository;
 import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.infrastructure.persistence.converter.FileInfoConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.FileInfoMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.FileInfoPO;
-import top.ticho.rainbow.interfaces.query.FileInfoQuery;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
+import top.ticho.rainbow.interfaces.query.FileInfoQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageQuery;
@@ -33,14 +33,14 @@ import java.util.stream.Collectors;
  * @author zhajianjun
  * @date 2024-04-23 17:55
  */
-@Service
 @RequiredArgsConstructor
+@Repository
 public class FileInfoRepositoryImpl extends TiRepositoryImpl<FileInfoMapper, FileInfoPO> implements FileInfoRepository, FileInfoAppRepository {
     private final FileInfoConverter fileInfoConverter;
 
     @Override
     public boolean save(FileInfo fileInfo) {
-        FileInfoPO fileInfoPO = fileInfoConverter.toPo(fileInfo);
+        FileInfoPO fileInfoPO = fileInfoConverter.toPO(fileInfo);
         return save(fileInfoPO);
     }
 
@@ -51,13 +51,13 @@ public class FileInfoRepositoryImpl extends TiRepositoryImpl<FileInfoMapper, Fil
 
     @Override
     public boolean modify(FileInfo fileInfo) {
-        FileInfoPO fileInfoPO = fileInfoConverter.toPo(fileInfo);
+        FileInfoPO fileInfoPO = fileInfoConverter.toPO(fileInfo);
         return updateById(fileInfoPO);
     }
 
     @Override
     public boolean modifyBatch(List<FileInfo> fileInfos) {
-        return super.updateBatchById(fileInfoConverter.toPo(fileInfos));
+        return super.updateBatchById(fileInfoConverter.toPO(fileInfos));
     }
 
     @Override

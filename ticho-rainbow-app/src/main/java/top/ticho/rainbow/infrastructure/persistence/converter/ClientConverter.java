@@ -24,9 +24,9 @@ public interface ClientConverter {
     @Mapping(target = "isDelete", ignore = true)
     @Mapping(target = "createTime", ignore = true)
     @Mapping(target = "createBy", ignore = true)
-    ClientPO toPo(Client client);
+    ClientPO toPO(Client client);
 
-    List<ClientPO> toPo(Collection<Client> client);
+    List<ClientPO> toPO(Collection<Client> client);
 
     List<Client> toEntity(List<ClientPO> list);
 

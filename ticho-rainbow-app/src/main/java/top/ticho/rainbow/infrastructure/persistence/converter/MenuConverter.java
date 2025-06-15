@@ -19,8 +19,8 @@ public interface MenuConverter {
 
     Menu toEntity(MenuPO one);
 
-    MenuPO toPo(Menu menu);
+    MenuPO toPO(Menu menu);
 
-    List<MenuPO> toPo(List<Menu> menus);
+    List<MenuPO> toPO(List<Menu> menus);
 
 }

@@ -5,15 +5,15 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.application.repository.OpLogAppRepository;
 import top.ticho.rainbow.domain.entity.OpLog;
 import top.ticho.rainbow.domain.repository.OpLogRepository;
 import top.ticho.rainbow.infrastructure.persistence.converter.OpLogConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.OpLogMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.OpLogPO;
-import top.ticho.rainbow.interfaces.query.OpLogQuery;
 import top.ticho.rainbow.interfaces.dto.OpLogDTO;
+import top.ticho.rainbow.interfaces.query.OpLogQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
@@ -27,14 +27,14 @@ import java.util.Objects;
  * @author zhajianjun
  * @date 2024-03-24 17:55
  */
-@Service
 @RequiredArgsConstructor
+@Repository
 public class OpLogRepositoryImpl extends TiRepositoryImpl<OpLogMapper, OpLogPO> implements OpLogRepository, OpLogAppRepository {
     private final OpLogConverter opLogConverter;
 
     @Override
     public void save(OpLog entity) {
-        OpLogPO po = opLogConverter.toPo(entity);
+        OpLogPO po = opLogConverter.toPO(entity);
         save(po);
     }
 

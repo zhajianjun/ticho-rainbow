@@ -5,15 +5,15 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.application.repository.TaskAppRepository;
 import top.ticho.rainbow.domain.entity.Task;
 import top.ticho.rainbow.domain.repository.TaskRepository;
 import top.ticho.rainbow.infrastructure.persistence.converter.TaskConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.TaskMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.TaskPO;
-import top.ticho.rainbow.interfaces.query.TaskQuery;
 import top.ticho.rainbow.interfaces.dto.TaskDTO;
+import top.ticho.rainbow.interfaces.query.TaskQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
@@ -27,14 +27,14 @@ import java.util.Objects;
  * @author zhajianjun
  * @date 2024-03-23 23:38
  */
-@Service
 @RequiredArgsConstructor
+@Repository
 public class TaskRepositoryImpl extends TiRepositoryImpl<TaskMapper, TaskPO> implements TaskRepository, TaskAppRepository {
     private final TaskConverter taskConverter;
 
     @Override
     public boolean save(Task task) {
-        TaskPO taskPO = taskConverter.toPo(task);
+        TaskPO taskPO = taskConverter.toPO(task);
         return save(taskPO);
     }
 
@@ -45,13 +45,13 @@ public class TaskRepositoryImpl extends TiRepositoryImpl<TaskMapper, TaskPO> imp
 
     @Override
     public boolean modify(Task task) {
-        TaskPO taskPO = taskConverter.toPo(task);
+        TaskPO taskPO = taskConverter.toPO(task);
         return updateById(taskPO);
     }
 
     @Override
     public boolean modifyBatch(List<Task> tasks) {
-        return super.updateBatchById(taskConverter.toPo(tasks));
+        return super.updateBatchById(taskConverter.toPO(tasks));
     }
 
     @Override

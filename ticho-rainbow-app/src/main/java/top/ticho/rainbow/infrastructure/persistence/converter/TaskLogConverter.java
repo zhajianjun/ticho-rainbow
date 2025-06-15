@@ -16,7 +16,7 @@ public interface TaskLogConverter {
 
     TaskLog toEntity(TaskLogPO taskLogPO);
 
-    TaskLogPO toPo(TaskLog taskLog);
+    TaskLogPO toPO(TaskLog taskLog);
 
     TaskLogDTO toDTO(TaskLogPO taskLogPO);
 

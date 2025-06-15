@@ -20,8 +20,8 @@ public interface RoleConverter {
 
     Role toEntity(RolePO rolePO);
 
-    RolePO toPo(Role role);
+    RolePO toPO(Role role);
 
-    List<RolePO> toPo(List<Role> roles);
+    List<RolePO> toPO(List<Role> roles);
 
 }
