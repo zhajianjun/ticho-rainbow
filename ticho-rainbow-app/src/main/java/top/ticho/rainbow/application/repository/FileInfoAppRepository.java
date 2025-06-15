@@ -1,7 +1,7 @@
 package top.ticho.rainbow.application.repository;
 
-import top.ticho.rainbow.interfaces.query.FileInfoQuery;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
+import top.ticho.rainbow.interfaces.query.FileInfoQuery;
 import top.ticho.starter.view.core.TiPageResult;
 
 /**

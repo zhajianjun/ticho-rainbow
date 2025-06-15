@@ -1,7 +1,7 @@
 package top.ticho.rainbow.application.repository;
 
-import top.ticho.rainbow.interfaces.query.TaskLogQuery;
 import top.ticho.rainbow.interfaces.dto.TaskLogDTO;
+import top.ticho.rainbow.interfaces.query.TaskLogQuery;
 import top.ticho.starter.view.core.TiPageResult;
 
 /**

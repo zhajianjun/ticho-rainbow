@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
  * 配置信息PO
  *
  * @author zhajianjun
- * @date 2025-06-15 16:32
+ * @date 2025-06-15 16:34
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -28,8 +28,10 @@ public class SettingPO extends Model<SettingPO> {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
     /** key */
+    @TableField("`key`")
     private String key;
     /** value */
+    @TableField("`value`")
     private String value;
     /** 排序 */
     private Integer sort;

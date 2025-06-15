@@ -13,9 +13,9 @@
   import { computed, defineComponent, ref, unref } from 'vue';
   import { BasicModal, useModalInner } from '@/components/Modal';
   import { BasicForm, useForm } from '@/components/Form';
-  import { getModalFormColumns } from './port.data';
-  import { modifyPort, savePort } from '@/api/intranet/port';
-  import { PortModifyfCommand, PortSaveCommand } from '@/api/intranet/model/portModel';
+  import { getModalFormColumns } from './setting.data';
+  import { modifySetting, saveSetting } from '@/api/system/setting';
+  import { SettingModifyComman, SettingSaveCommand } from '@/api/system/model/settingModel';
 
   export default defineComponent({
     name: 'PortModal',
@@ -44,17 +44,17 @@
         }
       });
 
-      const getTitle = computed(() => (unref(modalType) !== 2 ? '新增端口信息' : '编辑端口信息'));
+      const getTitle = computed(() => (unref(modalType) !== 2 ? '新增配置信息' : '编辑配置信息'));
 
       async function handleSubmit() {
         try {
           setModalProps({ confirmLoading: true });
           if (unref(modalType) === 2) {
-            const values = (await validate()) as PortModifyfCommand;
-            await modifyPort(values);
+            const values = (await validate()) as SettingModifyComman;
+            await modifySetting(values);
           } else {
-            const values = (await validate()) as PortSaveCommand;
-            await savePort(values);
+            const values = (await validate()) as SettingSaveCommand;
+            await saveSetting(values);
           }
           closeModal();
           // 触发父组件方法

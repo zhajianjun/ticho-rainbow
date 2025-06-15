@@ -1,7 +1,7 @@
 package top.ticho.rainbow.application.repository;
 
-import top.ticho.rainbow.interfaces.query.DictQuery;
 import top.ticho.rainbow.interfaces.dto.DictDTO;
+import top.ticho.rainbow.interfaces.query.DictQuery;
 import top.ticho.starter.view.core.TiPageResult;
 
 /**

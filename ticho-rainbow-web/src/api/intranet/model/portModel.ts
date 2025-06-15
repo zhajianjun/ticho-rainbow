@@ -49,3 +49,27 @@ export interface PortQuery {
   /** 备注信息 */
   remark: string;
 }
+
+export interface PortSaveCommand {
+  accessKey: string;
+  port: number;
+  endpoint: string;
+  domain: string;
+  expireAt: string;
+  type: number;
+  sort: number;
+  remark: string;
+}
+
+export interface PortModifyfCommand {
+  id: number;
+  accessKey: string;
+  port: number;
+  endpoint: string;
+  domain: string;
+  expireAt: string;
+  type: number;
+  sort: number;
+  remark: string;
+  version: number;
+}

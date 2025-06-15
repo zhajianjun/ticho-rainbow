@@ -16,7 +16,7 @@ enum Api {
   CancelFileInfo = '/file/status/cancel',
   FileInfo = '/file',
   FileInfoPage = '/file/page',
-  Export = '/file/expExcel',
+  Export = '/file/excel/export',
 }
 
 export function upload(

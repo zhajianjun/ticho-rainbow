@@ -22,8 +22,8 @@ import top.ticho.rainbow.infrastructure.common.enums.YesOrNo;
 import top.ticho.rainbow.interfaces.command.ClientModifyCommand;
 import top.ticho.rainbow.interfaces.command.ClientSaveCommand;
 import top.ticho.rainbow.interfaces.command.VersionModifyCommand;
-import top.ticho.rainbow.interfaces.query.ClientQuery;
 import top.ticho.rainbow.interfaces.dto.ClientDTO;
+import top.ticho.rainbow.interfaces.query.ClientQuery;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.util.TiAssert;
 

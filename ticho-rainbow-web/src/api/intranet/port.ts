@@ -1,5 +1,5 @@
 import { defHttp } from '@/utils/http/axios';
-import { PortDTO, PortQuery } from './model/portModel';
+import { PortDTO, PortModifyfCommand, PortQuery, PortSaveCommand } from './model/portModel';
 import { RetryRequest } from '#/axios';
 import { VersionModifyCommand } from '@/api/system/model/baseModel';
 
@@ -11,7 +11,7 @@ enum Api {
   Export = '/port/excel/export',
 }
 
-export function savePort(params: PortDTO) {
+export function savePort(params: PortSaveCommand) {
   return defHttp.post<void>(
     { url: Api.Port, params },
     { successMessageMode: 'message', errorMessageMode: 'message' },
@@ -25,7 +25,7 @@ export function delPort(params: VersionModifyCommand) {
   );
 }
 
-export function modifyPort(params: PortDTO) {
+export function modifyPort(params: PortModifyfCommand) {
   return defHttp.put<void>(
     { url: Api.Port, params },
     { successMessageMode: 'message', errorMessageMode: 'message' },

@@ -17,7 +17,7 @@ enum Api {
   RolePage = '/role/page',
   RoleList = '/role/all',
   ListRoleMenu = '/role/menu/list',
-  Export = '/role/expExcel',
+  Export = '/role/excel/export',
 }
 
 export function rolePage(params?: RoleQuery) {
@@ -65,7 +65,7 @@ export function listRoleMenu(params?: RoleDtlQuery) {
 }
 
 export function expExcel(params?: RoleQuery) {
-  return defHttp.post<any>(
+  return defHttp.get<any>(
     { url: Api.Export, params, responseType: 'blob' },
     {
       errorMessageMode: 'message',
