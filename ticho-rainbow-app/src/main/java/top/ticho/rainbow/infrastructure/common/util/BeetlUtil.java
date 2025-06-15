@@ -25,7 +25,6 @@ public class BeetlUtil {
      * 获取模板组
      *
      * @param isTemplate 是否从模板文件读取模板信息，默认是true-是 false-否
-     * @return 模板组
      */
     public static GroupTemplate getGroupTemplate(boolean isTemplate) {
         return new GroupTemplate(getResourceLoader(isTemplate), getConfiguration());
@@ -36,7 +35,6 @@ public class BeetlUtil {
      * 负责根据GroupTemplate提供的Key,来获取Resource，这些Resource可以是文件
      *
      * @param isTemplate 是否从模板文件读取模板信息，默认是true-是 false-否
-     * @return 资源加载器
      */
     public static ResourceLoader<String> getResourceLoader(boolean isTemplate) {
         ResourceLoader<String> resourceLoader;
@@ -50,8 +48,6 @@ public class BeetlUtil {
 
     /**
      * 获取beetl默认配置对象
-     *
-     * @return beetl默认配置对象
      */
     public static Configuration getConfiguration() {
         try {

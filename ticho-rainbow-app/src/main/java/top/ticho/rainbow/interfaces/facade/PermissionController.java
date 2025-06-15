@@ -28,8 +28,6 @@ public class PermissionController {
 
     /**
      * 查询所有权限标识
-     *
-     * @return {@link TiResult }<{@link List }<{@link PermissionDTO }>>
      */
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_PERMISSION_TREE + "')")
     @GetMapping("tree")

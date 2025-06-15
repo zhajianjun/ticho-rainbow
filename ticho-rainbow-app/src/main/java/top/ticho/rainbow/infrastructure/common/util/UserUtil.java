@@ -30,8 +30,6 @@ public class UserUtil {
 
     /**
      * 当前用户是否是管理员
-     *
-     * @return boolean
      */
     public static boolean isAdmin() {
         SecurityUser currentUser = TiUserUtil.getCurrentUser();
@@ -42,7 +40,6 @@ public class UserUtil {
      * 查询用户是否是管理员
      *
      * @param currentUser 当前用户
-     * @return boolean
      */
     public static boolean isAdmin(SecurityUser currentUser) {
         if (currentUser == null) {
@@ -59,7 +56,6 @@ public class UserUtil {
      * 是否是本人
      *
      * @param userHelper 用户帮助
-     * @return boolean
      */
     public static boolean isSelf(UserHelper userHelper) {
         SecurityUser loginUser = TiUserUtil.getCurrentUser();
@@ -71,7 +67,6 @@ public class UserUtil {
      *
      * @param userHelper 用户帮助
      * @param loginUser  登录用户
-     * @return boolean
      */
     public static boolean isSelf(UserHelper userHelper, UserHelper loginUser) {
         if (userHelper == null || loginUser == null) {

@@ -80,8 +80,6 @@ public class PermissionQueryService {
 
     /**
      * 获取当前应用的全部权限标识
-     *
-     * @return {@link List}<{@link PermissionDTO}>
      */
     public List<PermissionDTO> all() {
         RequestMappingHandlerMapping mapping = TiSpringUtil.getBean(RequestMappingHandlerMapping.class);

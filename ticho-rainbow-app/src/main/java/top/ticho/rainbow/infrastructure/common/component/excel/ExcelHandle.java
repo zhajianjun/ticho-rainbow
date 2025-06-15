@@ -43,7 +43,6 @@ public class ExcelHandle {
      * @param file             文件
      * @param handlerDataBatch 对读取的数据处理的逻辑
      * @param claz             excel读取类
-     * @return {@link List}<{@link M}> 读取数据
      */
     public static <M extends ExcelBaseImp> List<M> read(
         MultipartFile file,
@@ -85,7 +84,6 @@ public class ExcelHandle {
      * @param datas 数据
      * @param title 标题
      * @param claz  excel类
-     * @return {@link ByteArrayOutputStream} 返回流
      */
     public static <M> ByteArrayOutputStream write(
         List<M> datas,

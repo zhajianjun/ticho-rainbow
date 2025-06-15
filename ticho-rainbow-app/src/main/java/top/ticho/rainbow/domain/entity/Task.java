@@ -3,7 +3,7 @@ package top.ticho.rainbow.domain.entity;
 import cn.hutool.core.util.StrUtil;
 import lombok.Builder;
 import lombok.Getter;
-import top.ticho.rainbow.domain.entity.vo.TaskModifyVo;
+import top.ticho.rainbow.domain.entity.vo.TaskModifyVO;
 import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.starter.view.util.TiAssert;
 
@@ -45,7 +45,7 @@ public class Task implements Entity {
     /** 修改时间 */
     private LocalDateTime updateTime;
 
-    public void modify(TaskModifyVo taskModifyVo) {
+    public void modify(TaskModifyVO taskModifyVo) {
         if (isEnable()) {
             TiAssert.isTrue(Objects.equals(content, taskModifyVo.content()), StrUtil.format("任务已启用，任务内容不能修改，任务：{}", name));
             TiAssert.isTrue(Objects.equals(param, taskModifyVo.param()), StrUtil.format("任务已启用，任务参数不能修改，任务：{}", name));

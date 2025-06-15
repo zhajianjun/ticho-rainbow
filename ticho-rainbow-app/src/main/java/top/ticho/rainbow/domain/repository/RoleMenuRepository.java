@@ -1,7 +1,5 @@
 package top.ticho.rainbow.domain.repository;
 
-import top.ticho.rainbow.domain.entity.RoleMenu;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -17,7 +15,6 @@ public interface RoleMenuRepository {
      * 根据角色id列表查询
      *
      * @param roleId 角色id
-     * @return {@link List}<{@link RoleMenu}>
      */
     List<Long> listByRoleId(Long roleId);
 
@@ -25,7 +22,6 @@ public interface RoleMenuRepository {
      * 根据角色id列表查询是否存在
      *
      * @param roleIds 角色id
-     * @return boolean
      */
     boolean existsByRoleIds(Collection<Long> roleIds);
 
@@ -33,7 +29,6 @@ public interface RoleMenuRepository {
      * 根据菜单id列表查询
      *
      * @param menuIds 菜单id列表
-     * @return boolean
      */
     boolean existsByMenuIds(Collection<Long> menuIds);
 

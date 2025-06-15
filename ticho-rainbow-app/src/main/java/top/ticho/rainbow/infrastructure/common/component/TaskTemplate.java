@@ -70,7 +70,6 @@ public class TaskTemplate {
      * @param jobClass       任务类
      * @param cronExpression 定时表达式
      * @param param          任务参数
-     * @return boolean
      */
     public boolean addJob(String jobName, String jobGroup, String jobClass, String cronExpression, String taskName, String param) {
         Map<String, Object> paramMap = new HashMap<>();
@@ -89,7 +88,6 @@ public class TaskTemplate {
      * @param jobClass       任务类
      * @param cronExpression 定时表达式
      * @param paramMap       任务参数MAP
-     * @return boolean
      */
     public boolean addJob(
         String jobName,
@@ -127,7 +125,6 @@ public class TaskTemplate {
      *
      * @param jobName  任务名称
      * @param jobGroup 任务组
-     * @return boolean
      */
     public boolean checkExists(String jobName, String jobGroup) {
         JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
@@ -144,7 +141,6 @@ public class TaskTemplate {
      *
      * @param jobName  任务名称
      * @param jobGroup 任务组
-     * @return boolean
      */
     public boolean runOnce(String jobName, String jobGroup) {
         JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
@@ -165,7 +161,6 @@ public class TaskTemplate {
      *
      * @param jobName  任务名称
      * @param jobGroup 任务组
-     * @return boolean
      */
     public boolean runOnce(String jobName, String jobGroup, String schedulerParam) {
         JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
@@ -294,8 +289,6 @@ public class TaskTemplate {
 
     /**
      * 查询所有定时任务
-     *
-     * @return 所有任务
      */
     public List<String> listJobs() {
         Set<JobKey> jobKeys;
@@ -322,7 +315,6 @@ public class TaskTemplate {
      *
      * @param cronExpression cron表达式
      * @param numTimes       次数
-     * @return {@link List}<{@link String}> 最近次数的执行时间 列表
      */
     public static List<String> getRecentCronTime(String cronExpression, int numTimes) {
         try {

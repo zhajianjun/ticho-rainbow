@@ -1,7 +1,6 @@
 package top.ticho.rainbow.domain.repository;
 
 import top.ticho.rainbow.domain.entity.Dict;
-import top.ticho.rainbow.domain.entity.DictLabel;
 
 import java.util.List;
 
@@ -27,8 +26,6 @@ public interface DictRepository {
 
     /**
      * 查询启用的字典列表
-     *
-     * @return {@link List}<{@link Dict}>
      */
     List<Dict> listEnable();
 
@@ -37,7 +34,6 @@ public interface DictRepository {
      *
      * @param code      字典编码
      * @param excludeId 排除的主键编号
-     * @return {@link DictLabel}
      */
     Dict getByCodeExcludeId(String code, Long excludeId);
 

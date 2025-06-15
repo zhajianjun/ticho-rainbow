@@ -22,26 +22,17 @@ public interface FileInfoAssembler {
 
     /**
      * 将文件信息DTO转换为实体对象。
-     *
-     * @param dto 文件信息DTO
-     * @return {@link FileInfo}
      */
     @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
     FileInfo toEntity(FileInfoDTO dto);
 
     /**
      * 将文件信息实体对象转换为DTO。
-     *
-     * @param entity 文件信息
-     * @return {@link FileInfoDTO}
      */
     FileInfoDTO toDTO(FileInfo entity);
 
     /**
      * 将分块缓存DTO转换为文件信息实体对象。
-     *
-     * @param chunkCacheDTO 分块缓存DTO
-     * @return {@link FileInfo}
      */
     @Mapping(target = "id", expression = "java(chunkCacheDTO.getId())")
     @Mapping(target = "chunkId", expression = "java(chunkCacheDTO.getChunkId())")
@@ -59,17 +50,11 @@ public interface FileInfoAssembler {
 
     /**
      * 将分块缓存DTO转换为分块元数据DTO。
-     *
-     * @param chunkCacheDTO 分块缓存DTO
-     * @return {@link ChunkMetadataDTO}
      */
     ChunkMetadataDTO chunkToMetadata(ChunkCacheDTO chunkCacheDTO);
 
     /**
      * 将文件信息实体对象转换为导出对象。
-     *
-     * @param fileInfoDTO 文件信息
-     * @return {@link FileInfoExcelExport}
      */
     FileInfoExcelExport toExcelExport(FileInfoDTO fileInfoDTO);
 

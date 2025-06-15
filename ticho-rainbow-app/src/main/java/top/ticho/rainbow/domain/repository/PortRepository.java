@@ -33,7 +33,6 @@ public interface PortRepository {
      *
      * @param excludeId 排除的id
      * @param port      端口号
-     * @return {@link Port}
      */
     Port getByPortExcludeId(Long excludeId, Integer port);
 
@@ -42,7 +41,6 @@ public interface PortRepository {
      *
      * @param excludeId 排除的id
      * @param domain    域名
-     * @return {@link Port}
      */
     Port getByDomainExcludeId(Long excludeId, String domain);
 
@@ -50,7 +48,6 @@ public interface PortRepository {
      * 根据客户端秘钥列表查询
      *
      * @param accessKeys 客户端秘钥列表
-     * @return {@link List}<{@link Port}>
      */
     List<Port> listByAccessKeys(Collection<String> accessKeys);
 
@@ -58,7 +55,6 @@ public interface PortRepository {
      * 根据客户端秘钥列表查询
      *
      * @param accessKeys 客户端秘钥列表
-     * @return {@link List}<{@link Port}>
      */
     <T> Map<String, List<T>> listAndGroupByAccessKey(Collection<String> accessKeys, Function<Port, T> function, Predicate<Port> filter);
 

@@ -26,8 +26,6 @@ public interface DictLabelRepository {
 
     /**
      * 查询启用的字典标签信息列表
-     *
-     * @return {@link List}<{@link DictLabel}>
      */
     List<DictLabel> listEnable();
 
@@ -35,7 +33,6 @@ public interface DictLabelRepository {
      * 根据字典编码查询
      *
      * @param code 字典编码
-     * @return boolean
      */
     List<DictLabel> getByCode(String code);
 
@@ -43,7 +40,6 @@ public interface DictLabelRepository {
      * 根据字典编码查询是否存在
      *
      * @param code 字典编码
-     * @return boolean
      */
     boolean existsByCode(String code);
 
@@ -53,7 +49,6 @@ public interface DictLabelRepository {
      * @param code      字典编码
      * @param value     字典值
      * @param excludeId 排除的主键编号
-     * @return {@link DictLabel}
      */
     DictLabel getByCodeAndValueExcludeId(String code, String value, Long excludeId);
 

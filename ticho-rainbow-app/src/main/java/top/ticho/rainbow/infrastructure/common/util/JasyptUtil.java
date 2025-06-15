@@ -14,7 +14,6 @@ public class JasyptUtil {
      *
      * @param text     需要加密的字符串
      * @param password 加密密码
-     * @return String
      */
     public static String encrypt(String text, String password) {
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
@@ -34,7 +33,6 @@ public class JasyptUtil {
      *
      * @param text     需要解密的字符串
      * @param password 解密密码
-     * @return String
      */
     public static String decrypt(String text, String password) {
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();

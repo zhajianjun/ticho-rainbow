@@ -53,7 +53,6 @@ public class SseController {
      *
      * @param id      编号
      * @param message 消息
-     * @return {@link TiResult }<{@link Void }>
      */
     @GetMapping("send")
     public TiResult<Void> send(@NotBlank(message = "编号不能为空") String id, String message) {

@@ -9,7 +9,7 @@ package top.ticho.rainbow.domain.entity.vo;
  * @author zhajianjun
  * @date 2025-03-09 16:06
  */
-public record TaskModifyVo(
+public record TaskModifyVO(
     String name,
     String content,
     String param,

@@ -14,7 +14,6 @@ public interface FileInfoAppRepository {
      * 分页查询文件信息列表
      *
      * @param query 查询条件
-     * @return {@link TiPageResult }<{@link FileInfoDTO }>
      */
     TiPageResult<FileInfoDTO> page(FileInfoQuery query);
 

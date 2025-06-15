@@ -19,7 +19,6 @@ public interface UserRoleRepository {
      * 通过用户id查询角色id
      *
      * @param userId 用户id
-     * @return {@link List}<{@link UserRole}>
      */
     List<Long> listByUserId(Long userId);
 
@@ -27,7 +26,6 @@ public interface UserRoleRepository {
      * 移除用户角色信息
      *
      * @param userId 用户id
-     * @return boolean
      */
     boolean removeByUserId(Long userId);
 
@@ -51,7 +49,6 @@ public interface UserRoleRepository {
      * 根据角色id列表查询是否存在
      *
      * @param roleIds 角色id
-     * @return boolean
      */
     boolean existsByRoleIds(Collection<Long> roleIds);
 

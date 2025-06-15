@@ -32,7 +32,6 @@ public interface MenuRepository {
      * @param types     类型
      * @param path      路由地址
      * @param excludeId 排除的编号
-     * @return long
      */
     Menu getByTypesAndPath(List<Integer> types, String path, Long excludeId);
 
@@ -42,7 +41,6 @@ public interface MenuRepository {
      * @param types         类型
      * @param componentName 组件名称
      * @param excludeId     排除的编号
-     * @return long
      */
     Menu getByTypesAndComNameExcludeId(List<Integer> types, String componentName, Long excludeId);
 

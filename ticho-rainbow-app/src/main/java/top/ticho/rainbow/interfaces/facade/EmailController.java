@@ -30,7 +30,6 @@ public class EmailController {
      * 邮件发送测试
      *
      * @param mailContent 邮件内容
-     * @return {@link TiResult }<{@link Void }>
      */
     @ApiLog("邮件发送测试")
     @PreAuthorize("@perm.hasPerms('" + ApiConst.SYSTEM_EMAIL_SEND_TEST + "')")

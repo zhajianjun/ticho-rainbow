@@ -35,7 +35,6 @@ public class DictExecutor {
      * 结果: { 1:是, 2:否 }
      *
      * @param code 字典编码
-     * @return {@link Map }<{@link String }, {@link String }>
      */
     public Map<String, String> getLabelMap(String code) {
         return getLabelMap(code, Function.identity());
@@ -47,7 +46,6 @@ public class DictExecutor {
      * 结果: { 1:是, 2:否 }
      *
      * @param code 字典编码
-     * @return {@link Map }<{@link String }, {@link String }>
      */
     public <T> Map<T, String> getLabelMap(String code, Function<String, T> keyConvert) {
         if (StrUtil.isBlank(code)) {
@@ -63,7 +61,6 @@ public class DictExecutor {
      * 结果: { yesOrNo1:是, yesOrNo2:否 }
      *
      * @param codes 编码列表
-     * @return {@link Map }<{@link String }, {@link String }>
      */
     public Map<String, String> getLabelMapBatch(String... codes) {
         List<String> codeList = Arrays.stream(codes).collect(Collectors.toList());
@@ -76,7 +73,6 @@ public class DictExecutor {
      * 结果: { yesOrNo1:是, yesOrNo2:否 }
      *
      * @param codes 编码列表
-     * @return {@link Map }<{@link String }, {@link String }>
      */
     public Map<String, String> getLabelMapBatch(List<String> codes) {
         if (CollUtil.isEmpty(codes)) {
@@ -92,7 +88,6 @@ public class DictExecutor {
      * 结果: { 是:1, 否:1 }
      *
      * @param code 字典编码
-     * @return {@link Map }<{@link String }, {@link String }>
      */
     public Map<String, String> getValueMap(String code) {
         if (StrUtil.isBlank(code)) {
@@ -107,7 +102,6 @@ public class DictExecutor {
      * 结果: { 是:1, 否:1 }
      *
      * @param code 字典编码
-     * @return {@link Map }<{@link String }, {@link String }>
      */
     public <T> Map<String, T> getValueMap(String code, Function<String, T> valueConvert) {
         if (StrUtil.isBlank(code)) {
@@ -123,7 +117,6 @@ public class DictExecutor {
      * 结果: { yesOrNo是:1, yesOrNo否:0 }
      *
      * @param codes 编码列表
-     * @return {@link Map }<{@link String }, {@link String }>
      */
     public Map<String, String> getValueMapBatch(String... codes) {
         List<String> codeList = Arrays.stream(codes).collect(Collectors.toList());
@@ -136,7 +129,6 @@ public class DictExecutor {
      * 结果: { yesOrNo是:1, yesOrNo否:0 }
      *
      * @param codes 编码列表
-     * @return {@link Map }<{@link String }, {@link String }>
      */
     public Map<String, String> getValueMapBatch(List<String> codes) {
         return getValueMapBatch(codes, Function.identity());
@@ -148,7 +140,6 @@ public class DictExecutor {
      * 结果: { yesOrNo是:1, yesOrNo否:0 }
      *
      * @param codes 编码列表
-     * @return {@link Map }<{@link String }, {@link String }>
      */
     public <T> Map<String, T> getValueMapBatch(List<String> codes, Function<String, T> valueConvert) {
         if (CollUtil.isEmpty(codes)) {

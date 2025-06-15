@@ -49,7 +49,6 @@ public class AuthExecutor {
      *
      * @param roleCodes 角色编码
      * @param map       转换
-     * @return {@link Stream}<{@link T}>
      */
     public <T> Stream<T> getMenusByRoleCodes(List<String> roleCodes, Function<Menu, T> map) {
         if (CollUtil.isEmpty(roleCodes)) {
@@ -106,7 +105,6 @@ public class AuthExecutor {
      * @param roleIds    角色id列表
      * @param showAll    显示所有信息，匹配到的信息，设置匹配字段checkbox=true
      * @param treeHandle 是否进行树化
-     * @return {@link RoleMenuDTO}
      */
     public RoleMenuDTO mergeRoleByIds(List<Long> roleIds, boolean showAll, boolean treeHandle) {
         if (CollUtil.isEmpty(roleIds)) {
@@ -182,7 +180,6 @@ public class AuthExecutor {
      * @param menus  菜单
      * @param filter 过滤规则
      * @param peek   执行规则
-     * @return {@link List}<{@link MenuDTO}>
      */
     public List<MenuDTO> toDTO(List<Menu> menus, Predicate<MenuDTO> filter, Consumer<MenuDTO> peek) {
         if (filter == null) {

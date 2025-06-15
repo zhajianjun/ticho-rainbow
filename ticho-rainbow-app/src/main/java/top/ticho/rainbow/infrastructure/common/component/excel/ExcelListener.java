@@ -128,7 +128,6 @@ public class ExcelListener<M extends ExcelBaseImp> implements ReadListener<M> {
      *
      * @param data      数据
      * @param delimiter 拼接字符串
-     * @return {@link String}
      */
     public String valid(Object data, String delimiter) {
         Set<ConstraintViolation<Object>> validate = TiValidUtil.VALIDATOR_DEFAULT.validate(data);

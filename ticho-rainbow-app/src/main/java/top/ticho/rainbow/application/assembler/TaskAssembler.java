@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import top.ticho.rainbow.application.dto.excel.TaskExcelExport;
 import top.ticho.rainbow.domain.entity.Task;
-import top.ticho.rainbow.domain.entity.vo.TaskModifyVo;
+import top.ticho.rainbow.domain.entity.vo.TaskModifyVO;
 import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.rainbow.interfaces.dto.command.TaskModifyCommand;
 import top.ticho.rainbow.interfaces.dto.command.TaskSaveCommand;
@@ -32,6 +32,6 @@ public interface TaskAssembler {
 
     TaskExcelExport toExcelExport(TaskDTO taskDTO);
 
-    TaskModifyVo toVo(TaskModifyCommand taskModifyCommand);
+    TaskModifyVO toVo(TaskModifyCommand taskModifyCommand);
 
 }

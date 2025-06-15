@@ -13,7 +13,7 @@ import top.ticho.rainbow.application.executor.DictExecutor;
 import top.ticho.rainbow.application.repository.TaskAppRepository;
 import top.ticho.rainbow.application.task.AbstracTask;
 import top.ticho.rainbow.domain.entity.Task;
-import top.ticho.rainbow.domain.entity.vo.TaskModifyVo;
+import top.ticho.rainbow.domain.entity.vo.TaskModifyVO;
 import top.ticho.rainbow.domain.repository.TaskRepository;
 import top.ticho.rainbow.infrastructure.common.component.TaskTemplate;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
@@ -116,7 +116,7 @@ public class TaskService implements InitializingBean {
         Task task = taskRepository.find(id);
         TiAssert.isNotNull(task, "修改失败，任务不存在");
         task.checkVersion(taskModifyCommand.getVersion(), "数据已被修改，请刷新后重试");
-        TaskModifyVo taskModifyVo = taskAssembler.toVo(taskModifyCommand);
+        TaskModifyVO taskModifyVo = taskAssembler.toVo(taskModifyCommand);
         task.modify(taskModifyVo);
         TiAssert.isTrue(taskRepository.modify(task), "修改失败，请刷新后重试");
     }

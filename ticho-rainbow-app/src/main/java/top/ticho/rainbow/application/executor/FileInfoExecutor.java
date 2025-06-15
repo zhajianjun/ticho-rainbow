@@ -141,7 +141,6 @@ public class FileInfoExecutor {
      *
      * @param type 存储类型
      * @param path 文件相对路径
-     * @return {@link String}
      */
     public String getAbsolutePath(Integer type, String path) {
         String prefixPath;

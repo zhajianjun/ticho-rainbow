@@ -24,7 +24,6 @@ import jakarta.validation.constraints.NotBlank;
 @RestController
 @RequestMapping("tool")
 public class ToolController {
-
     private final StringEncryptor stringEncryptor;
 
     /**
