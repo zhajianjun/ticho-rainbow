@@ -40,7 +40,7 @@ public class User implements Entity, UserHelper {
     /** 年龄 */
     private Integer age;
     /** 出生日期 */
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
     /** 家庭住址 */
     private String address;

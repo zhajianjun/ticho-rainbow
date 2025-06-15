@@ -11,9 +11,9 @@ import top.ticho.rainbow.domain.repository.MenuRepository;
 import top.ticho.rainbow.domain.repository.RoleMenuRepository;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.infrastructure.common.enums.MenuType;
-import top.ticho.rainbow.interfaces.dto.response.MenuDTO;
-import top.ticho.rainbow.interfaces.dto.response.RoleDTO;
-import top.ticho.rainbow.interfaces.dto.response.RoleMenuDTO;
+import top.ticho.rainbow.interfaces.dto.MenuDTO;
+import top.ticho.rainbow.interfaces.dto.RoleDTO;
+import top.ticho.rainbow.interfaces.dto.RoleMenuDTO;
 import top.ticho.starter.web.util.TiTreeUtil;
 
 import java.util.ArrayList;
@@ -129,18 +129,18 @@ public class AuthExecutor {
         // 菜单信息
         List<Menu> menus = menuRepository.cacheList();
         // 查询到的角色信息组装填充
-        List<RoleDTO> roleDtos = new ArrayList<>();
+        List<RoleDTO> roleDTOs = new ArrayList<>();
         roleIds = new ArrayList<>();
         List<String> roleCodes = new ArrayList<>();
         for (Role role : roles) {
             RoleDTO roleDTO = roleAssembler.toDTO(role);
             roleIds.add(role.getId());
             roleCodes.add(role.getCode());
-            roleDtos.add(roleDTO);
+            roleDTOs.add(roleDTO);
         }
         roleMenuDTO.setRoleIds(roleIds);
         roleMenuDTO.setRoleCodes(roleCodes);
-        roleMenuDTO.setRoles(roleDtos);
+        roleMenuDTO.setRoles(roleDTOs);
         List<String> perms = new ArrayList<>();
         // 菜单信息过滤规则
         Predicate<MenuDTO> menuFilter = x -> menuIds.contains(x.getId());

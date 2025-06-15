@@ -23,13 +23,13 @@ import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
 import top.ticho.rainbow.infrastructure.common.enums.YesOrNo;
-import top.ticho.rainbow.interfaces.dto.command.DictModifyCommand;
-import top.ticho.rainbow.interfaces.dto.command.DictSaveCommand;
-import top.ticho.rainbow.interfaces.dto.command.VersionModifyCommand;
-import top.ticho.rainbow.interfaces.dto.query.DictQuery;
-import top.ticho.rainbow.interfaces.dto.response.DictCacheDTO;
-import top.ticho.rainbow.interfaces.dto.response.DictDTO;
-import top.ticho.rainbow.interfaces.dto.response.DictLabelDTO;
+import top.ticho.rainbow.interfaces.command.DictModifyCommand;
+import top.ticho.rainbow.interfaces.command.DictSaveCommand;
+import top.ticho.rainbow.interfaces.command.VersionModifyCommand;
+import top.ticho.rainbow.interfaces.query.DictQuery;
+import top.ticho.rainbow.interfaces.dto.DictCacheDTO;
+import top.ticho.rainbow.interfaces.dto.DictDTO;
+import top.ticho.rainbow.interfaces.dto.DictLabelDTO;
 import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.enums.TiBizErrorCode;
@@ -107,7 +107,7 @@ public class DictService {
         if (CollUtil.isEmpty(dictLabels)) {
             return Collections.emptyList();
         }
-        Map<String, List<DictLabelDTO>> dictDtoMap = dictLabels
+        Map<String, List<DictLabelDTO>> dictDTOMap = dictLabels
             .stream()
             .sorted(Comparator.comparing(DictLabel::getSort))
             .map(dictLabelAssembler::toDTO)
@@ -117,7 +117,7 @@ public class DictService {
             .map(dictAssembler::toDTO)
             .peek(x -> {
                 String code = x.getCode();
-                List<DictLabelDTO> dictLabelDTOS = dictDtoMap.get(code);
+                List<DictLabelDTO> dictLabelDTOS = dictDTOMap.get(code);
                 x.setDetails(dictLabelDTOS);
             })
             .collect(Collectors.toList());

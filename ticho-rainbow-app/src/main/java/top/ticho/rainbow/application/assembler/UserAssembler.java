@@ -7,13 +7,13 @@ import top.ticho.rainbow.application.dto.excel.UserExcelImport;
 import top.ticho.rainbow.domain.entity.User;
 import top.ticho.rainbow.domain.entity.vo.UserModifyVO;
 import top.ticho.rainbow.infrastructure.common.enums.UserStatus;
-import top.ticho.rainbow.interfaces.dto.command.LoginUserModifyCommand;
-import top.ticho.rainbow.interfaces.dto.command.UseModifyCommand;
-import top.ticho.rainbow.interfaces.dto.command.UseSaveCommand;
-import top.ticho.rainbow.interfaces.dto.command.UserSignUpCommand;
-import top.ticho.rainbow.interfaces.dto.response.LoginUserDTO;
-import top.ticho.rainbow.interfaces.dto.response.LoginUserDetailDTO;
-import top.ticho.rainbow.interfaces.dto.response.UserDTO;
+import top.ticho.rainbow.interfaces.command.LoginUserModifyCommand;
+import top.ticho.rainbow.interfaces.command.UseModifyCommand;
+import top.ticho.rainbow.interfaces.command.UseSaveCommand;
+import top.ticho.rainbow.interfaces.command.UserSignUpCommand;
+import top.ticho.rainbow.interfaces.dto.LoginUserDTO;
+import top.ticho.rainbow.interfaces.dto.LoginUserDetailDTO;
+import top.ticho.rainbow.interfaces.dto.UserDTO;
 import top.ticho.starter.web.util.TiIdUtil;
 
 /**

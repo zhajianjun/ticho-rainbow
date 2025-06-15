@@ -7,11 +7,11 @@ import org.mapstruct.Mapping;
 import top.ticho.rainbow.domain.entity.Menu;
 import top.ticho.rainbow.domain.entity.vo.MenuModifyVO;
 import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
-import top.ticho.rainbow.interfaces.dto.command.MenuModifyCommand;
-import top.ticho.rainbow.interfaces.dto.command.MenuSaveCommand;
-import top.ticho.rainbow.interfaces.dto.response.MenuDTO;
-import top.ticho.rainbow.interfaces.dto.response.RouteDTO;
-import top.ticho.rainbow.interfaces.dto.response.RouteMetaDTO;
+import top.ticho.rainbow.interfaces.command.MenuModifyCommand;
+import top.ticho.rainbow.interfaces.command.MenuSaveCommand;
+import top.ticho.rainbow.interfaces.dto.MenuDTO;
+import top.ticho.rainbow.interfaces.dto.RouteDTO;
+import top.ticho.rainbow.interfaces.dto.RouteMetaDTO;
 import top.ticho.starter.web.util.TiIdUtil;
 
 import java.util.Objects;

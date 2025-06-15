@@ -15,11 +15,11 @@ import top.ticho.rainbow.application.service.MenuService;
 import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
-import top.ticho.rainbow.interfaces.dto.command.MenuModifyCommand;
-import top.ticho.rainbow.interfaces.dto.command.MenuSaveCommand;
-import top.ticho.rainbow.interfaces.dto.command.VersionModifyCommand;
-import top.ticho.rainbow.interfaces.dto.response.MenuDTO;
-import top.ticho.rainbow.interfaces.dto.response.RouteDTO;
+import top.ticho.rainbow.interfaces.command.MenuModifyCommand;
+import top.ticho.rainbow.interfaces.command.MenuSaveCommand;
+import top.ticho.rainbow.interfaces.command.VersionModifyCommand;
+import top.ticho.rainbow.interfaces.dto.MenuDTO;
+import top.ticho.rainbow.interfaces.dto.RouteDTO;
 import top.ticho.starter.view.core.TiResult;
 
 import jakarta.validation.constraints.NotNull;

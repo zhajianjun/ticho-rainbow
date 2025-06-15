@@ -19,12 +19,12 @@ import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.rainbow.infrastructure.common.enums.MenuType;
 import top.ticho.rainbow.infrastructure.common.enums.YesOrNo;
 import top.ticho.rainbow.infrastructure.common.util.UserUtil;
-import top.ticho.rainbow.interfaces.dto.command.MenuModifyCommand;
-import top.ticho.rainbow.interfaces.dto.command.MenuSaveCommand;
-import top.ticho.rainbow.interfaces.dto.command.VersionModifyCommand;
-import top.ticho.rainbow.interfaces.dto.response.MenuDTO;
-import top.ticho.rainbow.interfaces.dto.response.RouteDTO;
-import top.ticho.rainbow.interfaces.dto.response.RouteMetaDTO;
+import top.ticho.rainbow.interfaces.command.MenuModifyCommand;
+import top.ticho.rainbow.interfaces.command.MenuSaveCommand;
+import top.ticho.rainbow.interfaces.command.VersionModifyCommand;
+import top.ticho.rainbow.interfaces.dto.MenuDTO;
+import top.ticho.rainbow.interfaces.dto.RouteDTO;
+import top.ticho.rainbow.interfaces.dto.RouteMetaDTO;
 import top.ticho.starter.view.enums.TiBizErrorCode;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.TiTreeUtil;
@@ -126,7 +126,7 @@ public class MenuService {
             .stream()
             .filter(x -> Objects.equals(CommonStatus.ENABLE.code(), x.getStatus()))
             .sorted(Comparator.comparing(Menu::getParentId).thenComparing(Comparator.nullsLast(Comparator.comparing(Menu::getSort))))
-            .map(this::getEntityToRouteDto)
+            .map(this::toRouteDTO)
             .collect(Collectors.toList());
         Consumer<RouteDTO> afterConsumer = (root) -> {
             if (!Objects.equals(root.getType(), MenuType.MENU.code())) {
@@ -144,7 +144,7 @@ public class MenuService {
         return root.getChildren();
     }
 
-    private RouteDTO getEntityToRouteDto(Menu menu) {
+    private RouteDTO toRouteDTO(Menu menu) {
         boolean ignoreKeepAlive = !Objects.equals(menu.getKeepAlive(), 1);
         boolean hideMenu = !Objects.equals(menu.getInvisible(), 1);
         boolean extFlag = Objects.equals(menu.getExtFlag(), 1);

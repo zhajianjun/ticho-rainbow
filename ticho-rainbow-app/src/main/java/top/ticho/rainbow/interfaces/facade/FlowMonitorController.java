@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.service.FlowMonitorService;
 import top.ticho.rainbow.infrastructure.common.annotation.ApiLog;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
-import top.ticho.rainbow.interfaces.dto.response.FlowMonitorStatsDTO;
+import top.ticho.rainbow.interfaces.dto.FlowMonitorStatsDTO;
 import top.ticho.starter.view.core.TiResult;
 
 /**

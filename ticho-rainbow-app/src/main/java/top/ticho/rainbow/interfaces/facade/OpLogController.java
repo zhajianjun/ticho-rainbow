@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ticho.rainbow.application.service.OpLogService;
 import top.ticho.rainbow.infrastructure.common.constant.ApiConst;
-import top.ticho.rainbow.interfaces.dto.query.OpLogQuery;
-import top.ticho.rainbow.interfaces.dto.response.OpLogDTO;
+import top.ticho.rainbow.interfaces.query.OpLogQuery;
+import top.ticho.rainbow.interfaces.dto.OpLogDTO;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.core.TiResult;
 

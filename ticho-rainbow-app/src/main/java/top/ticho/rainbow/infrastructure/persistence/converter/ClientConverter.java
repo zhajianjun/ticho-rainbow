@@ -5,7 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.infrastructure.persistence.po.ClientPO;
-import top.ticho.rainbow.interfaces.dto.response.ClientDTO;
+import top.ticho.rainbow.interfaces.dto.ClientDTO;
 
 import java.util.Collection;
 import java.util.List;

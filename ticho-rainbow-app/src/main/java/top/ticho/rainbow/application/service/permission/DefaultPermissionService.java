@@ -13,7 +13,7 @@ import top.ticho.rainbow.infrastructure.common.constant.SecurityConst;
 import top.ticho.rainbow.infrastructure.common.dto.SecurityUser;
 import top.ticho.rainbow.infrastructure.common.enums.UserStatus;
 import top.ticho.rainbow.infrastructure.common.util.UserUtil;
-import top.ticho.rainbow.interfaces.dto.response.UserDTO;
+import top.ticho.rainbow.interfaces.dto.UserDTO;
 import top.ticho.starter.security.auth.TiPermissionService;
 import top.ticho.starter.security.constant.TiSecurityConst;
 

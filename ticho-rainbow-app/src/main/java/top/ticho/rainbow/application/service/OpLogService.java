@@ -10,8 +10,8 @@ import top.ticho.rainbow.application.executor.DictExecutor;
 import top.ticho.rainbow.application.repository.OpLogAppRepository;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
-import top.ticho.rainbow.interfaces.dto.query.OpLogQuery;
-import top.ticho.rainbow.interfaces.dto.response.OpLogDTO;
+import top.ticho.rainbow.interfaces.query.OpLogQuery;
+import top.ticho.rainbow.interfaces.dto.OpLogDTO;
 import top.ticho.starter.view.core.TiPageResult;
 
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,7 +1,7 @@
 package top.ticho.rainbow.application.repository;
 
-import top.ticho.rainbow.interfaces.dto.query.ClientQuery;
-import top.ticho.rainbow.interfaces.dto.response.ClientDTO;
+import top.ticho.rainbow.interfaces.query.ClientQuery;
+import top.ticho.rainbow.interfaces.dto.ClientDTO;
 import top.ticho.starter.view.core.TiPageResult;
 
 import java.util.List;

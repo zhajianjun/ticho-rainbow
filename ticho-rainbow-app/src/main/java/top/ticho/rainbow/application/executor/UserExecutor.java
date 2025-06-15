@@ -10,7 +10,7 @@ import top.ticho.rainbow.domain.entity.User;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
-import top.ticho.rainbow.interfaces.dto.response.UserDTO;
+import top.ticho.rainbow.interfaces.dto.UserDTO;
 import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.view.util.TiAssert;
 
@@ -58,18 +58,18 @@ public class UserExecutor {
         return userAssembler.toDTO(user);
     }
 
-    public void setRoles(List<UserDTO> userDtos) {
-        if (CollUtil.isEmpty(userDtos)) {
+    public void setRoles(List<UserDTO> userDTOs) {
+        if (CollUtil.isEmpty(userDTOs)) {
             return;
         }
-        Map<Long, List<Long>> userRoleIdsMap = userDtos
+        Map<Long, List<Long>> userRoleIdsMap = userDTOs
             .stream()
             .collect(Collectors.toMap(UserDTO::getId, x -> userRoleRepository.listByUserId(x.getId())));
-        for (UserDTO userDto : userDtos) {
-            Long id = userDto.getId();
+        for (UserDTO userDTO : userDTOs) {
+            Long id = userDTO.getId();
             List<Long> itemRoleIds = Optional.ofNullable(userRoleIdsMap.get(id))
                 .orElseGet(ArrayList::new);
-            userDto.setRoleIds(itemRoleIds);
+            userDTO.setRoleIds(itemRoleIds);
         }
     }
 

@@ -6,9 +6,9 @@ import top.ticho.rainbow.application.dto.excel.RoleExcelExport;
 import top.ticho.rainbow.domain.entity.Role;
 import top.ticho.rainbow.domain.entity.vo.RoleModifyVO;
 import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
-import top.ticho.rainbow.interfaces.dto.command.RoleModifyCommand;
-import top.ticho.rainbow.interfaces.dto.command.RoleSaveCommand;
-import top.ticho.rainbow.interfaces.dto.response.RoleDTO;
+import top.ticho.rainbow.interfaces.command.RoleModifyCommand;
+import top.ticho.rainbow.interfaces.command.RoleSaveCommand;
+import top.ticho.rainbow.interfaces.dto.RoleDTO;
 import top.ticho.starter.web.util.TiIdUtil;
 
 /**

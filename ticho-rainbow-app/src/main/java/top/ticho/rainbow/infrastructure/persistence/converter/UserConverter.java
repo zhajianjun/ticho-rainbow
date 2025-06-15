@@ -3,7 +3,7 @@ package top.ticho.rainbow.infrastructure.persistence.converter;
 import org.mapstruct.Mapper;
 import top.ticho.rainbow.domain.entity.User;
 import top.ticho.rainbow.infrastructure.persistence.po.UserPO;
-import top.ticho.rainbow.interfaces.dto.response.UserDTO;
+import top.ticho.rainbow.interfaces.dto.UserDTO;
 
 import java.util.Collection;
 import java.util.List;

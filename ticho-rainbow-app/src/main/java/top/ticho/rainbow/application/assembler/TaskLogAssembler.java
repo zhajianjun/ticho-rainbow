@@ -3,7 +3,7 @@ package top.ticho.rainbow.application.assembler;
 import org.mapstruct.Mapper;
 import top.ticho.rainbow.application.dto.excel.TaskLogExcelExport;
 import top.ticho.rainbow.domain.entity.TaskLog;
-import top.ticho.rainbow.interfaces.dto.response.TaskLogDTO;
+import top.ticho.rainbow.interfaces.dto.TaskLogDTO;
 import top.ticho.starter.web.util.TiIdUtil;
 
 /**
