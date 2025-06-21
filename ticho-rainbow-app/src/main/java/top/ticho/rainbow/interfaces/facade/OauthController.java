@@ -48,6 +48,12 @@ public class OauthController {
     private final DefaultLoginService defaultLoginService;
     private final LoginUserService loginUserService;
 
+    @IgnoreJwtCheck
+    @GetMapping("login-mode")
+    public TiResult<String> loginMode() {
+        return TiResult.ok(defaultLoginService.loginMode());
+    }
+
     /**
      * 用户注册邮箱发送
      */

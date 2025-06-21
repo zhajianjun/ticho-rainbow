@@ -13,8 +13,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SettingModifyVO {
 
-    /** key */
-    private String key;
     /** value */
     private String value;
     /** 排序 */

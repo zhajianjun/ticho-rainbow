@@ -56,14 +56,13 @@
   import { getSearchColumns, getTableColumns } from './setting.data';
   import { useMessage } from '@/hooks/web/useMessage';
   import { usePermission } from '@/hooks/web/usePermission';
-  import { getDictLabelByCodeAndValue } from '@/store/modules/dict';
   import { downloadByData } from '@/utils/file/download';
   import { VersionModifyCommand } from '@/api/system/model/baseModel';
   import { SettingQuery } from '@/api/system/model/settingModel';
-  import { delSetting, expSetting, settingPage } from '@/api/system/setting';
+  import { delSetting, exportSetting, settingPage } from '@/api/system/setting';
 
   export default defineComponent({
-    name: 'Port',
+    name: 'Setting',
     components: { BasicTable, SettingModal, TableAction },
     setup() {
       const { hasPermission } = usePermission();
@@ -115,14 +114,14 @@
 
       function handleCreate() {
         openModal(true, {
-          modalType: 1,
+          isUpdate: false,
         });
       }
 
       function handleEdit(record: Recordable) {
         openModal(true, {
           record,
-          modalType: 2,
+          isUpdate: true,
         });
       }
 
@@ -152,7 +151,7 @@
           const { getFieldsValue } = getForm();
           params = getFieldsValue() as SettingQuery;
         }
-        expSetting(params)
+        exportSetting(params)
           .then((res) => {
             // 提取文件名
             let fileName = decodeURI(res.headers['content-disposition'].split('filename=')[1]);
@@ -175,6 +174,5 @@
         handleExport,
       };
     },
-    methods: { getDictLabelByCodeAndValue },
   });
 </script>

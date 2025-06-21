@@ -5,10 +5,13 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.application.repository.SettingAppRepository;
 import top.ticho.rainbow.domain.entity.Setting;
 import top.ticho.rainbow.domain.repository.SettingRepository;
+import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.persistence.converter.SettingConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.SettingMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.SettingPO;
@@ -31,22 +34,31 @@ import java.util.List;
 public class SettingRepositoryImpl extends TiRepositoryImpl<SettingMapper, SettingPO> implements SettingRepository, SettingAppRepository {
     private final SettingConverter settingConverter;
 
+    @Cacheable(value = CacheConst.COMMON, key = "'ticho-rainbow:setting:list'", sync = true)
+    public List<Setting> cacheList() {
+        return settingConverter.toEntity(super.list());
+    }
+
     @Override
+    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:setting:list'")
     public boolean save(Setting setting) {
         return super.save(settingConverter.toPO(setting));
     }
 
     @Override
+    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:setting:list'")
     public boolean remove(Long id) {
         return super.removeById(id);
     }
 
     @Override
+    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:setting:list'")
     public boolean modify(Setting setting) {
         return super.updateById(settingConverter.toPO(setting));
     }
 
     @Override
+    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:setting:list'")
     public boolean modifyBatch(List<Setting> settings) {
         return super.updateBatchById(settingConverter.toPO(settings));
     }
@@ -59,6 +71,17 @@ public class SettingRepositoryImpl extends TiRepositoryImpl<SettingMapper, Setti
     @Override
     public List<Setting> list(List<Long> ids) {
         return settingConverter.toEntity(super.listByIds(ids));
+    }
+
+    @Override
+    public Setting findByKey(String key) {
+        if (StrUtil.isBlank(key)) {
+            return null;
+        }
+        LambdaQueryWrapper<SettingPO> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(SettingPO::getKey, key);
+        wrapper.last("limit 1");
+        return settingConverter.toEntity(getOne(wrapper));
     }
 
     @Override

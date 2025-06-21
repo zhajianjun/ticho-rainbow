@@ -5,11 +5,11 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author zhajianjun
- * @date 2024-01-08 20:30
+ * @date 2025-06-21 11:19
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SecurityConst {
+public class LoginConst {
 
-    public static final String ADMIN = "admin";
+    public static final String LOGIN_MODE_KEY = "loginMode";
 
 }

@@ -19,6 +19,7 @@ import headerImg from '@/assets/images/header.jpg';
 
 interface UserState {
   userInfo: Nullable<LoginUserDTO>;
+  loginMode: string;
   token?: string;
   roleList: RoleDTO[];
   sessionTimeout?: boolean;
@@ -30,6 +31,8 @@ export const useUserStore = defineStore({
   state: (): UserState => ({
     // user info
     userInfo: null,
+    // 登录模式
+    loginMode: '2',
     // token
     token: undefined,
     // roleList
@@ -54,6 +57,9 @@ export const useUserStore = defineStore({
     },
     getLastUpdateTime(state): number {
       return state.lastUpdateTime;
+    },
+    getLoginMode(state): string {
+      return state.loginMode;
     },
   },
   actions: {
@@ -88,6 +94,9 @@ export const useUserStore = defineStore({
       this.token = '';
       this.roleList = [];
       this.sessionTimeout = false;
+    },
+    setLoginMode(mode: string) {
+      this.loginMode = mode;
     },
     /**
      * @description: login

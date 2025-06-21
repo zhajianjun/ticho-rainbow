@@ -40,7 +40,6 @@ public class Setting implements Entity {
     private Integer isDelete;
 
     public void modify(SettingModifyVO settingModifyVO) {
-        this.key = settingModifyVO.getKey();
         this.value = settingModifyVO.getValue();
         this.sort = settingModifyVO.getSort();
         this.remark = settingModifyVO.getRemark();

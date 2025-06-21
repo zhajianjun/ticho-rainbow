@@ -6,11 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.common.dto.FileCacheDTO;
 import top.ticho.starter.cache.config.TiCache;
-import top.ticho.starter.cache.config.TiCacheBatch;
+import top.ticho.starter.cache.config.TiCacheRegistry;
 
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  * 缓存配置
@@ -31,28 +30,18 @@ public class CacheConfig {
         USER_INFO(CacheConst.USER_INFO, 1800, 10000),
         USER_ROLE_INFO(CacheConst.USER_ROLE_INFO, 1800, 10000),
         ROLE_MENU_INFO(CacheConst.ROLE_MENU_INFO, 1800, 10000),
-        UPLOAD_CHUNK(CacheConst.UPLOAD_CHUNK, 2, 180, 10000),
+        UPLOAD_CHUNK(CacheConst.UPLOAD_CHUNK, 180, 10000),
         SSE(CacheConst.SSE, 180, 10000),
         ;
 
         CacheEnum(String key, int ttl, int maxSize) {
             this.key = key;
-            this.expireStrategy = 1;
-            this.maxSize = maxSize;
-            this.ttl = ttl;
-        }
-
-        CacheEnum(String key, int expireStrategy, int ttl, int maxSize) {
-            this.key = key;
-            this.expireStrategy = expireStrategy;
             this.maxSize = maxSize;
             this.ttl = ttl;
         }
 
         /** key */
         private final String key;
-        /** 过期策略;1-write,2-access */
-        private final Integer expireStrategy;
         /** 过期时间（秒） */
         private final int ttl;
         /** 最大數量 */
@@ -60,10 +49,10 @@ public class CacheConfig {
     }
 
     @Bean
-    public TiCacheBatch tiCacheBatch() {
-        return () -> {
+    public TiCacheRegistry tiCacheRegistry() {
+        return (tiCaches) -> {
             CacheEnum[] values = CacheEnum.values();
-            return Arrays.stream(values)
+            Arrays.stream(values)
                 .map(cacheEnum -> new TiCache<String, Object>() {
                     @Override
                     public String getName() {
@@ -79,12 +68,11 @@ public class CacheConfig {
                     public int getTtl() {
                         return cacheEnum.getTtl();
                     }
-                })
-                .collect(Collectors.toList());
+                }).forEach(tiCaches::add);
+            tiCaches.add(fileInfoCache());
         };
     }
 
-    @Bean
     public TiCache<String, FileCacheDTO> fileInfoCache() {
         return new TiCache<>() {
             @Override

@@ -12,6 +12,8 @@ import java.util.List;
  */
 public interface SettingRepository {
 
+    List<Setting> cacheList();
+
     boolean save(Setting setting);
 
     boolean remove(Long id);
@@ -23,6 +25,8 @@ public interface SettingRepository {
     Setting find(Long id);
 
     List<Setting> list(List<Long> ids);
+
+    Setting findByKey(String key);
 
 }
 

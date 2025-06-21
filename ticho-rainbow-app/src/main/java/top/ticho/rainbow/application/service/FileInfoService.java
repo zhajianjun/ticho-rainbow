@@ -111,7 +111,7 @@ public class FileInfoService {
         if (fileInfo.isChunk()) {
             boolean isUploadChunkIng = tiCacheTemplate.contain(CacheConst.UPLOAD_CHUNK, fileInfo.getChunkId());
             TiAssert.isTrue(!isUploadChunkIng, "删除失败, 分片文件正在上传中");
-            ChunkMetadataDTO metadata = TiJsonUtil.toJavaObject(fileInfo.getChunkMetadata(), ChunkMetadataDTO.class);
+            ChunkMetadataDTO metadata = TiJsonUtil.toObject(fileInfo.getChunkMetadata(), ChunkMetadataDTO.class);
             path = metadata.getChunkDirPath();
         } else {
             path = fileInfo.getPath();
@@ -256,7 +256,7 @@ public class FileInfoService {
         String chunkId = dbFileInfo.getChunkId();
         ChunkCacheDTO chunkCacheDTO = new ChunkCacheDTO();
         // 如果数据库存在则进行断点续传
-        ChunkMetadataDTO metadata = TiJsonUtil.toJavaObject(dbFileInfo.getChunkMetadata(), ChunkMetadataDTO.class);
+        ChunkMetadataDTO metadata = TiJsonUtil.toObject(dbFileInfo.getChunkMetadata(), ChunkMetadataDTO.class);
         chunkCacheDTO.setChunkId(chunkId);
         chunkCacheDTO.setMd5(dbFileInfo.getMd5());
         chunkCacheDTO.setId(dbFileInfo.getId());

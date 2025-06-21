@@ -24,7 +24,7 @@
         :placeholder="t('sys.login.password')"
       />
     </FormItem>
-    <FormItem name="imgCode" class="enter-x img-fill">
+    <FormItem name="imgCode" class="enter-x img-fill" v-show="showImageCode">
       <Input
         class="rainbow"
         size="large"
@@ -110,8 +110,9 @@
   import { LoginStateEnum, useFormRules, useFormValid, useLoginState } from './useLogin';
   import { useDesign } from '@/hooks/web/useDesign';
   //import { onKeyStroke } from '@vueuse/core';
-  import { getImgCode } from '@/api/system/login';
+  import { getImgCode, loginMode } from '@/api/system/login';
   import { buildUUID } from '@/utils/uuid';
+  import { LoginCommand } from '@/api/system/model/loginModel';
 
   const ACol = Col;
   const ARow = Row;
@@ -144,11 +145,23 @@
 
   const getShow = computed(() => unref(getLoginState) === LoginStateEnum.LOGIN);
 
+  const showImageCode = computed(() => userStore.getLoginMode !== '1');
+
   onMounted(() => {
-    flushImgCode();
+    loginMode()
+      .then((res) => {
+        console.log(res);
+        userStore.setLoginMode(res as string);
+      })
+      .finally(() => {
+        flushImgCode();
+      });
   });
 
   async function flushImgCode() {
+    if (userStore.getLoginMode == '1') {
+      return;
+    }
     const imgKey = formData.imgKey.toString();
     getImgCode(imgKey).then((res) => {
       imgCodeShow.value = window.URL.createObjectURL(res);
@@ -160,15 +173,15 @@
     if (!data) return;
     try {
       loading.value = true;
-      const userInfo = await userStore.login(
-        {
-          username: data.account,
-          password: data.password,
-          imgCode: data.imgCode,
-          imgKey: formData.imgKey,
-        },
-        true,
-      );
+      const loginCommand = {
+        username: data.account,
+        password: data.password,
+      } as LoginCommand;
+      if (userStore.getLoginMode !== '1') {
+        loginCommand.imgCode = data.imgCode;
+        loginCommand.imgKey = formData.imgKey;
+      }
+      const userInfo = await userStore.login(loginCommand, true);
       if (userInfo) {
         notification.success({
           message: t('sys.login.loginSuccessTitle'),

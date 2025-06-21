@@ -59,7 +59,7 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
         if (Objects.equals(String.class, paramClass)) {
             return paramClass.cast(taskParam);
         }
-        return TiJsonUtil.toJavaObject(taskParam, paramClass);
+        return TiJsonUtil.toObject(taskParam, paramClass);
     }
 
     public T getTaskParam(JobExecutionContext context) {

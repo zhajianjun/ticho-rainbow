@@ -27,6 +27,19 @@ enum Api {
   User = '/oauth/user',
   ModifyPassword = '/oauth/user/password',
   UploadAvatar = '/oauth/user/avatar/upload',
+  LoginMode = '/oauth/login-mode',
+}
+
+export function loginMode() {
+  return defHttp.get<String>(
+    {
+      url: Api.LoginMode,
+    },
+    {
+      withToken: false,
+      retryRequest: { isOpenRetry: false } as RetryRequest,
+    },
+  );
 }
 
 export function getImgCode(imgKey: string, mode: ErrorMessageMode = 'modal') {

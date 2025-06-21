@@ -41,6 +41,8 @@ public class SettingService {
 
     public void save(SettingSaveCommand settingSaveCommand) {
         Setting setting = settingAssembler.toEntity(settingSaveCommand);
+        Setting byKey = settingRepository.findByKey(setting.getKey());
+        TiAssert.isNull(byKey, "保存失败，key已存在");
         TiAssert.isTrue(settingRepository.save(setting), "保存失败");
     }
 

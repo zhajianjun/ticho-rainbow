@@ -1,3 +1,4 @@
+-- @formatter:on
 DROP TABLE IF EXISTS `sys_client`;
 CREATE TABLE `sys_client`
 (
@@ -219,534 +220,100 @@ CREATE TABLE `sys_menu`
     `is_delete`           tinyint                                                       DEFAULT '0' COMMENT '删除标识;0-未删除,1-已删除',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='菜单信息';
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1580826339636596737, 0, '1580826339636596737', 1, NULL, '系统管理', '/system', 'LAYOUT', 'System', '', 0, NULL,
-        1, NULL, 0, 'ant-design:account-book-outlined', 20, 1, '', 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1580831598392037378, 1580826339636596737, '1580826339636596737-1580831598392037378', 2, NULL, '角色管理',
-        '/system/role', 'system/role/index', 'Role', '', 0, 1, 1, '', 0, 'ant-design:mac-command-outlined', 20, 1, '',
-        0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1580831864789061633, 1580826339636596737, '1580826339636596737-1580831864789061633', 2, NULL, '菜单管理',
-        '/system/menu', 'system/menu/index', 'Menu', '', 0, 1, 1, '', 0, 'ion:layers-outline', 30, 1, '', 0, 'admin',
-        NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1693466547550445570, 0, '1693466547550445570', 1, NULL, '主页', '/home', 'LAYOUT', 'LAYOUT', '/home/workbench',
-        0, NULL, 1, NULL, NULL, 'ion:grid-outline', 10, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1693497514038157313, 1693466547550445570, '1693466547550445570-1693497514038157313', 2, NULL, '工作台',
-        '/home/workbench', 'dashboard/workbench/index', 'Workbench', NULL, 0, 1, 0, '/dashboard', NULL,
-        'ant-design:home-outlined', 10, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1694016595833151489, 1580831864789061633, '1580826339636596737-1580831864789061633-1694016595833151489', 3,
-        'system:menu:save', '菜单新增', NULL, NULL, 'MenuAdd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 20, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1695715629383811072, 1580831864789061633, '1580826339636596737-1580831864789061633-1695715629383811072', 3,
-        'system:menu:list', '菜单查询', NULL, NULL, 'MenuSelect', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 10, 1, NULL,
-        0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1695716465233100800, 1580826339636596737, '1580826339636596737-1695716465233100800', 2, NULL, '用户管理',
-        '/system/user', 'system/user/index', 'User', NULL, 0, 0, 1, '', NULL, 'ant-design:ant-design-outlined', 10, 1,
-        NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1697278317306052608, 1580831864789061633, '1580826339636596737-1580831864789061633-1697278317306052608', 3,
-        'system:menu:update', '菜单修改', NULL, NULL, 'MenuEdit', NULL, NULL, NULL, 1, NULL, NULL, NULL, 50, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1697420336175251456, 1580831864789061633, '1580826339636596737-1580831864789061633-1697420336175251456', 3,
-        'system:menu:remove', '菜单删除', NULL, NULL, 'MenuDel', NULL, NULL, NULL, 1, NULL, NULL, '', 60, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1697491896345034752, 1695716465233100800, '1580826339636596737-1695716465233100800-1697491896345034752', 3,
-        'system:user:page', '用户查询', NULL, NULL, 'UserSelect', NULL, NULL, NULL, 1, NULL, NULL, NULL, 10, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1697530405667733504, 1695716465233100800, '1580826339636596737-1695716465233100800-1697530405667733504', 3,
-        'system:user:save', '用户新增', NULL, NULL, 'UserAdd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 20, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1697533041406115840, 1695716465233100800, '1580826339636596737-1695716465233100800-1697533041406115840', 3,
-        'system:user:update', '用户修改', NULL, NULL, 'UserEdit', NULL, NULL, NULL, NULL, NULL, NULL, '', 70, 1, NULL,
-        0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1697533206095462400, 1695716465233100800, '1580826339636596737-1695716465233100800-1697533206095462400', 3,
-        'system:user:remove', '用户删除', NULL, NULL, 'UserDel', NULL, NULL, NULL, NULL, NULL, NULL, '', 100, 1, NULL,
-        0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1697533570328821760, 1580831598392037378, '1580826339636596737-1580831598392037378-1697533570328821760', 3,
-        'system:role:page,system:role:list', '角色查询', NULL, NULL, 'RoleSelect', NULL, NULL, NULL, 1, NULL, NULL,
-        NULL, 10, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1697534055433633792, 1580831598392037378, '1580826339636596737-1580831598392037378-1697534055433633792', 3,
-        'system:role:save', '角色新增', NULL, NULL, 'RoleAdd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 20, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1697534315883134976, 1580831598392037378, '1580826339636596737-1580831598392037378-1697534315883134976', 3,
-        'system:role:update', '角色修改', NULL, NULL, 'RoleEdit', NULL, NULL, NULL, NULL, NULL, NULL, '', 40, 1, NULL,
-        0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1697534451833110528, 1580831598392037378, '1580826339636596737-1580831598392037378-1697534451833110528', 3,
-        'system:user:remove', '角色删除', NULL, NULL, 'RoleDel', NULL, NULL, NULL, NULL, NULL, NULL, '', 50, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1698536628588380160, 1580826339636596737, '1580826339636596737-1698536628588380160', 2, NULL, '用户详情',
-        '/system/user/userDetail/:id', 'system/user/UserDetail', 'UserDetail', NULL, 0, 1, 0, '/system/user', NULL,
-        'ant-design:account-book-outlined', 9, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1698586399516655616, 0, '1698586399516655616', 1, NULL, '外部页面', '/link', 'LAYOUT', 'Link', NULL, 0, NULL, 1,
-        NULL, NULL, 'ant-design:link-outlined', 50, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1698587434666688512, 1698586399516655616, '1698586399516655616-1698587434666688512', 2, NULL,
-        'AntDesignVue(外链)', 'https://www.antdv.com/components/overview-cn', NULL, NULL, '', 1, 1, 1, NULL, NULL,
-        'ant-design:linkedin-outlined', 20, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1744651429282316288, 0, '1744651429282316288', 1, NULL, '映射管理', '/intranet', 'LAYOUT', 'Intranet', NULL, 0,
-        NULL, 1, NULL, NULL, 'ant-design:coffee-outlined', 40, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1744651827317571584, 1744651429282316288, '1744651429282316288-1744651827317571584', 2, NULL, '客户端管理',
-        '/intranet/client', 'intranet/client/index', 'Client', NULL, 0, 1, 1, NULL, NULL,
-        'ant-design:check-square-outlined', 10, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1745443976514633728, 1744651429282316288, '1744651429282316288-1745443976514633728', 2, NULL, '端口管理',
-        '/intranet/port', 'intranet/port/index', 'Port', NULL, 0, 1, 1, NULL, NULL, 'ant-design:ant-design-outlined',
-        20, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1746454367088672768, 1744651827317571584, '1744651429282316288-1744651827317571584-1746454367088672768', 3,
-        'intranet:client:list,intranet:client:page', '客户端查询', NULL, NULL, 'ClientSelect', NULL, NULL, NULL, 1,
-        NULL, NULL, NULL, 10, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1746456609858519040, 1698586399516655616, '1698586399516655616-1746456609858519040', 2, NULL,
-        'AntDesignVue(内嵌)', 'antd', NULL, 'Antd', 'https://www.antdv.com/components/overview-cn', 1, 1, 1, NULL, NULL,
-        'ant-design:search-outlined', 10, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1746496929841283072, 1580826339636596737, '1580826339636596737-1746496929841283072', 2, NULL, '字典管理',
-        '/dict', 'system/dict/index', 'Dict', NULL, 0, 1, 1, '', NULL, 'ant-design:hdd-filled', 40, 1, NULL, 0, 'admin',
-        NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1746497347082256384, 1746496929841283072, '1580826339636596737-1746496929841283072-1746497347082256384', 3,
-        'system:dict:page,system:dict-label:find', '字典查询', NULL, NULL, 'DictSelect', NULL, NULL, NULL, 1, NULL,
-        NULL, '', 10, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1748327614482743296, 1746496929841283072, '1580826339636596737-1746496929841283072-1748327614482743296', 3,
-        'system:dict:save', '字典新增', NULL, NULL, 'DictAdd', NULL, NULL, NULL, 1, NULL, NULL, NULL, 20, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1748328477867638784, 1746496929841283072, '1580826339636596737-1746496929841283072-1748328477867638784', 3,
-        'system:dict:update', '字典新增', NULL, NULL, 'DictEdit', NULL, NULL, NULL, 1, NULL, NULL, '', 50, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1748328739021783040, 1746496929841283072, '1580826339636596737-1746496929841283072-1748328739021783040', 3,
-        'system:dict:remove', '字典删除', NULL, NULL, 'DictDel', NULL, NULL, NULL, 1, NULL, NULL, '', 60, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1748330810697580544, 1580831864789061633, '1580826339636596737-1580831864789061633-1748330810697580544', 3,
-        'system:menu:save', '菜单复制新增', NULL, NULL, 'MenuCopy', NULL, NULL, NULL, 1, NULL, NULL, NULL, 30, 1, NULL,
-        0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1748331110812614656, 1744651827317571584, '1744651429282316288-1744651827317571584-1748331110812614656', 3,
-        'intranet:client:save', '客户端新增', NULL, NULL, 'ClientAdd', NULL, NULL, NULL, 1, NULL, NULL, NULL, 20, 1,
-        NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1748331197211082752, 1744651827317571584, '1744651429282316288-1744651827317571584-1748331197211082752', 3,
-        'intranet:client:update', '客户端修改', NULL, NULL, 'ClientEdit', NULL, NULL, NULL, 1, NULL, NULL, '', 40, 1,
-        NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1748331292065267712, 1744651827317571584, '1744651429282316288-1744651827317571584-1748331292065267712', 3,
-        'intranet:client:remove', '客户端删除', NULL, NULL, 'ClientDel', NULL, NULL, NULL, 1, NULL, NULL, '', 50, 1,
-        NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1748331503634350080, 1745443976514633728, '1744651429282316288-1745443976514633728-1748331503634350080', 3,
-        'intranet:port:page', '端口查询', NULL, NULL, 'PortSelect', NULL, NULL, NULL, 1, NULL, NULL, NULL, 10, 1, NULL,
-        0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1748331594143236096, 1745443976514633728, '1744651429282316288-1745443976514633728-1748331594143236096', 3,
-        'intranet:port:save', '端口新增', NULL, NULL, 'PortAdd', NULL, NULL, NULL, 1, NULL, NULL, NULL, 20, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1748331711571165184, 1745443976514633728, '1744651429282316288-1745443976514633728-1748331711571165184', 3,
-        'intranet:port:save', '端口复制', NULL, NULL, 'PortCopy', NULL, NULL, NULL, 1, NULL, NULL, '', 40, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1748331806605705216, 1745443976514633728, '1744651429282316288-1745443976514633728-1748331806605705216', 3,
-        'intranet:port:remove', '端口删除', NULL, NULL, 'PortDel', NULL, NULL, NULL, 1, NULL, NULL, '', 60, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1748340313358860288, 1745443976514633728, '1744651429282316288-1745443976514633728-1748340313358860288', 3,
-        'intranet:port:update', '端口修改', NULL, NULL, 'PortEdit', NULL, NULL, NULL, 1, NULL, NULL, '', 50, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1767096858825457664, 1693466547550445570, '1693466547550445570-1767096858825457664', 2, NULL, '个人中心',
-        '/user/profile', 'system/user/profile/index', 'Profile', NULL, 0, 1, 0, '/dashboard', NULL,
-        'ant-design:user-outlined', 20, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1771802307621552128, 1767096858825457664, '1693466547550445570-1767096858825457664-1771802307621552128', 3,
-        'system:user:find-self-detail,system:user:find-self-info,system:user:modify-self-passwordf,system:menu:route,system:dict:list,system:user:updateForSelf,system:dict:flush',
-        '个人中心权限', NULL, NULL, 'UserPerm', NULL, NULL, NULL, 1, NULL, NULL, '', 10, 1, NULL, 0, 'admin', NOW(),
-        NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1773940982715252736, 1580826339636596737, '1580826339636596737-1773940982715252736', 2, NULL, '计划任务',
-        '/system/task', 'system/task/index', 'Task', NULL, 0, 1, 1, '', NULL, 'ant-design:loading-3-quarters-outlined',
-        50, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1782674731338563584, 0, '1782674731338563584', 1, NULL, '资源管理', '/storage', 'LAYOUT', 'Storage', NULL, 0, 0,
-        1, NULL, NULL, 'ant-design:file-zip-twotone', 30, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1782675070078943232, 1782674731338563584, '1782674731338563584-1782675070078943232', 2, NULL, '文件管理',
-        '/storage/file', 'storage/file/index', 'File', NULL, 0, 0, 1, '', NULL, 'ant-design:file-text-twotone', 10, 1,
-        NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1787445934443986944, 1580826339636596737, '1580826339636596737-1787445934443986944', 1, NULL, '日志',
-        '/system/log', 'LAYOUT', 'Log', NULL, 0, 0, 1, NULL, NULL, 'ant-design:logout-outlined', 60, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1787446556790620160, 1787445934443986944, '1580826339636596737-1787445934443986944-1787446556790620160', 2,
-        NULL, '操作日志', '/system/log/oplog', 'system/oplog/index', 'OpLog', NULL, 0, 1, 1, '', NULL,
-        'ant-design:history-outlined', 10, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1787447065161236480, 1787445934443986944, '1580826339636596737-1787445934443986944-1787447065161236480', 2,
-        NULL, '任务日志', '/system/log/tasklog', 'system/tasklog/index', 'TaskLog', NULL, 0, 1, 1, '', NULL,
-        'ant-design:login-outlined', 20, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1789206090173382656, 1695716465233100800, '1580826339636596737-1695716465233100800-1789206090173382656', 3,
-        'system:user:lock', '用户锁定', NULL, NULL, 'UserLock', NULL, 0, 0, 1, NULL, NULL, '', 30, 1, NULL, 0, 'admin',
-        NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1789206190429831168, 1695716465233100800, '1580826339636596737-1695716465233100800-1789206190429831168', 3,
-        'system:user:unLock', '用户解锁', NULL, NULL, 'UserUnLock', NULL, 0, 0, 1, NULL, NULL, '', 40, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1789206306523971584, 1695716465233100800, '1580826339636596737-1695716465233100800-1789206306523971584', 3,
-        'system:user:import,system:user:download-import-template', '用户导入', NULL, NULL, 'UserImport', NULL, 0, 0, 1,
-        NULL, NULL, '', 50, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1789206604688654336, 1695716465233100800, '1580826339636596737-1695716465233100800-1789206604688654336', 3,
-        'system:user:export', '用户导出', NULL, NULL, 'UserExport', NULL, 0, 0, 1, NULL, NULL, '', 60, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790267397697961984, 1580831598392037378, '1580826339636596737-1580831598392037378-1790267397697961984', 3,
-        'system:role:export', '角色导出', NULL, NULL, 'RoleExport', NULL, 0, 0, 1, NULL, NULL, '', 30, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790268328569208832, 1746496929841283072, '1580826339636596737-1746496929841283072-1790268328569208832', 3,
-        'system:dict:flush', '字典刷新', NULL, NULL, 'DictFlush', NULL, 0, 0, 1, NULL, NULL, NULL, 30, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790268772053942272, 1746496929841283072, '1580826339636596737-1746496929841283072-1790268772053942272', 3,
-        'system:dict:export', '字典导出', NULL, NULL, 'DictExport', NULL, 0, 0, 1, NULL, NULL, '', 40, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790269142499065856, 1746496929841283072, '1580826339636596737-1746496929841283072-1790269142499065856', 3,
-        'system:dict-label:save', '字典标签新增', NULL, NULL, 'DictLabelAdd', NULL, 0, 0, 1, NULL, NULL, '', 70, 1,
-        NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790269430693888000, 1746496929841283072, '1580826339636596737-1746496929841283072-1790269430693888000', 3,
-        'system:dict-label:update', '字典标签修改', NULL, NULL, 'DictLabelEdit', NULL, 0, 0, 1, NULL, NULL, NULL, 80, 1,
-        NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790269739432411136, 1746496929841283072, '1580826339636596737-1746496929841283072-1790269739432411136', 3,
-        'system:dict-label:remove', '字典标签删除', NULL, NULL, 'DictLabelDel', NULL, 0, 0, 1, NULL, NULL, '', 90, 1,
-        NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790270033570562048, 1773940982715252736, '1580826339636596737-1773940982715252736-1790270033570562048', 3,
-        'system:task:page', '计划任务查询', NULL, NULL, 'TaskSelect', NULL, 0, 0, 1, NULL, NULL, '', 10, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790270637776830464, 1773940982715252736, '1580826339636596737-1773940982715252736-1790270637776830464', 3,
-        'system:task:save', '计划任务新增', NULL, NULL, 'TaskAdd', NULL, 0, 0, 1, NULL, NULL, '', 20, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790270795960811520, 1773940982715252736, '1580826339636596737-1773940982715252736-1790270795960811520', 3,
-        'system:task:export', '计划任务导出', NULL, NULL, 'TaskExport', NULL, 0, 0, 1, NULL, NULL, '', 30, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790271254167552000, 1773940982715252736, '1580826339636596737-1773940982715252736-1790271254167552000', 3,
-        'system:task:update', '计划任务修改', NULL, NULL, 'TaskEdit', NULL, 0, 0, 1, NULL, NULL, NULL, 40, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790271360166002688, 1773940982715252736, '1580826339636596737-1773940982715252736-1790271360166002688', 3,
-        'system:task:run-once', '任务执行一次', NULL, NULL, 'TaskRunOnce', NULL, 0, 0, 1, NULL, NULL, '', 50, 1, NULL,
-        0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790271627208949760, 1773940982715252736, '1580826339636596737-1773940982715252736-1790271627208949760', 3, '',
-        '查看日志', NULL, NULL, 'GoTaskLog', NULL, 0, 0, 1, NULL, NULL, NULL, 60, 1, NULL, 0, 'admin', NOW(), NULL,
-        NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790271832700485632, 1773940982715252736, '1580826339636596737-1773940982715252736-1790271832700485632', 3,
-        'system:task:resume', '计划任务启动', NULL, NULL, 'TaskResume', NULL, 0, 0, 1, NULL, NULL, NULL, 70, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790271929832177664, 1773940982715252736, '1580826339636596737-1773940982715252736-1790271929832177664', 3,
-        'system:task:pause', '计划任务暂停', NULL, NULL, 'TaskPause', NULL, 0, 0, 1, NULL, NULL, '', 80, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790272097415593984, 1773940982715252736, '1580826339636596737-1773940982715252736-1790272097415593984', 3,
-        'system:task:remove', '计划任务删除', NULL, NULL, 'TaskDel', NULL, 0, 0, 1, NULL, NULL, NULL, 90, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790272321785692160, 1782675070078943232, '1782674731338563584-1782675070078943232-1790272321785692160', 3,
-        'storage:file:page', '文件查询', NULL, NULL, 'FileSelect', NULL, 0, 0, 1, NULL, NULL, '', 10, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790272484616962048, 1782675070078943232, '1782674731338563584-1782675070078943232-1790272484616962048', 3,
-        'storage:file:upload,storage:file:upload-chunk,storage:file:compose-chunk', '文件上传', NULL, NULL,
-        'FileUpload', NULL, 0, 0, 1, NULL, NULL, NULL, 20, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790273217261207552, 1782675070078943232, '1782674731338563584-1782675070078943232-1790273217261207552', 3,
-        'storage:file:export', '文件信息导出', NULL, NULL, 'FileExport', NULL, 0, 0, 1, NULL, NULL, '', 30, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790274085394055168, 1782675070078943232, '1782674731338563584-1782675070078943232-1790274085394055168', 3,
-        'storage:file:downloadById,storage:file:presigned', '文件下载', NULL, NULL, 'FileDownload', NULL, 0, 0, 1, NULL,
-        NULL, '', 40, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790274176934739968, 1782675070078943232, '1782674731338563584-1782675070078943232-1790274176934739968', 3,
-        'storage:file:upload,storage:file:upload-chunk,storage:file:compose-chunk', '文件断点续传', NULL, NULL,
-        'FileContinueUpload', NULL, 0, 0, 1, NULL, NULL, '', 50, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790274507466866688, 1782675070078943232, '1782674731338563584-1782675070078943232-1790274507466866688', 3,
-        'storage:file:enable', '文件启用', NULL, NULL, 'FileEnable', NULL, 0, 0, 1, NULL, NULL, NULL, 60, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790274573187416064, 1782675070078943232, '1782674731338563584-1782675070078943232-1790274573187416064', 3,
-        'storage:file:disable', '文件停用', NULL, NULL, 'FileDisable', NULL, 0, 0, 1, NULL, NULL, '', 70, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790274714891976704, 1782675070078943232, '1782674731338563584-1782675070078943232-1790274714891976704', 3,
-        'storage:file:cancel', '文件作废', NULL, NULL, 'FileCancel', NULL, 0, 0, 1, NULL, NULL, NULL, 80, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790274881124827136, 1782675070078943232, '1782674731338563584-1782675070078943232-1790274881124827136', 3,
-        'storage:file:remove', '文件删除', NULL, NULL, 'FileDel', NULL, 0, 0, 1, NULL, NULL, NULL, 80, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790275265968996352, 1787446556790620160,
-        '1580826339636596737-1787445934443986944-1787446556790620160-1790275265968996352', 3, 'system:op-log:page',
-        '操作日志查询', NULL, NULL, 'OpLogSelect', NULL, 0, 0, 1, NULL, NULL, NULL, 10, 1, NULL, 0, 'admin', NOW(),
-        NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790275396168581120, 1787446556790620160,
-        '1580826339636596737-1787445934443986944-1787446556790620160-1790275396168581120', 3, 'system:op-log:export',
-        '操作日志导出', NULL, NULL, 'OpLogExport', NULL, 0, 0, 1, NULL, NULL, '', 20, 1, NULL, 0, 'admin', NOW(), NULL,
-        NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790275535696297984, 1787446556790620160,
-        '1580826339636596737-1787445934443986944-1787446556790620160-1790275535696297984', 3, '', '操作日志查看详情',
-        NULL, NULL, 'OpLogDetail', NULL, 0, 0, 1, NULL, NULL, NULL, 30, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790275976295350272, 1787447065161236480,
-        '1580826339636596737-1787445934443986944-1787447065161236480-1790275976295350272', 3, 'system:taskLog:page',
-        '任务日志查询', NULL, NULL, 'TaskLogSelect', NULL, 0, 0, 1, NULL, NULL, NULL, 10, 1, NULL, 0, 'admin', NOW(),
-        NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790276090334281728, 1787447065161236480,
-        '1580826339636596737-1787445934443986944-1787447065161236480-1790276090334281728', 3, 'system:taskLog:export',
-        '任务日志导出', NULL, NULL, 'TaskLogExport', NULL, 0, 0, 1, NULL, NULL, NULL, 20, 1, NULL, 0, 'admin', NOW(),
-        NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790276206780743680, 1787447065161236480,
-        '1580826339636596737-1787445934443986944-1787447065161236480-1790276206780743680', 3, '', '任务日志查看详情',
-        NULL, NULL, 'TaskLogDetail', NULL, 0, 0, 1, NULL, NULL, NULL, 30, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790276580069605376, 1744651827317571584, '1744651429282316288-1744651827317571584-1790276580069605376', 3,
-        'intranet:client:export', '客户端导出', NULL, NULL, 'ClientExport', NULL, 0, 0, 1, NULL, NULL, NULL, 10, 1,
-        NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790277526426222592, 1745443976514633728, '1744651429282316288-1745443976514633728-1790277526426222592', 3,
-        'intranet:port:export', '端口导出', NULL, NULL, 'PortExport', NULL, 0, 0, 1, NULL, NULL, NULL, 30, 1, NULL, 0,
-        'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1790917847682121728, 1744651429282316288, '1744651429282316288-1790917847682121728', 2, NULL, '流量统计',
-        '/intranet/flow-monitor', 'intranet/flow-monitor/index', 'FlowMonitor', NULL, 0, 0, 1, '', NULL,
-        'ant-design:file-excel-outlined', 30, 1, NULL, 0, 'admin', NOW(), NULL, NULL, 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1929521914242400256, 1695716465233100800, '1580826339636596737-1695716465233100800-1929521914242400256', 3, '',
-        '用户修改密码', NULL, NULL, 'UserEditPassword', NULL, 0, 0, 1, NULL, NULL, '', 100, 1, NULL, 0, 'admin', NOW(),
-        NULL, '2025-06-02 21:02:25', 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1929522281172697088, 1695716465233100800, '1580826339636596737-1695716465233100800-1929522281172697088', 3, '',
-        '用户重置密码', NULL, NULL, 'UserResetPassword', NULL, 0, 0, 1, NULL, NULL, NULL, 100, 1, NULL, 0, 'admin',
-        NOW(), NULL, '2025-06-02 21:02:25', 0);
-INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect,
-                      ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark,
-                      version, create_by, create_time, update_by, update_time, is_delete)
-VALUES (1929522360138858496, 1695716465233100800, '1580826339636596737-1695716465233100800-1929522360138858496', 3, '',
-        '用户注销', NULL, NULL, 'UserLogOut', NULL, 0, 0, 1, NULL, NULL, NULL, 100, 1, NULL, 0, 'admin', NOW(), NULL,
-        '2025-06-02 21:02:25', 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1580826339636596737, 0, '1580826339636596737', 1, NULL, '系统管理', '/system', 'LAYOUT', 'System', '', 0, NULL, 1, NULL, 0, 'ant-design:account-book-outlined', 20, 1, '', 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1580831598392037378, 1580826339636596737, '1580826339636596737-1580831598392037378', 2, NULL, '角色管理', '/system/role', 'system/role/index', 'Role', '', 0, 1, 1, '', 0, 'ant-design:mac-command-outlined', 20, 1, '', 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1580831864789061633, 1580826339636596737, '1580826339636596737-1580831864789061633', 2, NULL, '菜单管理', '/system/menu', 'system/menu/index', 'Menu', '', 0, 1, 1, '', 0, 'ion:layers-outline', 30, 1, '', 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1693466547550445570, 0, '1693466547550445570', 1, NULL, '主页', '/home', 'LAYOUT', 'LAYOUT', '/home/workbench', 0, NULL, 1, NULL, NULL, 'ion:grid-outline', 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1693497514038157313, 1693466547550445570, '1693466547550445570-1693497514038157313', 2, NULL, '工作台', '/home/workbench', 'dashboard/workbench/index', 'Workbench', NULL, 0, 1, 0, '/dashboard', NULL, 'ant-design:home-outlined', 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1694016595833151489, 1580831864789061633, '1580826339636596737-1580831864789061633-1694016595833151489', 3, 'system:menu:save', '菜单新增', NULL, NULL, 'MenuAdd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 20, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1695715629383811072, 1580831864789061633, '1580826339636596737-1580831864789061633-1695715629383811072', 3, 'system:menu:list', '菜单查询', NULL, NULL, 'MenuSelect', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1695716465233100800, 1580826339636596737, '1580826339636596737-1695716465233100800', 2, NULL, '用户管理', '/system/user', 'system/user/index', 'User', NULL, 0, 0, 1, '', NULL, 'ant-design:ant-design-outlined', 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1697278317306052608, 1580831864789061633, '1580826339636596737-1580831864789061633-1697278317306052608', 3, 'system:menu:update', '菜单修改', NULL, NULL, 'MenuEdit', NULL, NULL, NULL, 1, NULL, NULL, NULL, 50, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1697420336175251456, 1580831864789061633, '1580826339636596737-1580831864789061633-1697420336175251456', 3, 'system:menu:remove', '菜单删除', NULL, NULL, 'MenuDel', NULL, NULL, NULL, 1, NULL, NULL, '', 60, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1697491896345034752, 1695716465233100800, '1580826339636596737-1695716465233100800-1697491896345034752', 3, 'system:user:page', '用户查询', NULL, NULL, 'UserSelect', NULL, NULL, NULL, 1, NULL, NULL, NULL, 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1697530405667733504, 1695716465233100800, '1580826339636596737-1695716465233100800-1697530405667733504', 3, 'system:user:save', '用户新增', NULL, NULL, 'UserAdd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 20, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1697533041406115840, 1695716465233100800, '1580826339636596737-1695716465233100800-1697533041406115840', 3, 'system:user:update', '用户修改', NULL, NULL, 'UserEdit', NULL, NULL, NULL, NULL, NULL, NULL, '', 70, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1697533206095462400, 1695716465233100800, '1580826339636596737-1695716465233100800-1697533206095462400', 3, 'system:user:remove', '用户删除', NULL, NULL, 'UserDel', NULL, NULL, NULL, NULL, NULL, NULL, '', 100, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1697533570328821760, 1580831598392037378, '1580826339636596737-1580831598392037378-1697533570328821760', 3, 'system:role:page,system:role:list', '角色查询', NULL, NULL, 'RoleSelect', NULL, NULL, NULL, 1, NULL, NULL, NULL, 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1697534055433633792, 1580831598392037378, '1580826339636596737-1580831598392037378-1697534055433633792', 3, 'system:role:save', '角色新增', NULL, NULL, 'RoleAdd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 20, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1697534315883134976, 1580831598392037378, '1580826339636596737-1580831598392037378-1697534315883134976', 3, 'system:role:update', '角色修改', NULL, NULL, 'RoleEdit', NULL, NULL, NULL, NULL, NULL, NULL, '', 40, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1697534451833110528, 1580831598392037378, '1580826339636596737-1580831598392037378-1697534451833110528', 3, 'system:user:remove', '角色删除', NULL, NULL, 'RoleDel', NULL, NULL, NULL, NULL, NULL, NULL, '', 50, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1698536628588380160, 1580826339636596737, '1580826339636596737-1698536628588380160', 2, NULL, '用户详情', '/system/user/userDetail/:id', 'system/user/UserDetail', 'UserDetail', NULL, 0, 1, 0, '/system/user', NULL, 'ant-design:account-book-outlined', 9, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1698586399516655616, 0, '1698586399516655616', 1, NULL, '外部页面', '/link', 'LAYOUT', 'Link', NULL, 0, NULL, 1, NULL, NULL, 'ant-design:link-outlined', 50, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1698587434666688512, 1698586399516655616, '1698586399516655616-1698587434666688512', 2, NULL, 'AntDesignVue(外链)', 'https://www.antdv.com/components/overview-cn', NULL, NULL, '', 1, 1, 1, NULL, NULL, 'ant-design:linkedin-outlined', 20, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1744651429282316288, 0, '1744651429282316288', 1, NULL, '映射管理', '/intranet', 'LAYOUT', 'Intranet', NULL, 0, NULL, 1, NULL, NULL, 'ant-design:coffee-outlined', 40, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1744651827317571584, 1744651429282316288, '1744651429282316288-1744651827317571584', 2, NULL, '客户端管理', '/intranet/client', 'intranet/client/index', 'Client', NULL, 0, 1, 1, NULL, NULL, 'ant-design:check-square-outlined', 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1745443976514633728, 1744651429282316288, '1744651429282316288-1745443976514633728', 2, NULL, '端口管理', '/intranet/port', 'intranet/port/index', 'Port', NULL, 0, 1, 1, NULL, NULL, 'ant-design:ant-design-outlined', 20, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1746454367088672768, 1744651827317571584, '1744651429282316288-1744651827317571584-1746454367088672768', 3, 'intranet:client:list,intranet:client:page', '客户端查询', NULL, NULL, 'ClientSelect', NULL, NULL, NULL, 1, NULL, NULL, NULL, 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1746456609858519040, 1698586399516655616, '1698586399516655616-1746456609858519040', 2, NULL, 'AntDesignVue(内嵌)', 'antd', NULL, 'Antd', 'https://www.antdv.com/components/overview-cn', 1, 1, 1, NULL, NULL, 'ant-design:search-outlined', 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1746496929841283072, 1580826339636596737, '1580826339636596737-1746496929841283072', 2, NULL, '字典管理', '/dict', 'system/dict/index', 'Dict', NULL, 0, 1, 1, NULL, NULL, 'ant-design:hdd-filled', 50, 1, NULL, 1, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1746497347082256384, 1746496929841283072, '1580826339636596737-1746496929841283072-1746497347082256384', 3, 'system:dict:page,system:dict-label:find', '字典查询', NULL, NULL, 'DictSelect', NULL, NULL, NULL, 1, NULL, NULL, '', 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1748327614482743296, 1746496929841283072, '1580826339636596737-1746496929841283072-1748327614482743296', 3, 'system:dict:save', '字典新增', NULL, NULL, 'DictAdd', NULL, NULL, NULL, 1, NULL, NULL, NULL, 20, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1748328477867638784, 1746496929841283072, '1580826339636596737-1746496929841283072-1748328477867638784', 3, 'system:dict:update', '字典新增', NULL, NULL, 'DictEdit', NULL, NULL, NULL, 1, NULL, NULL, '', 50, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1748328739021783040, 1746496929841283072, '1580826339636596737-1746496929841283072-1748328739021783040', 3, 'system:dict:remove', '字典删除', NULL, NULL, 'DictDel', NULL, NULL, NULL, 1, NULL, NULL, '', 60, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1748330810697580544, 1580831864789061633, '1580826339636596737-1580831864789061633-1748330810697580544', 3, 'system:menu:save', '菜单复制新增', NULL, NULL, 'MenuCopy', NULL, NULL, NULL, 1, NULL, NULL, NULL, 30, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1748331110812614656, 1744651827317571584, '1744651429282316288-1744651827317571584-1748331110812614656', 3, 'intranet:client:save', '客户端新增', NULL, NULL, 'ClientAdd', NULL, NULL, NULL, 1, NULL, NULL, NULL, 20, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1748331197211082752, 1744651827317571584, '1744651429282316288-1744651827317571584-1748331197211082752', 3, 'intranet:client:update', '客户端修改', NULL, NULL, 'ClientEdit', NULL, NULL, NULL, 1, NULL, NULL, '', 40, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1748331292065267712, 1744651827317571584, '1744651429282316288-1744651827317571584-1748331292065267712', 3, 'intranet:client:remove', '客户端删除', NULL, NULL, 'ClientDel', NULL, NULL, NULL, 1, NULL, NULL, '', 50, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1748331503634350080, 1745443976514633728, '1744651429282316288-1745443976514633728-1748331503634350080', 3, 'intranet:port:page', '端口查询', NULL, NULL, 'PortSelect', NULL, NULL, NULL, 1, NULL, NULL, NULL, 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1748331594143236096, 1745443976514633728, '1744651429282316288-1745443976514633728-1748331594143236096', 3, 'intranet:port:save', '端口新增', NULL, NULL, 'PortAdd', NULL, NULL, NULL, 1, NULL, NULL, NULL, 20, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1748331711571165184, 1745443976514633728, '1744651429282316288-1745443976514633728-1748331711571165184', 3, 'intranet:port:save', '端口复制', NULL, NULL, 'PortCopy', NULL, NULL, NULL, 1, NULL, NULL, '', 40, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1748331806605705216, 1745443976514633728, '1744651429282316288-1745443976514633728-1748331806605705216', 3, 'intranet:port:remove', '端口删除', NULL, NULL, 'PortDel', NULL, NULL, NULL, 1, NULL, NULL, '', 60, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1748340313358860288, 1745443976514633728, '1744651429282316288-1745443976514633728-1748340313358860288', 3, 'intranet:port:update', '端口修改', NULL, NULL, 'PortEdit', NULL, NULL, NULL, 1, NULL, NULL, '', 50, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1767096858825457664, 1693466547550445570, '1693466547550445570-1767096858825457664', 2, NULL, '个人中心', '/user/profile', 'system/user/profile/index', 'Profile', NULL, 0, 1, 0, '/dashboard', NULL, 'ant-design:user-outlined', 20, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1771802307621552128, 1767096858825457664, '1693466547550445570-1767096858825457664-1771802307621552128', 3, 'system:user:find-self-detail,system:user:find-self-info,system:user:modify-self-passwordf,system:menu:route,system:dict:list,system:user:updateForSelf,system:dict:flush', '个人中心权限', NULL, NULL, 'UserPerm', NULL, NULL, NULL, 1, NULL, NULL, '', 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1773940982715252736, 1580826339636596737, '1580826339636596737-1773940982715252736', 2, NULL, '计划任务', '/system/task', 'system/task/index', 'Task', NULL, 0, 1, 1, NULL, NULL, 'ant-design:loading-3-quarters-outlined', 60, 1, NULL, 1, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1782674731338563584, 0, '1782674731338563584', 1, NULL, '资源管理', '/storage', 'LAYOUT', 'Storage', NULL, 0, 0, 1, NULL, NULL, 'ant-design:file-zip-twotone', 30, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1782675070078943232, 1782674731338563584, '1782674731338563584-1782675070078943232', 2, NULL, '文件管理', '/storage/file', 'storage/file/index', 'File', NULL, 0, 0, 1, '', NULL, 'ant-design:file-text-twotone', 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1787445934443986944, 1580826339636596737, '1580826339636596737-1787445934443986944', 1, NULL, '日志', '/system/log', 'LAYOUT', 'Log', NULL, 0, 0, 1, NULL, NULL, 'ant-design:logout-outlined', 70, 1, NULL, 1, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1787446556790620160, 1787445934443986944, '1580826339636596737-1787445934443986944-1787446556790620160', 2, NULL, '操作日志', '/system/log/oplog', 'system/oplog/index', 'OpLog', NULL, 0, 1, 1, '', NULL, 'ant-design:history-outlined', 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1787447065161236480, 1787445934443986944, '1580826339636596737-1787445934443986944-1787447065161236480', 2, NULL, '任务日志', '/system/log/tasklog', 'system/tasklog/index', 'TaskLog', NULL, 0, 1, 1, '', NULL, 'ant-design:login-outlined', 20, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1789206090173382656, 1695716465233100800, '1580826339636596737-1695716465233100800-1789206090173382656', 3, 'system:user:lock', '用户锁定', NULL, NULL, 'UserLock', NULL, 0, 0, 1, NULL, NULL, '', 30, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1789206190429831168, 1695716465233100800, '1580826339636596737-1695716465233100800-1789206190429831168', 3, 'system:user:unLock', '用户解锁', NULL, NULL, 'UserUnLock', NULL, 0, 0, 1, NULL, NULL, '', 40, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1789206306523971584, 1695716465233100800, '1580826339636596737-1695716465233100800-1789206306523971584', 3, 'system:user:import,system:user:download-import-template', '用户导入', NULL, NULL, 'UserImport', NULL, 0, 0, 1, NULL, NULL, '', 50, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1789206604688654336, 1695716465233100800, '1580826339636596737-1695716465233100800-1789206604688654336', 3, 'system:user:export', '用户导出', NULL, NULL, 'UserExport', NULL, 0, 0, 1, NULL, NULL, '', 60, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790267397697961984, 1580831598392037378, '1580826339636596737-1580831598392037378-1790267397697961984', 3, 'system:role:export', '角色导出', NULL, NULL, 'RoleExport', NULL, 0, 0, 1, NULL, NULL, '', 30, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790268328569208832, 1746496929841283072, '1580826339636596737-1746496929841283072-1790268328569208832', 3, 'system:dict:flush', '字典刷新', NULL, NULL, 'DictFlush', NULL, 0, 0, 1, NULL, NULL, NULL, 30, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790268772053942272, 1746496929841283072, '1580826339636596737-1746496929841283072-1790268772053942272', 3, 'system:dict:export', '字典导出', NULL, NULL, 'DictExport', NULL, 0, 0, 1, NULL, NULL, '', 40, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790269142499065856, 1746496929841283072, '1580826339636596737-1746496929841283072-1790269142499065856', 3, 'system:dict-label:save', '字典标签新增', NULL, NULL, 'DictLabelAdd', NULL, 0, 0, 1, NULL, NULL, '', 70, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790269430693888000, 1746496929841283072, '1580826339636596737-1746496929841283072-1790269430693888000', 3, 'system:dict-label:update', '字典标签修改', NULL, NULL, 'DictLabelEdit', NULL, 0, 0, 1, NULL, NULL, NULL, 80, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790269739432411136, 1746496929841283072, '1580826339636596737-1746496929841283072-1790269739432411136', 3, 'system:dict-label:remove', '字典标签删除', NULL, NULL, 'DictLabelDel', NULL, 0, 0, 1, NULL, NULL, '', 90, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790270033570562048, 1773940982715252736, '1580826339636596737-1773940982715252736-1790270033570562048', 3, 'system:task:page', '计划任务查询', NULL, NULL, 'TaskSelect', NULL, 0, 0, 1, NULL, NULL, '', 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790270637776830464, 1773940982715252736, '1580826339636596737-1773940982715252736-1790270637776830464', 3, 'system:task:save', '计划任务新增', NULL, NULL, 'TaskAdd', NULL, 0, 0, 1, NULL, NULL, '', 20, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790270795960811520, 1773940982715252736, '1580826339636596737-1773940982715252736-1790270795960811520', 3, 'system:task:export', '计划任务导出', NULL, NULL, 'TaskExport', NULL, 0, 0, 1, NULL, NULL, '', 30, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790271254167552000, 1773940982715252736, '1580826339636596737-1773940982715252736-1790271254167552000', 3, 'system:task:update', '计划任务修改', NULL, NULL, 'TaskEdit', NULL, 0, 0, 1, NULL, NULL, NULL, 40, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790271360166002688, 1773940982715252736, '1580826339636596737-1773940982715252736-1790271360166002688', 3, 'system:task:run-once', '任务执行一次', NULL, NULL, 'TaskRunOnce', NULL, 0, 0, 1, NULL, NULL, '', 50, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790271627208949760, 1773940982715252736, '1580826339636596737-1773940982715252736-1790271627208949760', 3, '', '查看日志', NULL, NULL, 'GoTaskLog', NULL, 0, 0, 1, NULL, NULL, NULL, 60, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790271832700485632, 1773940982715252736, '1580826339636596737-1773940982715252736-1790271832700485632', 3, 'system:task:resume', '计划任务启动', NULL, NULL, 'TaskResume', NULL, 0, 0, 1, NULL, NULL, NULL, 70, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790271929832177664, 1773940982715252736, '1580826339636596737-1773940982715252736-1790271929832177664', 3, 'system:task:pause', '计划任务暂停', NULL, NULL, 'TaskPause', NULL, 0, 0, 1, NULL, NULL, '', 80, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790272097415593984, 1773940982715252736, '1580826339636596737-1773940982715252736-1790272097415593984', 3, 'system:task:remove', '计划任务删除', NULL, NULL, 'TaskDel', NULL, 0, 0, 1, NULL, NULL, NULL, 90, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790272321785692160, 1782675070078943232, '1782674731338563584-1782675070078943232-1790272321785692160', 3, 'storage:file:page', '文件查询', NULL, NULL, 'FileSelect', NULL, 0, 0, 1, NULL, NULL, '', 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790272484616962048, 1782675070078943232, '1782674731338563584-1782675070078943232-1790272484616962048', 3, 'storage:file:upload,storage:file:upload-chunk,storage:file:compose-chunk', '文件上传', NULL, NULL, 'FileUpload', NULL, 0, 0, 1, NULL, NULL, NULL, 20, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790273217261207552, 1782675070078943232, '1782674731338563584-1782675070078943232-1790273217261207552', 3, 'storage:file:export', '文件信息导出', NULL, NULL, 'FileExport', NULL, 0, 0, 1, NULL, NULL, '', 30, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790274085394055168, 1782675070078943232, '1782674731338563584-1782675070078943232-1790274085394055168', 3, 'storage:file:downloadById,storage:file:presigned', '文件下载', NULL, NULL, 'FileDownload', NULL, 0, 0, 1, NULL, NULL, '', 40, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790274176934739968, 1782675070078943232, '1782674731338563584-1782675070078943232-1790274176934739968', 3, 'storage:file:upload,storage:file:upload-chunk,storage:file:compose-chunk', '文件断点续传', NULL, NULL, 'FileContinueUpload', NULL, 0, 0, 1, NULL, NULL, '', 50, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790274507466866688, 1782675070078943232, '1782674731338563584-1782675070078943232-1790274507466866688', 3, 'storage:file:enable', '文件启用', NULL, NULL, 'FileEnable', NULL, 0, 0, 1, NULL, NULL, NULL, 60, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790274573187416064, 1782675070078943232, '1782674731338563584-1782675070078943232-1790274573187416064', 3, 'storage:file:disable', '文件停用', NULL, NULL, 'FileDisable', NULL, 0, 0, 1, NULL, NULL, '', 70, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790274714891976704, 1782675070078943232, '1782674731338563584-1782675070078943232-1790274714891976704', 3, 'storage:file:cancel', '文件作废', NULL, NULL, 'FileCancel', NULL, 0, 0, 1, NULL, NULL, NULL, 80, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790274881124827136, 1782675070078943232, '1782674731338563584-1782675070078943232-1790274881124827136', 3, 'storage:file:remove', '文件删除', NULL, NULL, 'FileDel', NULL, 0, 0, 1, NULL, NULL, NULL, 80, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790275265968996352, 1787446556790620160, '1580826339636596737-1787445934443986944-1787446556790620160-1790275265968996352', 3, 'system:op-log:page', '操作日志查询', NULL, NULL, 'OpLogSelect', NULL, 0, 0, 1, NULL, NULL, NULL, 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790275396168581120, 1787446556790620160, '1580826339636596737-1787445934443986944-1787446556790620160-1790275396168581120', 3, 'system:op-log:export', '操作日志导出', NULL, NULL, 'OpLogExport', NULL, 0, 0, 1, NULL, NULL, '', 20, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790275535696297984, 1787446556790620160, '1580826339636596737-1787445934443986944-1787446556790620160-1790275535696297984', 3, '', '操作日志查看详情', NULL, NULL, 'OpLogDetail', NULL, 0, 0, 1, NULL, NULL, NULL, 30, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790275976295350272, 1787447065161236480, '1580826339636596737-1787445934443986944-1787447065161236480-1790275976295350272', 3, 'system:taskLog:page', '任务日志查询', NULL, NULL, 'TaskLogSelect', NULL, 0, 0, 1, NULL, NULL, NULL, 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790276090334281728, 1787447065161236480, '1580826339636596737-1787445934443986944-1787447065161236480-1790276090334281728', 3, 'system:taskLog:export', '任务日志导出', NULL, NULL, 'TaskLogExport', NULL, 0, 0, 1, NULL, NULL, NULL, 20, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790276206780743680, 1787447065161236480, '1580826339636596737-1787445934443986944-1787447065161236480-1790276206780743680', 3, '', '任务日志查看详情', NULL, NULL, 'TaskLogDetail', NULL, 0, 0, 1, NULL, NULL, NULL, 30, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790276580069605376, 1744651827317571584, '1744651429282316288-1744651827317571584-1790276580069605376', 3, 'intranet:client:export', '客户端导出', NULL, NULL, 'ClientExport', NULL, 0, 0, 1, NULL, NULL, NULL, 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790277526426222592, 1745443976514633728, '1744651429282316288-1745443976514633728-1790277526426222592', 3, 'intranet:port:export', '端口导出', NULL, NULL, 'PortExport', NULL, 0, 0, 1, NULL, NULL, NULL, 30, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1790917847682121728, 1744651429282316288, '1744651429282316288-1790917847682121728', 2, NULL, '流量统计', '/intranet/flow-monitor', 'intranet/flow-monitor/index', 'FlowMonitor', NULL, 0, 0, 1, '', NULL, 'ant-design:file-excel-outlined', 30, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1929521914242400256, 1695716465233100800, '1580826339636596737-1695716465233100800-1929521914242400256', 3, '', '用户修改密码', NULL, NULL, 'UserEditPassword', NULL, 0, 0, 1, NULL, NULL, '', 100, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1929522281172697088, 1695716465233100800, '1580826339636596737-1695716465233100800-1929522281172697088', 3, '', '用户重置密码', NULL, NULL, 'UserResetPassword', NULL, 0, 0, 1, NULL, NULL, NULL, 100, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1929522360138858496, 1695716465233100800, '1580826339636596737-1695716465233100800-1929522360138858496', 3, '', '用户注销', NULL, NULL, 'UserLogOut', NULL, 0, 0, 1, NULL, NULL, NULL, 100, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1934175912341798912, 1580826339636596737, '1580826339636596737-1934175912341798912', 2, NULL, '配置管理', '/system/setting', 'system/setting/index', 'Setting', NULL, 0, 0, 1, '', NULL, 'ant-design:setting-outlined', 40, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1934176425720414208, 1934175912341798912, '1580826339636596737-1934175912341798912-1934176425720414208', 3, 'system:setting:page', '配置查询', NULL, NULL, 'SettingSelect', NULL, 0, 0, 1, NULL, NULL, NULL, 10, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1934176670181228544, 1934175912341798912, '1580826339636596737-1934175912341798912-1934176670181228544', 3, 'system:setting:save', '配置新增', NULL, NULL, 'SettingAdd', NULL, 0, 0, 1, NULL, NULL, '', 20, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1934177068728188928, 1934175912341798912, '1580826339636596737-1934175912341798912-1934177068728188928', 3, 'system:setting:modify', '配置修改', NULL, NULL, 'SettingEdit', NULL, 0, 0, 1, NULL, NULL, '', 40, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1934177217609203712, 1934175912341798912, '1580826339636596737-1934175912341798912-1934177217609203712', 3, 'system:setting:remove', '配置删除', NULL, NULL, 'SettingDel', NULL, 0, 0, 1, NULL, NULL, '', 30, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
+INSERT INTO sys_menu (id, parent_id, `structure`, `type`, perms, name, `path`, component, component_name, redirect, ext_flag, keep_alive, invisible, current_active_menu, closable, icon, sort, status, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1934177440544849920, 1934175912341798912, '1580826339636596737-1934175912341798912-1934177440544849920', 3, 'system:setting:export', '配置导出', NULL, NULL, 'SettingExport', NULL, 0, 0, 1, NULL, NULL, '', 50, 1, NULL, 0, 'admin', '2025-06-15 16:38:12', NULL, NULL, 0);
 
 DROP TABLE IF EXISTS `sys_op_log`;
 CREATE TABLE `sys_op_log`
@@ -951,3 +518,19 @@ CREATE TABLE `sys_task_log`
     `err_message`  text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '异常信息',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='计划任务日志';
+
+DROP TABLE IF EXISTS `sys_setting`;
+CREATE TABLE `sys_setting` (
+  `id` bigint NOT NULL COMMENT '主键编号',
+  `key` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'key',
+  `value` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'value',
+  `sort` int DEFAULT NULL COMMENT '排序',
+  `remark` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注信息',
+  `version` bigint DEFAULT '0' COMMENT '乐观锁;控制版本更改',
+  `create_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '创建人',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '修改人',
+  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  `is_delete` tinyint DEFAULT '0' COMMENT '删除标识;0-未删除,1-已删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='配置信息';

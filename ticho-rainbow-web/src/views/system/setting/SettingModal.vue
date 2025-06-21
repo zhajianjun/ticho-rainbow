@@ -15,15 +15,15 @@
   import { BasicForm, useForm } from '@/components/Form';
   import { getModalFormColumns } from './setting.data';
   import { modifySetting, saveSetting } from '@/api/system/setting';
-  import { SettingModifyComman, SettingSaveCommand } from '@/api/system/model/settingModel';
+  import { SettingModifyCommand, SettingSaveCommand } from '@/api/system/model/settingModel';
 
   export default defineComponent({
-    name: 'PortModal',
+    name: 'SettingModal',
     components: { BasicModal, BasicForm },
     emits: ['success', 'register'],
     setup(_, { emit }) {
-      const modalType = ref(1);
-      const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
+      const isUpdate = ref(true);
+      const [registerForm, { setFieldsValue, resetFields, validate, updateSchema }] = useForm({
         labelWidth: 120,
         baseColProps: { span: 24 },
         schemas: getModalFormColumns(),
@@ -36,21 +36,27 @@
       const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
         await resetFields();
         setModalProps({ confirmLoading: false });
-        modalType.value = data?.modalType;
-        if (unref(modalType) !== 1) {
+        isUpdate.value = !!data?.isUpdate;
+        if (unref(isUpdate)) {
           await setFieldsValue({
             ...data.record,
           });
         }
+        await updateSchema([
+          {
+            field: 'key',
+            dynamicDisabled: unref(isUpdate),
+          },
+        ]);
       });
 
-      const getTitle = computed(() => (unref(modalType) !== 2 ? '新增配置信息' : '编辑配置信息'));
+      const getTitle = computed(() => (!unref(isUpdate) ? '新增配置信息' : '编辑配置信息'));
 
       async function handleSubmit() {
         try {
           setModalProps({ confirmLoading: true });
-          if (unref(modalType) === 2) {
-            const values = (await validate()) as SettingModifyComman;
+          if (unref(isUpdate)) {
+            const values = (await validate()) as SettingModifyCommand;
             await modifySetting(values);
           } else {
             const values = (await validate()) as SettingSaveCommand;

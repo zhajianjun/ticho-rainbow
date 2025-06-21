@@ -115,7 +115,6 @@ export const formSchema: FormSchema[] = [
       },
     },
   },
-
   {
     field: 'sort',
     label: '排序',

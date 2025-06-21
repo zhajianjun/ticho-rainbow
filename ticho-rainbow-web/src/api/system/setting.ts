@@ -3,7 +3,7 @@ import { RetryRequest } from '#/axios';
 import { VersionModifyCommand } from '@/api/system/model/baseModel';
 import {
   SettingDTO,
-  SettingModifyComman,
+  SettingModifyCommand,
   SettingQuery,
   SettingSaveCommand,
 } from '@/api/system/model/settingModel';
@@ -33,7 +33,7 @@ export function saveSetting(params: SettingSaveCommand) {
   );
 }
 
-export function modifySetting(params: SettingModifyComman) {
+export function modifySetting(params: SettingModifyCommand) {
   return defHttp.put<any>(
     { url: Api.Setting, params },
     { successMessageMode: 'message', errorMessageMode: 'message' },
@@ -47,7 +47,7 @@ export function delSetting(params: VersionModifyCommand) {
   );
 }
 
-export function expSetting(params?: SettingQuery) {
+export function exportSetting(params?: SettingQuery) {
   return defHttp.get<any>(
     { url: Api.SettingExport, params, responseType: 'blob' },
     {

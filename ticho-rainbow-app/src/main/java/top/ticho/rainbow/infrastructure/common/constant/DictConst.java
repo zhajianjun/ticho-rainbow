@@ -1,11 +1,15 @@
 package top.ticho.rainbow.infrastructure.common.constant;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * 字典静态变量
  *
  * @author zhajianjun
  * @date 2024-05-10 18:30
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DictConst {
 
     public static final String COMMON_STATUS = "commonStatus";

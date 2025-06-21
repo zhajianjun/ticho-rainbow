@@ -18,10 +18,6 @@ public class SettingModifyCommand {
     /** 主键编号 */
     @NotNull(message = "主键编号不能为空")
     private Long id;
-    /** key */
-    @NotBlank(message = "key不能为空")
-    @Size(max = 32, message = "key最大不能超过｛max｝个字符")
-    private String key;
     /** value */
     @NotBlank(message = "value不能为空")
     @Size(max = 100, message = "value最大不能超过｛max｝个字符")

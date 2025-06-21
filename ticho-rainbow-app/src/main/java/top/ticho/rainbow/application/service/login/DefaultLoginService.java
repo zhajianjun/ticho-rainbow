@@ -6,15 +6,20 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import top.ticho.rainbow.application.executor.UserExecutor;
 import top.ticho.rainbow.domain.entity.Role;
+import top.ticho.rainbow.domain.entity.Setting;
 import top.ticho.rainbow.domain.entity.User;
 import top.ticho.rainbow.domain.repository.RoleRepository;
+import top.ticho.rainbow.domain.repository.SettingRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
+import top.ticho.rainbow.infrastructure.common.constant.LoginConst;
 import top.ticho.rainbow.infrastructure.common.dto.SecurityUser;
+import top.ticho.rainbow.infrastructure.common.enums.LoginMode;
 import top.ticho.rainbow.infrastructure.common.enums.UserStatus;
 import top.ticho.rainbow.interfaces.command.LoginCommand;
 import top.ticho.starter.security.dto.TiToken;
 import top.ticho.starter.security.service.impl.AbstractLoginService;
+import top.ticho.starter.view.enums.TiBizErrorCode;
 import top.ticho.starter.view.enums.TiHttpErrorCode;
 import top.ticho.starter.view.util.TiAssert;
 
@@ -33,6 +38,7 @@ public class DefaultLoginService extends AbstractLoginService {
     private final UserRepository userRepository;
     private final UserRoleRepository userRoleRepository;
     private final RoleRepository roleRepository;
+    private final SettingRepository settingRepository;
 
     @Override
     public SecurityUser load(String account) {
@@ -63,8 +69,22 @@ public class DefaultLoginService extends AbstractLoginService {
     }
 
     public TiToken token(LoginCommand loginCommand) {
-        userExecutor.imgCodeValid(loginCommand.getImgKey(), loginCommand.getImgCode());
+        if (!LoginMode.NONE.getCode().equals(loginMode())) {
+            TiAssert.isNotBlank(loginCommand.getImgKey(), TiBizErrorCode.PARAM_ERROR, "验证码秘钥不能为空");
+            TiAssert.isNotBlank(loginCommand.getImgCode(), TiBizErrorCode.PARAM_ERROR, "验证码不能为空");
+            userExecutor.imgCodeValid(loginCommand.getImgKey(), loginCommand.getImgCode());
+        }
         return super.token(loginCommand);
+    }
+
+    public String loginMode() {
+        List<Setting> settings = settingRepository.cacheList();
+        return settings
+            .stream()
+            .filter(x -> LoginConst.LOGIN_MODE_KEY.equals(x.getKey()))
+            .map(Setting::getValue)
+            .findFirst()
+            .orElse(null);
     }
 
 }

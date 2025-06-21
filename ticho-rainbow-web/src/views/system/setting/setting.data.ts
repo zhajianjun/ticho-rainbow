@@ -6,31 +6,49 @@ export function getTableColumns(): BasicColumn[] {
       title: 'key',
       dataIndex: 'key',
       resizable: true,
-      width: 50,
+      width: 80,
     },
     {
       title: 'value',
       dataIndex: 'value',
       resizable: true,
-      width: 120,
+      width: 80,
     },
     {
       title: '排序',
       dataIndex: 'sort',
       resizable: true,
-      width: 50,
+      width: 80,
     },
     {
       title: '备注信息',
       dataIndex: 'remark',
       resizable: true,
-      width: 100,
+      width: 80,
+    },
+    {
+      title: '创建人',
+      dataIndex: 'createBy',
+      resizable: true,
+      width: 80,
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
       resizable: true,
-      width: 100,
+      width: 80,
+    },
+    {
+      title: '修改人',
+      dataIndex: 'updateBy',
+      resizable: true,
+      width: 80,
+    },
+    {
+      title: '修改时间',
+      dataIndex: 'updateTime',
+      resizable: true,
+      width: 80,
     },
   ];
 }
@@ -38,8 +56,8 @@ export function getTableColumns(): BasicColumn[] {
 export function getSearchColumns(): FormSchema[] {
   return [
     {
-      field: `key`,
       label: `key`,
+      field: `key`,
       component: 'Input',
       colProps: { span: 8 },
       componentProps: {
@@ -47,8 +65,8 @@ export function getSearchColumns(): FormSchema[] {
       },
     },
     {
-      field: `value`,
       label: `value`,
+      field: `value`,
       component: 'Input',
       colProps: { span: 8 },
       componentProps: {
@@ -56,8 +74,8 @@ export function getSearchColumns(): FormSchema[] {
       },
     },
     {
-      field: `remark`,
       label: `备注信息`,
+      field: `remark`,
       component: 'Input',
       colProps: { span: 8 },
       componentProps: {
@@ -70,14 +88,14 @@ export function getSearchColumns(): FormSchema[] {
 export function getModalFormColumns(): FormSchema[] {
   return [
     {
+      label: `主键标识`,
       field: `id`,
       component: 'Input',
-      label: `主键标识`,
-      ifShow: false,
+      show: false,
     },
     {
-      field: `key`,
       label: `key`,
+      field: `key`,
       component: 'Input',
       colProps: { span: 24 },
       componentProps: {
@@ -85,8 +103,8 @@ export function getModalFormColumns(): FormSchema[] {
       },
     },
     {
-      field: `value`,
       label: `value`,
+      field: `value`,
       component: 'Input',
       colProps: { span: 24 },
       componentProps: {
@@ -94,8 +112,8 @@ export function getModalFormColumns(): FormSchema[] {
       },
     },
     {
-      field: `sort`,
-      label: `排序`,
+      field: 'sort',
+      label: '排序',
       component: 'InputNumber',
       defaultValue: 10,
       componentProps: {
@@ -104,9 +122,7 @@ export function getModalFormColumns(): FormSchema[] {
         max: 65535,
         placeholder: '请输入排序',
       },
-      colProps: {
-        span: 24,
-      },
+      required: true,
     },
     {
       field: `remark`,
@@ -124,8 +140,8 @@ export function getModalFormColumns(): FormSchema[] {
       },
     },
     {
-      field: `version`,
       label: `版本号`,
+      field: `version`,
       component: 'Input',
       show: false,
     },

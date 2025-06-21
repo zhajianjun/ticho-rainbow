@@ -157,7 +157,6 @@ export function useFormRules(formData?: Recordable) {
         return {
           account: accountFormRule,
           password: passwordFormRule,
-          imgCode: emailCodeFormRule,
         };
     }
   });
