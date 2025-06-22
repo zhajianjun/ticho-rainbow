@@ -84,6 +84,10 @@ public class IntranetExecutor {
         List<String> accessKeys = dtos.stream().map(Client::getAccessKey).collect(Collectors.toList());
         Map<String, List<PortInfo>> protMap = getPortMap(accessKeys, portAssembler::toInfo);
         dtos.forEach(client -> {
+            Optional<ClientInfo> clientInfoOpt = serverHandler.findByAccessKey(client.getAccessKey());
+            if (clientInfoOpt.isEmpty()) {
+                serverHandler.create(client.getAccessKey(), client.getName());
+            }
             List<PortInfo> ports = protMap.getOrDefault(client.getAccessKey(), Collections.emptyList());
             Map<Integer, PortInfo> collect = ports.stream().collect(Collectors.toMap(PortInfo::getPort, Function.identity(), (v1, v2) -> v1, LinkedHashMap::new));
             serverHandler.flush(client.getAccessKey(), collect);
