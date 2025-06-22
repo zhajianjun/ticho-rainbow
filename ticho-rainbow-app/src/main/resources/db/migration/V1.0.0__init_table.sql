@@ -11,9 +11,9 @@ CREATE TABLE `sys_client`
     `remark`      varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注信息',
     `version`     bigint                                                        DEFAULT '0' COMMENT '版本号',
     `create_by`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '创建人',
-    `create_time` datetime                                                      DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` datetime                                                      DEFAULT NULL COMMENT '创建时间',
     `update_by`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '修改人',
-    `update_time` datetime                                                      DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    `update_time` datetime                                                      DEFAULT NULL COMMENT '修改时间',
     `is_delete`   tinyint                                                       DEFAULT '0' COMMENT '删除标识;0-未删除,1-已删除',
     PRIMARY KEY (`id`),
     KEY           `access_key_index` (`access_key`),
@@ -34,9 +34,9 @@ CREATE TABLE `sys_dict`
     `remark`      varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注信息',
     `version`     bigint                                                        DEFAULT '0' COMMENT '版本号',
     `create_by`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '创建人',
-    `create_time` datetime                                                      DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` datetime                                                      DEFAULT NULL COMMENT '创建时间',
     `update_by`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '修改人',
-    `update_time` datetime                                                      DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    `update_time` datetime                                                      DEFAULT NULL COMMENT '修改时间',
     `is_delete`   tinyint                                                       DEFAULT '0' COMMENT '删除标识;0-未删除,1-已删除',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='字典';
@@ -70,9 +70,9 @@ CREATE TABLE `sys_dict_label`
     `remark`      varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注信息',
     `version`     bigint                                                        DEFAULT '0' COMMENT '版本号',
     `create_by`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '创建人',
-    `create_time` datetime                                                      DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` datetime                                                      DEFAULT NULL COMMENT '创建时间',
     `update_by`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '修改人',
-    `update_time` datetime                                                      DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    `update_time` datetime                                                      DEFAULT NULL COMMENT '修改时间',
     `is_delete`   tinyint                                                       DEFAULT '0' COMMENT '删除标识;0-未删除,1-已删除',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='字典标签';
@@ -183,9 +183,9 @@ CREATE TABLE `sys_file_info`
     `remark`             varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注信息',
     `version`            bigint                                                        DEFAULT '0' COMMENT '版本号',
     `create_by`          varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '创建人',
-    `create_time`        datetime                                                      DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time`        datetime                                                      DEFAULT NULL COMMENT '创建时间',
     `update_by`          varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '修改人',
-    `update_time`        datetime                                                      DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    `update_time`        datetime                                                      DEFAULT NULL COMMENT '修改时间',
     `is_delete`          tinyint                                                       DEFAULT '0' COMMENT '删除标识;0-未删除,1-已删除',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='文件信息';
@@ -214,9 +214,9 @@ CREATE TABLE `sys_menu`
     `remark`              varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注信息',
     `version`             bigint                                                        DEFAULT '0' COMMENT '版本号',
     `create_by`           varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '创建人',
-    `create_time`         datetime                                                      DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time`         datetime                                                      DEFAULT NULL COMMENT '创建时间',
     `update_by`           varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '修改人',
-    `update_time`         datetime                                                      DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    `update_time`         datetime                                                      DEFAULT NULL COMMENT '修改时间',
     `is_delete`           tinyint                                                       DEFAULT '0' COMMENT '删除标识;0-未删除,1-已删除',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='菜单信息';
@@ -355,9 +355,9 @@ CREATE TABLE `sys_port`
     `remark`      varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注信息',
     `version`     bigint                                                        DEFAULT '0' COMMENT '版本号',
     `create_by`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '创建人',
-    `create_time` datetime                                                      DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` datetime                                                      DEFAULT NULL COMMENT '创建时间',
     `update_by`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '修改人',
-    `update_time` datetime                                                      DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    `update_time` datetime                                                      DEFAULT NULL COMMENT '修改时间',
     `is_delete`   tinyint                                                       DEFAULT '0' COMMENT '删除标识;0-未删除,1-已删除',
     PRIMARY KEY (`id`),
     KEY           `access_key_index` (`access_key`),
@@ -380,9 +380,9 @@ CREATE TABLE `sys_role`
     `remark`      varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注信息',
     `version`     bigint                                                        DEFAULT '0' COMMENT '版本号',
     `create_by`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '创建人',
-    `create_time` datetime                                                      DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` datetime                                                      DEFAULT NULL COMMENT '创建时间',
     `update_by`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '修改人',
-    `update_time` datetime                                                      DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    `update_time` datetime                                                      DEFAULT NULL COMMENT '修改时间',
     `is_delete`   tinyint                                                       DEFAULT '0' COMMENT '删除标识;0-未删除,1-已删除',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='角色信息';
@@ -422,9 +422,9 @@ CREATE TABLE `sys_task`
     `remark`          varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci         DEFAULT NULL COMMENT '备注信息',
     `version`         bigint                                                                DEFAULT '0' COMMENT '版本号',
     `create_by`       varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci          DEFAULT NULL COMMENT '创建人',
-    `create_time`     datetime                                                              DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time`     datetime                                                              DEFAULT NULL COMMENT '创建时间',
     `update_by`       varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci          DEFAULT NULL COMMENT '修改人',
-    `update_time`     datetime                                                              DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    `update_time`     datetime                                                              DEFAULT NULL COMMENT '修改时间',
     `is_delete`       tinyint                                                               DEFAULT '0' COMMENT '删除标识;0-未删除,1-已删除',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='计划任务信息';
@@ -466,9 +466,9 @@ CREATE TABLE `sys_user`
     `remark`      varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注信息',
     `version`     bigint                                                        DEFAULT '0' COMMENT '版本号',
     `create_by`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '创建人',
-    `create_time` datetime                                                      DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` datetime                                                      DEFAULT NULL COMMENT '创建时间',
     `update_by`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '修改人',
-    `update_time` datetime                                                      DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    `update_time` datetime                                                      DEFAULT NULL COMMENT '修改时间',
     `is_delete`   tinyint                                                       DEFAULT '0' COMMENT '删除标识;0-未删除,1-已删除',
     PRIMARY KEY (`id`),
     KEY           `username_index` (`username`)
@@ -513,7 +513,7 @@ CREATE TABLE `sys_task_log`
     `trace_id`     varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '链路id',
     `status`       tinyint                                                       DEFAULT NULL COMMENT '执行状态;1-执行成功,0-执行异常',
     `operate_by`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '操作人',
-    `create_time`  datetime                                                      DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time`  datetime                                                      DEFAULT NULL COMMENT '创建时间',
     `is_err`       tinyint                                                       DEFAULT NULL COMMENT '是否异常',
     `err_message`  text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '异常信息',
     PRIMARY KEY (`id`)
@@ -528,9 +528,9 @@ CREATE TABLE `sys_setting` (
   `remark` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注信息',
   `version` bigint DEFAULT '0' COMMENT '版本号',
   `create_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '创建人',
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '修改人',
-  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  `update_time` datetime DEFAULT NULL COMMENT '修改时间',
   `is_delete` tinyint DEFAULT '0' COMMENT '删除标识;0-未删除,1-已删除',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='配置信息';
