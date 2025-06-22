@@ -5,17 +5,20 @@ import lombok.Getter;
 
 /**
  * @author zhajianjun
- * @date 2025-06-21 12:23
+ * @date 2025-06-22 10:07
  */
 @Getter
 @AllArgsConstructor
-public enum LoginMode {
-    NONE("1", "无"),
-    IMAGE_CODE("2", "验证码"),
-    DEFAULT("2", "默认"),
+public enum SettingKey {
+
+    LOGIN_MODE("登录模式"),
+    INIT_PASSWORD("初始化密码"),
     ;
 
-    private final String code;
     private final String message;
+
+    public boolean equals(String name) {
+        return this.name().equals(name);
+    }
 
 }

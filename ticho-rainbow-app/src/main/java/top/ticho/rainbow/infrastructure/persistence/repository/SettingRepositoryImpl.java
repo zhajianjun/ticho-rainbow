@@ -22,6 +22,8 @@ import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 配置信息 repository实现
@@ -34,31 +36,39 @@ import java.util.List;
 public class SettingRepositoryImpl extends TiRepositoryImpl<SettingMapper, SettingPO> implements SettingRepository, SettingAppRepository {
     private final SettingConverter settingConverter;
 
-    @Cacheable(value = CacheConst.COMMON, key = "'ticho-rainbow:setting:list'", sync = true)
     public List<Setting> cacheList() {
         return settingConverter.toEntity(super.list());
     }
 
+    @Cacheable(value = CacheConst.COMMON, key = "'ticho-rainbow:setting:map'", sync = true)
     @Override
-    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:setting:list'")
+    public Map<String, String> cacheMap() {
+        List<SettingPO> list = super.list();
+        return list
+            .stream()
+            .collect(Collectors.toMap(SettingPO::getKey, SettingPO::getValue));
+    }
+
+    @Override
+    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:setting:map'")
     public boolean save(Setting setting) {
         return super.save(settingConverter.toPO(setting));
     }
 
     @Override
-    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:setting:list'")
+    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:setting:map'")
     public boolean remove(Long id) {
         return super.removeById(id);
     }
 
     @Override
-    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:setting:list'")
+    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:setting:map'")
     public boolean modify(Setting setting) {
         return super.updateById(settingConverter.toPO(setting));
     }
 
     @Override
-    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:setting:list'")
+    @CacheEvict(value = CacheConst.COMMON, key = "'ticho-rainbow:setting:map'")
     public boolean modifyBatch(List<Setting> settings) {
         return super.updateBatchById(settingConverter.toPO(settings));
     }
@@ -91,6 +101,7 @@ public class SettingRepositoryImpl extends TiRepositoryImpl<SettingMapper, Setti
         wrapper.eq(StrUtil.isNotBlank(settingQuery.getKey()), SettingPO::getKey, settingQuery.getKey());
         wrapper.eq(StrUtil.isNotBlank(settingQuery.getValue()), SettingPO::getValue, settingQuery.getValue());
         wrapper.eq(StrUtil.isNotBlank(settingQuery.getRemark()), SettingPO::getRemark, settingQuery.getRemark());
+        wrapper.orderByAsc(SettingPO::getSort);
         wrapper.orderByDesc(SettingPO::getId);
         return TiPageUtil.page(() -> list(wrapper), settingQuery, settingConverter::toDTO);
     }

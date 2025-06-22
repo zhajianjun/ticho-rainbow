@@ -3,6 +3,7 @@ package top.ticho.rainbow.domain.repository;
 import top.ticho.rainbow.domain.entity.Setting;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 配置信息 repository接口
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public interface SettingRepository {
 
-    List<Setting> cacheList();
+    Map<String, String> cacheMap();
 
     boolean save(Setting setting);
 

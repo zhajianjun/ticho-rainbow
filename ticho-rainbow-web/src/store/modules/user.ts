@@ -26,13 +26,18 @@ interface UserState {
   lastUpdateTime: number;
 }
 
+export enum LoginModeEnum {
+  NONE = '1',
+  IMAGE_CODE = '2',
+}
+
 export const useUserStore = defineStore({
   id: 'app-user',
   state: (): UserState => ({
     // user info
     userInfo: null,
     // 登录模式
-    loginMode: '2',
+    loginMode: LoginModeEnum.NONE,
     // token
     token: undefined,
     // roleList

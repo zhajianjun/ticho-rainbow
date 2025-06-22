@@ -106,7 +106,7 @@
   import { useI18n } from '@/hooks/web/useI18n';
   import { useMessage } from '@/hooks/web/useMessage';
 
-  import { useUserStore } from '@/store/modules/user';
+  import { LoginModeEnum, useUserStore } from '@/store/modules/user';
   import { LoginStateEnum, useFormRules, useFormValid, useLoginState } from './useLogin';
   import { useDesign } from '@/hooks/web/useDesign';
   //import { onKeyStroke } from '@vueuse/core';
@@ -145,12 +145,11 @@
 
   const getShow = computed(() => unref(getLoginState) === LoginStateEnum.LOGIN);
 
-  const showImageCode = computed(() => userStore.getLoginMode !== '1');
+  const showImageCode = computed(() => userStore.getLoginMode === LoginModeEnum.IMAGE_CODE);
 
   onMounted(() => {
     loginMode()
       .then((res) => {
-        console.log(res);
         userStore.setLoginMode(res as string);
       })
       .finally(() => {
@@ -159,7 +158,7 @@
   });
 
   async function flushImgCode() {
-    if (userStore.getLoginMode == '1') {
+    if (userStore.getLoginMode !== LoginModeEnum.IMAGE_CODE) {
       return;
     }
     const imgKey = formData.imgKey.toString();
@@ -177,7 +176,7 @@
         username: data.account,
         password: data.password,
       } as LoginCommand;
-      if (userStore.getLoginMode !== '1') {
+      if (userStore.getLoginMode === LoginModeEnum.IMAGE_CODE) {
         loginCommand.imgCode = data.imgCode;
         loginCommand.imgKey = formData.imgKey;
       }

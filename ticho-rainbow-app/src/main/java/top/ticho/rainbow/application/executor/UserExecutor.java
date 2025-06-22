@@ -7,9 +7,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.assembler.UserAssembler;
 import top.ticho.rainbow.domain.entity.User;
+import top.ticho.rainbow.domain.repository.SettingRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.common.enums.SettingKey;
 import top.ticho.rainbow.interfaces.dto.UserDTO;
 import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.view.util.TiAssert;
@@ -28,17 +30,24 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class UserExecutor {
+    private static final String DEFAULT_PASSWORD = "123456";
     private final TiCacheTemplate tiCacheTemplate;
     private final UserAssembler userAssembler;
     private final UserRepository userRepository;
     private final UserRoleRepository userRoleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SettingRepository settingRepository;
 
     public void imgCodeValid(String key, String imgCode) {
         String cacheImgCode = tiCacheTemplate.get(CacheConst.VERIFY_CODE, key, String.class);
         TiAssert.isNotBlank(cacheImgCode, "验证码已过期");
         tiCacheTemplate.evict(CacheConst.VERIFY_CODE, key);
         TiAssert.isTrue(imgCode.equalsIgnoreCase(cacheImgCode), "验证码不正确");
+    }
+
+    public String getInitPassword() {
+        Map<String, String> settingMap = settingRepository.cacheMap();
+        return settingMap.getOrDefault(SettingKey.INIT_PASSWORD.name(), DEFAULT_PASSWORD);
     }
 
     public String encodePassword(String password) {

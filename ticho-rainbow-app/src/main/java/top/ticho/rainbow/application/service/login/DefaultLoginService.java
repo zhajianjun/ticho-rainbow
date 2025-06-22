@@ -6,15 +6,14 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import top.ticho.rainbow.application.executor.UserExecutor;
 import top.ticho.rainbow.domain.entity.Role;
-import top.ticho.rainbow.domain.entity.Setting;
 import top.ticho.rainbow.domain.entity.User;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.SettingRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
-import top.ticho.rainbow.infrastructure.common.constant.LoginConst;
 import top.ticho.rainbow.infrastructure.common.dto.SecurityUser;
 import top.ticho.rainbow.infrastructure.common.enums.LoginMode;
+import top.ticho.rainbow.infrastructure.common.enums.SettingKey;
 import top.ticho.rainbow.infrastructure.common.enums.UserStatus;
 import top.ticho.rainbow.interfaces.command.LoginCommand;
 import top.ticho.starter.security.dto.TiToken;
@@ -24,6 +23,7 @@ import top.ticho.starter.view.enums.TiHttpErrorCode;
 import top.ticho.starter.view.util.TiAssert;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -69,7 +69,7 @@ public class DefaultLoginService extends AbstractLoginService {
     }
 
     public TiToken token(LoginCommand loginCommand) {
-        if (!LoginMode.NONE.getCode().equals(loginMode())) {
+        if (LoginMode.IMAGE_CODE.getCode().equals(loginMode())) {
             TiAssert.isNotBlank(loginCommand.getImgKey(), TiBizErrorCode.PARAM_ERROR, "验证码秘钥不能为空");
             TiAssert.isNotBlank(loginCommand.getImgCode(), TiBizErrorCode.PARAM_ERROR, "验证码不能为空");
             userExecutor.imgCodeValid(loginCommand.getImgKey(), loginCommand.getImgCode());
@@ -78,13 +78,8 @@ public class DefaultLoginService extends AbstractLoginService {
     }
 
     public String loginMode() {
-        List<Setting> settings = settingRepository.cacheList();
-        return settings
-            .stream()
-            .filter(x -> LoginConst.LOGIN_MODE_KEY.equals(x.getKey()))
-            .map(Setting::getValue)
-            .findFirst()
-            .orElse(null);
+        Map<String, String> settingMap = settingRepository.cacheMap();
+        return settingMap.getOrDefault(SettingKey.LOGIN_MODE.name(), LoginMode.DEFAULT.getCode());
     }
 
 }

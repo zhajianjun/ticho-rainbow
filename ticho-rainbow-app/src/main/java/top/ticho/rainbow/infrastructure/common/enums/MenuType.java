@@ -26,14 +26,14 @@ public enum MenuType {
     ;
 
     private final int code;
-    private final String msg;
+    private final String message;
 
     public int code() {
         return code;
     }
 
     public String message() {
-        return msg;
+        return message;
     }
 
     private static final Map<Integer, String> map;

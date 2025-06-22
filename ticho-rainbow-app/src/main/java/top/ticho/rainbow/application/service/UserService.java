@@ -25,7 +25,6 @@ import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
-import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
 import top.ticho.rainbow.infrastructure.common.enums.UserStatus;
 import top.ticho.rainbow.interfaces.command.UseModifyCommand;
@@ -127,7 +126,7 @@ public class UserService {
 
     public void resetPassword(List<VersionModifyCommand> modifys) {
         boolean modifyPassword = modifyBatch(modifys, user -> {
-            String encodedPasswordNew = userExecutor.encodePassword(CommConst.DEFAULT_PASSWORD);
+            String encodedPasswordNew = userExecutor.encodePassword(userExecutor.getInitPassword());
             user.modifyPassword(encodedPasswordNew);
         });
         TiAssert.isTrue(modifyPassword, "重置密码失败，请刷新后重试");
@@ -177,7 +176,7 @@ public class UserService {
             if (userExcelImport.getIsError()) {
                 continue;
             }
-            String password = userExecutor.encodePassword(CommConst.DEFAULT_PASSWORD);
+            String password = userExecutor.encodePassword(userExecutor.getInitPassword());
             User user = userAssembler.toEntity(userExcelImport, password, valueMap.get(userExcelImport.getSexName()));
             List<String> errorMsgs = userExecutor.checkRepeat(user);
             if (CollUtil.isNotEmpty(errorMsgs)) {
