@@ -526,7 +526,7 @@ CREATE TABLE `sys_setting` (
   `value` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'value',
   `sort` int DEFAULT NULL COMMENT '排序',
   `remark` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注信息',
-  `version` bigint DEFAULT '0' COMMENT '乐观锁;控制版本更改',
+  `version` bigint DEFAULT '0' COMMENT '版本号',
   `create_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '创建人',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '修改人',
@@ -534,3 +534,6 @@ CREATE TABLE `sys_setting` (
   `is_delete` tinyint DEFAULT '0' COMMENT '删除标识;0-未删除,1-已删除',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='配置信息';
+
+INSERT INTO sys_setting (id, `key`, value, sort, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1936273744880205824, 'LOGIN_MODE', '2', 10, '登录模式;1-无,2-验证码', 0, 'admin', NOW(), NULL, NULL, 0);
+INSERT INTO sys_setting (id, `key`, value, sort, remark, version, create_by, create_time, update_by, update_time, is_delete) VALUES(1936612686892630016, 'INIT_PASSWORD', '123456', 20, '默认密码', 0, 'admin', NOW(), NULL, NULL, 0);
