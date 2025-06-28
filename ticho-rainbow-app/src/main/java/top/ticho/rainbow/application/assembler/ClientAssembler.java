@@ -2,6 +2,7 @@ package top.ticho.rainbow.application.assembler;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import top.ticho.intranet.server.entity.IntranetClient;
 import top.ticho.rainbow.application.dto.excel.ClientExcelExport;
 import top.ticho.rainbow.domain.entity.Client;
 import top.ticho.rainbow.domain.entity.vo.ClientModifyVO;
@@ -40,5 +41,9 @@ public interface ClientAssembler {
     @Mapping(target = "connectTime", ignore = true)
     @Mapping(target = "channelStatusName", ignore = true)
     ClientExcelExport toExcelExport(ClientDTO clientDTO);
+
+    @Mapping(target = "accessKey", source = "accessKey")
+    @Mapping(target = "name", source = "name")
+    IntranetClient toIntranetClient(Client client);
 
 }

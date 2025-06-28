@@ -2,7 +2,7 @@ package top.ticho.rainbow.application.assembler;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import top.ticho.intranet.server.entity.PortInfo;
+import top.ticho.intranet.server.entity.IntranetPort;
 import top.ticho.rainbow.application.dto.excel.PortExcelExport;
 import top.ticho.rainbow.domain.entity.Port;
 import top.ticho.rainbow.domain.entity.vo.PortModifyfVO;
@@ -27,10 +27,10 @@ public interface PortAssembler {
 
     PortDTO toDTO(Port entity);
 
-    PortInfo toInfo(Port entity);
-
     PortExcelExport toExcelExport(PortDTO portDTO);
 
     PortModifyfVO toModifyfVO(PortModifyfCommand portModifyfCommand);
+
+    IntranetPort toIntranetPort(Port entity);
 
 }

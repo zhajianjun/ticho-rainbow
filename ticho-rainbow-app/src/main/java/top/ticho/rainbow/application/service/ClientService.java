@@ -6,7 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.ticho.intranet.server.entity.ClientInfo;
+import top.ticho.intranet.server.entity.IntranetClient;
 import top.ticho.rainbow.application.assembler.ClientAssembler;
 import top.ticho.rainbow.application.dto.excel.ClientExcelExport;
 import top.ticho.rainbow.application.executor.DictExecutor;
@@ -140,11 +140,11 @@ public class ClientService {
         if (Objects.isNull(clientDTO)) {
             return;
         }
-        Optional<ClientInfo> clientInfoOpt = intranetExecutor.findByAccessKey(clientDTO.getAccessKey());
+        Optional<IntranetClient> clientInfoOpt = intranetExecutor.findByAccessKey(clientDTO.getAccessKey());
         if (clientInfoOpt.isEmpty()) {
             return;
         }
-        ClientInfo clientInfo = clientInfoOpt.get();
+        IntranetClient clientInfo = clientInfoOpt.get();
         clientDTO.setChannelStatus(YesOrNo.getCode(Objects.nonNull(clientInfo.getChannel())));
     }
 

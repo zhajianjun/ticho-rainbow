@@ -6,7 +6,7 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.ticho.intranet.server.entity.ClientInfo;
+import top.ticho.intranet.server.entity.IntranetClient;
 import top.ticho.rainbow.application.assembler.PortAssembler;
 import top.ticho.rainbow.application.dto.excel.PortExcelExport;
 import top.ticho.rainbow.application.executor.DictExecutor;
@@ -157,11 +157,11 @@ public class PortService {
         if (Objects.isNull(portDTO)) {
             return;
         }
-        Optional<ClientInfo> clientInfoOpt = intranetExecutor.findByAccessKey(portDTO.getAccessKey());
+        Optional<IntranetClient> clientInfoOpt = intranetExecutor.findByAccessKey(portDTO.getAccessKey());
         if (clientInfoOpt.isEmpty()) {
             return;
         }
-        ClientInfo clientInfo = clientInfoOpt.get();
+        IntranetClient clientInfo = clientInfoOpt.get();
         Integer clientChannelStatus = Objects.nonNull(clientInfo.getChannel()) ? 1 : 0;
         Integer channelStatus = intranetExecutor.exists(portDTO.getPort()) ? 1 : 0;
         portDTO.setClientChannelStatus(clientChannelStatus);

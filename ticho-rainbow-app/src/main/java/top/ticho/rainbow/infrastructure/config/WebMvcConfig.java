@@ -12,10 +12,10 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import top.ticho.intranet.common.prop.ServerProperty;
-import top.ticho.intranet.server.core.ServerBuilder;
-import top.ticho.intranet.server.core.ServerHandler;
-import top.ticho.rainbow.application.service.IntranetAppListenFilter;
+import top.ticho.intranet.common.prop.IntranetServerProperty;
+import top.ticho.intranet.server.core.IntranetServerBuilder;
+import top.ticho.intranet.server.core.IntranetServerHandler;
+import top.ticho.intranet.server.filter.DefaultIntranetApplicationListenFilter;
 import top.ticho.rainbow.infrastructure.common.interceptor.CustomTraceInterceptor;
 import top.ticho.rainbow.infrastructure.common.prop.FileProperty;
 
@@ -62,13 +62,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
     @ConfigurationProperties(prefix = "ticho.intranet.server")
-    public ServerProperty serverProperty() {
-        return new ServerProperty();
+    public IntranetServerProperty intranetServerProperty() {
+        return new IntranetServerProperty();
     }
 
     @Bean
-    public ServerHandler serverHandler(ServerProperty serverProperty, IntranetAppListenFilter appListenFilter) {
-        return ServerBuilder.init(serverProperty, appListenFilter);
+    public IntranetServerHandler intranetServerHandler(IntranetServerProperty intranetServerProperty) {
+        return IntranetServerBuilder.init(intranetServerProperty, new DefaultIntranetApplicationListenFilter());
     }
 
 }
