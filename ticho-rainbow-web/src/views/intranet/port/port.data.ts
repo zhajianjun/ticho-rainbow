@@ -198,9 +198,6 @@ export function getModalFormColumns(): FormSchema[] {
       colProps: {
         span: 24,
       },
-      dynamicDisabled: ({ values }) => {
-        return values?.status === 1;
-      },
     },
     {
       field: `status`,
@@ -221,9 +218,6 @@ export function getModalFormColumns(): FormSchema[] {
       colProps: {
         span: 24,
       },
-      dynamicDisabled: ({ values }) => {
-        return values?.status === 1;
-      },
     },
     {
       field: `endpoint`,
@@ -234,9 +228,6 @@ export function getModalFormColumns(): FormSchema[] {
       },
       colProps: {
         span: 24,
-      },
-      dynamicDisabled: ({ values }) => {
-        return values?.status === 1;
       },
       helpMessage: '客户端地址格式为[ip:port]，端口范围[1-65535]',
       dynamicRules: () => {

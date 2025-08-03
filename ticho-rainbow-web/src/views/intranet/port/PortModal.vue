@@ -23,7 +23,7 @@
     emits: ['success', 'register'],
     setup(_, { emit }) {
       const modalType = ref(1);
-      const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
+      const [registerForm, { setFieldsValue, resetFields, validate, updateSchema }] = useForm({
         labelWidth: 120,
         baseColProps: { span: 24 },
         schemas: getModalFormColumns(),
@@ -42,6 +42,33 @@
             ...data.record,
           });
         }
+        const disable = unref(modalType) == 2;
+        await updateSchema([
+          {
+            field: 'accessKey',
+            componentProps: {
+              disabled: disable,
+            },
+          },
+          {
+            field: 'port',
+            componentProps: {
+              disabled: disable,
+            },
+          },
+          {
+            field: 'endpoint',
+            componentProps: {
+              disabled: disable,
+            },
+          },
+          {
+            field: 'port',
+            componentProps: {
+              disabled: disable,
+            },
+          },
+        ]);
       });
 
       const getTitle = computed(() => (unref(modalType) !== 2 ? '新增端口信息' : '编辑端口信息'));
