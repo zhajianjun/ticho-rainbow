@@ -1,7 +1,5 @@
 package top.ticho.rainbow.infrastructure.persistence.repository;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +15,8 @@ import top.ticho.rainbow.interfaces.query.OpLogQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -46,14 +46,14 @@ public class OpLogRepositoryImpl extends TiRepositoryImpl<OpLogMapper, OpLogPO> 
     @Override
     public TiPageResult<OpLogDTO> page(OpLogQuery query) {
         LambdaQueryWrapper<OpLogPO> wrapper = Wrappers.lambdaQuery();
-        wrapper.in(CollUtil.isNotEmpty(query.getIds()), OpLogPO::getId, query.getIds());
+        wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), OpLogPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), OpLogPO::getId, query.getId());
-        wrapper.like(StrUtil.isNotBlank(query.getName()), OpLogPO::getName, query.getName());
-        wrapper.like(StrUtil.isNotBlank(query.getUrl()), OpLogPO::getUrl, query.getUrl());
-        wrapper.like(StrUtil.isNotBlank(query.getType()), OpLogPO::getType, query.getType());
-        wrapper.like(StrUtil.isNotBlank(query.getReqBody()), OpLogPO::getReqBody, query.getReqBody());
-        wrapper.like(StrUtil.isNotBlank(query.getReqParams()), OpLogPO::getReqParams, query.getReqParams());
-        wrapper.like(StrUtil.isNotBlank(query.getResBody()), OpLogPO::getResBody, query.getResBody());
+        wrapper.like(TiStrUtil.isNotBlank(query.getName()), OpLogPO::getName, query.getName());
+        wrapper.like(TiStrUtil.isNotBlank(query.getUrl()), OpLogPO::getUrl, query.getUrl());
+        wrapper.like(TiStrUtil.isNotBlank(query.getType()), OpLogPO::getType, query.getType());
+        wrapper.like(TiStrUtil.isNotBlank(query.getReqBody()), OpLogPO::getReqBody, query.getReqBody());
+        wrapper.like(TiStrUtil.isNotBlank(query.getReqParams()), OpLogPO::getReqParams, query.getReqParams());
+        wrapper.like(TiStrUtil.isNotBlank(query.getResBody()), OpLogPO::getResBody, query.getResBody());
         if (Objects.nonNull(query.getEndTime()) && query.getEndTime().length == 2) {
             wrapper.ge(OpLogPO::getEndTime, query.getEndTime()[0]);
             wrapper.le(OpLogPO::getEndTime, query.getEndTime()[1]);
@@ -64,11 +64,11 @@ public class OpLogRepositoryImpl extends TiRepositoryImpl<OpLogMapper, OpLogPO> 
         }
         wrapper.ge(Objects.nonNull(query.getConsumeStart()), OpLogPO::getConsume, query.getConsumeStart());
         wrapper.le(Objects.nonNull(query.getConsumeEnd()), OpLogPO::getConsume, query.getConsumeEnd());
-        wrapper.eq(StrUtil.isNotBlank(query.getTraceId()), OpLogPO::getTraceId, query.getTraceId());
-        wrapper.like(StrUtil.isNotBlank(query.getIp()), OpLogPO::getIp, query.getIp());
+        wrapper.eq(TiStrUtil.isNotBlank(query.getTraceId()), OpLogPO::getTraceId, query.getTraceId());
+        wrapper.like(TiStrUtil.isNotBlank(query.getIp()), OpLogPO::getIp, query.getIp());
         wrapper.like(Objects.nonNull(query.getResStatus()), OpLogPO::getResStatus, query.getResStatus());
-        wrapper.eq(StrUtil.isNotBlank(query.getOperateBy()), OpLogPO::getOperateBy, query.getOperateBy());
-        wrapper.like(StrUtil.isNotBlank(query.getErrMessage()), OpLogPO::getErrMessage, query.getErrMessage());
+        wrapper.eq(TiStrUtil.isNotBlank(query.getOperateBy()), OpLogPO::getOperateBy, query.getOperateBy());
+        wrapper.like(TiStrUtil.isNotBlank(query.getErrMessage()), OpLogPO::getErrMessage, query.getErrMessage());
         wrapper.eq(Objects.nonNull(query.getIsErr()), OpLogPO::getIsErr, query.getIsErr());
         wrapper.orderByDesc(OpLogPO::getId);
         return TiPageUtil.page(() -> list(wrapper), query, opLogConverter::toDTO);

@@ -1,7 +1,5 @@
 package top.ticho.rainbow.infrastructure.persistence.repository;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +15,8 @@ import top.ticho.rainbow.interfaces.query.TaskLogQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -41,11 +41,11 @@ public class TaskLogRepositoryImpl extends TiRepositoryImpl<TaskLogMapper, TaskL
     @Override
     public TiPageResult<TaskLogDTO> page(TaskLogQuery query) {
         LambdaQueryWrapper<TaskLogPO> wrapper = Wrappers.lambdaQuery();
-        wrapper.in(CollUtil.isNotEmpty(query.getIds()), TaskLogPO::getId, query.getIds());
+        wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), TaskLogPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), TaskLogPO::getId, query.getId());
         wrapper.eq(Objects.nonNull(query.getTaskId()), TaskLogPO::getTaskId, query.getTaskId());
-        wrapper.like(StrUtil.isNotBlank(query.getContent()), TaskLogPO::getContent, query.getContent());
-        wrapper.like(StrUtil.isNotBlank(query.getParam()), TaskLogPO::getParam, query.getParam());
+        wrapper.like(TiStrUtil.isNotBlank(query.getContent()), TaskLogPO::getContent, query.getContent());
+        wrapper.like(TiStrUtil.isNotBlank(query.getParam()), TaskLogPO::getParam, query.getParam());
         if (Objects.nonNull(query.getExecuteTime()) && query.getExecuteTime().length == 2) {
             wrapper.ge(TaskLogPO::getExecuteTime, query.getExecuteTime()[0]);
             wrapper.le(TaskLogPO::getExecuteTime, query.getExecuteTime()[1]);
@@ -60,11 +60,11 @@ public class TaskLogRepositoryImpl extends TiRepositoryImpl<TaskLogMapper, TaskL
         }
         wrapper.ge(Objects.nonNull(query.getConsumeStart()), TaskLogPO::getConsume, query.getConsumeStart());
         wrapper.le(Objects.nonNull(query.getConsumeEnd()), TaskLogPO::getConsume, query.getConsumeEnd());
-        wrapper.like(StrUtil.isNotBlank(query.getTraceId()), TaskLogPO::getTraceId, query.getTraceId());
+        wrapper.like(TiStrUtil.isNotBlank(query.getTraceId()), TaskLogPO::getTraceId, query.getTraceId());
         wrapper.eq(Objects.nonNull(query.getStatus()), TaskLogPO::getStatus, query.getStatus());
-        wrapper.like(StrUtil.isNotBlank(query.getOperateBy()), TaskLogPO::getOperateBy, query.getOperateBy());
+        wrapper.like(TiStrUtil.isNotBlank(query.getOperateBy()), TaskLogPO::getOperateBy, query.getOperateBy());
         wrapper.eq(Objects.nonNull(query.getIsErr()), TaskLogPO::getIsErr, query.getIsErr());
-        wrapper.like(StrUtil.isNotBlank(query.getErrMessage()), TaskLogPO::getErrMessage, query.getErrMessage());
+        wrapper.like(TiStrUtil.isNotBlank(query.getErrMessage()), TaskLogPO::getErrMessage, query.getErrMessage());
         wrapper.orderByDesc(TaskLogPO::getId);
         return TiPageUtil.page(() -> list(wrapper), query, taskLogConverter::toDTO);
     }

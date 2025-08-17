@@ -1,7 +1,5 @@
 package top.ticho.rainbow.infrastructure.persistence.repository;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +16,8 @@ import top.ticho.rainbow.interfaces.query.ClientQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -68,13 +68,13 @@ public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, ClientP
 
     public List<ClientPO> list(ClientQuery query) {
         LambdaQueryWrapper<ClientPO> wrapper = Wrappers.lambdaQuery();
-        wrapper.in(CollUtil.isNotEmpty(query.getIds()), ClientPO::getId, query.getIds());
+        wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), ClientPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), ClientPO::getId, query.getId());
-        wrapper.like(StrUtil.isNotBlank(query.getAccessKey()), ClientPO::getAccessKey, query.getAccessKey());
-        wrapper.like(StrUtil.isNotBlank(query.getName()), ClientPO::getName, query.getName());
+        wrapper.like(TiStrUtil.isNotBlank(query.getAccessKey()), ClientPO::getAccessKey, query.getAccessKey());
+        wrapper.like(TiStrUtil.isNotBlank(query.getName()), ClientPO::getName, query.getName());
         wrapper.eq(Objects.nonNull(query.getStatus()), ClientPO::getStatus, query.getStatus());
         wrapper.ge(Objects.nonNull(query.getExpireAt()), ClientPO::getExpireAt, query.getExpireAt());
-        wrapper.like(StrUtil.isNotBlank(query.getRemark()), ClientPO::getRemark, query.getRemark());
+        wrapper.like(TiStrUtil.isNotBlank(query.getRemark()), ClientPO::getRemark, query.getRemark());
         wrapper.orderByAsc(ClientPO::getSort);
         wrapper.orderByDesc(ClientPO::getId);
         return list(wrapper);
@@ -95,7 +95,7 @@ public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, ClientP
 
     @Override
     public Client findByAccessKey(String accessKey) {
-        if (StrUtil.isBlank(accessKey)) {
+        if (TiStrUtil.isBlank(accessKey)) {
             return null;
         }
         LambdaQueryWrapper<ClientPO> wrapper = Wrappers.lambdaQuery();
@@ -106,7 +106,7 @@ public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, ClientP
 
     @Override
     public List<Client> listByAccessKeys(List<String> accessKeys) {
-        if (CollUtil.isEmpty(accessKeys)) {
+        if (TiCollUtil.isEmpty(accessKeys)) {
             return Collections.emptyList();
         }
         LambdaQueryWrapper<ClientPO> wrapper = Wrappers.lambdaQuery();

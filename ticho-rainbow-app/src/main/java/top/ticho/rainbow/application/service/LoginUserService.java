@@ -1,9 +1,5 @@
 package top.ticho.rainbow.application.service;
 
-import cn.hutool.captcha.CaptchaUtil;
-import cn.hutool.captcha.LineCaptcha;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import top.ticho.rainbow.application.assembler.FileInfoAssembler;
 import top.ticho.rainbow.application.assembler.UserAssembler;
 import top.ticho.rainbow.application.executor.FileInfoExecutor;
-import top.ticho.rainbow.application.executor.TemplateExecutor;
 import top.ticho.rainbow.application.executor.UserExecutor;
 import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.domain.entity.Role;
@@ -47,11 +42,14 @@ import top.ticho.starter.view.enums.TiBizErrorCode;
 import top.ticho.starter.view.exception.TiBizException;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.file.TiMultipartFile;
+import top.ticho.tool.core.TiIdUtil;
+import top.ticho.tool.core.TiLineCaptcha;
+import top.ticho.tool.core.TiNumberUtil;
+import top.ticho.tool.core.TiStrUtil;
 import top.ticho.tool.json.util.TiJsonUtil;
+import top.ticho.tool.template.TiTemplateUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -80,7 +78,6 @@ public class LoginUserService {
     private final FileInfoAssembler fileInfoAssembler;
     private final UserExecutor userExecutor;
     private final PasswordEncoder passwordEncoder;
-    private final TemplateExecutor templateExecutor;
 
     public void imgCode(String imgKey) throws IOException {
         response.setHeader("Pragma", "No-cache");
@@ -88,12 +85,10 @@ public class LoginUserService {
         response.setDateHeader("Expires", 0);
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         try (OutputStream out = response.getOutputStream()) {
-            LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
-            gifCaptcha.createCode();
-            String code = gifCaptcha.getCode();
+            TiLineCaptcha tiLineCaptcha = getLineCaptcha();
+            String code = tiLineCaptcha.getCode();
             tiCacheTemplate.put(CacheConst.VERIFY_CODE, imgKey, code);
-            BufferedImage buffImg = gifCaptcha.getImage();
-            ImageIO.write(buffImg, "png", out);
+            tiLineCaptcha.write(out);
         } catch (Exception e) {
             log.error("获取验证码失败，error {}", e.getMessage(), e);
             String message = e.getMessage();
@@ -124,17 +119,16 @@ public class LoginUserService {
         TiAssert.isNull(user, "用户已存在");
         String code = tiCacheTemplate.get(CacheConst.SIGN_UP_CODE, email, String.class);
         TiAssert.isBlank(code, "验证码已发送，请稍后再试");
-        LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
-        gifCaptcha.createCode();
-        code = gifCaptcha.getCode();
+        TiLineCaptcha tiLineCaptcha = getLineCaptcha();
+        code = tiLineCaptcha.getCode();
         tiCacheTemplate.put(CacheConst.SIGN_UP_CODE, email, code);
         TiMailInines mailInines = new TiMailInines();
         mailInines.setContentId("p01");
-        mailInines.setFile(new TiMultipartFile("captcha", "captcha.png", MediaType.IMAGE_PNG_VALUE, gifCaptcha.getImageBytes()));
+        mailInines.setFile(new TiMultipartFile("captcha", "captcha.png", MediaType.IMAGE_PNG_VALUE, tiLineCaptcha.getBytes()));
         TiMailContent mailContent = new TiMailContent();
         mailContent.setTo(email);
         mailContent.setSubject("注册");
-        mailContent.setContent(templateExecutor.render("/template/signUpEmailSend.html"));
+        mailContent.setContent(TiTemplateUtil.render("/template/signUpEmailSend.html", null, true));
         mailContent.setInlines(Collections.singletonList(mailInines));
         boolean sendMail = emailRepository.sendMail(mailContent);
         TiAssert.isTrue(sendMail, "发送邮件失败");
@@ -167,17 +161,16 @@ public class LoginUserService {
         TiAssert.isNotNull(dbUser, "用户不存在");
         String code = tiCacheTemplate.get(CacheConst.RESET_PASSWORD_CODE, email, String.class);
         TiAssert.isBlank(code, "验证码已发送，请稍后再试");
-        LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
-        gifCaptcha.createCode();
-        code = gifCaptcha.getCode();
+        TiLineCaptcha tiLineCaptcha = getLineCaptcha();
+        code = tiLineCaptcha.getCode();
         tiCacheTemplate.put(CacheConst.RESET_PASSWORD_CODE, email, code);
         TiMailInines mailInines = new TiMailInines();
         mailInines.setContentId("p01");
-        mailInines.setFile(new TiMultipartFile("captcha", "captcha.png", MediaType.IMAGE_PNG_VALUE, gifCaptcha.getImageBytes()));
+        mailInines.setFile(new TiMultipartFile("captcha", "captcha.png", MediaType.IMAGE_PNG_VALUE, tiLineCaptcha.getBytes()));
         TiMailContent mailContent = new TiMailContent();
         mailContent.setTo(email);
         mailContent.setSubject("重置密码");
-        mailContent.setContent(templateExecutor.render("/template/resetPasswordEmailSend.html"));
+        mailContent.setContent(TiTemplateUtil.render("/template/resetPasswordEmailSend.html", null, true));
         mailContent.setInlines(Collections.singletonList(mailInines));
         boolean sendMail = emailRepository.sendMail(mailContent);
         TiAssert.isTrue(sendMail, "发送邮件失败");
@@ -211,16 +204,19 @@ public class LoginUserService {
      * 返回登录使用参数
      */
     private LoginDTO toLoginDTO(String username) {
-        String imgKey = IdUtil.fastSimpleUUID();
-        LineCaptcha gifCaptcha = CaptchaUtil.createLineCaptcha(160, 40, 4, 150);
-        gifCaptcha.createCode();
-        String code = gifCaptcha.getCode();
+        String imgKey = TiIdUtil.ulid();
+        TiLineCaptcha tiLineCaptcha = getLineCaptcha();
+        String code = tiLineCaptcha.getCode();
         tiCacheTemplate.put(CacheConst.VERIFY_CODE, imgKey, code);
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUsername(username);
         loginDTO.setImgKey(imgKey);
         loginDTO.setImgCode(code);
         return loginDTO;
+    }
+
+    private static TiLineCaptcha getLineCaptcha() {
+        return new TiLineCaptcha(160, 40, 4, 150);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -230,7 +226,7 @@ public class LoginUserService {
         FileUploadCommand fileUploadCommand = new FileUploadCommand();
         fileUploadCommand.setFile(file);
         fileUploadCommand.setType(1);
-        fileUploadCommand.setRelativePath(StrUtil.format("user/{}/avatar", user.getUsername()));
+        fileUploadCommand.setRelativePath(TiStrUtil.format("user/{}/avatar", user.getUsername()));
         fileUploadCommand.setRemark("头像");
         FileInfoDTO upload = fileInfoExecutor.upload(fileUploadCommand);
         user.modifyPhoto(upload.getId().toString());
@@ -267,7 +263,7 @@ public class LoginUserService {
     }
 
     public void setPhoto(String photo, Consumer<String> setPhoto) {
-        if (!StrUtil.isNumeric(photo)) {
+        if (!TiNumberUtil.isNumber(photo)) {
             return;
         }
         Long fileId = Long.parseLong(photo);

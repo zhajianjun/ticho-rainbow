@@ -1,12 +1,12 @@
 package top.ticho.rainbow.application.executor;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.service.DictService;
 import top.ticho.rainbow.interfaces.dto.DictCacheDTO;
 import top.ticho.rainbow.interfaces.dto.DictLabelDTO;
+import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,7 +48,7 @@ public class DictExecutor {
      * @param code 字典编码
      */
     public <T> Map<T, String> getLabelMap(String code, Function<String, T> keyConvert) {
-        if (StrUtil.isBlank(code)) {
+        if (TiStrUtil.isBlank(code)) {
             return Collections.emptyMap();
         }
         List<DictCacheDTO> list = dictService.list();
@@ -75,7 +75,7 @@ public class DictExecutor {
      * @param codes 编码列表
      */
     public Map<String, String> getLabelMapBatch(List<String> codes) {
-        if (CollUtil.isEmpty(codes)) {
+        if (TiCollUtil.isEmpty(codes)) {
             return Collections.emptyMap();
         }
         List<DictCacheDTO> list = dictService.list();
@@ -90,7 +90,7 @@ public class DictExecutor {
      * @param code 字典编码
      */
     public Map<String, String> getValueMap(String code) {
-        if (StrUtil.isBlank(code)) {
+        if (TiStrUtil.isBlank(code)) {
             return Collections.emptyMap();
         }
         return getValueMap(code, Function.identity());
@@ -104,7 +104,7 @@ public class DictExecutor {
      * @param code 字典编码
      */
     public <T> Map<String, T> getValueMap(String code, Function<String, T> valueConvert) {
-        if (StrUtil.isBlank(code)) {
+        if (TiStrUtil.isBlank(code)) {
             return Collections.emptyMap();
         }
         List<DictCacheDTO> list = dictService.list();
@@ -142,7 +142,7 @@ public class DictExecutor {
      * @param codes 编码列表
      */
     public <T> Map<String, T> getValueMapBatch(List<String> codes, Function<String, T> valueConvert) {
-        if (CollUtil.isEmpty(codes)) {
+        if (TiCollUtil.isEmpty(codes)) {
             return Collections.emptyMap();
         }
         List<DictCacheDTO> list = dictService.list();

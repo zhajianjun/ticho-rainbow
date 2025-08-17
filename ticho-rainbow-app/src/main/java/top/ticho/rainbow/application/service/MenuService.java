@@ -1,8 +1,5 @@
 package top.ticho.rainbow.application.service;
 
-import cn.hutool.core.collection.CollStreamUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +25,8 @@ import top.ticho.rainbow.interfaces.dto.RouteMetaDTO;
 import top.ticho.starter.view.enums.TiBizErrorCode;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.TiTreeUtil;
+import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -97,7 +96,7 @@ public class MenuService {
         List<MenuDTO> menuFuncDtls = authExecutor.toDTO(menus, null, null);
         Consumer<MenuDTO> consumer = (root) -> {
             List<MenuDTO> children = root.getChildren();
-            children = CollUtil.isEmpty(children) ? null : children;
+            children = TiCollUtil.isEmpty(children) ? null : children;
             root.setChildren(children);
         };
         MenuDTO root = new MenuDTO();
@@ -113,7 +112,7 @@ public class MenuService {
             return Collections.emptyList();
         }
         List<String> roleCodes = currentUser.getRoles();
-        if (CollUtil.isEmpty(roleCodes)) {
+        if (TiCollUtil.isEmpty(roleCodes)) {
             return Collections.emptyList();
         }
         List<Menu> menus;
@@ -176,7 +175,7 @@ public class MenuService {
         // 1-目录，父亲一定是目录，目录和路由的路由地址不能重复
         if (Objects.equals(MenuType.DIR.code(), type)) {
             checkDirectory(menu);
-            TiAssert.isTrue(Objects.equals(parentType, MenuType.DIR.code()), StrUtil.format("{}下不能新建目录", parentTypeName));
+            TiAssert.isTrue(Objects.equals(parentType, MenuType.DIR.code()), TiStrUtil.format("{}下不能新建目录", parentTypeName));
             Menu getByTypesAndPath = menuRepository.getByTypesAndPath(MenuType.dirOrMenus(), menu.getPath(), menu.getId());
             // 菜单或路由path不能重复
             TiAssert.isNull(getByTypesAndPath, "目录路由重复");
@@ -197,7 +196,7 @@ public class MenuService {
             if (Objects.equals(YesOrNo.YES.code(), menu.getInvisible())) {
                 menu.modifyCurrentActiveMenu("");
             }
-            TiAssert.isTrue(Objects.equals(parentType, MenuType.DIR.code()), StrUtil.format("{}下不能新建菜单", parentTypeName));
+            TiAssert.isTrue(Objects.equals(parentType, MenuType.DIR.code()), TiStrUtil.format("{}下不能新建菜单", parentTypeName));
             Menu getByTypesAndPath = menuRepository.getByTypesAndPath(MenuType.dirOrMenus(), menu.getPath(), menu.getId());
             // 菜单或路由path不能重复
             TiAssert.isNull(getByTypesAndPath, "菜单路由重复");
@@ -208,7 +207,7 @@ public class MenuService {
         // 3-按钮，父亲一定是菜单, 组件名称不能重复
         else if (Objects.equals(MenuType.BUTTON.code(), type)) {
             checkButton(menu);
-            TiAssert.isTrue(Objects.equals(parentType, MenuType.MENU.code()), StrUtil.format("{}下不能新建按钮", parentTypeName));
+            TiAssert.isTrue(Objects.equals(parentType, MenuType.MENU.code()), TiStrUtil.format("{}下不能新建按钮", parentTypeName));
             Menu repeatCompMenu = menuRepository.getByTypesAndComNameExcludeId(Collections.singletonList(MenuType.BUTTON.code()), menu.getComponentName(), menu.getId());
             // 按钮名称不能重复
             TiAssert.isNull(repeatCompMenu, "按钮名称重复");
@@ -256,13 +255,13 @@ public class MenuService {
     }
 
     private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<Menu> modifyHandle) {
-        List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
+        List<Long> ids = modifys.stream().map(VersionModifyCommand::getId).collect(Collectors.toList());
         List<Menu> menus = menuRepository.list(ids);
-        Map<Long, Menu> menuMap = CollStreamUtil.toIdentityMap(menus, Menu::getId);
+        Map<Long, Menu> menuMap = menus.stream().collect(Collectors.toMap(Menu::getId, Function.identity(), (o, n) -> o));
         for (VersionModifyCommand modify : modifys) {
             Menu menu = menuMap.get(modify.getId());
-            TiAssert.isNotNull(menu, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
-            menu.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 菜单: {}", menu.getName()));
+            TiAssert.isNotNull(menu, TiStrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
+            menu.checkVersion(modify.getVersion(), TiStrUtil.format("数据已被修改，请刷新后重试, 菜单: {}", menu.getName()));
             // 修改逻辑
             modifyHandle.accept(menu);
         }

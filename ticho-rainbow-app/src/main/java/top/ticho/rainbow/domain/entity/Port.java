@@ -1,11 +1,11 @@
 package top.ticho.rainbow.domain.entity;
 
-import cn.hutool.core.util.StrUtil;
 import lombok.Builder;
 import lombok.Getter;
 import top.ticho.rainbow.domain.entity.vo.PortModifyfVO;
 import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -53,9 +53,9 @@ public class Port implements Entity {
 
     public void modify(PortModifyfVO portModifyfVO) {
         if (Objects.equals(CommonStatus.ENABLE.code(), status)) {
-            TiAssert.isTrue(Objects.equals(this.accessKey, portModifyfVO.accessKey()), StrUtil.format("端口已启用，无法修改秘钥，端口：[{}]"));
-            TiAssert.isTrue(Objects.equals(this.port, portModifyfVO.port()), StrUtil.format("端口已启用，无法修改端口，端口：[{}]"));
-            TiAssert.isTrue(Objects.equals(this.endpoint, portModifyfVO.endpoint()), StrUtil.format("端口已启用，无法修改客户端地址，端口：[{}]"));
+            TiAssert.isTrue(Objects.equals(this.accessKey, portModifyfVO.accessKey()), TiStrUtil.format("端口已启用，无法修改秘钥，端口：[{}]"));
+            TiAssert.isTrue(Objects.equals(this.port, portModifyfVO.port()), TiStrUtil.format("端口已启用，无法修改端口，端口：[{}]"));
+            TiAssert.isTrue(Objects.equals(this.endpoint, portModifyfVO.endpoint()), TiStrUtil.format("端口已启用，无法修改客户端地址，端口：[{}]"));
         }
         this.accessKey = portModifyfVO.accessKey();
         this.port = portModifyfVO.port();
@@ -73,15 +73,15 @@ public class Port implements Entity {
 
     public void enable() {
         CommonStatus disable = CommonStatus.DISABLE;
-        TiAssert.isTrue(Objects.equals(this.status, disable.code()), StrUtil.format("只有[{}]状态才能执行启用操作，端口：[{}]", disable.message(), port));
+        TiAssert.isTrue(Objects.equals(this.status, disable.code()), TiStrUtil.format("只有[{}]状态才能执行启用操作，端口：[{}]", disable.message(), port));
         boolean isExired = Objects.nonNull(expireAt) && expireAt.isBefore(LocalDateTime.now());
-        TiAssert.isTrue(!isExired, StrUtil.format("端口[{}]已过期", port));
+        TiAssert.isTrue(!isExired, TiStrUtil.format("端口[{}]已过期", port));
         this.status = CommonStatus.ENABLE.code();
     }
 
     public void disable() {
         CommonStatus enable = CommonStatus.ENABLE;
-        TiAssert.isTrue(Objects.equals(this.status, enable.code()), StrUtil.format("只有[{}]状态才能执行禁用操作，端口：[{}]", enable.message(), port));
+        TiAssert.isTrue(Objects.equals(this.status, enable.code()), TiStrUtil.format("只有[{}]状态才能执行禁用操作，端口：[{}]", enable.message(), port));
         this.status = CommonStatus.DISABLE.code();
     }
 

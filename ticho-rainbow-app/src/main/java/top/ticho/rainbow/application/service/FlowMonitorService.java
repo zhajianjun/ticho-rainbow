@@ -1,6 +1,5 @@
 package top.ticho.rainbow.application.service;
 
-import cn.hutool.core.collection.CollStreamUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -41,7 +40,7 @@ public class FlowMonitorService {
 
     public FlowMonitorStatsDTO info() {
         List<IntranetClient> clientInfos = intranetExecutor.findAll();
-        Map<String, IntranetClient> clientMap = CollStreamUtil.toMap(clientInfos, IntranetClient::getAccessKey, Function.identity());
+        Map<String, IntranetClient> clientMap = clientInfos.stream().collect(Collectors.toMap(IntranetClient::getAccessKey, Function.identity(), (o, n) -> o));
         // 客户端数
         List<ClientDTO> clientDTOS = clientAppRepository.all();
         // 激活的客户端数

@@ -30,7 +30,7 @@ ticho:
       maxBindPorts:
   log:
     enable: true
-    print: false
+    print: true
   mail:
     enable: true
     # 配置 SMTP 服务器地址

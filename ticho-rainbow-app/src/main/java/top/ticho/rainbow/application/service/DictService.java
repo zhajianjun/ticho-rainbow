@@ -1,11 +1,5 @@
 package top.ticho.rainbow.application.service;
 
-import cn.hutool.core.collection.CollStreamUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -21,6 +15,7 @@ import top.ticho.rainbow.domain.repository.DictLabelRepository;
 import top.ticho.rainbow.domain.repository.DictRepository;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.common.constant.DateConst;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
 import top.ticho.rainbow.infrastructure.common.enums.YesOrNo;
 import top.ticho.rainbow.interfaces.command.DictModifyCommand;
@@ -35,6 +30,9 @@ import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.enums.TiBizErrorCode;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.TiSpringUtil;
+import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiNumberUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -48,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -100,11 +99,11 @@ public class DictService {
     @Cacheable(value = CacheConst.COMMON, key = "'ticho-rainbow:dict:list'")
     public List<DictCacheDTO> list() {
         List<Dict> dicts = dictRepository.listEnable();
-        if (CollUtil.isEmpty(dicts)) {
+        if (TiCollUtil.isEmpty(dicts)) {
             return Collections.emptyList();
         }
         List<DictLabel> dictLabels = dictLabelRepository.listEnable();
-        if (CollUtil.isEmpty(dictLabels)) {
+        if (TiCollUtil.isEmpty(dictLabels)) {
             return Collections.emptyList();
         }
         Map<String, List<DictLabelDTO>> dictDTOMap = dictLabels
@@ -125,14 +124,14 @@ public class DictService {
 
     public List<DictCacheDTO> flush() {
         tiCacheTemplate.evict(CacheConst.COMMON, "ticho-rainbow:dict:list");
-        return SpringUtil.getBean(this.getClass()).list();
+        return TiSpringUtil.getBean(this.getClass()).list();
     }
 
     public void exportExcel(DictQuery query) throws IOException {
         String sheetName = "字典信息";
-        String fileName = "字典信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
+        String fileName = "字典信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateConst.PURE_DATETIME_PATTERN));
         DictExecutor dictExecutor = TiSpringUtil.getBean(DictExecutor.class);
-        Map<Integer, String> labelMap = dictExecutor.getLabelMap(DictConst.COMMON_STATUS, NumberUtil::parseInt);
+        Map<Integer, String> labelMap = dictExecutor.getLabelMap(DictConst.COMMON_STATUS, TiNumberUtil::parseInt);
         query.setCount(false);
         ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, DictExcelExport.class, response);
     }
@@ -166,13 +165,13 @@ public class DictService {
     }
 
     private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<Dict> modifyHandle) {
-        List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
+        List<Long> ids = modifys.stream().map(VersionModifyCommand::getId).collect(Collectors.toList());
         List<Dict> dicts = dictRepository.list(ids);
-        Map<Long, Dict> dictMap = CollStreamUtil.toIdentityMap(dicts, Dict::getId);
+        Map<Long, Dict> dictMap = dicts.stream().collect(Collectors.toMap(Dict::getId, Function.identity(), (o, n) -> o));
         for (VersionModifyCommand modify : modifys) {
             Dict dict = dictMap.get(modify.getId());
-            TiAssert.isNotNull(dict, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
-            dict.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 字典: {}", dict.getName()));
+            TiAssert.isNotNull(dict, TiStrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
+            dict.checkVersion(modify.getVersion(), TiStrUtil.format("数据已被修改，请刷新后重试, 字典: {}", dict.getName()));
             // 修改逻辑
             modifyHandle.accept(dict);
         }

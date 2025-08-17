@@ -1,6 +1,5 @@
 package top.ticho.rainbow.infrastructure.persistence.repository;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +11,7 @@ import top.ticho.rainbow.infrastructure.persistence.converter.DictLabelConverter
 import top.ticho.rainbow.infrastructure.persistence.mapper.DictLabelMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.DictLabelPO;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -70,7 +70,7 @@ public class DictLabelRepositoryImpl extends TiRepositoryImpl<DictLabelMapper, D
 
     @Override
     public List<DictLabel> getByCode(String code) {
-        if (StrUtil.isBlank(code)) {
+        if (TiStrUtil.isBlank(code)) {
             return Collections.emptyList();
         }
         LambdaQueryWrapper<DictLabelPO> wrapper = Wrappers.lambdaQuery();

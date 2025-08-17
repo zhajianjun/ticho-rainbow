@@ -1,7 +1,5 @@
 package top.ticho.rainbow.infrastructure.persistence.repository;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +13,8 @@ import top.ticho.rainbow.infrastructure.persistence.converter.MenuConverter;
 import top.ticho.rainbow.infrastructure.persistence.mapper.MenuMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.MenuPO;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
+import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.util.List;
 import java.util.Objects;
@@ -74,7 +74,7 @@ public class MenuRepositoryImpl extends TiRepositoryImpl<MenuMapper, MenuPO> imp
 
     @Override
     public Menu getByTypesAndPath(List<Integer> types, String path, Long excludeId) {
-        if (CollUtil.isEmpty(types) || StrUtil.isBlank(path)) {
+        if (TiCollUtil.isEmpty(types) || TiStrUtil.isBlank(path)) {
             return null;
         }
         LambdaQueryWrapper<MenuPO> wrapper = Wrappers.lambdaQuery();
@@ -86,7 +86,7 @@ public class MenuRepositoryImpl extends TiRepositoryImpl<MenuMapper, MenuPO> imp
     }
 
     public Menu getByTypesAndComNameExcludeId(List<Integer> types, String componentName, Long excludeId) {
-        if (Objects.isNull(types) || StrUtil.isBlank(componentName)) {
+        if (Objects.isNull(types) || TiStrUtil.isBlank(componentName)) {
             return null;
         }
         LambdaQueryWrapper<MenuPO> wrapper = Wrappers.lambdaQuery();

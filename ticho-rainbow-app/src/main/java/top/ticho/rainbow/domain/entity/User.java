@@ -1,6 +1,5 @@
 package top.ticho.rainbow.domain.entity;
 
-import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,6 +7,7 @@ import top.ticho.rainbow.domain.entity.vo.UserModifyVO;
 import top.ticho.rainbow.infrastructure.common.constant.SecurityConst;
 import top.ticho.rainbow.infrastructure.common.enums.UserStatus;
 import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -93,14 +93,14 @@ public class User implements Entity, UserHelper {
     }
 
     private void checkAdmin() {
-        TiAssert.isTrue(!SecurityConst.ADMIN.equals(username), StrUtil.format("管理员账号无法操作，用户：{}", username));
+        TiAssert.isTrue(!SecurityConst.ADMIN.equals(username), TiStrUtil.format("管理员账号无法操作，用户：{}", username));
     }
 
     public void lock() {
         checkAdmin();
         UserStatus userStatus = UserStatus.NORMAL;
         TiAssert.isTrue(Objects.equals(status, userStatus.code()),
-            StrUtil.format("只有[{}]状态的用户才能执行锁定操作，用户：{}", userStatus.message(), username));
+            TiStrUtil.format("只有[{}]状态的用户才能执行锁定操作，用户：{}", userStatus.message(), username));
         this.status = UserStatus.LOCKED.code();
     }
 
@@ -109,7 +109,7 @@ public class User implements Entity, UserHelper {
         checkAdmin();
         UserStatus userStatus = UserStatus.LOCKED;
         TiAssert.isTrue(Objects.equals(status, userStatus.code()),
-            StrUtil.format("只有[{}]状态的用户才能执行解锁操作，用户：{}", userStatus.message(), username));
+            TiStrUtil.format("只有[{}]状态的用户才能执行解锁操作，用户：{}", userStatus.message(), username));
         this.status = UserStatus.NORMAL.code();
     }
 
@@ -117,7 +117,7 @@ public class User implements Entity, UserHelper {
         checkAdmin();
         UserStatus userStatus = UserStatus.NORMAL;
         TiAssert.isTrue(Objects.equals(status, userStatus.code()),
-            StrUtil.format("只有[{}]状态的用户才能执行注销操作，用户：{}", userStatus.message(), username));
+            TiStrUtil.format("只有[{}]状态的用户才能执行注销操作，用户：{}", userStatus.message(), username));
         this.status = UserStatus.LOG_OUT.code();
     }
 

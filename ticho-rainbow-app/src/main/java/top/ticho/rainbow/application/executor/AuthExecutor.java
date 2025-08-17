@@ -1,6 +1,5 @@
 package top.ticho.rainbow.application.executor;
 
-import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.assembler.MenuAssembler;
@@ -15,6 +14,7 @@ import top.ticho.rainbow.interfaces.dto.MenuDTO;
 import top.ticho.rainbow.interfaces.dto.RoleDTO;
 import top.ticho.rainbow.interfaces.dto.RoleMenuDTO;
 import top.ticho.starter.web.util.TiTreeUtil;
+import top.ticho.tool.core.TiCollUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +51,7 @@ public class AuthExecutor {
      * @param map       转换
      */
     public <T> Stream<T> getMenusByRoleCodes(List<String> roleCodes, Function<Menu, T> map) {
-        if (CollUtil.isEmpty(roleCodes)) {
+        if (TiCollUtil.isEmpty(roleCodes)) {
             return Stream.empty();
         }
         // 根据角色id列表 查询角色信息
@@ -61,7 +61,7 @@ public class AuthExecutor {
             .filter(x -> Objects.equals(1, x.getStatus()))
             .map(Role::getId)
             .collect(Collectors.toList());
-        if (CollUtil.isEmpty(roleIds)) {
+        if (TiCollUtil.isEmpty(roleIds)) {
             return Stream.empty();
         }
         // 合并的角色后所有的菜单
@@ -70,7 +70,7 @@ public class AuthExecutor {
             .map(roleMenuRepository::listByRoleId)
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
-        if (CollUtil.isEmpty(menuIds)) {
+        if (TiCollUtil.isEmpty(menuIds)) {
             return Stream.empty();
         }
         // 菜单信息
@@ -84,7 +84,7 @@ public class AuthExecutor {
     }
 
     public List<String> getPerms(List<String> roleCodes) {
-        if (CollUtil.isEmpty(roleCodes)) {
+        if (TiCollUtil.isEmpty(roleCodes)) {
             return Collections.emptyList();
         }
         Function<Menu, String> identity = menu -> {
@@ -107,7 +107,7 @@ public class AuthExecutor {
      * @param treeHandle 是否进行树化
      */
     public RoleMenuDTO mergeRoleByIds(List<Long> roleIds, boolean showAll, boolean treeHandle) {
-        if (CollUtil.isEmpty(roleIds)) {
+        if (TiCollUtil.isEmpty(roleIds)) {
             return getRoleMenuDtl(Collections.emptyList(), showAll, treeHandle);
         }
         // 1.根据角色id列表查询角色信息、菜单信息、角色菜单信息、角色权限标识信息、菜单权限标识信息

@@ -10,7 +10,7 @@ import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.rainbow.interfaces.command.ClientModifyCommand;
 import top.ticho.rainbow.interfaces.command.ClientSaveCommand;
 import top.ticho.rainbow.interfaces.dto.ClientDTO;
-import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.tool.core.TiIdUtil;
 
 /**
  * 客户端信息 转换
@@ -22,8 +22,8 @@ import top.ticho.starter.web.util.TiIdUtil;
 public interface ClientAssembler {
 
     @Mapping(target = "status", expression = "java(CommonStatus.DISABLE.code())")
-    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
-    @Mapping(target = "accessKey", expression = "java(TiIdUtil.getSimpleUuid())")
+    @Mapping(target = "id", expression = "java(TiIdUtil.snowId())")
+    @Mapping(target = "accessKey", expression = "java(TiIdUtil.ulid())")
     @Mapping(target = "createTime", ignore = true)
     @Mapping(target = "createBy", ignore = true)
     @Mapping(target = "updateTime", ignore = true)

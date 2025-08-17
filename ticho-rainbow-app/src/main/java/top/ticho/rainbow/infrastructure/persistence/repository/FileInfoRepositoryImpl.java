@@ -1,7 +1,5 @@
 package top.ticho.rainbow.infrastructure.persistence.repository;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.Page;
@@ -20,6 +18,8 @@ import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageQuery;
 import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.util.List;
 import java.util.Objects;
@@ -74,24 +74,24 @@ public class FileInfoRepositoryImpl extends TiRepositoryImpl<FileInfoMapper, Fil
     @Override
     public TiPageResult<FileInfoDTO> page(FileInfoQuery query) {
         LambdaQueryWrapper<FileInfoPO> wrapper = Wrappers.lambdaQuery();
-        wrapper.in(CollUtil.isNotEmpty(query.getIds()), FileInfoPO::getId, query.getIds());
+        wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), FileInfoPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), FileInfoPO::getId, query.getId());
         wrapper.eq(Objects.nonNull(query.getType()), FileInfoPO::getType, query.getType());
-        wrapper.like(StrUtil.isNotBlank(query.getFileName()), FileInfoPO::getFileName, query.getFileName());
-        wrapper.like(StrUtil.isNotBlank(query.getExt()), FileInfoPO::getExt, query.getExt());
-        wrapper.like(StrUtil.isNotBlank(query.getPath()), FileInfoPO::getPath, query.getPath());
+        wrapper.like(TiStrUtil.isNotBlank(query.getFileName()), FileInfoPO::getFileName, query.getFileName());
+        wrapper.like(TiStrUtil.isNotBlank(query.getExt()), FileInfoPO::getExt, query.getExt());
+        wrapper.like(TiStrUtil.isNotBlank(query.getPath()), FileInfoPO::getPath, query.getPath());
         wrapper.ge(Objects.nonNull(query.getSizeStart()), FileInfoPO::getSize, query.getSizeStart());
         wrapper.le(Objects.nonNull(query.getSizeEnd()), FileInfoPO::getSize, query.getSizeEnd());
-        wrapper.like(StrUtil.isNotBlank(query.getContentType()), FileInfoPO::getContentType, query.getContentType());
-        wrapper.like(StrUtil.isNotBlank(query.getOriginalFileName()), FileInfoPO::getOriginalFileName, query.getOriginalFileName());
+        wrapper.like(TiStrUtil.isNotBlank(query.getContentType()), FileInfoPO::getContentType, query.getContentType());
+        wrapper.like(TiStrUtil.isNotBlank(query.getOriginalFileName()), FileInfoPO::getOriginalFileName, query.getOriginalFileName());
         wrapper.eq(Objects.nonNull(query.getStatus()), FileInfoPO::getStatus, query.getStatus());
-        wrapper.like(StrUtil.isNotBlank(query.getRemark()), FileInfoPO::getRemark, query.getRemark());
-        wrapper.like(StrUtil.isNotBlank(query.getCreateBy()), FileInfoPO::getCreateBy, query.getCreateBy());
+        wrapper.like(TiStrUtil.isNotBlank(query.getRemark()), FileInfoPO::getRemark, query.getRemark());
+        wrapper.like(TiStrUtil.isNotBlank(query.getCreateBy()), FileInfoPO::getCreateBy, query.getCreateBy());
         if (Objects.nonNull(query.getCreateTime()) && query.getCreateTime().length == 2) {
             wrapper.ge(FileInfoPO::getCreateTime, query.getCreateTime()[0]);
             wrapper.le(FileInfoPO::getCreateTime, query.getCreateTime()[1]);
         }
-        wrapper.eq(StrUtil.isNotBlank(query.getUpdateBy()), FileInfoPO::getUpdateBy, query.getUpdateBy());
+        wrapper.eq(TiStrUtil.isNotBlank(query.getUpdateBy()), FileInfoPO::getUpdateBy, query.getUpdateBy());
         if (Objects.nonNull(query.getUpdateTime()) && query.getUpdateTime().length == 2) {
             wrapper.ge(FileInfoPO::getUpdateTime, query.getUpdateTime()[0]);
             wrapper.le(FileInfoPO::getUpdateTime, query.getUpdateTime()[1]);

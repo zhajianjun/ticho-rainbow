@@ -1,8 +1,5 @@
 package top.ticho.rainbow.infrastructure.persistence.repository;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +19,9 @@ import top.ticho.rainbow.interfaces.query.RoleQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.starter.web.util.TiSpringUtil;
+import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -81,12 +81,12 @@ public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, RolePO> imp
     @Override
     public TiPageResult<RoleDTO> page(RoleQuery query) {
         LambdaQueryWrapper<RolePO> wrapper = Wrappers.lambdaQuery();
-        wrapper.in(CollUtil.isNotEmpty(query.getIds()), RolePO::getId, query.getIds());
+        wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), RolePO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), RolePO::getId, query.getId());
-        wrapper.like(StrUtil.isNotBlank(query.getCode()), RolePO::getCode, query.getCode());
-        wrapper.like(StrUtil.isNotBlank(query.getName()), RolePO::getName, query.getName());
+        wrapper.like(TiStrUtil.isNotBlank(query.getCode()), RolePO::getCode, query.getCode());
+        wrapper.like(TiStrUtil.isNotBlank(query.getName()), RolePO::getName, query.getName());
         wrapper.eq(Objects.nonNull(query.getStatus()), RolePO::getStatus, query.getStatus());
-        wrapper.like(StrUtil.isNotBlank(query.getRemark()), RolePO::getRemark, query.getRemark());
+        wrapper.like(TiStrUtil.isNotBlank(query.getRemark()), RolePO::getRemark, query.getRemark());
         wrapper.orderByDesc(RolePO::getId);
         return TiPageUtil.page(() -> list(wrapper), query, roleConverter::toDTO);
     }
@@ -102,10 +102,10 @@ public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, RolePO> imp
 
     @Override
     public List<Role> listByCodes(List<String> codes) {
-        if (CollUtil.isEmpty(codes)) {
+        if (TiCollUtil.isEmpty(codes)) {
             return Collections.emptyList();
         }
-        RoleRepositoryImpl bean = SpringUtil.getBean(getClass());
+        RoleRepositoryImpl bean = TiSpringUtil.getBean(getClass());
         List<Role> list = bean.cacheList();
         return list
             .stream()
@@ -129,10 +129,10 @@ public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, RolePO> imp
 
     @Override
     public List<Role> list(List<Long> ids) {
-        if (CollUtil.isEmpty(ids)) {
+        if (TiCollUtil.isEmpty(ids)) {
             return Collections.emptyList();
         }
-        RoleRepositoryImpl bean = SpringUtil.getBean(getClass());
+        RoleRepositoryImpl bean = TiSpringUtil.getBean(getClass());
         List<Role> list = bean.cacheList();
         return list
             .stream()

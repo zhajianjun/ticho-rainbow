@@ -1,7 +1,5 @@
 package top.ticho.rainbow.application.service;
 
-import cn.hutool.core.collection.CollStreamUtil;
-import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.assembler.DictLabelAssembler;
@@ -16,11 +14,13 @@ import top.ticho.rainbow.interfaces.command.DictLabelSaveCommand;
 import top.ticho.rainbow.interfaces.command.VersionModifyCommand;
 import top.ticho.rainbow.interfaces.dto.DictLabelDTO;
 import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -91,18 +91,18 @@ public class DictLabelService {
     }
 
     private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<DictLabel> modifyHandle) {
-        List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
+        List<Long> ids = modifys.stream().map(VersionModifyCommand::getId).collect(Collectors.toList());
         List<DictLabel> dictLabels = dictLabelRepository.list(ids);
         List<String> codes = dictLabels.stream().map(DictLabel::getCode).distinct().toList();
         TiAssert.isTrue(codes.size() == 1, "操作失败, 请勿操作多个字典");
         Dict dict = dictRepository.getByCodeExcludeId(codes.get(0), null);
         TiAssert.isNotNull(dict, "操作失败，字典不存在");
         TiAssert.isTrue(!Objects.equals(YesOrNo.YES.code(), dict.getIsSys()), "操作失败，系统字典无法操作");
-        Map<Long, DictLabel> dictLabelMap = CollStreamUtil.toIdentityMap(dictLabels, DictLabel::getId);
+        Map<Long, DictLabel> dictLabelMap = dictLabels.stream().collect(Collectors.toMap(DictLabel::getId, Function.identity(), (o, n) -> o));
         for (VersionModifyCommand modify : modifys) {
             DictLabel dictLabel = dictLabelMap.get(modify.getId());
-            TiAssert.isNotNull(dictLabel, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
-            dictLabel.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 字典标签: {}", dictLabel.getLabel()));
+            TiAssert.isNotNull(dictLabel, TiStrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
+            dictLabel.checkVersion(modify.getVersion(), TiStrUtil.format("数据已被修改，请刷新后重试, 字典标签: {}", dictLabel.getLabel()));
             // 修改逻辑
             modifyHandle.accept(dictLabel);
         }

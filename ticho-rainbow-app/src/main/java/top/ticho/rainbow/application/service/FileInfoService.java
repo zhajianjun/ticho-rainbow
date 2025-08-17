@@ -1,13 +1,5 @@
 package top.ticho.rainbow.application.service;
 
-import cn.hutool.core.collection.CollStreamUtil;
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.io.file.FileNameUtil;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.URLUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -24,12 +16,12 @@ import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.domain.repository.FileInfoRepository;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
 import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
+import top.ticho.rainbow.infrastructure.common.constant.DateConst;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
 import top.ticho.rainbow.infrastructure.common.dto.FileCacheDTO;
 import top.ticho.rainbow.infrastructure.common.enums.FileErrorCode;
 import top.ticho.rainbow.infrastructure.common.enums.FileInfoStatus;
 import top.ticho.rainbow.infrastructure.common.prop.FileProperty;
-import top.ticho.rainbow.infrastructure.common.util.CommonUtil;
 import top.ticho.rainbow.infrastructure.config.CacheConfig;
 import top.ticho.rainbow.interfaces.command.FileChunkUploadCommand;
 import top.ticho.rainbow.interfaces.command.FileUploadCommand;
@@ -43,7 +35,12 @@ import top.ticho.starter.view.enums.TiBizErrorCode;
 import top.ticho.starter.view.enums.TiHttpErrorCode;
 import top.ticho.starter.view.exception.TiBizException;
 import top.ticho.starter.view.util.TiAssert;
-import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.tool.core.TiArrayUtil;
+import top.ticho.tool.core.TiFileUtil;
+import top.ticho.tool.core.TiIdUtil;
+import top.ticho.tool.core.TiIoUtil;
+import top.ticho.tool.core.TiStrUtil;
+import top.ticho.tool.core.TiUrlUtil;
 import top.ticho.tool.json.util.TiJsonUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -61,6 +58,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -136,16 +134,16 @@ public class FileInfoService {
         TiAssert.isTrue(fileInfo.isEnable(), FileErrorCode.FILE_STATUS_ERROR);
         String absolutePath = fileInfoExecutor.getAbsolutePath(fileInfo.getType(), fileInfo.getPath());
         File file = new File(absolutePath);
-        TiAssert.isTrue(FileUtil.exist(file), FileErrorCode.FILE_NOT_EXIST);
+        TiAssert.isTrue(TiFileUtil.exist(file), FileErrorCode.FILE_NOT_EXIST);
         try {
             response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
-            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLUtil.encodeAll(fileInfo.getOriginalFileName()));
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + TiUrlUtil.encodeAll(fileInfo.getOriginalFileName()));
             response.setContentType(fileInfo.getContentType());
             response.setHeader(HttpHeaders.PRAGMA, "no-cache");
             response.setHeader(HttpHeaders.CACHE_CONTROL, "no-cache");
             response.setHeader(HttpHeaders.CONTENT_LENGTH, fileInfo.getSize() + "");
             response.setDateHeader(HttpHeaders.EXPIRES, 0);
-            IoUtil.copy(Files.newInputStream(file.toPath()), response.getOutputStream(), 1024);
+            TiIoUtil.copy(Files.newInputStream(file.toPath()), response.getOutputStream(), 1024);
         } catch (Exception e) {
             log.error("文件下载失败，{}", e.getMessage(), e);
             throw new TiBizException(FileErrorCode.DOWNLOAD_ERROR);
@@ -163,9 +161,9 @@ public class FileInfoService {
         TiAssert.isTrue(chunkfile.getSize() <= maxFileSize.toBytes(), FileErrorCode.FILE_SIZE_TO_LARGER, "分片文件大小不能超出" + maxFileSize.toMegabytes() + "MB");
         // 相对路径处理
         String relativePath = Optional.ofNullable(fileChunkUploadCommand.getRelativePath())
-            .filter(StrUtil::isNotBlank)
+            .filter(TiStrUtil::isNotBlank)
             // 去除两边的斜杠
-            .map(x -> StrUtil.strip(x, "/"))
+            .map(x -> TiStrUtil.strip(x, "/"))
             .orElse(null);
         fileChunkUploadCommand.setRelativePath(relativePath);
         ChunkCacheDTO chunkCacheDTO = getChunkSafe(fileChunkUploadCommand);
@@ -180,7 +178,7 @@ public class FileInfoService {
         try {
             File chunkFile = new File(chunkFilePath);
             if (!chunkFile.exists()) {
-                FileUtil.writeBytes(chunkfile.getBytes(), chunkFile);
+                TiFileUtil.writeBytes(chunkfile.getBytes(), chunkFile);
             }
         } catch (IOException e) {
             throw new TiBizException(TiHttpErrorCode.FAIL, "文件上传失败");
@@ -274,7 +272,7 @@ public class FileInfoService {
             return chunkCacheDTO;
         }
         String[] list = chunkDirFile.list();
-        if (ArrayUtil.isEmpty(list)) {
+        if (TiArrayUtil.isEmpty(list)) {
             return chunkCacheDTO;
         }
         ConcurrentSkipListSet<Integer> indexs = chunkCacheDTO.getIndexs();
@@ -296,13 +294,13 @@ public class FileInfoService {
         // 原文件名 logo.svg
         String originalFileName = fileChunkUploadCommand.getFileName();
         // 后缀 svg
-        String extName = FileNameUtil.extName(originalFileName);
+        String extName = TiFileUtil.extName(originalFileName);
         // 原主文件名 logo
-        String originalMainName = FileNameUtil.mainName(originalFileName);
+        String originalMainName = TiFileUtil.mainName(originalFileName);
         // 主文件名 logo-wKpdqhmC
-        String mainName = originalMainName + StrUtil.DASHED + CommonUtil.fastShortUUID();
+        String mainName = originalMainName + TiStrUtil.DASHED + TiIdUtil.shortUuid();
         // 文件名 logo-wKpdqhmC.svg
-        String fileName = mainName + StrUtil.DOT + extName;
+        String fileName = mainName + TiStrUtil.DOT + extName;
         // 分片文件夹路径
         String chunkDirPath;
         // 相对路径
@@ -319,12 +317,12 @@ public class FileInfoService {
         chunkCacheDTO.setChunkId(fileChunkUploadCommand.getChunkId());
         chunkCacheDTO.setMd5(fileChunkUploadCommand.getMd5());
         chunkCacheDTO.setType(fileChunkUploadCommand.getType());
-        chunkCacheDTO.setId(TiIdUtil.getId());
+        chunkCacheDTO.setId(TiIdUtil.snowId());
         chunkCacheDTO.setChunkCount(fileChunkUploadCommand.getChunkCount());
         chunkCacheDTO.setFileName(fileName);
         chunkCacheDTO.setFileSize(fileChunkUploadCommand.getFileSize());
         chunkCacheDTO.setOriginalFileName(originalFileName);
-        chunkCacheDTO.setContentType(FileUtil.getMimeType(fileName));
+        chunkCacheDTO.setContentType(TiFileUtil.getMimeType(fileName));
         chunkCacheDTO.setRelativeFullPath(relativeFullPath);
         chunkCacheDTO.setChunkDirPath(chunkDirPath);
         chunkCacheDTO.setExtName(extName);
@@ -389,11 +387,11 @@ public class FileInfoService {
         }
         String tmpAbstractPath = fileProperty.getTmpPath() + File.separator + relativePath;
         File target = new File(tmpAbstractPath);
-        FileUtil.mkdir(target);
-        FileUtil.moveContent(source, target, true);
+        TiFileUtil.mkdir(target);
+        TiFileUtil.moveContent(source, target, true);
         // 如果是文件夹
         if (source.isDirectory()) {
-            FileUtil.del(source);
+            TiFileUtil.del(source);
         }
     }
 
@@ -403,7 +401,7 @@ public class FileInfoService {
 
     public void exportExcel(FileInfoQuery query) throws IOException {
         String sheetName = "文件信息";
-        String fileName = "文件信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
+        String fileName = "文件信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateConst.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.FILE_STATUS, DictConst.FILE_STORAGE_TYPE);
         query.setCount(false);
         ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, FileInfoExcelExport.class, response);
@@ -424,13 +422,13 @@ public class FileInfoService {
     }
 
     private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<FileInfo> modifyHandle) {
-        List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
+        List<Long> ids = modifys.stream().map(VersionModifyCommand::getId).collect(Collectors.toList());
         List<FileInfo> fileInfos = fileInfoRepository.list(ids);
-        Map<Long, FileInfo> fileInfoMap = CollStreamUtil.toIdentityMap(fileInfos, FileInfo::getId);
+        Map<Long, FileInfo> fileInfoMap = fileInfos.stream().collect(Collectors.toMap(FileInfo::getId, Function.identity(), (o, n) -> o));
         for (VersionModifyCommand modify : modifys) {
             FileInfo fileInfo = fileInfoMap.get(modify.getId());
-            TiAssert.isNotNull(fileInfo, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
-            fileInfo.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 文件: {}", fileInfo.getFileName()));
+            TiAssert.isNotNull(fileInfo, TiStrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
+            fileInfo.checkVersion(modify.getVersion(), TiStrUtil.format("数据已被修改，请刷新后重试, 文件: {}", fileInfo.getFileName()));
             // 修改逻辑
             modifyHandle.accept(fileInfo);
         }

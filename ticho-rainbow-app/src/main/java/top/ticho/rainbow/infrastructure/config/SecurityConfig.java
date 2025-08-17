@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import top.ticho.rainbow.infrastructure.common.prop.SecurityProperty;
 import top.ticho.starter.security.core.jwt.JwtSigner;
-import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.tool.core.TiIdUtil;
 
 import java.util.Optional;
 
@@ -17,7 +17,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtSigner jwtSigner(SecurityProperty securityProperty) {
-        String key = Optional.of(securityProperty.getKey()).orElseGet(TiIdUtil::getUuid);
+        String key = Optional.of(securityProperty.getKey()).orElseGet(TiIdUtil::uuid);
         return new JwtSigner(key);
     }
 

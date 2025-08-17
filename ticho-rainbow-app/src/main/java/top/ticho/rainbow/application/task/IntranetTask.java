@@ -5,7 +5,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.executor.IntranetExecutor;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
-import top.ticho.trace.common.prop.TiTraceProperty;
+import top.ticho.trace.common.TiTraceProperty;
 
 /**
  * 内网映射数据刷新定时任务

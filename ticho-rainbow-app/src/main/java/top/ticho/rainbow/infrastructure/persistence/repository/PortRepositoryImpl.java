@@ -1,7 +1,5 @@
 package top.ticho.rainbow.infrastructure.persistence.repository;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +15,8 @@ import top.ticho.rainbow.interfaces.query.PortQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -73,16 +73,16 @@ public class PortRepositoryImpl extends TiRepositoryImpl<PortMapper, PortPO> imp
     @Override
     public TiPageResult<PortDTO> page(PortQuery query) {
         LambdaQueryWrapper<PortPO> wrapper = Wrappers.lambdaQuery();
-        wrapper.in(CollUtil.isNotEmpty(query.getIds()), PortPO::getId, query.getIds());
+        wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), PortPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), PortPO::getId, query.getId());
-        wrapper.like(StrUtil.isNotBlank(query.getAccessKey()), PortPO::getAccessKey, query.getAccessKey());
+        wrapper.like(TiStrUtil.isNotBlank(query.getAccessKey()), PortPO::getAccessKey, query.getAccessKey());
         wrapper.eq(Objects.nonNull(query.getPort()), PortPO::getPort, query.getPort());
-        wrapper.like(StrUtil.isNotBlank(query.getEndpoint()), PortPO::getEndpoint, query.getEndpoint());
+        wrapper.like(TiStrUtil.isNotBlank(query.getEndpoint()), PortPO::getEndpoint, query.getEndpoint());
         wrapper.eq(Objects.nonNull(query.getStatus()), PortPO::getStatus, query.getStatus());
-        wrapper.like(StrUtil.isNotBlank(query.getDomain()), PortPO::getDomain, query.getDomain());
+        wrapper.like(TiStrUtil.isNotBlank(query.getDomain()), PortPO::getDomain, query.getDomain());
         wrapper.eq(Objects.nonNull(query.getType()), PortPO::getType, query.getType());
         wrapper.ge(Objects.nonNull(query.getExpireAt()), PortPO::getExpireAt, query.getExpireAt());
-        wrapper.like(StrUtil.isNotBlank(query.getRemark()), PortPO::getRemark, query.getRemark());
+        wrapper.like(TiStrUtil.isNotBlank(query.getRemark()), PortPO::getRemark, query.getRemark());
         wrapper.orderByAsc(PortPO::getSort);
         wrapper.orderByAsc(PortPO::getPort);
         return TiPageUtil.page(() -> list(wrapper), query, portConverter::toDTO);
@@ -110,7 +110,7 @@ public class PortRepositoryImpl extends TiRepositoryImpl<PortMapper, PortPO> imp
 
     @Override
     public Port getByDomainExcludeId(Long excludeId, String domain) {
-        if (StrUtil.isBlank(domain)) {
+        if (TiStrUtil.isBlank(domain)) {
             return null;
         }
         LambdaQueryWrapper<PortPO> wrapper = Wrappers.lambdaQuery();
@@ -122,7 +122,7 @@ public class PortRepositoryImpl extends TiRepositoryImpl<PortMapper, PortPO> imp
 
     @Override
     public List<Port> listByAccessKeys(Collection<String> accessKeys) {
-        if (CollUtil.isEmpty(accessKeys)) {
+        if (TiCollUtil.isEmpty(accessKeys)) {
             return Collections.emptyList();
         }
         LambdaQueryWrapper<PortPO> wrapper = Wrappers.lambdaQuery();

@@ -1,6 +1,5 @@
 package top.ticho.rainbow.infrastructure.common.advice;
 
-import cn.hutool.core.exceptions.ExceptionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -20,6 +19,7 @@ import top.ticho.starter.view.enums.TiBizErrorCode;
 import top.ticho.starter.view.enums.TiHttpErrorCode;
 import top.ticho.starter.view.log.TiHttpLog;
 import top.ticho.starter.web.advice.TiResponseBodyAdvice;
+import top.ticho.tool.core.TiExceptionUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
@@ -48,7 +48,7 @@ public class CustomResponseBodyAdvice {
     public void prefix(Exception ex) {
         TiHttpLog httpLog = TiWebLogInterceptor.logInfo();
         if (Objects.nonNull(httpLog)) {
-            String errorMsg = ExceptionUtil.stacktraceToString(ex);
+            String errorMsg = TiExceptionUtil.stacktraceToString(ex);
             httpLog.setErrMessage(errorMsg);
         }
     }

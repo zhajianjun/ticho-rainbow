@@ -1,10 +1,9 @@
 package top.ticho.rainbow.infrastructure.common.component.event;
 
-import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.core.util.StrUtil;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.EventHandlerGroup;
 import lombok.extern.slf4j.Slf4j;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -23,14 +22,22 @@ public class Test {
         for (int i = 0; i < 1000; i++) {
             int finalI = i;
             Thread thread = new Thread(() -> {
-                ThreadUtil.safeSleep(1000 * 2);
+                safeSleep(1000 * 2);
                 publisher.product("", finalI + 1 + "");
             });
             thread.start();
         }
-        ThreadUtil.safeSleep(1000 * 5);
+        safeSleep(1000 * 5);
         System.out.println(atomicInteger);
         publisher.stop();
+    }
+
+    private static void safeSleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static AbstractPublisher<String> getPublisher(AbstractListener<String> abstractListener) {
@@ -47,7 +54,7 @@ public class Test {
         return new AbstractListener<String>() {
             @Override
             public void consume(String data, Long sequence, Boolean endOfBatch) {
-                String format = StrUtil.format("data:{} sequence:{} endOfBatch:{}", data, sequence, endOfBatch);
+                String format = TiStrUtil.format("data:{} sequence:{} endOfBatch:{}", data, sequence, endOfBatch);
                 atomicInteger.incrementAndGet();
                 log.info(format);
             }

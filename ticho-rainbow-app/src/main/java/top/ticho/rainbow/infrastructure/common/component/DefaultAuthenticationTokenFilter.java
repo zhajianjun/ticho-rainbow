@@ -1,10 +1,11 @@
 package top.ticho.rainbow.infrastructure.common.component;
 
-import cn.hutool.core.convert.Convert;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.infrastructure.common.dto.SecurityUser;
 import top.ticho.starter.security.constant.TiSecurityConst;
 import top.ticho.starter.security.filter.AbstractAuthTokenFilter;
+import top.ticho.tool.core.TiNumberUtil;
+import top.ticho.tool.json.util.TiJsonUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -24,9 +25,12 @@ public class DefaultAuthenticationTokenFilter extends AbstractAuthTokenFilter<Se
         String username = Optional.ofNullable(decodeAndVerify.get(TiSecurityConst.USERNAME))
             .map(Object::toString)
             .orElse(null);
-        List<String> authorities = Optional.ofNullable(decodeAndVerify.get(TiSecurityConst.AUTHORITIES)).map(x -> Convert.toList(String.class, x)).orElse(null);
+        List<String> authorities = Optional.ofNullable(decodeAndVerify.get(TiSecurityConst.AUTHORITIES))
+            .map(x -> TiJsonUtil.toList(TiJsonUtil.toJsonString(x), String.class))
+            .orElse(null);
         Integer status = Optional.ofNullable(decodeAndVerify.get("status"))
-            .map(Convert::toInt)
+            .map(Object::toString)
+            .map(TiNumberUtil::parseInt)
             .orElse(null);
         SecurityUser user = new SecurityUser();
         user.setUsername(username);

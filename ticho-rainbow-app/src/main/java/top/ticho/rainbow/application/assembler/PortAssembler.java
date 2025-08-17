@@ -10,7 +10,7 @@ import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.rainbow.interfaces.command.PortModifyfCommand;
 import top.ticho.rainbow.interfaces.command.PortSaveCommand;
 import top.ticho.rainbow.interfaces.dto.PortDTO;
-import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.tool.core.TiIdUtil;
 
 /**
  * 端口信息 转换
@@ -21,7 +21,7 @@ import top.ticho.starter.web.util.TiIdUtil;
 @Mapper(componentModel = "spring", imports = {TiIdUtil.class, CommonStatus.class})
 public interface PortAssembler {
 
-    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
+    @Mapping(target = "id", expression = "java(TiIdUtil.snowId())")
     @Mapping(target = "status", expression = "java(CommonStatus.DISABLE.code())")
     Port toEntity(PortSaveCommand dto);
 

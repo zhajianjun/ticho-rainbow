@@ -9,7 +9,7 @@ import top.ticho.rainbow.infrastructure.common.enums.YesOrNo;
 import top.ticho.rainbow.interfaces.command.DictModifyCommand;
 import top.ticho.rainbow.interfaces.command.DictSaveCommand;
 import top.ticho.rainbow.interfaces.dto.DictCacheDTO;
-import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.tool.core.TiIdUtil;
 
 import java.util.Objects;
 
@@ -22,7 +22,7 @@ import java.util.Objects;
 @Mapper(componentModel = "spring", imports = {Objects.class, YesOrNo.class, TiIdUtil.class, CommonStatus.class})
 public interface DictAssembler {
 
-    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
+    @Mapping(target = "id", expression = "java(TiIdUtil.snowId())")
     @Mapping(target = "version", ignore = true)
     @Mapping(target = "createBy", ignore = true)
     @Mapping(target = "createTime", ignore = true)

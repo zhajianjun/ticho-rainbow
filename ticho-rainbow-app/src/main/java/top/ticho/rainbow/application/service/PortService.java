@@ -1,9 +1,5 @@
 package top.ticho.rainbow.application.service;
 
-import cn.hutool.core.collection.CollStreamUtil;
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.util.ReUtil;
-import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.intranet.server.entity.IntranetClient;
@@ -18,6 +14,7 @@ import top.ticho.rainbow.domain.entity.vo.PortModifyfVO;
 import top.ticho.rainbow.domain.repository.ClientRepository;
 import top.ticho.rainbow.domain.repository.PortRepository;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
+import top.ticho.rainbow.infrastructure.common.constant.DateConst;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
 import top.ticho.rainbow.infrastructure.common.enums.ProtocolType;
 import top.ticho.rainbow.interfaces.command.PortModifyfCommand;
@@ -27,6 +24,7 @@ import top.ticho.rainbow.interfaces.dto.PortDTO;
 import top.ticho.rainbow.interfaces.query.PortQuery;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiStrUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -38,6 +36,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -107,7 +107,7 @@ public class PortService {
 
     public void exportExcel(PortQuery query) throws IOException {
         String sheetName = "端口信息";
-        String fileName = "端口信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
+        String fileName = "端口信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateConst.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.CHANNEL_STATUS, DictConst.HTTP_TYPE);
         query.setCount(false);
         ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, PortExcelExport.class, response);
@@ -145,9 +145,10 @@ public class PortService {
         boolean isHttps = ProtocolType.HTTPS.compareTo(ProtocolType.getByCode(type)) == 0;
         if (isHttps) {
             TiAssert.isNotBlank(domain, "Https域名不能为空");
-            TiAssert.isTrue(ReUtil.isMatch("^([a-z0-9-]+\\.)+[a-z]{2,}(/\\S*)?$", domain), "域名格式不正确");
+            boolean match = Pattern.matches("^([a-z0-9-]+\\.)+[a-z]{2,}(/\\S*)?$", domain);
+            TiAssert.isTrue(match, "域名格式不正确");
         }
-        if (StrUtil.isNotBlank(domain)) {
+        if (TiStrUtil.isNotBlank(domain)) {
             Port dbPortByDomain = portRepository.getByDomainExcludeId(id, domain);
             TiAssert.isNull(dbPortByDomain, "域名已存在");
         }
@@ -169,13 +170,13 @@ public class PortService {
     }
 
     private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<Port> modifyHandle, Consumer<Port> modifyToDbAfterHandle) {
-        List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
+        List<Long> ids = modifys.stream().map(VersionModifyCommand::getId).collect(Collectors.toList());
         List<Port> ports = portRepository.list(ids);
-        Map<Long, Port> portMap = CollStreamUtil.toIdentityMap(ports, Port::getId);
+        Map<Long, Port> portMap = ports.stream().collect(Collectors.toMap(Port::getId, Function.identity(), (o, n) -> o));
         for (VersionModifyCommand modify : modifys) {
             Port port = portMap.get(modify.getId());
-            TiAssert.isNotNull(port, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
-            port.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 端口: {}", port.getPort()));
+            TiAssert.isNotNull(port, TiStrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
+            port.checkVersion(modify.getVersion(), TiStrUtil.format("数据已被修改，请刷新后重试, 端口: {}", port.getPort()));
             // 修改逻辑
             modifyHandle.accept(port);
         }

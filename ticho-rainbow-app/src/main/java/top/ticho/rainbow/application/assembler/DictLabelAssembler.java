@@ -9,7 +9,7 @@ import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.rainbow.interfaces.command.DictLabelModifyCommand;
 import top.ticho.rainbow.interfaces.command.DictLabelSaveCommand;
 import top.ticho.rainbow.interfaces.dto.DictLabelDTO;
-import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.tool.core.TiIdUtil;
 
 /**
  * 字典标签 转换
@@ -20,7 +20,7 @@ import top.ticho.starter.web.util.TiIdUtil;
 @Mapper(componentModel = "spring", imports = {TiIdUtil.class, CommonStatus.class})
 public interface DictLabelAssembler {
 
-    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
+    @Mapping(target = "id", expression = "java(TiIdUtil.snowId())")
     @Mapping(target = "status", expression = "java(CommonStatus.DISABLE.code())")
     @Mapping(target = "version", ignore = true)
     @Mapping(target = "createTime", ignore = true)

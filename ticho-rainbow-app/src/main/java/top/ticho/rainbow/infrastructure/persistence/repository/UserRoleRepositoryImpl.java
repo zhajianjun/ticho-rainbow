@@ -1,6 +1,5 @@
 package top.ticho.rainbow.infrastructure.persistence.repository;
 
-import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +14,7 @@ import top.ticho.rainbow.infrastructure.persistence.mapper.UserRoleMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.UserRolePO;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.web.util.TiSpringUtil;
+import top.ticho.tool.core.TiCollUtil;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -60,7 +60,7 @@ public class UserRoleRepositoryImpl extends TiRepositoryImpl<UserRoleMapper, Use
         }
         UserRoleRepositoryImpl bean = TiSpringUtil.getBean(this.getClass());
         bean.removeByUserId(userId);
-        if (CollUtil.isEmpty(roleIds)) {
+        if (TiCollUtil.isEmpty(roleIds)) {
             return;
         }
         saveUserRoles(userId, roleIds);
@@ -72,7 +72,7 @@ public class UserRoleRepositoryImpl extends TiRepositoryImpl<UserRoleMapper, Use
         if (Objects.isNull(userId)) {
             return;
         }
-        if (CollUtil.isEmpty(roleIds)) {
+        if (TiCollUtil.isEmpty(roleIds)) {
             return;
         }
         List<UserRolePO> userRolePOS = roleIds

@@ -1,7 +1,5 @@
 package top.ticho.rainbow.application.assembler;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import top.ticho.rainbow.domain.entity.Menu;
@@ -12,7 +10,9 @@ import top.ticho.rainbow.interfaces.command.MenuSaveCommand;
 import top.ticho.rainbow.interfaces.dto.MenuDTO;
 import top.ticho.rainbow.interfaces.dto.RouteDTO;
 import top.ticho.rainbow.interfaces.dto.RouteMetaDTO;
-import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiIdUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.util.Objects;
 
@@ -22,18 +22,18 @@ import java.util.Objects;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-@Mapper(componentModel = "spring", imports = {StrUtil.class, CollUtil.class, Objects.class, TiIdUtil.class, CommonStatus.class})
+@Mapper(componentModel = "spring", imports = {TiStrUtil.class, TiCollUtil.class, Objects.class, TiIdUtil.class, CommonStatus.class})
 public interface MenuAssembler {
 
-    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
-    @Mapping(target = "perms", expression = "java(CollUtil.join(menuSaveCommand.getPerms(), \",\"))")
+    @Mapping(target = "id", expression = "java(TiIdUtil.snowId())")
+    @Mapping(target = "perms", expression = "java(TiCollUtil.join(menuSaveCommand.getPerms(), \",\"))")
     @Mapping(target = "status", expression = "java(CommonStatus.DISABLE.code())")
     Menu toEntity(MenuSaveCommand menuSaveCommand);
 
-    @Mapping(target = "perms", expression = "java(CollUtil.join(menuModifyCommand.getPerms(), \",\"))")
+    @Mapping(target = "perms", expression = "java(TiCollUtil.join(menuModifyCommand.getPerms(), \",\"))")
     MenuModifyVO toModifyVO(MenuModifyCommand menuModifyCommand);
 
-    @Mapping(target = "perms", expression = "java(StrUtil.split(Objects.equals(entity.getPerms(), \"\") ? null : entity.getPerms(), ','))")
+    @Mapping(target = "perms", expression = "java(TiStrUtil.split(Objects.equals(entity.getPerms(), \"\") ? null : entity.getPerms(), ','))")
     MenuDTO toDTO(Menu entity);
 
     @Mapping(source = "name", target = "title")
@@ -41,6 +41,5 @@ public interface MenuAssembler {
 
     @Mapping(source = "componentName", target = "name")
     RouteDTO toRouteDTO(Menu entity);
-
 
 }

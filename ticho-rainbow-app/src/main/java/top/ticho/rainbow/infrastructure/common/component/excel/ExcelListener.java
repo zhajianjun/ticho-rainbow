@@ -1,13 +1,13 @@
 package top.ticho.rainbow.infrastructure.common.component.excel;
 
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.idev.excel.context.AnalysisContext;
 import cn.idev.excel.read.listener.ReadListener;
 import cn.idev.excel.util.ListUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import top.ticho.starter.web.util.valid.TiValidUtil;
+import top.ticho.tool.core.TiIdUtil;
+import top.ticho.tool.core.TiStrUtil;
 import top.ticho.tool.json.util.TiJsonUtil;
 
 import jakarta.validation.ConstraintViolation;
@@ -28,7 +28,7 @@ public class ExcelListener<M extends ExcelBaseImp> implements ReadListener<M> {
     private static final int DEFAULT_BATCH_SIZE = 50;
 
     /** 执行id */
-    private final String id = IdUtil.fastSimpleUUID();
+    private final String id = TiIdUtil.ulid();
     /** 批量数量 */
     private int batchSize;
     /** 校验错误数 */
@@ -72,7 +72,7 @@ public class ExcelListener<M extends ExcelBaseImp> implements ReadListener<M> {
         total++;
         // 参数校验
         String errorMsg = validData(data);
-        if (StrUtil.isNotBlank(errorMsg)) {
+        if (TiStrUtil.isNotBlank(errorMsg)) {
             errorHandle(data, errorMsg);
         } else {
             setData(data, "读取成功，待操作", false);

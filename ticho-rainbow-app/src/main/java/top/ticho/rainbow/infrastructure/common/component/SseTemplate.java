@@ -1,6 +1,5 @@
 package top.ticho.rainbow.infrastructure.common.component;
 
-import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -9,6 +8,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import top.ticho.starter.view.exception.TiBizException;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -47,7 +47,7 @@ public class SseTemplate {
     public SseEmitter connect(String id) {
         SseEmitter oldEmitter = sseEmitterMap.get(id);
         if (oldEmitter != null) {
-            oldEmitter.completeWithError(new TiBizException(StrUtil.format("sse[{}] repeat connect", id)));
+            oldEmitter.completeWithError(new TiBizException(TiStrUtil.format("sse[{}] repeat connect", id)));
         }
         // 设置过期时间0-不过期,默认值位30秒
         SseEmitter sseEmitter = new SseEmitterUTF8(0L);

@@ -1,6 +1,5 @@
 package top.ticho.rainbow.infrastructure.common.component.excel;
 
-import cn.hutool.core.util.URLUtil;
 import cn.idev.excel.EasyExcel;
 import cn.idev.excel.ExcelWriter;
 import cn.idev.excel.write.metadata.WriteSheet;
@@ -11,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 import top.ticho.starter.view.core.TiPageQuery;
 import top.ticho.starter.view.core.TiResult;
+import top.ticho.tool.core.TiUrlUtil;
 import top.ticho.tool.json.util.TiJsonUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -112,7 +112,7 @@ public class ExcelHandle {
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLUtil.encodeAll(fileName + ".xlsx"));
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + TiUrlUtil.encodeAll(fileName + ".xlsx"));
         try (ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), claz).build()) {
             WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
             excelWriter.write(datas, writeSheet);
@@ -194,7 +194,7 @@ public class ExcelHandle {
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + URLUtil.encodeAll(fileName + ".xlsx"));
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + TiUrlUtil.encodeAll(fileName + ".xlsx"));
         try (ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), claz).build()) {
             WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
             long total = 0;
@@ -247,7 +247,7 @@ public class ExcelHandle {
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + URLUtil.encodeAll(fileName + ".xlsx"));
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + TiUrlUtil.encodeAll(fileName + ".xlsx"));
         try (ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), claz).build()) {
             WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
             excelWriter.write(Collections.emptyList(), writeSheet);

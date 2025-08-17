@@ -8,7 +8,7 @@ import top.ticho.rainbow.domain.entity.FileInfo;
 import top.ticho.rainbow.infrastructure.common.enums.FileInfoStatus;
 import top.ticho.rainbow.interfaces.dto.ChunkCacheDTO;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
-import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.tool.core.TiIdUtil;
 import top.ticho.tool.json.util.TiJsonUtil;
 
 /**
@@ -23,7 +23,7 @@ public interface FileInfoAssembler {
     /**
      * 将文件信息DTO转换为实体对象。
      */
-    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
+    @Mapping(target = "id", expression = "java(TiIdUtil.snowId())")
     FileInfo toEntity(FileInfoDTO dto);
 
     /**

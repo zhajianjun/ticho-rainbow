@@ -8,7 +8,7 @@ import top.ticho.rainbow.domain.entity.vo.SettingModifyVO;
 import top.ticho.rainbow.interfaces.command.SettingModifyCommand;
 import top.ticho.rainbow.interfaces.command.SettingSaveCommand;
 import top.ticho.rainbow.interfaces.dto.SettingDTO;
-import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.tool.core.TiIdUtil;
 
 
 /**
@@ -20,7 +20,7 @@ import top.ticho.starter.web.util.TiIdUtil;
 @Mapper(componentModel = "spring", imports = {TiIdUtil.class})
 public interface SettingAssembler {
 
-    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
+    @Mapping(target = "id", expression = "java(TiIdUtil.snowId())")
     Setting toEntity(SettingSaveCommand settingSaveCommand);
 
     SettingModifyVO toModifyfVO(SettingModifyCommand settingModifyCommand);

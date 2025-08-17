@@ -1,10 +1,5 @@
 package top.ticho.rainbow.application.service;
 
-import cn.hutool.core.collection.CollStreamUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,6 +20,7 @@ import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
+import top.ticho.rainbow.infrastructure.common.constant.DateConst;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
 import top.ticho.rainbow.infrastructure.common.enums.UserStatus;
 import top.ticho.rainbow.interfaces.command.UseModifyCommand;
@@ -36,6 +32,9 @@ import top.ticho.rainbow.interfaces.query.UserQuery;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.TiSpringUtil;
+import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiNumberUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -47,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -75,7 +75,7 @@ public class UserService {
         User user = userAssembler.toEntity(useSaveCommand);
         userExecutor.checkRepeat(user);
         TiAssert.isTrue(userRepository.save(user), "保存失败");
-        if (CollUtil.isEmpty(useSaveCommand.getRoleIds())) {
+        if (TiCollUtil.isEmpty(useSaveCommand.getRoleIds())) {
             return;
         }
         userRoleRepository.removeAndSave(user.getId(), useSaveCommand.getRoleIds());
@@ -139,13 +139,13 @@ public class UserService {
     }
 
     private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<User> modifyHandle) {
-        List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
+        List<Long> ids = modifys.stream().map(VersionModifyCommand::getId).collect(Collectors.toList());
         List<User> users = userRepository.list(ids);
-        Map<Long, User> userMap = CollStreamUtil.toIdentityMap(users, User::getId);
+        Map<Long, User> userMap = users.stream().collect(Collectors.toMap(User::getId, Function.identity(), (o, n) -> o));
         for (VersionModifyCommand modify : modifys) {
             User user = userMap.get(modify.getId());
-            TiAssert.isNotNull(user, StrUtil.format("操作失败, 用户不存在, id: {}", modify.getId()));
-            user.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 用户: {}", user.getUsername()));
+            TiAssert.isNotNull(user, TiStrUtil.format("操作失败, 用户不存在, id: {}", modify.getId()));
+            user.checkVersion(modify.getVersion(), TiStrUtil.format("数据已被修改，请刷新后重试, 用户: {}", user.getUsername()));
             // 修改逻辑
             modifyHandle.accept(user);
         }
@@ -154,17 +154,17 @@ public class UserService {
 
     public void excelTemplateDownload() throws IOException {
         String sheetName = "用户信息";
-        String fileName = "用户信息模板-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
+        String fileName = "用户信息模板-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateConst.PURE_DATETIME_PATTERN));
         ExcelHandle.writeEmptyToResponseBatch(fileName, sheetName, UserExcelImportModel.class, response);
     }
 
     public void importExcel(MultipartFile file) throws IOException {
         String sheetName = "导入结果";
-        String fileName = StrUtil.format("{}-导入结果", file.getOriginalFilename());
+        String fileName = TiStrUtil.format("{}-导入结果", file.getOriginalFilename());
         Role guestRole = roleRepository.getGuestRole();
         TiAssert.isNotNull(guestRole, "默认角色不存在，请联系管理员进行处理");
         UserService bean = TiSpringUtil.getBean(this.getClass());
-        Map<String, Integer> valueMap = dictExecutor.getValueMap(DictConst.SEX, NumberUtil::parseInt);
+        Map<String, Integer> valueMap = dictExecutor.getValueMap(DictConst.SEX, TiNumberUtil::parseInt);
         ExcelHandle.readAndWriteToResponse((x, y) -> bean.readAndWrite(x, y, guestRole, valueMap), file, fileName, sheetName, UserExcelImport.class, response);
     }
 
@@ -179,7 +179,7 @@ public class UserService {
             String password = userExecutor.encodePassword(userExecutor.getInitPassword());
             User user = userAssembler.toEntity(userExcelImport, password, valueMap.get(userExcelImport.getSexName()));
             List<String> errorMsgs = userExecutor.checkRepeat(user);
-            if (CollUtil.isNotEmpty(errorMsgs)) {
+            if (TiCollUtil.isNotEmpty(errorMsgs)) {
                 userExcelImport.setMessage(String.join(",", errorMsgs));
                 errHandle.accept(userExcelImport);
                 continue;
@@ -192,7 +192,7 @@ public class UserService {
                 .build();
             userRoles.add(userRole);
         }
-        if (CollUtil.isEmpty(users)) {
+        if (TiCollUtil.isEmpty(users)) {
             return;
         }
         userRepository.saveBatch(users);
@@ -202,7 +202,7 @@ public class UserService {
 
     public void exportExcel(UserQuery query) throws IOException {
         String sheetName = "用户信息";
-        String fileName = "用户信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
+        String fileName = "用户信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateConst.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.USER_STATUS, DictConst.SEX);
         query.setCount(false);
         ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, UserExcelExport.class, response);

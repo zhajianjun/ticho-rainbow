@@ -5,7 +5,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.domain.repository.OpLogRepository;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
-import top.ticho.trace.common.prop.TiTraceProperty;
+import top.ticho.trace.common.TiTraceProperty;
 
 /**
  * 日志清除

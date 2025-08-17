@@ -1,6 +1,5 @@
 package top.ticho.rainbow.infrastructure.config;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,8 +14,8 @@ import top.ticho.intranet.common.prop.IntranetServerProperty;
 import top.ticho.intranet.server.core.IntranetServerBuilder;
 import top.ticho.intranet.server.core.IntranetServerHandler;
 import top.ticho.intranet.server.filter.DefaultIntranetApplicationListenFilter;
-import top.ticho.rainbow.infrastructure.common.interceptor.CustomTraceInterceptor;
 import top.ticho.rainbow.infrastructure.common.prop.FileProperty;
+import top.ticho.tool.core.TiStrUtil;
 
 /**
  * 通用配置
@@ -29,7 +27,6 @@ import top.ticho.rainbow.infrastructure.common.prop.FileProperty;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    private final CustomTraceInterceptor customTraceInterceptor;
     private final FileProperty fileProperty;
 
     @Override
@@ -43,12 +40,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         String mvcResourcePath = fileProperty.getMvcResourcePath();
         String publicAbsolutePath = fileProperty.getPublicPath();
         log.info("静态文件路径: {}", publicAbsolutePath);
-        registry.addResourceHandler(mvcResourcePath).addResourceLocations(StrUtil.format("file:{}", publicAbsolutePath));
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(customTraceInterceptor).order(customTraceInterceptor.getOrder());
+        registry.addResourceHandler(mvcResourcePath).addResourceLocations(TiStrUtil.format("file:{}", publicAbsolutePath));
     }
 
     @Bean

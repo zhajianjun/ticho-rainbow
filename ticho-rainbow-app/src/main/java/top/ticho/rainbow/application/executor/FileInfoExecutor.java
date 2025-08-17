@@ -1,8 +1,5 @@
 package top.ticho.rainbow.application.executor;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.file.FileNameUtil;
-import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,7 +13,6 @@ import top.ticho.rainbow.infrastructure.common.dto.FileCacheDTO;
 import top.ticho.rainbow.infrastructure.common.enums.FileErrorCode;
 import top.ticho.rainbow.infrastructure.common.enums.FileInfoStatus;
 import top.ticho.rainbow.infrastructure.common.prop.FileProperty;
-import top.ticho.rainbow.infrastructure.common.util.CommonUtil;
 import top.ticho.rainbow.interfaces.command.FileUploadCommand;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.starter.cache.component.TiCacheTemplate;
@@ -24,7 +20,9 @@ import top.ticho.starter.view.enums.TiBizErrorCode;
 import top.ticho.starter.view.enums.TiHttpErrorCode;
 import top.ticho.starter.view.exception.TiBizException;
 import top.ticho.starter.view.util.TiAssert;
-import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.tool.core.TiFileUtil;
+import top.ticho.tool.core.TiIdUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,20 +53,20 @@ public class FileInfoExecutor {
         DataSize fileSize = fileProperty.getMaxFileSize();
         TiAssert.isTrue(file.getSize() <= fileSize.toBytes(), FileErrorCode.FILE_SIZE_TO_LARGER, "文件大小不能超出" + fileSize.toMegabytes() + "MB");
         // 主文件名 logo.svg -> logo
-        String mainName = FileNameUtil.mainName(originalFileName);
+        String mainName = TiFileUtil.mainName(originalFileName);
         // 后缀名 svg
-        String extName = FileNameUtil.extName(originalFileName);
+        String extName = TiFileUtil.extName(originalFileName);
         // 存储文件名 logo.svg -> logo-wKpdqhmC.svg
-        String fileName = mainName + StrUtil.DASHED + CommonUtil.fastShortUUID() + StrUtil.DOT + extName;
+        String fileName = mainName + TiStrUtil.DASHED + TiIdUtil.shortUuid() + TiStrUtil.DOT + extName;
         // 相对路径
         String relativePath = Optional.ofNullable(fileUploadCommand.getRelativePath())
-            .filter(StrUtil::isNotBlank)
+            .filter(TiStrUtil::isNotBlank)
             // 去除两边的斜杠
-            .map(x -> StrUtil.strip(x, "/"))
+            .map(x -> TiStrUtil.strip(x, "/"))
             .map(s -> s + "/" + fileName)
             .orElse(fileName);
         FileInfo fileInfo = FileInfo.builder()
-            .id(TiIdUtil.getId())
+            .id(TiIdUtil.snowId())
             .type(type)
             .fileName(fileName)
             .originalFileName(originalFileName)
@@ -82,7 +80,7 @@ public class FileInfoExecutor {
         // 文件存储
         String absolutePath = getAbsolutePath(fileInfo);
         try {
-            FileUtil.writeBytes(file.getBytes(), absolutePath);
+            TiFileUtil.writeBytes(file.getBytes(), absolutePath);
         } catch (IOException e) {
             throw new TiBizException(TiHttpErrorCode.FAIL, "文件上传失败");
         }
@@ -113,13 +111,13 @@ public class FileInfoExecutor {
         if (!file.exists()) {
             return null;
         }
-        String domain = StrUtil.removeSuffix(fileProperty.getDomain(), "/");
+        String domain = TiStrUtil.removeSuffix(fileProperty.getDomain(), "/");
         if (Objects.equals(fileInfo.getType(), 1)) {
-            String mvcResourcePath = StrUtil.removeSuffix(fileProperty.getMvcResourcePath(), "/**");
-            mvcResourcePath = StrUtil.removePrefix(mvcResourcePath, "/");
+            String mvcResourcePath = TiStrUtil.removeSuffix(fileProperty.getMvcResourcePath(), "/**");
+            mvcResourcePath = TiStrUtil.removePrefix(mvcResourcePath, "/");
             return domain + "/" + mvcResourcePath + "/" + fileInfo.getPath();
         }
-        String sign = CommonUtil.fastShortUUID();
+        String sign = TiIdUtil.shortUuid();
         FileCacheDTO fileCacheDTO = new FileCacheDTO();
         fileCacheDTO.setSign(sign);
         fileCacheDTO.setFileInfo(fileInfo);

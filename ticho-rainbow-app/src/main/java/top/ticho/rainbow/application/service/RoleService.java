@@ -1,9 +1,5 @@
 package top.ticho.rainbow.application.service;
 
-import cn.hutool.core.collection.CollStreamUtil;
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +14,7 @@ import top.ticho.rainbow.domain.repository.RoleMenuRepository;
 import top.ticho.rainbow.domain.repository.RoleRepository;
 import top.ticho.rainbow.domain.repository.UserRoleRepository;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
+import top.ticho.rainbow.infrastructure.common.constant.DateConst;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
 import top.ticho.rainbow.infrastructure.common.constant.SecurityConst;
 import top.ticho.rainbow.interfaces.command.RoleBindMenuCommand;
@@ -31,6 +28,8 @@ import top.ticho.rainbow.interfaces.query.RoleQuery;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.valid.TiValidUtil;
+import top.ticho.tool.core.TiNumberUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -42,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -136,8 +136,8 @@ public class RoleService {
 
     public void exportExcel(RoleQuery query) throws IOException {
         String sheetName = "角色信息";
-        String fileName = "角色信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
-        Map<Integer, String> labelMap = dictExecutor.getLabelMap(DictConst.COMMON_STATUS, NumberUtil::parseInt);
+        String fileName = "角色信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateConst.PURE_DATETIME_PATTERN));
+        Map<Integer, String> labelMap = dictExecutor.getLabelMap(DictConst.COMMON_STATUS, TiNumberUtil::parseInt);
         query.setCount(false);
         ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, RoleExcelExport.class, response);
     }
@@ -155,13 +155,13 @@ public class RoleService {
     }
 
     private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<Role> modifyHandle) {
-        List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
+        List<Long> ids = modifys.stream().map(VersionModifyCommand::getId).collect(Collectors.toList());
         List<Role> roles = roleRepository.list(ids);
-        Map<Long, Role> roleMap = CollStreamUtil.toIdentityMap(roles, Role::getId);
+        Map<Long, Role> roleMap = roles.stream().collect(Collectors.toMap(Role::getId, Function.identity(), (o, n) -> o));
         for (VersionModifyCommand modify : modifys) {
             Role role = roleMap.get(modify.getId());
-            TiAssert.isNotNull(role, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
-            role.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 角色: {}", role.getName()));
+            TiAssert.isNotNull(role, TiStrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
+            role.checkVersion(modify.getVersion(), TiStrUtil.format("数据已被修改，请刷新后重试, 角色: {}", role.getName()));
             // 修改逻辑
             modifyHandle.accept(role);
         }

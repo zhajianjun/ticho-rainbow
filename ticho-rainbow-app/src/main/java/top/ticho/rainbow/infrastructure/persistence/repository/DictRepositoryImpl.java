@@ -1,7 +1,5 @@
 package top.ticho.rainbow.infrastructure.persistence.repository;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +16,8 @@ import top.ticho.rainbow.interfaces.query.DictQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.util.List;
 import java.util.Objects;
@@ -74,11 +74,11 @@ public class DictRepositoryImpl extends TiRepositoryImpl<DictMapper, DictPO> imp
     @Override
     public TiPageResult<DictDTO> page(DictQuery query) {
         LambdaQueryWrapper<DictPO> wrapper = Wrappers.lambdaQuery();
-        wrapper.like(StrUtil.isNotBlank(query.getRemark()), DictPO::getRemark, query.getRemark());
+        wrapper.like(TiStrUtil.isNotBlank(query.getRemark()), DictPO::getRemark, query.getRemark());
         wrapper.eq(Objects.nonNull(query.getId()), DictPO::getId, query.getId());
-        wrapper.in(CollUtil.isNotEmpty(query.getIds()), DictPO::getId, query.getIds());
-        wrapper.like(StrUtil.isNotBlank(query.getCode()), DictPO::getCode, query.getCode());
-        wrapper.like(StrUtil.isNotBlank(query.getName()), DictPO::getName, query.getName());
+        wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), DictPO::getId, query.getIds());
+        wrapper.like(TiStrUtil.isNotBlank(query.getCode()), DictPO::getCode, query.getCode());
+        wrapper.like(TiStrUtil.isNotBlank(query.getName()), DictPO::getName, query.getName());
         wrapper.eq(Objects.nonNull(query.getIsSys()), DictPO::getIsSys, query.getIsSys());
         wrapper.eq(Objects.nonNull(query.getStatus()), DictPO::getStatus, query.getStatus());
         wrapper.orderByDesc(DictPO::getId);

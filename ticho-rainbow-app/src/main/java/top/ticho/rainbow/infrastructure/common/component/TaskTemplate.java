@@ -1,8 +1,5 @@
 package top.ticho.rainbow.infrastructure.common.component;
 
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.ClassUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.CronExpression;
@@ -22,8 +19,13 @@ import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.impl.triggers.CronTriggerImpl;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
+import top.ticho.tool.core.TiClassUtil;
+import top.ticho.tool.core.TiLocalDateTimeUtil;
+import top.ticho.tool.json.constant.TiDateFormatConst;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -98,7 +100,7 @@ public class TaskTemplate {
         String cronExpression,
         Map<String, Object> paramMap
     ) {
-        Class<Job> jobClazz = ClassUtil.loadClass(jobClass);
+        Class<Job> jobClazz = TiClassUtil.loadClass(jobClass);
         JobDetail jobDetail = JobBuilder.newJob(jobClazz)
             .withIdentity(jobName, jobGroup)
             .build();
@@ -107,12 +109,12 @@ public class TaskTemplate {
         CronTrigger cronTrigger = TriggerBuilder.newTrigger()
             .withIdentity(triggerName, triggerGroup)
             // 延迟5s启动
-            .startAt(DateUtil.offsetSecond(new Date(), 5))
+            .startAt(TiLocalDateTimeUtil.toDate(LocalDateTime.now().plusSeconds(5)))
             .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
             .build();
         try {
             scheduler.scheduleJob(jobDetail, cronTrigger);
-            log.info("新增定时任务成功， 任务：{}", jobDetail.getKey());
+            log.info("新增定时任务成功，任务：{}", jobDetail.getKey());
             return true;
         } catch (SchedulerException e) {
             log.error("新增定时任务失败: {}", e.getMessage(), e);
@@ -145,9 +147,8 @@ public class TaskTemplate {
     public boolean runOnce(String jobName, String jobGroup) {
         JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
         try {
-            Map<String, String> mdcMap = MDC.getCopyOfContextMap();
             JobDataMap jobDataMap = new JobDataMap();
-            jobDataMap.put(TASK_MDC_INFO, mdcMap);
+            jobDataMap.put(TASK_MDC_INFO, MDC.getCopyOfContextMap());
             scheduler.triggerJob(jobKey, jobDataMap);
             return true;
         } catch (SchedulerException e) {
@@ -321,9 +322,10 @@ public class TaskTemplate {
             CronTriggerImpl cronTriggerImpl = new CronTriggerImpl();
             cronTriggerImpl.setCronExpression(cronExpression);
             List<Date> dates = TriggerUtils.computeFireTimes(cronTriggerImpl, null, numTimes);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TiDateFormatConst.YYYY_MM_DD_HH_MM_SS);
             return dates
                 .stream()
-                .map(date -> DateUtil.format(date, DatePattern.NORM_DATETIME_FORMAT))
+                .map(date -> formatter.format(date.toInstant()))
                 .collect(Collectors.toList());
         } catch (ParseException e) {
             log.error("获取近{}次的执行时间失败: {}", numTimes, e.getMessage(), e);

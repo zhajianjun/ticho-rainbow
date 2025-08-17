@@ -1,13 +1,13 @@
 package top.ticho.rainbow.application.task;
 
-import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.rainbow.infrastructure.common.prop.FileProperty;
-import top.ticho.trace.common.prop.TiTraceProperty;
+import top.ticho.tool.core.TiFileUtil;
+import top.ticho.trace.common.TiTraceProperty;
 
 import java.io.File;
 
@@ -36,7 +36,7 @@ public class FileTmpClearTask extends AbstracTask<String> {
             log.info("临时文件路径不存在，无需清除，路径：{}", tmpPath);
             return;
         }
-        FileUtil.del(file);
+        TiFileUtil.del(file);
     }
 
     @Override

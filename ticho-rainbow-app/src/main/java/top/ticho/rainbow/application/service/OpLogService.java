@@ -1,7 +1,5 @@
 package top.ticho.rainbow.application.service;
 
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.util.NumberUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.assembler.OpLogAssembler;
@@ -9,10 +7,12 @@ import top.ticho.rainbow.application.dto.excel.OpLogExcelExport;
 import top.ticho.rainbow.application.executor.DictExecutor;
 import top.ticho.rainbow.application.repository.OpLogAppRepository;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
+import top.ticho.rainbow.infrastructure.common.constant.DateConst;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
 import top.ticho.rainbow.interfaces.dto.OpLogDTO;
 import top.ticho.rainbow.interfaces.query.OpLogQuery;
 import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.tool.core.TiNumberUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -42,8 +42,8 @@ public class OpLogService {
 
     public void exportExcel(OpLogQuery query) throws IOException {
         String sheetName = "操作日志";
-        String fileName = "操作日志导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
-        Map<Integer, String> labelMap = dictExecutor.getLabelMap(DictConst.YES_OR_NO, NumberUtil::parseInt);
+        String fileName = "操作日志导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateConst.PURE_DATETIME_PATTERN));
+        Map<Integer, String> labelMap = dictExecutor.getLabelMap(DictConst.YES_OR_NO, TiNumberUtil::parseInt);
         query.setCount(false);
         ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, OpLogExcelExport.class, response);
     }

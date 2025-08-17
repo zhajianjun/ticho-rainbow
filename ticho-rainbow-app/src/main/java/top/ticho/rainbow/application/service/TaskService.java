@@ -1,8 +1,5 @@
 package top.ticho.rainbow.application.service;
 
-import cn.hutool.core.collection.CollStreamUtil;
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
@@ -17,6 +14,7 @@ import top.ticho.rainbow.domain.entity.vo.TaskModifyVO;
 import top.ticho.rainbow.domain.repository.TaskRepository;
 import top.ticho.rainbow.infrastructure.common.component.TaskTemplate;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
+import top.ticho.rainbow.infrastructure.common.constant.DateConst;
 import top.ticho.rainbow.infrastructure.common.constant.DictConst;
 import top.ticho.rainbow.interfaces.command.TaskModifyCommand;
 import top.ticho.rainbow.interfaces.command.TaskRunOnceCommand;
@@ -27,6 +25,7 @@ import top.ticho.rainbow.interfaces.query.TaskQuery;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.view.enums.TiBizErrorCode;
 import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiStrUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -38,6 +37,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -93,7 +93,7 @@ public class TaskService implements InitializingBean {
         }
         AbstracTask<?> abstracTask = abstracTaskOpt.get();
 
-        if (StrUtil.isNotBlank(param)) {
+        if (TiStrUtil.isNotBlank(param)) {
             Object taskParam = abstracTask.getTaskParam(param);
             TiAssert.isNotNull(taskParam, "参数格式不正确");
         }
@@ -159,7 +159,7 @@ public class TaskService implements InitializingBean {
 
     public void exportExcel(TaskQuery query) throws IOException {
         String sheetName = "计划任务";
-        String fileName = "计划任务导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
+        String fileName = "计划任务导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateConst.PURE_DATETIME_PATTERN));
         Map<String, String> labelMap = dictExecutor.getLabelMapBatch(DictConst.COMMON_STATUS, DictConst.PLAN_TASK);
         query.setCount(false);
         ExcelHandle.writeToResponseBatch(x -> this.excelExpHandle(x, labelMap), query, fileName, sheetName, TaskExcelExport.class, response);
@@ -179,13 +179,13 @@ public class TaskService implements InitializingBean {
     }
 
     private boolean modifyBatch(List<VersionModifyCommand> modifys, Consumer<Task> modifyHandle) {
-        List<Long> ids = CollStreamUtil.toList(modifys, VersionModifyCommand::getId);
+        List<Long> ids = modifys.stream().map(VersionModifyCommand::getId).collect(Collectors.toList());
         List<Task> tasks = taskRepository.list(ids);
-        Map<Long, Task> taskMap = CollStreamUtil.toIdentityMap(tasks, Task::getId);
+        Map<Long, Task> taskMap = tasks.stream().collect(Collectors.toMap(Task::getId, Function.identity(), (o, n) -> o));
         for (VersionModifyCommand modify : modifys) {
             Task task = taskMap.get(modify.getId());
-            TiAssert.isNotNull(task, StrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
-            task.checkVersion(modify.getVersion(), StrUtil.format("数据已被修改，请刷新后重试, 任务: {}", task.getName()));
+            TiAssert.isNotNull(task, TiStrUtil.format("操作失败, 数据不存在, id: {}", modify.getId()));
+            task.checkVersion(modify.getVersion(), TiStrUtil.format("数据已被修改，请刷新后重试, 任务: {}", task.getName()));
             // 修改逻辑
             modifyHandle.accept(task);
         }

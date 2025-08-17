@@ -1,6 +1,5 @@
 package top.ticho.rainbow.application.service;
 
-import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,6 +9,7 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import top.ticho.rainbow.interfaces.dto.PermissionDTO;
 import top.ticho.starter.web.util.TiSpringUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -71,8 +71,8 @@ public class PermissionQueryService {
         Map<String, String> map = perms
             .stream()
             .filter(Objects::nonNull)
-            .filter(item -> StrUtil.isNotBlank(item.getCode()))
-            .filter(item -> StrUtil.isNotBlank(item.getName()))
+            .filter(item -> TiStrUtil.isNotBlank(item.getCode()))
+            .filter(item -> TiStrUtil.isNotBlank(item.getName()))
             .sorted(Comparator.comparing(PermissionDTO::getCode, Comparator.nullsLast(Comparator.naturalOrder())))
             .collect(Collectors.toMap(PermissionDTO::getCode, PermissionDTO::getName, (v1, v2) -> v1, LinkedHashMap::new));
         MAP.putAll(map);
@@ -99,7 +99,7 @@ public class PermissionQueryService {
             return null;
         }
         String value = preAuthorize.value();
-        if (StrUtil.isBlank(value)) {
+        if (TiStrUtil.isBlank(value)) {
             return null;
         }
         int start = value.indexOf("'") + 1;

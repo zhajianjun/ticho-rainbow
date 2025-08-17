@@ -9,7 +9,7 @@ import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.rainbow.interfaces.command.RoleModifyCommand;
 import top.ticho.rainbow.interfaces.command.RoleSaveCommand;
 import top.ticho.rainbow.interfaces.dto.RoleDTO;
-import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.tool.core.TiIdUtil;
 
 /**
  * 角色信息 转换
@@ -20,7 +20,7 @@ import top.ticho.starter.web.util.TiIdUtil;
 @Mapper(componentModel = "spring", imports = {TiIdUtil.class, CommonStatus.class})
 public interface RoleAssembler {
 
-    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
+    @Mapping(target = "id", expression = "java(TiIdUtil.snowId())")
     @Mapping(target = "status", expression = "java(CommonStatus.DISABLE.code())")
     Role toEntity(RoleSaveCommand dto);
 

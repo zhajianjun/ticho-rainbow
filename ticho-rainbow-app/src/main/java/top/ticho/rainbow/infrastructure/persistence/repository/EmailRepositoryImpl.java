@@ -1,12 +1,12 @@
 package top.ticho.rainbow.infrastructure.persistence.repository;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.domain.repository.EmailRepository;
 import top.ticho.starter.mail.component.TiMailContent;
 import top.ticho.starter.mail.component.TiMailTemplate;
+import top.ticho.starter.web.util.TiSpringUtil;
+import top.ticho.tool.core.TiCollUtil;
 
 import java.util.List;
 import java.util.Objects;
@@ -30,14 +30,14 @@ public class EmailRepositoryImpl implements EmailRepository {
 
     @Override
     public boolean sendMailBatch(List<TiMailContent> mailContents) {
-        if (CollUtil.isEmpty(mailContents)) {
+        if (TiCollUtil.isEmpty(mailContents)) {
             return false;
         }
         return sendMailBatchExecute(mailContents);
     }
 
     private TiMailTemplate getMailTemplate() {
-        return SpringUtil.getBean(TiMailTemplate.class);
+        return TiSpringUtil.getBean(TiMailTemplate.class);
     }
 
     public boolean sendMailExecute(TiMailContent mailContent) {

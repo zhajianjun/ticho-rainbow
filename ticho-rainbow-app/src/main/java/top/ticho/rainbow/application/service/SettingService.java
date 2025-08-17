@@ -1,6 +1,5 @@
 package top.ticho.rainbow.application.service;
 
-import cn.hutool.core.date.DatePattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.ticho.rainbow.application.assembler.SettingAssembler;
@@ -10,6 +9,7 @@ import top.ticho.rainbow.domain.entity.Setting;
 import top.ticho.rainbow.domain.entity.vo.SettingModifyVO;
 import top.ticho.rainbow.domain.repository.SettingRepository;
 import top.ticho.rainbow.infrastructure.common.component.excel.ExcelHandle;
+import top.ticho.rainbow.infrastructure.common.constant.DateConst;
 import top.ticho.rainbow.interfaces.command.SettingModifyCommand;
 import top.ticho.rainbow.interfaces.command.SettingSaveCommand;
 import top.ticho.rainbow.interfaces.command.VersionModifyCommand;
@@ -68,7 +68,7 @@ public class SettingService {
 
     public void exportExcel(SettingQuery settingQuery) throws IOException {
         String sheetName = "配置信息";
-        String fileName = "配置信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DatePattern.PURE_DATETIME_PATTERN));
+        String fileName = "配置信息导出-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateConst.PURE_DATETIME_PATTERN));
         settingQuery.setCount(false);
         ExcelHandle.writeToResponseBatch(this::excelExpHandle, settingQuery, fileName, sheetName, SettingExcelExport.class, response);
     }

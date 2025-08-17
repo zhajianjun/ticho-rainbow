@@ -5,7 +5,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.service.SseHandle;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
-import top.ticho.trace.common.prop.TiTraceProperty;
+import top.ticho.trace.common.TiTraceProperty;
 
 /**
  * sse心跳

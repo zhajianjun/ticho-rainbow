@@ -1,7 +1,5 @@
 package top.ticho.rainbow.application.executor;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -15,6 +13,8 @@ import top.ticho.rainbow.infrastructure.common.enums.SettingKey;
 import top.ticho.rainbow.interfaces.dto.UserDTO;
 import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +68,7 @@ public class UserExecutor {
     }
 
     public void setRoles(List<UserDTO> userDTOs) {
-        if (CollUtil.isEmpty(userDTOs)) {
+        if (TiCollUtil.isEmpty(userDTOs)) {
             return;
         }
         Map<Long, List<Long>> userRoleIdsMap = userDTOs
@@ -91,9 +91,9 @@ public class UserExecutor {
         String mobile = user.getMobile();
         List<User> users = userRepository.findByAccount(username, email, mobile);
         boolean isModify = Objects.nonNull(user.getId());
-        boolean usernameNotBlank = StrUtil.isNotBlank(username);
-        boolean emailNotBlank = StrUtil.isNotBlank(email);
-        boolean mobileNotBlank = StrUtil.isNotBlank(mobile);
+        boolean usernameNotBlank = TiStrUtil.isNotBlank(username);
+        boolean emailNotBlank = TiStrUtil.isNotBlank(email);
+        boolean mobileNotBlank = TiStrUtil.isNotBlank(mobile);
         List<String> errors = new ArrayList<>();
         for (User item : users) {
             Long itemId = item.getId();

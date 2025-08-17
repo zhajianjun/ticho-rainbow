@@ -1,6 +1,5 @@
 package top.ticho.rainbow.application.dto.excel;
 
-import cn.hutool.core.lang.RegexPool;
 import cn.idev.excel.annotation.ExcelProperty;
 import cn.idev.excel.annotation.format.DateTimeFormat;
 import cn.idev.excel.annotation.write.style.ColumnWidth;
@@ -83,7 +82,7 @@ public class UserExcelImport extends ExcelBaseImp {
     /** 手机号码 */
     @ColumnWidth(20)
     @ExcelProperty(value = "手机号码")
-    @Pattern(regexp = RegexPool.MOBILE, message = "手机号码格式不正确")
+    @Pattern(regexp = "(?:0|86|\\+86)?1[3-9]\\d{9}", message = "手机号码格式不正确")
     private String mobile;
 
 }

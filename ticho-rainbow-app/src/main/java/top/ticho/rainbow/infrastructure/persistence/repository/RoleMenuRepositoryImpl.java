@@ -1,6 +1,5 @@
 package top.ticho.rainbow.infrastructure.persistence.repository;
 
-import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +12,7 @@ import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.persistence.mapper.RoleMenuMapper;
 import top.ticho.rainbow.infrastructure.persistence.po.RoleMenuPO;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
+import top.ticho.tool.core.TiCollUtil;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -43,7 +43,7 @@ public class RoleMenuRepositoryImpl extends TiRepositoryImpl<RoleMenuMapper, Rol
 
     @Override
     public boolean existsByRoleIds(Collection<Long> roleIds) {
-        if (CollUtil.isEmpty(roleIds)) {
+        if (TiCollUtil.isEmpty(roleIds)) {
             return false;
         }
         LambdaQueryWrapper<RoleMenuPO> wrapper = Wrappers.lambdaQuery();
@@ -54,7 +54,7 @@ public class RoleMenuRepositoryImpl extends TiRepositoryImpl<RoleMenuMapper, Rol
 
     @Override
     public boolean existsByMenuIds(Collection<Long> menuIds) {
-        if (CollUtil.isEmpty(menuIds)) {
+        if (TiCollUtil.isEmpty(menuIds)) {
             return false;
         }
         LambdaQueryWrapper<RoleMenuPO> wrapper = Wrappers.lambdaQuery();
@@ -73,7 +73,7 @@ public class RoleMenuRepositoryImpl extends TiRepositoryImpl<RoleMenuMapper, Rol
         LambdaQueryWrapper<RoleMenuPO> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(RoleMenuPO::getRoleId, roleId);
         remove(wrapper);
-        if (CollUtil.isEmpty(menuIds)) {
+        if (TiCollUtil.isEmpty(menuIds)) {
             return;
         }
         // 需要添加角色用户关联关系

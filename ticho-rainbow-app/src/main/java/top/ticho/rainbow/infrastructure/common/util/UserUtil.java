@@ -1,12 +1,12 @@
 package top.ticho.rainbow.infrastructure.common.util;
 
-import cn.hutool.core.collection.CollUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import top.ticho.rainbow.domain.entity.UserHelper;
 import top.ticho.rainbow.infrastructure.common.constant.SecurityConst;
 import top.ticho.rainbow.infrastructure.common.dto.SecurityUser;
 import top.ticho.starter.security.util.TiUserUtil;
+import top.ticho.tool.core.TiCollUtil;
 
 import java.util.List;
 import java.util.Objects;
@@ -46,7 +46,7 @@ public class UserUtil {
             return false;
         }
         List<String> roleCodes = currentUser.getRoles();
-        if (CollUtil.isEmpty(roleCodes)) {
+        if (TiCollUtil.isEmpty(roleCodes)) {
             return false;
         }
         return roleCodes.contains(SecurityConst.ADMIN);

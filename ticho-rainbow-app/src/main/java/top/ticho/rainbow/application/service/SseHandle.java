@@ -1,6 +1,5 @@
 package top.ticho.rainbow.application.service;
 
-import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -8,10 +7,11 @@ import top.ticho.rainbow.application.dto.SseMessage;
 import top.ticho.rainbow.application.event.SseEvent;
 import top.ticho.rainbow.infrastructure.common.component.SseTemplate;
 import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
-import top.ticho.rainbow.infrastructure.common.util.CommonUtil;
 import top.ticho.rainbow.infrastructure.common.util.UserUtil;
 import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiIdUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -31,7 +31,7 @@ public class SseHandle {
     private final TiCacheTemplate tiCacheTemplate;
 
     public String getSign() {
-        String id = StrUtil.format("{}{}{}", UserUtil.getCurrentUsername(), split, CommonUtil.fastShortUUID());
+        String id = TiStrUtil.format("{}{}{}", UserUtil.getCurrentUsername(), split, TiIdUtil.shortUuid());
         tiCacheTemplate.put(CacheConst.SSE, id, System.currentTimeMillis());
         return id;
     }

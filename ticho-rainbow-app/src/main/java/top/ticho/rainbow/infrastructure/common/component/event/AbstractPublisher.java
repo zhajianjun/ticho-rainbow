@@ -1,12 +1,12 @@
 package top.ticho.rainbow.infrastructure.common.component.event;
 
-import cn.hutool.core.thread.ThreadUtil;
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.TimeoutBlockingWaitStrategy;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
+import top.ticho.tool.core.thread.TiNamedThreadFactory;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +37,7 @@ public abstract class AbstractPublisher<M> {
      */
     public AbstractPublisher(int ringBufferSize, WaitStrategy waitStrategy) {
         // 线程工厂
-        ThreadFactory threadFactory = ThreadUtil.newNamedThreadFactory("ticho-event-", false);
+        ThreadFactory threadFactory = new TiNamedThreadFactory("ticho-event-", false);
         // 生产者类型，多个
         ProducerType producerType = ProducerType.MULTI;
         // 事件工厂

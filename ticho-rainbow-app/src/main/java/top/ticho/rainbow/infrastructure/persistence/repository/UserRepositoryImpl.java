@@ -1,7 +1,5 @@
 package top.ticho.rainbow.infrastructure.persistence.repository;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +20,8 @@ import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.starter.web.util.TiSpringUtil;
+import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -92,7 +92,7 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
 
     @Override
     public User findByUsername(String username) {
-        if (StrUtil.isBlank(username)) {
+        if (TiStrUtil.isBlank(username)) {
             return null;
         }
         LambdaQueryWrapper<UserPO> wrapper = Wrappers.lambdaQuery();
@@ -112,7 +112,7 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
     @Override
     @Cacheable(value = CacheConst.USER_INFO, unless = "#result == null", key = "#result==null ? '' : result.username")
     public User findByEmail(String email) {
-        if (StrUtil.isBlank(email)) {
+        if (TiStrUtil.isBlank(email)) {
             return null;
         }
         LambdaQueryWrapper<UserPO> wrapper = Wrappers.lambdaQuery();
@@ -123,42 +123,42 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
     @Override
     public TiPageResult<UserDTO> page(UserQuery query) {
         LambdaQueryWrapper<UserPO> wrapper = Wrappers.lambdaQuery();
-        wrapper.in(CollUtil.isNotEmpty(query.getIds()), UserPO::getId, query.getIds());
+        wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), UserPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), UserPO::getId, query.getId());
-        wrapper.like(StrUtil.isNotBlank(query.getUsername()), UserPO::getUsername, query.getUsername());
-        wrapper.like(StrUtil.isNotBlank(query.getNickname()), UserPO::getNickname, query.getNickname());
-        wrapper.like(StrUtil.isNotBlank(query.getRealname()), UserPO::getRealname, query.getRealname());
-        wrapper.eq(StrUtil.isNotBlank(query.getIdcard()), UserPO::getIdcard, query.getIdcard());
+        wrapper.like(TiStrUtil.isNotBlank(query.getUsername()), UserPO::getUsername, query.getUsername());
+        wrapper.like(TiStrUtil.isNotBlank(query.getNickname()), UserPO::getNickname, query.getNickname());
+        wrapper.like(TiStrUtil.isNotBlank(query.getRealname()), UserPO::getRealname, query.getRealname());
+        wrapper.eq(TiStrUtil.isNotBlank(query.getIdcard()), UserPO::getIdcard, query.getIdcard());
         wrapper.eq(Objects.nonNull(query.getSex()), UserPO::getSex, query.getSex());
         wrapper.eq(Objects.nonNull(query.getAge()), UserPO::getAge, query.getAge());
         wrapper.eq(Objects.nonNull(query.getBirthday()), UserPO::getBirthday, query.getBirthday());
-        wrapper.like(StrUtil.isNotBlank(query.getAddress()), UserPO::getAddress, query.getAddress());
-        wrapper.like(StrUtil.isNotBlank(query.getEducation()), UserPO::getEducation, query.getEducation());
-        wrapper.like(StrUtil.isNotBlank(query.getEmail()), UserPO::getEmail, query.getEmail());
-        wrapper.like(StrUtil.isNotBlank(query.getQq()), UserPO::getQq, query.getQq());
-        wrapper.like(StrUtil.isNotBlank(query.getWechat()), UserPO::getWechat, query.getWechat());
-        wrapper.like(StrUtil.isNotBlank(query.getMobile()), UserPO::getMobile, query.getMobile());
-        wrapper.eq(StrUtil.isNotBlank(query.getLastIp()), UserPO::getLastIp, query.getLastIp());
+        wrapper.like(TiStrUtil.isNotBlank(query.getAddress()), UserPO::getAddress, query.getAddress());
+        wrapper.like(TiStrUtil.isNotBlank(query.getEducation()), UserPO::getEducation, query.getEducation());
+        wrapper.like(TiStrUtil.isNotBlank(query.getEmail()), UserPO::getEmail, query.getEmail());
+        wrapper.like(TiStrUtil.isNotBlank(query.getQq()), UserPO::getQq, query.getQq());
+        wrapper.like(TiStrUtil.isNotBlank(query.getWechat()), UserPO::getWechat, query.getWechat());
+        wrapper.like(TiStrUtil.isNotBlank(query.getMobile()), UserPO::getMobile, query.getMobile());
+        wrapper.eq(TiStrUtil.isNotBlank(query.getLastIp()), UserPO::getLastIp, query.getLastIp());
         wrapper.eq(Objects.nonNull(query.getLastTime()), UserPO::getLastTime, query.getLastTime());
         wrapper.eq(Objects.nonNull(query.getStatus()), UserPO::getStatus, query.getStatus());
-        wrapper.like(StrUtil.isNotBlank(query.getRemark()), UserPO::getRemark, query.getRemark());
+        wrapper.like(TiStrUtil.isNotBlank(query.getRemark()), UserPO::getRemark, query.getRemark());
         wrapper.orderByDesc(UserPO::getId);
         return TiPageUtil.page(() -> list(wrapper), query, userConverter::toDTO);
     }
 
     @Override
     public List<User> findByAccount(String username, String email, String mobile) {
-        if (StrUtil.isAllBlank(username, email, mobile)) {
+        if (TiStrUtil.isBlank(username) && TiStrUtil.isBlank(email) && TiStrUtil.isBlank(mobile)) {
             return Collections.emptyList();
         }
         LambdaQueryWrapper<UserPO> wrapper = Wrappers.lambdaQuery();
         wrapper
             .and(x ->
-                x.eq(StrUtil.isNotBlank(username), UserPO::getUsername, username)
+                x.eq(TiStrUtil.isNotBlank(username), UserPO::getUsername, username)
                     .or()
-                    .eq(StrUtil.isNotBlank(email), UserPO::getEmail, email)
+                    .eq(TiStrUtil.isNotBlank(email), UserPO::getEmail, email)
                     .or()
-                    .eq(StrUtil.isNotBlank(mobile), UserPO::getMobile, mobile)
+                    .eq(TiStrUtil.isNotBlank(mobile), UserPO::getMobile, mobile)
             );
         return userConverter.toEntity(list(wrapper));
     }

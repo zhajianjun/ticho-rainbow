@@ -14,7 +14,7 @@ import top.ticho.rainbow.interfaces.command.UserSignUpCommand;
 import top.ticho.rainbow.interfaces.dto.LoginUserDTO;
 import top.ticho.rainbow.interfaces.dto.LoginUserDetailDTO;
 import top.ticho.rainbow.interfaces.dto.UserDTO;
-import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.tool.core.TiIdUtil;
 
 /**
  * 用户信息 转换
@@ -25,16 +25,16 @@ import top.ticho.starter.web.util.TiIdUtil;
 @Mapper(componentModel = "spring", imports = {UserStatus.class, TiIdUtil.class})
 public interface UserAssembler {
 
-    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
+    @Mapping(target = "id", expression = "java(TiIdUtil.snowId())")
     @Mapping(target = "status", expression = "java(UserStatus.NORMAL.code())")
     User toEntity(UseSaveCommand useSaveCommand);
 
-    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
+    @Mapping(target = "id", expression = "java(TiIdUtil.snowId())")
     @Mapping(target = "status", expression = "java(UserStatus.NORMAL.code())")
     @Mapping(target = "nickname", source = "username")
     User toEntity(UserSignUpCommand userSignUpCommand);
 
-    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
+    @Mapping(target = "id", expression = "java(TiIdUtil.snowId())")
     @Mapping(target = "status", expression = "java(UserStatus.NORMAL.code())")
     User toEntity(UserExcelImport imp, String password, Integer sex);
 

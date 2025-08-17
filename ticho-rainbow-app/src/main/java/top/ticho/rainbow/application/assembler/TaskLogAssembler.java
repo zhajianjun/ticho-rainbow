@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import top.ticho.rainbow.application.dto.excel.TaskLogExcelExport;
 import top.ticho.rainbow.domain.entity.TaskLog;
 import top.ticho.rainbow.interfaces.dto.TaskLogDTO;
-import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.tool.core.TiIdUtil;
 
 /**
  * 计划任务日志信息 转换

@@ -1,12 +1,5 @@
 package top.ticho.rainbow.application.task;
 
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.date.LocalDateTimeUtil;
-import cn.hutool.core.date.SystemClock;
-import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobDataMap;
@@ -14,25 +7,26 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobKey;
 import org.slf4j.MDC;
-import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import top.ticho.rainbow.domain.entity.TaskLog;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.rainbow.infrastructure.common.component.TaskTemplate;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
-import top.ticho.rainbow.infrastructure.common.util.TraceUtil;
 import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiExceptionUtil;
+import top.ticho.tool.core.TiLocalDateTimeUtil;
+import top.ticho.tool.core.TiStrUtil;
+import top.ticho.tool.json.constant.TiDateFormatConst;
 import top.ticho.tool.json.util.TiJsonUtil;
-import top.ticho.trace.common.bean.TraceInfo;
-import top.ticho.trace.common.constant.LogConst;
-import top.ticho.trace.common.prop.TiTraceProperty;
-import top.ticho.trace.core.handle.TracePushContext;
-import top.ticho.trace.core.util.TiTraceUtil;
-import top.ticho.trace.spring.event.TraceEvent;
-import top.ticho.trace.spring.util.IpUtil;
+import top.ticho.trace.common.TiHttpTraceTag;
+import top.ticho.trace.common.TiTraceConst;
+import top.ticho.trace.common.TiTraceContext;
+import top.ticho.trace.common.TiTraceProperty;
+import top.ticho.trace.spring.util.TiIpUtil;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,7 +59,7 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
     public T getTaskParam(JobExecutionContext context) {
         JobDataMap jobDataMap = context.getMergedJobDataMap();
         String taskParam = jobDataMap.getString(TaskTemplate.TASK_PARAM);
-        if (StrUtil.isBlank(taskParam)) {
+        if (TiStrUtil.isBlank(taskParam)) {
             return null;
         }
         T taskParamObj = getTaskParam(taskParam);
@@ -74,15 +68,16 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
     }
 
     public void executeInternal(JobExecutionContext context) {
-        long start = SystemClock.now();
+        long start = System.currentTimeMillis();
         JobDataMap jobDataMap = context.getMergedJobDataMap();
         Date scheduledFireTime = context.getScheduledFireTime();
         JobDetail jobDetail = context.getJobDetail();
         JobKey jobKey = jobDetail.getKey();
-        mdcHandle(jobDataMap, jobKey.toString());
+        mdcHandle(jobDataMap);
         String taskName = jobDataMap.getString(TaskTemplate.TASK_NAME);
         String taskParam = jobDataMap.getString(TaskTemplate.TASK_PARAM);
-        String runTime = DateUtil.format(scheduledFireTime, DatePattern.NORM_DATETIME_FORMAT);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TiDateFormatConst.YYYY_MM_DD_HH_MM_SS);
+        String runTime = formatter.format(scheduledFireTime.toInstant());
         String jobClassName = jobDetail.getJobClass().getName();
         int isErr = 0;
         String errorMsg = null;
@@ -92,20 +87,20 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
         } catch (Exception e) {
             log.error("定时任务异常, 任务:{}, 任务名称:{}, 任务时间:{}, 任务类:{}, 异常信息:{}", jobKey, taskName, runTime, jobClassName, e.getMessage(), e);
             isErr = 1;
-            errorMsg = ExceptionUtil.stacktraceToString(e);
+            errorMsg = TiExceptionUtil.stacktraceToString(e);
         } finally {
-            long end = SystemClock.now();
+            long end = System.currentTimeMillis();
             long consume = end - start;
             log.info("定时任务结束, 任务:{}, 任务名称:{}, 耗时{}ms, 任务时间:{}, 任务类:{}", jobKey, taskName, consume, runTime, jobClassName);
             saveTaskLog(jobKey.getName(), jobClassName, taskParam, scheduledFireTime, start, end, consume, isErr, errorMsg);
-            traceHandle(jobDataMap, start, end, consume);
+            traceHandle();
         }
     }
 
     private void saveTaskLog(String jobName, String jobClassName, String taskParam, Date executeDate, long start, long end, long consume, int isErr, String errorMsg) {
         Map<String, String> mdcMap = MDC.getCopyOfContextMap();
         LocalDateTime executeTime = Optional.ofNullable(executeDate)
-            .map(DateUtil::toLocalDateTime)
+            .map(TiLocalDateTimeUtil::toLocalDateTime)
             .orElse(LocalDateTime.now());
         String username = mdcMap.get(CommConst.USERNAME_KEY);
         TaskLog taskLogPO = TaskLog.builder()
@@ -113,11 +108,11 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
             .content(jobClassName)
             .param(taskParam)
             .executeTime(executeTime)
-            .startTime(LocalDateTimeUtil.of(start))
-            .endTime(LocalDateTimeUtil.of(end))
+            .startTime(TiLocalDateTimeUtil.of(start))
+            .endTime(TiLocalDateTimeUtil.of(end))
             .consume(Long.valueOf(consume).intValue())
             .mdc(TiJsonUtil.toJsonString(mdcMap))
-            .traceId(mdcMap.get(LogConst.TRACE_ID_KEY))
+            .traceId(TiTraceContext.getTraceId())
             .status(Objects.equals(isErr, 1) ? 0 : 1)
             .operateBy(username)
             .isErr(isErr)
@@ -129,39 +124,15 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
     /**
      * 链路处理
      */
-    private void traceHandle(JobDataMap mergedJobDataMap, long start, long end, long consume) {
-        if (!mergedJobDataMap.containsKey(TaskTemplate.TASK_MDC_INFO)) {
-            TiTraceUtil.complete();
-            return;
-        }
-        TraceInfo traceInfo = TraceInfo.builder()
-            .traceId(MDC.get(LogConst.TRACE_ID_KEY))
-            .spanId(MDC.get(LogConst.SPAN_ID_KEY))
-            .appName(MDC.get(LogConst.APP_NAME_KEY))
-            .env(environment.getProperty("spring.profiles.active"))
-            .ip(MDC.get(LogConst.IP_KEY))
-            .preAppName(MDC.get(LogConst.PRE_APP_NAME_KEY))
-            .preIp(MDC.get(LogConst.PRE_IP_KEY))
-            // .url(url)
-            // .port(port)
-            // .method(handlerMethod.toString())
-            // .type(type)
-            // .status(status)
-            .start(start)
-            .end(end)
-            .consume(consume)
-            .build();
-        TracePushContext.asyncPushTrace(tiTraceProperty, traceInfo);
-        ApplicationContext applicationContext = SpringUtil.getApplicationContext();
-        applicationContext.publishEvent(new TraceEvent(applicationContext, traceInfo));
-        TiTraceUtil.complete();
+    private void traceHandle() {
+        TiTraceContext.close();
     }
 
     /**
      * mdc处理
      */
     @SuppressWarnings("unchecked")
-    private void mdcHandle(JobDataMap mergedJobDataMap, String jobKey) {
+    private void mdcHandle(JobDataMap mergedJobDataMap) {
         Map<String, String> mdcMap;
         if (mergedJobDataMap.containsKey(TaskTemplate.TASK_MDC_INFO)) {
             Object mdcInfo = mergedJobDataMap.get(TaskTemplate.TASK_MDC_INFO);
@@ -169,18 +140,16 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
         } else {
             mdcMap = new HashMap<>();
         }
-        boolean hasTraceInfo = mdcMap.containsKey(LogConst.TRACE_KEY);
+        boolean hasTraceInfo = mdcMap.containsKey(TiTraceConst.TRACE_KEY);
         if (hasTraceInfo) {
             // mdc参数中本来就有username
             MDC.setContextMap(mdcMap);
             return;
         }
         String appName = environment.getProperty("spring.application.name");
-        String ip = IpUtil.localIp();
-        mdcMap.put(LogConst.APP_NAME_KEY, appName);
-        mdcMap.put(LogConst.IP_KEY, ip);
-        TiTraceUtil.prepare(mdcMap);
-        TraceUtil.trace(jobKey, "自动定时任务");
+        String traceId = mdcMap.get(TiTraceConst.TRACE_ID_KEY);
+        TiTraceContext.start(appName, traceId, null, tiTraceProperty.getTrace());
+        TiTraceContext.addTag(TiHttpTraceTag.IP, TiIpUtil.localIp());
     }
 
 

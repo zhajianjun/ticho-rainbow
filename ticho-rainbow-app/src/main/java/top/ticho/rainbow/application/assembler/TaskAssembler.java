@@ -9,7 +9,7 @@ import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.rainbow.interfaces.command.TaskModifyCommand;
 import top.ticho.rainbow.interfaces.command.TaskSaveCommand;
 import top.ticho.rainbow.interfaces.dto.TaskDTO;
-import top.ticho.starter.web.util.TiIdUtil;
+import top.ticho.tool.core.TiIdUtil;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", imports = {TiIdUtil.class, CommonStatus.class})
 public interface TaskAssembler {
 
-    @Mapping(target = "id", expression = "java(TiIdUtil.getId())")
+    @Mapping(target = "id", expression = "java(TiIdUtil.snowId())")
     @Mapping(target = "status", expression = "java(CommonStatus.DISABLE.code())")
     Task toEntity(TaskSaveCommand taskSaveCommand);
 

@@ -1,7 +1,5 @@
 package top.ticho.rainbow.application.service.permission;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ArrayUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -16,6 +14,8 @@ import top.ticho.rainbow.infrastructure.common.util.UserUtil;
 import top.ticho.rainbow.interfaces.dto.UserDTO;
 import top.ticho.starter.security.auth.TiPermissionService;
 import top.ticho.starter.security.constant.TiSecurityConst;
+import top.ticho.tool.core.TiArrayUtil;
+import top.ticho.tool.core.TiCollUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
@@ -44,7 +44,7 @@ public class DefaultPermissionService implements TiPermissionService {
         if (inner) {
             return true;
         }
-        if (ArrayUtil.isEmpty(permissions)) {
+        if (TiArrayUtil.isEmpty(permissions)) {
             return false;
         }
         SecurityUser currentUser = UserUtil.getCurrentUser();
@@ -52,7 +52,7 @@ public class DefaultPermissionService implements TiPermissionService {
             return false;
         }
         List<String> roleCodes = currentUser.getRoles();
-        if (CollUtil.isEmpty(roleCodes)) {
+        if (TiCollUtil.isEmpty(roleCodes)) {
             return false;
         }
         if (roleCodes.contains(SecurityConst.ADMIN)) {
@@ -63,7 +63,7 @@ public class DefaultPermissionService implements TiPermissionService {
             return false;
         }
         List<String> perms = authExecutor.getPerms(roleCodes);
-        if (CollUtil.isEmpty(perms)) {
+        if (TiCollUtil.isEmpty(perms)) {
             return false;
         }
         return Arrays.stream(permissions).anyMatch(perms::contains);

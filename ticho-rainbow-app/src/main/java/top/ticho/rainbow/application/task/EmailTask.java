@@ -9,7 +9,7 @@ import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.starter.mail.component.TiMailContent;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.valid.TiValidUtil;
-import top.ticho.trace.common.prop.TiTraceProperty;
+import top.ticho.trace.common.TiTraceProperty;
 
 /**
  * 邮件任务

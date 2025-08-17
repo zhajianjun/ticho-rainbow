@@ -1,7 +1,5 @@
 package top.ticho.rainbow.infrastructure.persistence.repository;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +15,8 @@ import top.ticho.rainbow.interfaces.query.TaskQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.util.List;
 import java.util.Objects;
@@ -67,15 +67,15 @@ public class TaskRepositoryImpl extends TiRepositoryImpl<TaskMapper, TaskPO> imp
     @Override
     public TiPageResult<TaskDTO> page(TaskQuery query) {
         LambdaQueryWrapper<TaskPO> wrapper = Wrappers.lambdaQuery();
-        wrapper.in(CollUtil.isNotEmpty(query.getIds()), TaskPO::getId, query.getIds());
+        wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), TaskPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), TaskPO::getId, query.getId());
-        wrapper.like(StrUtil.isNotBlank(query.getName()), TaskPO::getName, query.getName());
-        wrapper.like(StrUtil.isNotBlank(query.getContent()), TaskPO::getContent, query.getContent());
-        wrapper.like(StrUtil.isNotBlank(query.getParam()), TaskPO::getParam, query.getParam());
-        wrapper.like(StrUtil.isNotBlank(query.getCronExpression()), TaskPO::getCronExpression, query.getCronExpression());
-        wrapper.like(StrUtil.isNotBlank(query.getRemark()), TaskPO::getRemark, query.getRemark());
+        wrapper.like(TiStrUtil.isNotBlank(query.getName()), TaskPO::getName, query.getName());
+        wrapper.like(TiStrUtil.isNotBlank(query.getContent()), TaskPO::getContent, query.getContent());
+        wrapper.like(TiStrUtil.isNotBlank(query.getParam()), TaskPO::getParam, query.getParam());
+        wrapper.like(TiStrUtil.isNotBlank(query.getCronExpression()), TaskPO::getCronExpression, query.getCronExpression());
+        wrapper.like(TiStrUtil.isNotBlank(query.getRemark()), TaskPO::getRemark, query.getRemark());
         wrapper.eq(Objects.nonNull(query.getStatus()), TaskPO::getStatus, query.getStatus());
-        wrapper.eq(StrUtil.isNotBlank(query.getCreateBy()), TaskPO::getCreateBy, query.getCreateBy());
+        wrapper.eq(TiStrUtil.isNotBlank(query.getCreateBy()), TaskPO::getCreateBy, query.getCreateBy());
         wrapper.eq(Objects.nonNull(query.getCreateTime()), TaskPO::getCreateTime, query.getCreateTime());
         return TiPageUtil.page(() -> list(wrapper), query, taskConverter::toDTO);
     }

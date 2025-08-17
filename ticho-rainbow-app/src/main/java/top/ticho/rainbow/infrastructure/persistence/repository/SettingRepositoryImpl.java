@@ -1,7 +1,5 @@
 package top.ticho.rainbow.infrastructure.persistence.repository;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +18,8 @@ import top.ticho.rainbow.interfaces.query.SettingQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
 import top.ticho.starter.view.core.TiPageResult;
+import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -85,7 +85,7 @@ public class SettingRepositoryImpl extends TiRepositoryImpl<SettingMapper, Setti
 
     @Override
     public Setting findByKey(String key) {
-        if (StrUtil.isBlank(key)) {
+        if (TiStrUtil.isBlank(key)) {
             return null;
         }
         LambdaQueryWrapper<SettingPO> wrapper = Wrappers.lambdaQuery();
@@ -97,10 +97,10 @@ public class SettingRepositoryImpl extends TiRepositoryImpl<SettingMapper, Setti
     @Override
     public TiPageResult<SettingDTO> page(SettingQuery settingQuery) {
         LambdaQueryWrapper<SettingPO> wrapper = Wrappers.lambdaQuery();
-        wrapper.in(CollUtil.isNotEmpty(settingQuery.getIds()), SettingPO::getId, settingQuery.getIds());
-        wrapper.eq(StrUtil.isNotBlank(settingQuery.getKey()), SettingPO::getKey, settingQuery.getKey());
-        wrapper.eq(StrUtil.isNotBlank(settingQuery.getValue()), SettingPO::getValue, settingQuery.getValue());
-        wrapper.eq(StrUtil.isNotBlank(settingQuery.getRemark()), SettingPO::getRemark, settingQuery.getRemark());
+        wrapper.in(TiCollUtil.isNotEmpty(settingQuery.getIds()), SettingPO::getId, settingQuery.getIds());
+        wrapper.eq(TiStrUtil.isNotBlank(settingQuery.getKey()), SettingPO::getKey, settingQuery.getKey());
+        wrapper.eq(TiStrUtil.isNotBlank(settingQuery.getValue()), SettingPO::getValue, settingQuery.getValue());
+        wrapper.eq(TiStrUtil.isNotBlank(settingQuery.getRemark()), SettingPO::getRemark, settingQuery.getRemark());
         wrapper.orderByAsc(SettingPO::getSort);
         wrapper.orderByDesc(SettingPO::getId);
         return TiPageUtil.page(() -> list(wrapper), settingQuery, settingConverter::toDTO);

@@ -1,11 +1,11 @@
 package top.ticho.rainbow.domain.entity;
 
-import cn.hutool.core.util.StrUtil;
 import lombok.Builder;
 import lombok.Getter;
 import top.ticho.rainbow.domain.entity.vo.MenuModifyVO;
 import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -103,14 +103,14 @@ public class Menu implements Entity {
     public void enable() {
         CommonStatus disable = CommonStatus.DISABLE;
         TiAssert.isTrue(Objects.equals(this.status, disable.code()),
-            StrUtil.format("只有[{}]状态才能执行启用操作，菜单：{}", disable.message(), name));
+            TiStrUtil.format("只有[{}]状态才能执行启用操作，菜单：{}", disable.message(), name));
         this.status = CommonStatus.ENABLE.code();
     }
 
     public void disable() {
         CommonStatus enable = CommonStatus.ENABLE;
         TiAssert.isTrue(Objects.equals(this.status, enable.code()),
-            StrUtil.format("只有[{}]状态才能执行禁用操作，菜单：{}", enable.message(), name));
+            TiStrUtil.format("只有[{}]状态才能执行禁用操作，菜单：{}", enable.message(), name));
         this.status = CommonStatus.DISABLE.code();
     }
 

@@ -1,10 +1,10 @@
 package top.ticho.rainbow.domain.entity;
 
-import cn.hutool.core.util.StrUtil;
 import lombok.Builder;
 import lombok.Getter;
 import top.ticho.rainbow.infrastructure.common.enums.FileInfoStatus;
 import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiStrUtil;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -77,19 +77,19 @@ public class FileInfo implements Entity {
 
     public void enable() {
         FileInfoStatus disable = FileInfoStatus.DISABLE;
-        TiAssert.isTrue(Objects.equals(this.status, disable.code()), StrUtil.format("只有[{}]状态才能执行启用操作，文件：{}", disable.message(), fileName));
+        TiAssert.isTrue(Objects.equals(this.status, disable.code()), TiStrUtil.format("只有[{}]状态才能执行启用操作，文件：{}", disable.message(), fileName));
         this.status = FileInfoStatus.ENABLE.code();
     }
 
     public void disable() {
         FileInfoStatus enable = FileInfoStatus.ENABLE;
-        TiAssert.isTrue(Objects.equals(this.status, enable.code()), StrUtil.format("只有[{}]状态才能执行禁用操作，文件：{}", enable.message(), fileName));
+        TiAssert.isTrue(Objects.equals(this.status, enable.code()), TiStrUtil.format("只有[{}]状态才能执行禁用操作，文件：{}", enable.message(), fileName));
         this.status = FileInfoStatus.DISABLE.code();
     }
 
     public void cancel() {
         FileInfoStatus cancel = FileInfoStatus.CANCEL;
-        TiAssert.isTrue(!Objects.equals(this.status, cancel.code()), StrUtil.format("文件：[{}]已作废", cancel.message(), fileName));
+        TiAssert.isTrue(!Objects.equals(this.status, cancel.code()), TiStrUtil.format("文件：[{}]已作废", cancel.message(), fileName));
         this.status = cancel.code();
     }
 
