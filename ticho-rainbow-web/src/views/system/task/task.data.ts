@@ -187,18 +187,6 @@ export function getModalFormColumns(): FormSchema[] {
       },
     },
     {
-      field: `status`,
-      label: `任务状态`,
-      defaultValue: 1,
-      component: 'RadioButtonGroup',
-      componentProps: {
-        options: getDictByCode(commonStatus),
-      },
-      colProps: {
-        span: 24,
-      },
-    },
-    {
       field: `param`,
       label: `任务参数`,
       component: 'InputTextArea',
