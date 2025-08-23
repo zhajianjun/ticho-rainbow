@@ -325,7 +325,7 @@ public class TaskTemplate {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TiDateFormatConst.YYYY_MM_DD_HH_MM_SS);
             return dates
                 .stream()
-                .map(date -> formatter.format(date.toInstant()))
+                .map(date -> formatter.format(TiLocalDateTimeUtil.of(date.toInstant())))
                 .collect(Collectors.toList());
         } catch (ParseException e) {
             log.error("获取近{}次的执行时间失败: {}", numTimes, e.getMessage(), e);

@@ -1,13 +1,11 @@
 package top.ticho.rainbow.application.task;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.rainbow.infrastructure.common.prop.FileProperty;
 import top.ticho.tool.core.TiFileUtil;
-import top.ticho.trace.common.TiTraceProperty;
 
 import java.io.File;
 
@@ -18,15 +16,11 @@ import java.io.File;
  * @date 2024-04-25 17:51
  */
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class FileTmpClearTask extends AbstracTask<String> {
-
     private final FileProperty fileProperty;
 
-    public FileTmpClearTask(Environment environment, TiTraceProperty tiTraceProperty, TaskLogRepository taskLogRepository, FileProperty fileProperty) {
-        super(environment, tiTraceProperty, taskLogRepository);
-        this.fileProperty = fileProperty;
-    }
 
     @Override
     public void run(JobExecutionContext context) {

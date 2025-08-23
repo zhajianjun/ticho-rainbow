@@ -17,6 +17,7 @@ public class CommConst {
     public static final String FILE_PERM_KEY = "file_perm";
     public static final String GUEST_ROLE_CODE = "guest";
     public static final String USERNAME_KEY = "username";
+    public static final String USERNAME_TRACE_KEY = ".[${username!}]";
     public static final String API_KEY = "api";
     // 最大操作数量
     public static final int MAX_OPERATION_COUNT = 100;

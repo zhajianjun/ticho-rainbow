@@ -1,15 +1,13 @@
 package top.ticho.rainbow.application.task;
 
+import lombok.RequiredArgsConstructor;
 import org.quartz.JobExecutionContext;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.application.dto.MailContentDTO;
 import top.ticho.rainbow.domain.repository.EmailRepository;
-import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.starter.mail.component.TiMailContent;
 import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.valid.TiValidUtil;
-import top.ticho.trace.common.TiTraceProperty;
 
 /**
  * 邮件任务
@@ -17,15 +15,11 @@ import top.ticho.trace.common.TiTraceProperty;
  * @author zhajianjun
  * @date 2024-05-17 16:33
  */
+@RequiredArgsConstructor
 @Component
 public class EmailTask extends AbstracTask<MailContentDTO> {
-
     private final EmailRepository emailRepository;
 
-    public EmailTask(Environment environment, TiTraceProperty tiTraceProperty, TaskLogRepository taskLogRepository, EmailRepository emailRepository) {
-        super(environment, tiTraceProperty, taskLogRepository);
-        this.emailRepository = emailRepository;
-    }
 
     @Override
     public void run(JobExecutionContext context) {

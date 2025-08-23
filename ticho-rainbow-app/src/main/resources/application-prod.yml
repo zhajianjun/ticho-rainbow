@@ -8,9 +8,9 @@ ticho:
     password: ENC(7xqTr9Bm6d2RCeaWdwMGlugy9f3P9sAK)
     driver-class-name: com.mysql.cj.jdbc.Driver
     log:
-      enable: true
-      print-sql: true
-      print-simple: true
+      enable: false
+      print-sql: false
+      print-simple: false
   security:
     ant-patterns:
       - /
@@ -29,7 +29,7 @@ ticho:
       maxRequests:
       maxBindPorts:
   log:
-    enable: true
+    enable: false
     print: false
   mail:
     enable: false

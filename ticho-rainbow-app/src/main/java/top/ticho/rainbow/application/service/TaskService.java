@@ -195,7 +195,7 @@ public class TaskService implements InitializingBean {
     public void enable(Task task) {
         task.enable();
         String taskId = task.getId().toString();
-        taskTemplate.resumeJob(taskId, DEFAULT_JOB_GROUP);
+        taskTemplate.rescheduleJob(taskId, DEFAULT_JOB_GROUP, task.getCronExpression());
     }
 
     public void disable(Task task) {

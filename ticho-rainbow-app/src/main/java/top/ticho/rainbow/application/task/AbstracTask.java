@@ -23,8 +23,10 @@ import top.ticho.trace.common.TiHttpTraceTag;
 import top.ticho.trace.common.TiTraceConst;
 import top.ticho.trace.common.TiTraceContext;
 import top.ticho.trace.common.TiTraceProperty;
+import top.ticho.trace.common.TiTraceReporter;
 import top.ticho.trace.spring.util.TiIpUtil;
 
+import jakarta.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -40,9 +42,14 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public abstract class AbstracTask<T> extends QuartzJobBean {
-    private final Environment environment;
-    private final TiTraceProperty tiTraceProperty;
-    private final TaskLogRepository taskLogRepository;
+    @Resource
+    private Environment environment;
+    @Resource
+    private TiTraceProperty tiTraceProperty;
+    @Resource
+    private TaskLogRepository taskLogRepository;
+    @Resource
+    private TiTraceReporter tiTraceReporter;
 
     public abstract void run(JobExecutionContext context);
 
@@ -77,7 +84,7 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
         String taskName = jobDataMap.getString(TaskTemplate.TASK_NAME);
         String taskParam = jobDataMap.getString(TaskTemplate.TASK_PARAM);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TiDateFormatConst.YYYY_MM_DD_HH_MM_SS);
-        String runTime = formatter.format(scheduledFireTime.toInstant());
+        String runTime = formatter.format(TiLocalDateTimeUtil.of(scheduledFireTime.toInstant()));
         String jobClassName = jobDetail.getJobClass().getName();
         int isErr = 0;
         String errorMsg = null;
@@ -141,16 +148,19 @@ public abstract class AbstracTask<T> extends QuartzJobBean {
             mdcMap = new HashMap<>();
         }
         boolean hasTraceInfo = mdcMap.containsKey(TiTraceConst.TRACE_KEY);
+        String trace;
         if (hasTraceInfo) {
             // mdc参数中本来就有username
             MDC.setContextMap(mdcMap);
-            return;
+            trace = mdcMap.get(TiTraceConst.TRACE_KEY);
+        } else {
+            trace = tiTraceProperty.getTrace() + ".[自动定时任务]";
         }
+        TiTraceContext.init(tiTraceReporter);
         String appName = environment.getProperty("spring.application.name");
         String traceId = mdcMap.get(TiTraceConst.TRACE_ID_KEY);
-        TiTraceContext.start(appName, traceId, null, tiTraceProperty.getTrace());
+        TiTraceContext.start(appName, traceId, null, trace);
         TiTraceContext.addTag(TiHttpTraceTag.IP, TiIpUtil.localIp());
     }
-
 
 }
