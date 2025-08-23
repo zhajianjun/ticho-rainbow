@@ -22,4 +22,5 @@ public class SchedulerConfig implements SchedulingConfigurer {
         taskScheduler.initialize();
         registrar.setTaskScheduler(taskScheduler);
     }
+
 }

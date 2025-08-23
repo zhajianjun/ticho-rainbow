@@ -41,7 +41,7 @@ public class Test {
     }
 
     private static AbstractPublisher<String> getPublisher(AbstractListener<String> abstractListener) {
-        return new AbstractPublisher<String>(1024 * 2) {
+        return new AbstractPublisher<>(1024 * 2) {
             @Override
             public void registerListen(Disruptor<ContextEvent<String>> disruptor) {
                 EventHandlerGroup<ContextEvent<String>> handlerGroup = disruptor.handleEventsWithWorkerPool(abstractListener, abstractListener);
@@ -51,7 +51,7 @@ public class Test {
     }
 
     private static AbstractListener<String> getListener(AtomicInteger atomicInteger) {
-        return new AbstractListener<String>() {
+        return new AbstractListener<>() {
             @Override
             public void consume(String data, Long sequence, Boolean endOfBatch) {
                 String format = TiStrUtil.format("data:{} sequence:{} endOfBatch:{}", data, sequence, endOfBatch);
