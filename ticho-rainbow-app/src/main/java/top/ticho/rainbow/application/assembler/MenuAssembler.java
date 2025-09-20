@@ -14,6 +14,7 @@ import top.ticho.tool.core.TiCollUtil;
 import top.ticho.tool.core.TiIdUtil;
 import top.ticho.tool.core.TiStrUtil;
 
+import java.util.Collections;
 import java.util.Objects;
 
 /**
@@ -22,7 +23,7 @@ import java.util.Objects;
  * @author zhajianjun
  * @date 2024-01-08 20:30
  */
-@Mapper(componentModel = "spring", imports = {TiStrUtil.class, TiCollUtil.class, Objects.class, TiIdUtil.class, CommonStatus.class})
+@Mapper(componentModel = "spring", imports = {TiStrUtil.class, TiCollUtil.class, Objects.class, TiIdUtil.class, CommonStatus.class, Collections.class})
 public interface MenuAssembler {
 
     @Mapping(target = "id", expression = "java(TiIdUtil.snowId())")
@@ -33,7 +34,7 @@ public interface MenuAssembler {
     @Mapping(target = "perms", expression = "java(TiCollUtil.join(menuModifyCommand.getPerms(), \",\"))")
     MenuModifyVO toModifyVO(MenuModifyCommand menuModifyCommand);
 
-    @Mapping(target = "perms", expression = "java(TiStrUtil.split(Objects.equals(entity.getPerms(), \"\") ? null : entity.getPerms(), ','))")
+    @Mapping(target = "perms", expression = "java(TiStrUtil.split(Objects.equals(entity.getPerms(), \"\") ? null : entity.getPerms(), \",\"))")
     MenuDTO toDTO(Menu entity);
 
     @Mapping(source = "name", target = "title")

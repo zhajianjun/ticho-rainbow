@@ -41,6 +41,7 @@ import top.ticho.tool.core.TiIdUtil;
 import top.ticho.tool.core.TiIoUtil;
 import top.ticho.tool.core.TiStrUtil;
 import top.ticho.tool.core.TiUrlUtil;
+import top.ticho.tool.core.constant.TiStrConst;
 import top.ticho.tool.json.util.TiJsonUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -137,7 +138,7 @@ public class FileInfoService {
         TiAssert.isTrue(TiFileUtil.exist(file), FileErrorCode.FILE_NOT_EXIST);
         try {
             response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
-            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + TiUrlUtil.encodeAll(fileInfo.getOriginalFileName()));
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + TiUrlUtil.encode(fileInfo.getOriginalFileName()));
             response.setContentType(fileInfo.getContentType());
             response.setHeader(HttpHeaders.PRAGMA, "no-cache");
             response.setHeader(HttpHeaders.CACHE_CONTROL, "no-cache");
@@ -298,9 +299,9 @@ public class FileInfoService {
         // 原主文件名 logo
         String originalMainName = TiFileUtil.mainName(originalFileName);
         // 主文件名 logo-wKpdqhmC
-        String mainName = originalMainName + TiStrUtil.DASHED + TiIdUtil.shortUuid();
+        String mainName = originalMainName + TiStrConst.DASHED + TiIdUtil.shortUuid();
         // 文件名 logo-wKpdqhmC.svg
-        String fileName = mainName + TiStrUtil.DOT + extName;
+        String fileName = mainName + TiStrConst.DOT + extName;
         // 分片文件夹路径
         String chunkDirPath;
         // 相对路径
@@ -388,7 +389,7 @@ public class FileInfoService {
         String tmpAbstractPath = fileProperty.getTmpPath() + File.separator + relativePath;
         File target = new File(tmpAbstractPath);
         TiFileUtil.mkdir(target);
-        TiFileUtil.moveContent(source, target, true);
+        TiFileUtil.moveFile(source, target);
         // 如果是文件夹
         if (source.isDirectory()) {
             TiFileUtil.del(source);

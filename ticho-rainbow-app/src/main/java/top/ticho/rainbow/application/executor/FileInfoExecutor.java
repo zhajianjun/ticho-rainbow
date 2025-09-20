@@ -23,6 +23,7 @@ import top.ticho.starter.view.util.TiAssert;
 import top.ticho.tool.core.TiFileUtil;
 import top.ticho.tool.core.TiIdUtil;
 import top.ticho.tool.core.TiStrUtil;
+import top.ticho.tool.core.constant.TiStrConst;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,7 +58,7 @@ public class FileInfoExecutor {
         // 后缀名 svg
         String extName = TiFileUtil.extName(originalFileName);
         // 存储文件名 logo.svg -> logo-wKpdqhmC.svg
-        String fileName = mainName + TiStrUtil.DASHED + TiIdUtil.shortUuid() + TiStrUtil.DOT + extName;
+        String fileName = mainName + TiStrConst.DASHED + TiIdUtil.shortUuid() + TiStrConst.DOT + extName;
         // 相对路径
         String relativePath = Optional.ofNullable(fileUploadCommand.getRelativePath())
             .filter(TiStrUtil::isNotBlank)

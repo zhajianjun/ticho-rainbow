@@ -112,7 +112,7 @@ public class ExcelHandle {
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + TiUrlUtil.encodeAll(fileName + ".xlsx"));
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + TiUrlUtil.encode(fileName + ".xlsx"));
         try (ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), claz).build()) {
             WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
             excelWriter.write(datas, writeSheet);
@@ -194,7 +194,7 @@ public class ExcelHandle {
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + TiUrlUtil.encodeAll(fileName + ".xlsx"));
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + TiUrlUtil.encode(fileName + ".xlsx"));
         try (ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), claz).build()) {
             WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
             long total = 0;
@@ -247,7 +247,7 @@ public class ExcelHandle {
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + TiUrlUtil.encodeAll(fileName + ".xlsx"));
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + TiUrlUtil.encode(fileName + ".xlsx"));
         try (ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), claz).build()) {
             WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
             excelWriter.write(Collections.emptyList(), writeSheet);

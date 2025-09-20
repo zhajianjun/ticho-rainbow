@@ -29,7 +29,7 @@ ticho:
       maxRequests:
       maxBindPorts:
   log:
-    enable: false
+    enable: true
     print: false
   mail:
     enable: false
