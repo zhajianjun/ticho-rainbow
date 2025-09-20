@@ -19,6 +19,7 @@ import { useI18n } from '@/hooks/web/useI18n';
 import { formatRequestDate, joinTimestamp } from './helper';
 import { useUserStoreWithOut } from '@/store/modules/user';
 import { AxiosRetry } from '@/utils/http/axios/axiosRetry';
+import { spanId, traceId } from '@/utils/http/axios/trace';
 
 const globSetting = useGlobSetting();
 const urlPrefix = globSetting.urlPrefix;
@@ -148,6 +149,11 @@ const transform: AxiosTransform = {
         config.params = undefined;
       }
     }
+    config.headers = {
+      ...config.headers,
+      traceId: traceId(),
+      spanId: spanId(),
+    };
     return config;
   },
 
@@ -216,9 +222,8 @@ const transform: AxiosTransform = {
     const retryRequest = new AxiosRetry();
     const { isOpenRetry } = config.requestOptions.retryRequest;
     config.method?.toUpperCase() === RequestEnum.GET &&
-    isOpenRetry &&
-    // @ts-ignore
-    retryRequest.retry(axiosInstance, error);
+      isOpenRetry &&
+      retryRequest.retry(axiosInstance, error);
     return Promise.reject(error);
   },
 };
