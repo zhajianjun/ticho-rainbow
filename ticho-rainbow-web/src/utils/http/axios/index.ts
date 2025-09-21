@@ -19,7 +19,7 @@ import { useI18n } from '@/hooks/web/useI18n';
 import { formatRequestDate, joinTimestamp } from './helper';
 import { useUserStoreWithOut } from '@/store/modules/user';
 import { AxiosRetry } from '@/utils/http/axios/axiosRetry';
-import { traceId } from '@/utils/http/axios/trace';
+import { traceId, spanId } from '@/utils/http/axios/trace';
 
 const globSetting = useGlobSetting();
 const urlPrefix = globSetting.urlPrefix;
@@ -152,7 +152,8 @@ const transform: AxiosTransform = {
     config.headers = {
       ...config.headers,
       traceId: traceId(),
-      spanId: '0',
+      parentSpanId: '0',
+      spanId: spanId(),
     };
     return config;
   },
