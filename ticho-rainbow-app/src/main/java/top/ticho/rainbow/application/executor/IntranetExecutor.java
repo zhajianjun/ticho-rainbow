@@ -90,7 +90,7 @@ public class IntranetExecutor {
             .peek(intranetClient -> {
                 List<IntranetPort> intranetPorts = protMap.getOrDefault(intranetClient.getAccessKey(), Collections.emptyList());
                 Map<Integer, IntranetPort> portMap = intranetClient.getPortMap();
-                intranetPorts.forEach(intranetPort -> portMap.put(intranetPort.getPort(), intranetPort));
+                intranetPorts.forEach(intranetPort -> portMap.put(intranetPort.port(), intranetPort));
             })
             .collect(Collectors.toList());
         intranetServerHandler.flush(intranetClients);

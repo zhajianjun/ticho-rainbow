@@ -27,12 +27,12 @@ import top.ticho.rainbow.interfaces.dto.DictLabelDTO;
 import top.ticho.rainbow.interfaces.query.DictQuery;
 import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.view.core.TiPageResult;
-import top.ticho.starter.view.enums.TiBizErrorCode;
-import top.ticho.starter.view.util.TiAssert;
 import top.ticho.starter.web.util.TiSpringUtil;
+import top.ticho.tool.core.TiAssert;
 import top.ticho.tool.core.TiCollUtil;
 import top.ticho.tool.core.TiNumberUtil;
 import top.ticho.tool.core.TiStrUtil;
+import top.ticho.tool.core.enums.TiBizErrorCode;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;

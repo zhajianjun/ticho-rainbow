@@ -13,8 +13,8 @@ import top.ticho.rainbow.infrastructure.common.enums.MenuType;
 import top.ticho.rainbow.interfaces.dto.MenuDTO;
 import top.ticho.rainbow.interfaces.dto.RoleDTO;
 import top.ticho.rainbow.interfaces.dto.RoleMenuDTO;
-import top.ticho.starter.web.util.TiTreeUtil;
 import top.ticho.tool.core.TiCollUtil;
+import top.ticho.tool.core.TiTreeUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -5,7 +5,7 @@ import lombok.Getter;
 import top.ticho.rainbow.domain.entity.vo.DictModifyVO;
 import top.ticho.rainbow.infrastructure.common.enums.CommonStatus;
 import top.ticho.rainbow.infrastructure.common.enums.YesOrNo;
-import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiAssert;
 import top.ticho.tool.core.TiStrUtil;
 
 import java.time.LocalDateTime;

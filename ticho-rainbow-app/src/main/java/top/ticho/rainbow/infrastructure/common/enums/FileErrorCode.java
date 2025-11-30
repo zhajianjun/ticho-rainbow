@@ -3,7 +3,7 @@ package top.ticho.rainbow.infrastructure.common.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import top.ticho.starter.view.enums.TiErrorCode;
+import top.ticho.tool.core.enums.TiErrorCode;
 
 import java.io.Serializable;
 

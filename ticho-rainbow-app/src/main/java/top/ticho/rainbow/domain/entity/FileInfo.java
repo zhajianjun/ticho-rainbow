@@ -3,7 +3,7 @@ package top.ticho.rainbow.domain.entity;
 import lombok.Builder;
 import lombok.Getter;
 import top.ticho.rainbow.infrastructure.common.enums.FileInfoStatus;
-import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiAssert;
 import top.ticho.tool.core.TiStrUtil;
 
 import java.time.LocalDateTime;

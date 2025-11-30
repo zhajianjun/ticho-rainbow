@@ -2,7 +2,7 @@ package top.ticho.rainbow.interfaces.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.ticho.starter.web.util.TiTreeNode;
+import top.ticho.tool.core.TiTreeNode;
 
 import java.util.List;
 

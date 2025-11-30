@@ -1,6 +1,6 @@
 package top.ticho.rainbow.domain.entity;
 
-import top.ticho.starter.view.exception.TiBizException;
+import top.ticho.tool.core.exception.TiBizException;
 
 import java.util.Objects;
 

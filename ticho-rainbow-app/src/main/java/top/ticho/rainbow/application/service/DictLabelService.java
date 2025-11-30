@@ -13,7 +13,7 @@ import top.ticho.rainbow.interfaces.command.DictLabelModifyCommand;
 import top.ticho.rainbow.interfaces.command.DictLabelSaveCommand;
 import top.ticho.rainbow.interfaces.command.VersionModifyCommand;
 import top.ticho.rainbow.interfaces.dto.DictLabelDTO;
-import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiAssert;
 import top.ticho.tool.core.TiStrUtil;
 
 import java.util.List;

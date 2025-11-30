@@ -3,7 +3,7 @@ package top.ticho.rainbow.interfaces.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.ticho.starter.web.util.TiTreeNode;
+import top.ticho.tool.core.TiTreeNode;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -16,14 +16,14 @@ import top.ticho.rainbow.infrastructure.common.prop.FileProperty;
 import top.ticho.rainbow.interfaces.command.FileUploadCommand;
 import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.starter.cache.component.TiCacheTemplate;
-import top.ticho.starter.view.enums.TiBizErrorCode;
-import top.ticho.starter.view.enums.TiHttpErrorCode;
-import top.ticho.starter.view.exception.TiBizException;
-import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiAssert;
 import top.ticho.tool.core.TiFileUtil;
 import top.ticho.tool.core.TiIdUtil;
 import top.ticho.tool.core.TiStrUtil;
 import top.ticho.tool.core.constant.TiStrConst;
+import top.ticho.tool.core.enums.TiBizErrorCode;
+import top.ticho.tool.core.enums.TiHttpErrorCode;
+import top.ticho.tool.core.exception.TiBizException;
 
 import java.io.File;
 import java.io.IOException;

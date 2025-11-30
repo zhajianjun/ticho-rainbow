@@ -26,10 +26,10 @@ import top.ticho.rainbow.interfaces.dto.RoleMenuDTO;
 import top.ticho.rainbow.interfaces.query.RoleDtlQuery;
 import top.ticho.rainbow.interfaces.query.RoleQuery;
 import top.ticho.starter.view.core.TiPageResult;
-import top.ticho.starter.view.util.TiAssert;
-import top.ticho.starter.web.util.valid.TiValidUtil;
+import top.ticho.tool.core.TiAssert;
 import top.ticho.tool.core.TiNumberUtil;
 import top.ticho.tool.core.TiStrUtil;
+import top.ticho.tool.valid.TiValidUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;

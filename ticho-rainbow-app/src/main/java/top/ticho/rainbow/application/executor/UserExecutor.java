@@ -12,7 +12,7 @@ import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.common.enums.SettingKey;
 import top.ticho.rainbow.interfaces.dto.UserDTO;
 import top.ticho.starter.cache.component.TiCacheTemplate;
-import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiAssert;
 import top.ticho.tool.core.TiCollUtil;
 import top.ticho.tool.core.TiStrUtil;
 

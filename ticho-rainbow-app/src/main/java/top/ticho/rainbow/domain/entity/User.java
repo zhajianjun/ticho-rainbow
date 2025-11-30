@@ -6,7 +6,7 @@ import lombok.Getter;
 import top.ticho.rainbow.domain.entity.vo.UserModifyVO;
 import top.ticho.rainbow.infrastructure.common.constant.SecurityConst;
 import top.ticho.rainbow.infrastructure.common.enums.UserStatus;
-import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiAssert;
 import top.ticho.tool.core.TiStrUtil;
 
 import java.time.LocalDate;

@@ -16,7 +16,7 @@ import top.ticho.rainbow.interfaces.command.VersionModifyCommand;
 import top.ticho.rainbow.interfaces.dto.SettingDTO;
 import top.ticho.rainbow.interfaces.query.SettingQuery;
 import top.ticho.starter.view.core.TiPageResult;
-import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiAssert;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;

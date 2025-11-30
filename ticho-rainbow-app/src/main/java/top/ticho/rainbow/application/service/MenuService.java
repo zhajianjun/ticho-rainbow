@@ -22,11 +22,11 @@ import top.ticho.rainbow.interfaces.command.VersionModifyCommand;
 import top.ticho.rainbow.interfaces.dto.MenuDTO;
 import top.ticho.rainbow.interfaces.dto.RouteDTO;
 import top.ticho.rainbow.interfaces.dto.RouteMetaDTO;
-import top.ticho.starter.view.enums.TiBizErrorCode;
-import top.ticho.starter.view.util.TiAssert;
-import top.ticho.starter.web.util.TiTreeUtil;
+import top.ticho.tool.core.TiAssert;
 import top.ticho.tool.core.TiCollUtil;
 import top.ticho.tool.core.TiStrUtil;
+import top.ticho.tool.core.TiTreeUtil;
+import top.ticho.tool.core.enums.TiBizErrorCode;
 
 import java.util.Arrays;
 import java.util.Collections;

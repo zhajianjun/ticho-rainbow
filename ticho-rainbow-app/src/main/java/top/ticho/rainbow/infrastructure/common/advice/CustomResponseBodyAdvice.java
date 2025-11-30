@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import top.ticho.starter.log.interceptor.TiWebLogInterceptor;
 import top.ticho.starter.view.core.TiResult;
-import top.ticho.starter.view.enums.TiBizErrorCode;
-import top.ticho.starter.view.enums.TiHttpErrorCode;
 import top.ticho.starter.view.log.TiHttpLog;
 import top.ticho.starter.web.advice.TiResponseBodyAdvice;
 import top.ticho.tool.core.TiExceptionUtil;
+import top.ticho.tool.core.enums.TiBizErrorCode;
+import top.ticho.tool.core.enums.TiHttpErrorCode;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;

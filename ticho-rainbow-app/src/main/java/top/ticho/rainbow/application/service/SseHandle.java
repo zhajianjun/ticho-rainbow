@@ -9,7 +9,7 @@ import top.ticho.rainbow.infrastructure.common.component.SseTemplate;
 import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.common.util.UserUtil;
 import top.ticho.starter.cache.component.TiCacheTemplate;
-import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiAssert;
 import top.ticho.tool.core.TiIdUtil;
 import top.ticho.tool.core.TiStrUtil;
 

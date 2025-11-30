@@ -13,7 +13,7 @@ import top.ticho.rainbow.domain.entity.TaskLog;
 import top.ticho.rainbow.domain.repository.TaskLogRepository;
 import top.ticho.rainbow.infrastructure.common.component.TaskTemplate;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
-import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiAssert;
 import top.ticho.tool.core.TiExceptionUtil;
 import top.ticho.tool.core.TiLocalDateTimeUtil;
 import top.ticho.tool.core.TiStrUtil;

@@ -8,7 +8,7 @@ import top.ticho.rainbow.infrastructure.common.constant.CacheConst;
 import top.ticho.rainbow.infrastructure.common.constant.CommConst;
 import top.ticho.starter.cache.component.TiCacheTemplate;
 import top.ticho.starter.security.auth.TiPermissionService;
-import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiAssert;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;

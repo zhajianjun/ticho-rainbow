@@ -23,7 +23,7 @@ import top.ticho.rainbow.interfaces.command.VersionModifyCommand;
 import top.ticho.rainbow.interfaces.dto.ClientDTO;
 import top.ticho.rainbow.interfaces.query.ClientQuery;
 import top.ticho.starter.view.core.TiPageResult;
-import top.ticho.starter.view.util.TiAssert;
+import top.ticho.tool.core.TiAssert;
 import top.ticho.tool.core.TiStrUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
