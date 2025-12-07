@@ -2,6 +2,7 @@ package top.ticho.rainbow.infrastructure.persistence.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.application.repository.OpLogAppRepository;
@@ -45,6 +46,7 @@ public class OpLogRepositoryImpl extends TiRepositoryImpl<OpLogMapper, OpLogPO> 
 
     @Override
     public TiPageResult<OpLogDTO> page(OpLogQuery query) {
+        query.checkPage();
         LambdaQueryWrapper<OpLogPO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), OpLogPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), OpLogPO::getId, query.getId());
@@ -71,7 +73,9 @@ public class OpLogRepositoryImpl extends TiRepositoryImpl<OpLogMapper, OpLogPO> 
         wrapper.like(TiStrUtil.isNotBlank(query.getErrMessage()), OpLogPO::getErrMessage, query.getErrMessage());
         wrapper.eq(Objects.nonNull(query.getIsErr()), OpLogPO::getIsErr, query.getIsErr());
         wrapper.orderByDesc(OpLogPO::getId);
-        return TiPageUtil.page(() -> list(wrapper), query, opLogConverter::toDTO);
+        Page<OpLogPO> page = new Page<>(query.getPageNum(), query.getPageSize(), query.getCount());
+        page(page, wrapper);
+        return TiPageUtil.of(page, opLogConverter::toDTO);
     }
 
     @Override

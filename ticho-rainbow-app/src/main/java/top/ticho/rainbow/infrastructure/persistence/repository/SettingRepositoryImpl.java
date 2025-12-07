@@ -2,6 +2,7 @@ package top.ticho.rainbow.infrastructure.persistence.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -95,15 +96,18 @@ public class SettingRepositoryImpl extends TiRepositoryImpl<SettingMapper, Setti
     }
 
     @Override
-    public TiPageResult<SettingDTO> page(SettingQuery settingQuery) {
+    public TiPageResult<SettingDTO> page(SettingQuery query) {
+        query.checkPage();
         LambdaQueryWrapper<SettingPO> wrapper = Wrappers.lambdaQuery();
-        wrapper.in(TiCollUtil.isNotEmpty(settingQuery.getIds()), SettingPO::getId, settingQuery.getIds());
-        wrapper.eq(TiStrUtil.isNotBlank(settingQuery.getKey()), SettingPO::getKey, settingQuery.getKey());
-        wrapper.eq(TiStrUtil.isNotBlank(settingQuery.getValue()), SettingPO::getValue, settingQuery.getValue());
-        wrapper.eq(TiStrUtil.isNotBlank(settingQuery.getRemark()), SettingPO::getRemark, settingQuery.getRemark());
+        wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), SettingPO::getId, query.getIds());
+        wrapper.eq(TiStrUtil.isNotBlank(query.getKey()), SettingPO::getKey, query.getKey());
+        wrapper.eq(TiStrUtil.isNotBlank(query.getValue()), SettingPO::getValue, query.getValue());
+        wrapper.eq(TiStrUtil.isNotBlank(query.getRemark()), SettingPO::getRemark, query.getRemark());
         wrapper.orderByAsc(SettingPO::getSort);
         wrapper.orderByDesc(SettingPO::getId);
-        return TiPageUtil.page(() -> list(wrapper), settingQuery, settingConverter::toDTO);
+        Page<SettingPO> page = new Page<>(query.getPageNum(), query.getPageSize(), query.getCount());
+        page(page, wrapper);
+        return TiPageUtil.of(page, settingConverter::toDTO);
     }
 
 }

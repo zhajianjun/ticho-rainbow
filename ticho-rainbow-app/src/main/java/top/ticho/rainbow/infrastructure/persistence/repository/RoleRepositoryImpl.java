@@ -2,6 +2,7 @@ package top.ticho.rainbow.infrastructure.persistence.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -80,6 +81,7 @@ public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, RolePO> imp
 
     @Override
     public TiPageResult<RoleDTO> page(RoleQuery query) {
+        query.checkPage();
         LambdaQueryWrapper<RolePO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), RolePO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), RolePO::getId, query.getId());
@@ -88,7 +90,9 @@ public class RoleRepositoryImpl extends TiRepositoryImpl<RoleMapper, RolePO> imp
         wrapper.eq(Objects.nonNull(query.getStatus()), RolePO::getStatus, query.getStatus());
         wrapper.like(TiStrUtil.isNotBlank(query.getRemark()), RolePO::getRemark, query.getRemark());
         wrapper.orderByDesc(RolePO::getId);
-        return TiPageUtil.page(() -> list(wrapper), query, roleConverter::toDTO);
+        Page<RolePO> page = new Page<>(query.getPageNum(), query.getPageSize(), query.getCount());
+        page(page, wrapper);
+        return TiPageUtil.of(page, roleConverter::toDTO);
     }
 
     @Override

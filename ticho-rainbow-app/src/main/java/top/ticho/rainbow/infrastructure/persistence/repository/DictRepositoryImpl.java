@@ -2,6 +2,7 @@ package top.ticho.rainbow.infrastructure.persistence.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.application.repository.DictAppRepository;
@@ -73,6 +74,7 @@ public class DictRepositoryImpl extends TiRepositoryImpl<DictMapper, DictPO> imp
 
     @Override
     public TiPageResult<DictDTO> page(DictQuery query) {
+        query.checkPage();
         LambdaQueryWrapper<DictPO> wrapper = Wrappers.lambdaQuery();
         wrapper.like(TiStrUtil.isNotBlank(query.getRemark()), DictPO::getRemark, query.getRemark());
         wrapper.eq(Objects.nonNull(query.getId()), DictPO::getId, query.getId());
@@ -82,7 +84,9 @@ public class DictRepositoryImpl extends TiRepositoryImpl<DictMapper, DictPO> imp
         wrapper.eq(Objects.nonNull(query.getIsSys()), DictPO::getIsSys, query.getIsSys());
         wrapper.eq(Objects.nonNull(query.getStatus()), DictPO::getStatus, query.getStatus());
         wrapper.orderByDesc(DictPO::getId);
-        return TiPageUtil.page(() -> list(wrapper), query, dictConverter::toDTO);
+        Page<DictPO> page = new Page<>(query.getPageNum(), query.getPageSize(), query.getCount());
+        page(page, wrapper);
+        return TiPageUtil.of(page, dictConverter::toDTO);
     }
 
     @Override

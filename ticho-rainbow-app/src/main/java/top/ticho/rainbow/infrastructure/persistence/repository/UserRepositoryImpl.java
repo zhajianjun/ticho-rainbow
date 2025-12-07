@@ -2,6 +2,7 @@ package top.ticho.rainbow.infrastructure.persistence.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -122,6 +123,7 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
 
     @Override
     public TiPageResult<UserDTO> page(UserQuery query) {
+        query.checkPage();
         LambdaQueryWrapper<UserPO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), UserPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), UserPO::getId, query.getId());
@@ -143,7 +145,9 @@ public class UserRepositoryImpl extends TiRepositoryImpl<UserMapper, UserPO> imp
         wrapper.eq(Objects.nonNull(query.getStatus()), UserPO::getStatus, query.getStatus());
         wrapper.like(TiStrUtil.isNotBlank(query.getRemark()), UserPO::getRemark, query.getRemark());
         wrapper.orderByDesc(UserPO::getId);
-        return TiPageUtil.page(() -> list(wrapper), query, userConverter::toDTO);
+        Page<UserPO> page = new Page<>(query.getPageNum(), query.getPageSize(), query.getCount());
+        page(page, wrapper);
+        return TiPageUtil.of(page, userConverter::toDTO);
     }
 
     @Override

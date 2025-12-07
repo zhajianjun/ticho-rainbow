@@ -2,6 +2,7 @@ package top.ticho.rainbow.infrastructure.persistence.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.application.repository.TaskLogAppRepository;
@@ -40,6 +41,7 @@ public class TaskLogRepositoryImpl extends TiRepositoryImpl<TaskLogMapper, TaskL
 
     @Override
     public TiPageResult<TaskLogDTO> page(TaskLogQuery query) {
+        query.checkPage();
         LambdaQueryWrapper<TaskLogPO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), TaskLogPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), TaskLogPO::getId, query.getId());
@@ -66,7 +68,9 @@ public class TaskLogRepositoryImpl extends TiRepositoryImpl<TaskLogMapper, TaskL
         wrapper.eq(Objects.nonNull(query.getIsErr()), TaskLogPO::getIsErr, query.getIsErr());
         wrapper.like(TiStrUtil.isNotBlank(query.getErrMessage()), TaskLogPO::getErrMessage, query.getErrMessage());
         wrapper.orderByDesc(TaskLogPO::getId);
-        return TiPageUtil.page(() -> list(wrapper), query, taskLogConverter::toDTO);
+        Page<TaskLogPO> page = new Page<>(query.getPageNum(), query.getPageSize(), query.getCount());
+        page(page, wrapper);
+        return TiPageUtil.of(page, taskLogConverter::toDTO);
     }
 
     @Override

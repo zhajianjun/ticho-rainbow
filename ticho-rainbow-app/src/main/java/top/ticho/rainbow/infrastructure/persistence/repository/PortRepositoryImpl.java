@@ -2,6 +2,7 @@ package top.ticho.rainbow.infrastructure.persistence.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.application.repository.PortAppRepository;
@@ -72,6 +73,7 @@ public class PortRepositoryImpl extends TiRepositoryImpl<PortMapper, PortPO> imp
 
     @Override
     public TiPageResult<PortDTO> page(PortQuery query) {
+        query.checkPage();
         LambdaQueryWrapper<PortPO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), PortPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), PortPO::getId, query.getId());
@@ -85,7 +87,9 @@ public class PortRepositoryImpl extends TiRepositoryImpl<PortMapper, PortPO> imp
         wrapper.like(TiStrUtil.isNotBlank(query.getRemark()), PortPO::getRemark, query.getRemark());
         wrapper.orderByAsc(PortPO::getSort);
         wrapper.orderByAsc(PortPO::getPort);
-        return TiPageUtil.page(() -> list(wrapper), query, portConverter::toDTO);
+        Page<PortPO> page = new Page<>(query.getPageNum(), query.getPageSize(), query.getCount());
+        page(page, wrapper);
+        return TiPageUtil.of(page, portConverter::toDTO);
     }
 
     @Override

@@ -2,6 +2,7 @@ package top.ticho.rainbow.infrastructure.persistence.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.application.repository.TaskAppRepository;
@@ -66,6 +67,7 @@ public class TaskRepositoryImpl extends TiRepositoryImpl<TaskMapper, TaskPO> imp
 
     @Override
     public TiPageResult<TaskDTO> page(TaskQuery query) {
+        query.checkPage();
         LambdaQueryWrapper<TaskPO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), TaskPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), TaskPO::getId, query.getId());
@@ -77,7 +79,9 @@ public class TaskRepositoryImpl extends TiRepositoryImpl<TaskMapper, TaskPO> imp
         wrapper.eq(Objects.nonNull(query.getStatus()), TaskPO::getStatus, query.getStatus());
         wrapper.eq(TiStrUtil.isNotBlank(query.getCreateBy()), TaskPO::getCreateBy, query.getCreateBy());
         wrapper.eq(Objects.nonNull(query.getCreateTime()), TaskPO::getCreateTime, query.getCreateTime());
-        return TiPageUtil.page(() -> list(wrapper), query, taskConverter::toDTO);
+        Page<TaskPO> page = new Page<>(query.getPageNum(), query.getPageSize(), query.getCount());
+        page(page, wrapper);
+        return TiPageUtil.of(page, taskConverter::toDTO);
     }
 
     @Override

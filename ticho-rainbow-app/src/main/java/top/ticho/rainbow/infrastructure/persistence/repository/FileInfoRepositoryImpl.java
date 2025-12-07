@@ -2,8 +2,7 @@ package top.ticho.rainbow.infrastructure.persistence.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.application.repository.FileInfoAppRepository;
@@ -16,16 +15,12 @@ import top.ticho.rainbow.interfaces.dto.FileInfoDTO;
 import top.ticho.rainbow.interfaces.query.FileInfoQuery;
 import top.ticho.starter.datasource.service.impl.TiRepositoryImpl;
 import top.ticho.starter.datasource.util.TiPageUtil;
-import top.ticho.starter.view.core.TiPageQuery;
 import top.ticho.starter.view.core.TiPageResult;
 import top.ticho.tool.core.TiCollUtil;
 import top.ticho.tool.core.TiStrUtil;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * 文件信息 repository实现
@@ -73,6 +68,7 @@ public class FileInfoRepositoryImpl extends TiRepositoryImpl<FileInfoMapper, Fil
 
     @Override
     public TiPageResult<FileInfoDTO> page(FileInfoQuery query) {
+        query.checkPage();
         LambdaQueryWrapper<FileInfoPO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), FileInfoPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), FileInfoPO::getId, query.getId());
@@ -97,19 +93,9 @@ public class FileInfoRepositoryImpl extends TiRepositoryImpl<FileInfoMapper, Fil
             wrapper.le(FileInfoPO::getUpdateTime, query.getUpdateTime()[1]);
         }
         wrapper.orderByDesc(FileInfoPO::getId);
-        return TiPageUtil.page(() -> list(wrapper), query, fileInfoConverter::toDTO);
-    }
-
-    public static <T, R> TiPageResult<R> page(Supplier<List<T>> supplier, TiPageQuery query, Function<T, R> function) {
-        Page<T> page = PageHelper.startPage(query.getPageNum(), query.getPageSize(), query.getCount());
-        page.doSelectPage(supplier::get);
-        TiPageResult<R> tiPageResult = new TiPageResult<>();
-        tiPageResult.setPageNum(page.getPageNum());
-        tiPageResult.setPageSize(page.getPageSize());
-        tiPageResult.setPages(page.getPages());
-        tiPageResult.setTotal(Long.valueOf(page.getTotal()).intValue());
-        tiPageResult.setRows(page.getResult().stream().map(function).collect(Collectors.toList()));
-        return tiPageResult;
+        Page<FileInfoPO> page = new Page<>(query.getPageNum(), query.getPageSize(), query.getCount());
+        page(page, wrapper);
+        return TiPageUtil.of(page, fileInfoConverter::toDTO);
     }
 
     @Override

@@ -2,6 +2,7 @@ package top.ticho.rainbow.infrastructure.persistence.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import top.ticho.rainbow.application.repository.ClientAppRepository;
@@ -67,6 +68,11 @@ public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, ClientP
     }
 
     public List<ClientPO> list(ClientQuery query) {
+        LambdaQueryWrapper<ClientPO> wrapper = wrapper(query);
+        return list(wrapper);
+    }
+
+    private static LambdaQueryWrapper<ClientPO> wrapper(ClientQuery query) {
         LambdaQueryWrapper<ClientPO> wrapper = Wrappers.lambdaQuery();
         wrapper.in(TiCollUtil.isNotEmpty(query.getIds()), ClientPO::getId, query.getIds());
         wrapper.eq(Objects.nonNull(query.getId()), ClientPO::getId, query.getId());
@@ -77,7 +83,7 @@ public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, ClientP
         wrapper.like(TiStrUtil.isNotBlank(query.getRemark()), ClientPO::getRemark, query.getRemark());
         wrapper.orderByAsc(ClientPO::getSort);
         wrapper.orderByDesc(ClientPO::getId);
-        return list(wrapper);
+        return wrapper;
     }
 
     @Override
@@ -90,7 +96,10 @@ public class ClientRepositoryImpl extends TiRepositoryImpl<ClientMapper, ClientP
 
     @Override
     public TiPageResult<ClientDTO> page(ClientQuery query) {
-        return TiPageUtil.page(() -> list(query), query, clientConverter::toDTO);
+        query.checkPage();
+        Page<ClientPO> page = new Page<>(query.getPageNum(), query.getPageSize(), query.getCount());
+        page(page, wrapper(query));
+        return TiPageUtil.of(page, clientConverter::toDTO);
     }
 
     @Override
