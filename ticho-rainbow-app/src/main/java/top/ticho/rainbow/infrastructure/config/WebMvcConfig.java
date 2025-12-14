@@ -1,7 +1,9 @@
 package top.ticho.rainbow.infrastructure.config;
 
-import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -51,13 +53,20 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(tiTraceInterceptor).order(tiTraceInterceptor.getOrder());
     }
 
+    /**
+     * 分页拦截器
+     */
     @Bean
-    public MybatisPlusInterceptor mybatisPlusInterceptor() {
-        // 1.创建MybatisPlusInterceptor拦截器对象
-        MybatisPlusInterceptor mpInterceptor = new MybatisPlusInterceptor();
-        // 2.添加乐观锁拦截器
-        mpInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
-        return mpInterceptor;
+    public InnerInterceptor paginationInnerInterceptor() {
+        return new PaginationInnerInterceptor(DbType.MYSQL);
+    }
+
+    /**
+     * 乐观锁拦截器
+     */
+    @Bean
+    public InnerInterceptor optimisticLockerInnerInterceptor() {
+        return new OptimisticLockerInnerInterceptor();
     }
 
     @Bean
