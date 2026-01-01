@@ -4,7 +4,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import top.ticho.rainbow.infrastructure.common.dto.SecurityUser;
-import top.ticho.starter.security.core.jwt.JwtExtra;
+import top.ticho.starter.security.core.jwt.TiTokenExtra;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +16,7 @@ import java.util.Map;
  * @date 2024-01-08 20:30
  */
 @Component
-public class DefaultJwtExtra implements JwtExtra {
+public class DefaultJwtExtra implements TiTokenExtra {
 
     @Override
     public Map<String, Object> getExtra() {

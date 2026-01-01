@@ -19,6 +19,7 @@ import top.ticho.rainbow.interfaces.command.LoginCommand;
 import top.ticho.starter.security.dto.TiToken;
 import top.ticho.starter.security.service.impl.AbstractLoginService;
 import top.ticho.tool.core.TiAssert;
+import top.ticho.tool.core.TiStrUtil;
 import top.ticho.tool.core.enums.TiBizErrorCode;
 import top.ticho.tool.core.enums.TiHttpErrorCode;
 
@@ -52,7 +53,7 @@ public class DefaultLoginService extends AbstractLoginService {
         Integer status = user.getStatus();
         String message = UserStatus.getByCode(status);
         boolean normal = Objects.equals(status, UserStatus.NORMAL.code());
-        TiAssert.isTrue(normal, TiHttpErrorCode.NOT_LOGIN, String.format("用户%s", message));
+        TiAssert.isTrue(normal, TiHttpErrorCode.NOT_LOGIN, TiStrUtil.format("用户{}", message));
         return getSecurityUser(user);
     }
 
