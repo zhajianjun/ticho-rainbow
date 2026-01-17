@@ -59,7 +59,7 @@ public class CustomResponseBodyAdvice {
     @ExceptionHandler(AccessDeniedException.class)
     public TiResult<String> accessDeniedExceptionHandler(AccessDeniedException ex) {
         prefix(ex);
-        TiResult<String> result = TiResult.of(TiHttpErrorCode.ACCESS_DENIED);
+        TiResult<String> result = TiResult.of(TiHttpErrorCode.FORBIDDEN);
         response.setStatus(result.getCode());
         log.error("catch error\t{}", ex.getMessage(), ex);
         return result;

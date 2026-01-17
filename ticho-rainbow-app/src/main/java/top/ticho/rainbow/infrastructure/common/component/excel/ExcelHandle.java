@@ -273,7 +273,7 @@ public class ExcelHandle {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("utf-8");
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        TiResult<String> fail = TiResult.of(500, "下载文件失败，" + errMsg);
+        TiResult<String> fail = TiResult.of(500, "下载文件失败，" + errMsg, null);
         PrintWriter writer = response.getWriter();
         writer.println(TiJsonUtil.toJsonString(fail));
     }
